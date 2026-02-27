@@ -45,7 +45,7 @@ public class BasicRaidBulletType extends BasicBulletType {
         width = 20f;
 
         sprite = NHBullets.STRIKE;
-        hitSound = Sounds.explosionbig;
+        hitSound = Sounds.explosion;
     }
 
     @Override

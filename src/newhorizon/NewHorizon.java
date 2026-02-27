@@ -24,7 +24,6 @@ import newhorizon.content.register.RecipeRegister;
 import newhorizon.content.register.UnitRecipeRegister;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.DebugFunc;
-import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
@@ -58,12 +57,21 @@ public class NewHorizon extends Mod {
             fetchNewRelease();
             showNewDialog();
             showStartLog();
-            Time.run(10f, () -> {
+            Time.run(60f, () -> {
                 if (OS.username.equals("LaoHuaJi")) {
                     DebugFunc.updateBlockList();
                     DebugFunc.generateBlankBundle();
                     DebugFunc.writeVanillaBlockList();
-                    DebugFunc.writeTeamList();
+
+                    DebugFunc.processAutotile("presstanium-wall");
+                    DebugFunc.processAutotile("refactoring-multi-wall");
+                    DebugFunc.processAutotile("seton-phased-wall");
+                    DebugFunc.processAutotile("shaped-wall");
+
+                    DebugFunc.processAutotile("flood-pipe");
+
+                    //DebugFunc.outputAtlas();
+                    //DebugFunc.processTiles();
                     //showNew();
                 }
 
@@ -187,43 +195,11 @@ public class NewHorizon extends Mod {
 
     @Override
     public void init() {
-        // 我喜欢你
         Events.on(ClientLoadEvent.class, e -> {
             if (Vars.netServer != null) {
                 Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
             }
             NHVars.init();
-        });
-
-        // 确保无论是单人还是服务器，世界加载后 NHVars 已初始化
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            if (NHVars.worldData == null) {
-                NHVars.init();
-            }
-
-            Timer.schedule(() -> {
-                if (Vars.state == null || Vars.state.isPaused() || Vars.state.teams == null) return;
-
-                Vars.state.teams.getActive().each(teamData -> {
-                    if (teamData == null || !teamData.hasCore()) return;
-
-                    int coreCount = 0;
-                    try {
-                        coreCount = Vars.state.teams.cores(teamData.team).size;
-                    } catch (Exception ex) {
-                        coreCount = teamData.core() == null ? 0 : 1;
-                    }
-
-                    if (coreCount > 0) {
-                        final int count = coreCount;
-                        Vars.state.teams.cores(teamData.team).each(core -> {
-                            if (core != null) {
-                                core.items.add(NHItems.hardLight, 2);
-                            }
-                        });
-                    }
-                });
-            }, 1f, 1f);
         });
     }
 

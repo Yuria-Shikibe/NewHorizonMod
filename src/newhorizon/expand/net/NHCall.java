@@ -80,7 +80,7 @@ public class NHCall {
     }
 
     public static Sound getSound(int id) {
-        if (id == 0) return Sounds.unlock;
+        if (id == 0) return Sounds.uiUnlock;
         if (id == 1) return NHSounds.alert2;
         return NHSounds.alarm;
     }

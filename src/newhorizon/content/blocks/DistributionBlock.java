@@ -3,6 +3,7 @@ package newhorizon.content.blocks;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
+import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.liquid.LiquidJunction;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.meta.BuildVisibility;
@@ -13,20 +14,46 @@ import newhorizon.expand.block.distribution.item.logistics.*;
 import newhorizon.expand.block.distribution.liquid.AdaptConduit;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidBridge;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloader;
+import newhorizon.expand.block.distribution.platform.FloatArmoredConveyor;
+import newhorizon.expand.block.distribution.platform.FloatMultiJunction;
+import newhorizon.expand.block.distribution.platform.FloatMultiRouter;
 
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {
     public static Block
+            multiRouter, multiJunction, multiArmorConveyor,
             conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger,
             logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
-
-    stackRail, steadystackRail,lightStackLoader, heavyStackLoader,
-
-    conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
+            stackRail, steadyStackRail,lightStackLoader, heavyStackLoader,
+            conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load() {
+        multiRouter = new FloatMultiRouter("multi-router"){{
+            size = 1;
+            health = 560;
+            speed = 2f;
+
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.lead, 5));
+        }};
+
+        multiJunction = new FloatMultiJunction("multi-junction"){{
+            size = 1;
+            health = 560;
+            speed = 12f;
+            capacity = 12;
+
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
+        }};
+        multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor"){{
+            requirements(Category.distribution,with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));
+            speed = 0.12f;
+            displayedSpeed = 18f;
+            health = 800;
+            armor = 5;
+            junctionReplacement = multiJunction;
+        }};
         conveyor = new AdaptConveyor("hard-light-rail") {{
             requirements(Category.distribution, with(
                     NHItems.hardLight, 1
@@ -37,13 +64,9 @@ public class DistributionBlock {
             health = 300;
             speed = 0.115f;
             displayedSpeed = 15f;
-            framePeriod = 9.2f;
 
-            buildTime = 1f;
-
-            saveConfig = false;
-            canOverdrive = false;
             placeableLiquid = true;
+            drawTeamOverlay = false;
         }};
 
         stackRail = new AdaptStackConveyor("stack-rail") {{
@@ -54,7 +77,7 @@ public class DistributionBlock {
             placeableLiquid = true;
         }};
 
-        steadystackRail = new AdaptStackConveyor("steady-stack-rail") {{
+        steadyStackRail = new AdaptStackConveyor("steady-stack-rail") {{
             requirements(Category.distribution, with(NHItems.hardLight, 10, NHItems.multipleSteel, 1, NHItems.seniorProcessor, 1));
             health = 600;
             speed = 18f / 60f;
@@ -289,7 +312,7 @@ public class DistributionBlock {
             liquidCapacity = 250f;
         }};
 
-        ((AdaptConveyor) conveyor).junctionReplacement = logisticsJunction;
-        ((AdaptConveyor) conveyor).bridgeReplacement = conveyorBridge;
+        ((Conveyor) conveyor).junctionReplacement = logisticsJunction;
+        ((Conveyor) conveyor).bridgeReplacement = conveyorBridge;
     }
 }

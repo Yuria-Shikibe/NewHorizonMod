@@ -47,7 +47,7 @@ public class ShockwaveGenerator extends Block {
     public StatusEffect positiveStatus = StatusEffects.none;
     public Effect generateEffect = Fx.none;
     public Effect acceptEffect = Fx.none;
-    public Sound blastSound = Sounds.explosionbig;
+    public Sound blastSound = Sounds.explosion;
     //
     public int generateLiNum = 3, generateLiLen = 10, generateLenRand = 0;
     public float lightningDamage = 120;

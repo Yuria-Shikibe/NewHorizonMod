@@ -4,16 +4,13 @@ import arc.Core;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.func.Cons;
-import arc.graphics.Color;
-import arc.graphics.Pixmap;
-import arc.graphics.PixmapIO;
-import arc.graphics.Texture;
+import arc.graphics.*;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.graphics.gl.FrameBuffer;
 import arc.math.Interp;
-import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.struct.StringMap;
 import arc.util.Log;
@@ -34,6 +31,9 @@ import mindustry.type.Sector;
 import mindustry.world.Block;
 import newhorizon.util.graphic.DrawFunc;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
@@ -43,9 +43,25 @@ public class DebugFunc {
     public static final String NH_ROOT_PATH = "E:/project/MindustryModDevLib/NewHorizonMod";
     public static final String NH_BUNDLE_PATH = NH_ROOT_PATH + "/assets/bundles/blank/";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
-    public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
+
+    public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_ROOT_PATH + "/debug/";
+    public static final String NH_DEBUG_GRAPHIC_AUTOTILE_INPUT = NH_ROOT_PATH + "/debug/autotile-input/";
+    public static final String NH_DEBUG_GRAPHIC_AUTOTILE_OUTPUT = NH_ROOT_PATH + "/debug/autotile-output/";
+
     public static final String NH_DEBUG_JSON_DATA_FOLDER = NH_ROOT_PATH + "/data/";
     public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
+
+    public static final int[][] AUTO_TILE_INDEX = {
+            { 1,  2,  3,  4,  5,  6,  1,  6,  1,  2,  5,  6, 40, 39, 40, 39,  3,  4, 17, 18, 15, 16, 40, 16},
+            { 7, 37, 38, 37, 38, 12,  7, 12,  7,  8, 11, 12, 38,  8, 11, 37,  9, 37, 38, 24, 21, 22, 11, 22},
+            {13, 39, 40, 39, 40, 18, 13, 18, 25, 26, 29, 30, 40, 26, 29, 39, 13, 39, 40, 28, 15, 39, 29, 39},
+            {19, 37, 38, 37, 38, 24, 19, 24, 31, 32, 35, 36, 38, 37, 38, 37, 19, 20, 33, 34, 38, 22, 21, 22},
+            {25, 39, 40, 39, 40, 30, 25, 30,  3,  4, 15, 18,  3,  4, 40, 18, 40, 39, 17, 39, 40, 16, 15, 16},
+            {31, 32, 33, 34, 35, 36, 31, 36, 21 , 8, 11, 24, 38,  8, 11, 24,  9, 10, 23, 37, 21, 37, 21, 37},
+            { 1,  2,  3,  4,  5,  6,  1,  6, 13, 26, 29, 16, 13, 26, 29, 39, 40, 14, 27, 28, 15, 16},
+            {31, 32, 33, 34, 35, 36, 31, 36, 19, 22, 33, 34, 19, 37, 33, 34, 38, 20, 38, 37, 38, 22}
+    };
+
     public static final Color[] NH_SPRITE_PALETTE = {
             Color.valueOf("abb1bf"), //light
             Color.valueOf("8e909c"), //mid
@@ -160,6 +176,122 @@ public class DebugFunc {
         return new Fi(NH_DEBUG_JSON_DATA_FOLDER + fileName + ".json");
     }
 
+    public static void processTiles(){
+        Fi folder = new Fi(NH_ROOT_PATH + "/debug");
+        for (Fi image: folder.list()){
+            if (image.name().endsWith(".png")){
+                Pixmap pixmap = PixmapIO.readPNG(image);
+                if ((pixmap.width == 128 && pixmap.height == 128) || (pixmap.width == 136 && pixmap.height == 136)){
+                    ProcessBuilder pb = new ProcessBuilder("tile-gen.exe", "proc", image.name());
+                    pb.directory(new File(NH_ROOT_PATH + "/debug"));
+                    pb.inheritIO();
+                    try {
+                        Process p = pb.start();
+                        p.waitFor();
+                    } catch (InterruptedException | IOException e){
+                        Log.err(e);
+                    }
+                }
+                pixmap.dispose();
+            }
+        }
+    }
+
+    public static void processAutotile(String name){
+        Fi inner = new Fi(NH_DEBUG_GRAPHIC_AUTOTILE_INPUT + name + "-inner.png");
+        Fi outer = new Fi(NH_DEBUG_GRAPHIC_AUTOTILE_INPUT + name + "-outer.png");
+
+        if (!inner.exists()) {
+            Log.err("Autotile not found: " + name + "-inner.png, Skipping");
+            return;
+        }
+        if (!outer.exists()) {
+            Log.err("Autotile not found: " + name + "-outer.png, Skipping");
+            return;
+        }
+
+        int size = 16;
+
+        try {
+            Pixmap innerPixmap = PixmapIO.readPNG(inner);
+            Pixmap outerPixmap = PixmapIO.readPNG(outer);
+
+            Pixmap outputPixmap = new Pixmap(384, 128);
+
+            PixmapRegion[] tiled = new PixmapRegion[40];
+            for (int i = 0; i < 36; i++) {
+                int x = (i % 6) * size;
+                int y = (i / 6) * size;
+                tiled[i] = new PixmapRegion(outerPixmap, x, y, size, size);
+            }
+            tiled[39] = new PixmapRegion(innerPixmap, 0, 0, size, size);
+            tiled[38] = new PixmapRegion(innerPixmap, size, 0, size, size);
+            tiled[37] = new PixmapRegion(innerPixmap, 0, size, size, size);
+            tiled[36] = new PixmapRegion(innerPixmap, size, size, size, size);
+
+            for (int row = 0; row < AUTO_TILE_INDEX.length; row++) {
+                int[] rowIndexs = AUTO_TILE_INDEX[row];
+                for (int col = 0; col < rowIndexs.length; col++) {
+                    int colX = col * size;
+                    int rowY = row * size;
+                    int index = rowIndexs[col];
+                    PixmapRegion pixmapRegion = tiled[index - 1];
+                    outputPixmap.draw(pixmapRegion, colX, rowY);
+                }
+            }
+
+            //outputPixmap.draw(tiled[0], 0, 0);
+
+            Fi output = new Fi(NH_DEBUG_GRAPHIC_AUTOTILE_OUTPUT + name + "-tiled.png");
+            PixmapIO.writePng(output, outputPixmap);
+            Log.info("[Debug Func] Autotile processed: " + name + "-tiled.png");
+
+            innerPixmap.dispose();
+            outerPixmap.dispose();
+            outputPixmap.dispose();
+
+        } catch (Exception e) {
+            Log.err(e);
+        }
+    }
+
+    //buggy since v8, sucks
+    public static void outputAtlas() {
+        int i = 0;
+
+        for (Texture tex : Core.atlas.getTextures()) {
+            i++;
+
+            int w = tex.width;
+            int h = tex.height;
+
+            FrameBuffer fb = new FrameBuffer(w, h);
+            fb.begin();
+
+            Draw.reset();
+            Draw.proj().setOrtho(0, 0, w, h);
+            Draw.color();
+            Draw.shader();
+            tex.bind();
+
+            TextureRegion region = new TextureRegion(tex);
+            Draw.rect(region, w / 2f, h / 2f, w, -h);
+
+            Gl.pixelStorei(Gl.packAlignment, 1);
+
+            ByteBuffer buffer = ByteBuffer.allocateDirect(w * h * 4);
+            Gl.readPixels(0, 0, w, h, Gl.rgba, Gl.unsignedByte, buffer);
+            Pixmap pixmap = new Pixmap(buffer, w, h);
+
+            fb.end();
+            fb.dispose();
+
+            PixmapIO.writePng(createPNGFile("atlas_" + i + ".png"), pixmap);
+
+            pixmap.dispose();
+        }
+    }
+
     public static void outputIcon() {
         Icon.icons.each((name, drawable) -> {
             TextureRegion region = drawable.getRegion();
@@ -269,17 +401,6 @@ public class DebugFunc {
         buffer.end();
 
         buffer.dispose();
-    }
-
-    public static void outputAtlas() {
-        ObjectSet<Texture> atlasAll = Core.atlas.getTextures();
-        Log.info(atlasAll.size);
-        int i = 0;
-        for (Texture texture : atlasAll) {
-            i++;
-            Fi fi = createPNGFile("atlas-" + i);
-            PixmapIO.writePng(fi, texture.getTextureData().consumePixmap());
-        }
     }
 
     public static void unlockModContent() {

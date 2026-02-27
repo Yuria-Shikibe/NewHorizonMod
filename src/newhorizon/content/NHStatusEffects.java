@@ -1,10 +1,14 @@
 package newhorizon.content;
 
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
+import arc.math.geom.Geometry;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -13,18 +17,26 @@ import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.units.StatusEntry;
 import mindustry.gen.Unit;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHInterp;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
+import static arc.graphics.g2d.Draw.color;
+
 public class NHStatusEffects {
+    public static Rand rand = new Rand();
+
     public static StatusEffect
             emp1, emp2, emp3, phased, overphased, weak,
             ultFireBurn, stronghold, quantization, scrambler,
             invincible, intercepted, entangled, end,
-            staticVel, scannerDown, shieldFlag;
+            staticVel, scannerDown, blackWall,
+            shieldFlag, accumulateFlag, executionFlag, immunityFlag;
 
     public static void load() {
         entangled = new NHStatusEffect("entangled") {{
@@ -151,6 +163,7 @@ public class NHStatusEffects {
             effectChance = 0.25f;
             effect = NHFx.squareRand(color, 8f, 16f);
         }};
+
         end = new NHStatusEffect("end") {
             {
                 damage = 200;
@@ -264,11 +277,121 @@ public class NHStatusEffects {
             init(() -> override.add(emp1, emp2));
         }};
 
+        immunityFlag = new StatusEffect("immunity-flag");
+
+        executionFlag = new NHStatusEffect("execution-flag") {{
+            speedMultiplier = 0f;
+        }
+            @Override
+            public void onRemoved(Unit unit) {
+                super.onRemoved(unit);
+                float damagePercent = 0.25f;
+                float killThreshold = 0.5f;
+
+                boolean shouldKill = unit.health() < unit.maxHealth() * killThreshold;
+                float size = unit.type.hitSize * (shouldKill? 9f: 3f);
+                Effect eff = new Effect(120f, size * 2, e -> {
+                    color(NHColor.darkEnrFront, Color.white, e.fout() * 0.55f);
+                    for (int i = 0; i < 4; i++) {
+                        DrawFunc.tri(e.x, e.y, size / 20 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, size * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + 45);
+                    }
+                });
+                for (int i = 0; i < 4; i++){
+                    eff.at(unit.x + Geometry.d4x(i) * unit.type.hitSize / 2f, unit.y + Geometry.d4y(i) * unit.type.hitSize / 2f);
+                }
+                eff.at(unit.x, unit.y);
+
+                if (shouldKill) {
+                    unit.kill();
+                }else {
+                    unit.damagePierce(unit.maxHealth() * damagePercent);
+                }
+            }
+        };
+
+        accumulateFlag = new NHStatusEffect("accumulate-flag") {
+            @Override
+            public void draw(Unit unit, float time) {
+                super.draw(unit, time);
+
+                float scl = time / getTimeThreshold(unit);
+
+                Draw.z(Layer.effect);
+                Draw.color(NHColor.darkEnrFront);
+                Lines.stroke(Mathf.clamp(unit.hitSize / 40, 0.5f, 2.5f));
+
+                Lines.arc(unit.x, unit.y, unit.hitSize * 1.50f, scl);
+                Lines.arc(unit.x, unit.y, unit.hitSize * 2.00f, scl);
+
+                Lines.stroke(Mathf.clamp(unit.hitSize / 20, 1f, 5f) * scl);
+                Lines.circle(unit.x, unit.y, unit.hitSize * 1.75f);
+
+                int step = (int) Mathf.clamp(unit.hitSize / 4, 8, 20);
+                for (int i = 0; i < step; i++) {
+                    float rot = i * (360f / step);
+                    Tmp.v1.set(unit.hitSize * 1.75f, 0).rotate(rot).add(unit);
+
+                    Drawf.tri(Tmp.v1.x, Tmp.v1.y, unit.hitSize * 0.1f, unit.hitSize * 0.50f * scl, rot);
+                    Drawf.tri(Tmp.v1.x, Tmp.v1.y, unit.hitSize * 0.1f, unit.hitSize * 0.50f * scl, rot + 180);
+                }
+            }
+
+            @Override
+            public void update(Unit unit, StatusEntry entry) {
+                super.update(unit, entry);
+                if (unit.getDuration(accumulateFlag) >= getTimeThreshold(unit)) {
+                    //for (int i = 0; i < 4; i++){
+                    //    execution(unit.type.hitSize * 6f).at(unit.x, unit.y, 45 + 90 * i, NHColor.darkEnrFront);
+                    //}
+                    Effect eff = new Effect(60, e -> {
+                        Draw.color(NHColor.darkEnrFront);
+                        Lines.stroke(Mathf.clamp(unit.hitSize / 40, 0.5f, 2.5f));
+
+                        float scl = e.fout(Interp.pow3Out);
+
+                        Lines.circle(unit.x, unit.y, unit.hitSize * 1.50f * scl);
+                        Lines.circle(unit.x, unit.y, unit.hitSize * 2.00f * scl);
+
+                        Lines.stroke(Mathf.clamp(unit.hitSize / 20, 1f, 5f));
+                        Lines.circle(unit.x, unit.y, unit.hitSize * 1.75f * scl);
+
+                        int step = (int) Mathf.clamp(unit.hitSize / 4, 8, 20);
+                        for (int i = 0; i < step; i++) {
+                            float rot = i * (360f / step);
+                            Tmp.v1.set(unit.hitSize * scl * 1.75f, 0).rotate(rot).add(unit);
+
+                            Drawf.tri(Tmp.v1.x, Tmp.v1.y, unit.hitSize * 0.1f, unit.hitSize * 0.50f * scl, rot);
+                            Drawf.tri(Tmp.v1.x, Tmp.v1.y, unit.hitSize * 0.1f, unit.hitSize * 0.50f * scl, rot + 180);
+                        }
+                    });
+                    eff.at(unit);
+                    unit.apply(executionFlag, 60f);
+                    unit.apply(immunityFlag, 90);
+                    unit.unapply(accumulateFlag);
+                }
+            }
+
+            public float getTimeThreshold(Unit unit) {
+                return Mathf.sqrt(unit.hitSize) * 100;
+            }
+        };
+
         shieldFlag = new NHStatusEffect("shield-flag") {{
             color = Pal.techBlue;
             permanent = true;
             show = false;
         }};
+
+        blackWall = new NHStatusEffect("black-wall") {
+            @Override
+            public void applied(Unit unit, float time, boolean extend) {
+                super.applied(unit, time, extend);
+                if (!unit.hasEffect(immunityFlag)){
+                    unit.apply(accumulateFlag, unit.getDuration(accumulateFlag) + unit.getDuration(blackWall));
+                }
+                unit.unapply(blackWall);
+            }
+        };
     }
 
     public static class NHStatusEffect extends StatusEffect {
@@ -293,5 +416,49 @@ public class NHStatusEffects {
                 }
             }
         }
+    }
+
+    public static Effect execution(float scale) {
+        float xDst = scale * 1.25f;
+        float yDst = scale / 5f;
+        float step = scale / 100f;
+        return new Effect(75, e -> {
+            float alpha = e.fout(Interp.reverse);
+            Draw.color(NHColor.darkEnrFront);
+            rand.setSeed(e.id);
+            Lines.stroke(step / 1.5f);
+            for (float i = 0; i < xDst; i += step){
+                float x = NHInterp.upThenFastDown.apply(rand.random(1f)) * xDst;
+                float y = rand.random(-yDst, yDst);
+                float xScl = Interp.reverse.apply(x / xDst);
+                float yScl = Interp.reverse.apply(Math.abs(y / yDst));
+
+                Draw.alpha(Interp.pow10Out.apply(alpha * xScl * yScl) * 0.5f);
+
+                Tmp.v1.set(x * Interp.reverse.apply(e.fin(Interp.pow2Out)) - rand.random(6, 10), y).rotate(e.rotation).add(e.x, e.y);
+                Lines.lineAngle(Tmp.v1.x, Tmp.v1.y, e.rotation, step * 15f + rand.random(step * 0.5f) * e.fout());
+            }
+        });
+    }
+
+    public static Effect blast(float scale) {
+        float xDst = scale * 1.25f;
+
+        Effect rect = new Effect(100, xDst * 1.25f, e -> {
+            Draw.blend(Blending.additive);
+            float radius = e.fin(Interp.pow3Out) * xDst / 1.6f;
+            Fill.light(e.x, e.y, 4, radius, Tmp.c1.set(e.color).a(e.fout(Interp.pow5Out)), Color.clear);
+            Draw.blend();
+        }).layer(Layer.effect + 0.15f);
+
+        Effect rectOut = new Effect(90, xDst * 1.25f, e -> {
+            Draw.blend(Blending.additive);
+            float radius = e.fin(Interp.pow3Out) * xDst / 1.6f;
+            Fill.light(e.x, e.y, 4, radius, Color.clear, Tmp.c1.set(e.color).a(e.fout(Interp.pow5Out)));
+            Draw.blend();
+        }).layer(Layer.effect + 0.15f);
+        //Effect spark = NHFx.spreadOutSpark(120f, xDst + 40f, (int) (xDst / 2f), 4, 72f, 13f, 4f, Interp.pow3Out).startDelay(60);
+
+        return new MultiEffect(rect, rectOut);
     }
 }

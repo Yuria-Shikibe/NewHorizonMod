@@ -24,7 +24,7 @@ public class SignalTextAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        Sounds.chatMessage.play();
+        Sounds.uiChat.play();
         cutsceneUI.textLabel = new FLabel(text);
         cutsceneUI.textArea.clear();
         cutsceneUI.textArea.add(cutsceneUI.textLabel).pad(4f, 32f, 4f, 32f);

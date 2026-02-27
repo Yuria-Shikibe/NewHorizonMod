@@ -4,7 +4,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;

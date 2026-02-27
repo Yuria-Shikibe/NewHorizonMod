@@ -1,84 +1,54 @@
 package newhorizon.content.blocks;
 
-import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
-import arc.math.Mathf;
-import arc.math.Rand;
-import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.entities.Effect;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.power.ThermalGenerator;
-import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.DrawRotator;
 import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
+import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
-import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
-import static arc.graphics.g2d.Lines.circleVertices;
 import static mindustry.type.ItemStack.with;
-import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
-    public static Block solidificationShaper, sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
-    public static Drill opticalMediumDrill;
+    public static Block
+            sandCracker, tungstenReconstructor, titaniumReconstructor,
+            liquidConvertor, xenExtractor, xenIterator,
+            scanCollector;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
-        //wip
-        solidificationShaper = new RecipeGenericCrafter("solidification-shaper") {{
-            requirements(Category.production, ItemStack.with(NHItems.hardLight, 20, NHItems.silicon, 5));
-            health = 300;
-            size = 2;
-            craftTime = 120f;
+
+        scanCollector = new OreCollector("scan-collector") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40
+            ));
+            size = 3;
+            addLink(0, 2, 2, 0, -3, 2);
+
             itemCapacity = 30;
-            craftEffect = Fx.smeltsmoke;
-            outputsPower = true;
-            rotate = false;
-            powerProduction = 0.1f;
 
-            outputItem = new ItemStack(NHItems.hardLight, 2);
-            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
-
-        //    buildType = () -> new RecipeGenericCrafterBuild() {
-        //        @Override
-        //        public void updateTile() {
-        //            super.updateTile();
-        //            if (power != null) {
-        //                float sunlightFactor = Mathf.clamp(
-        //                        (1f - Vars.state.rules.ambientLight.a) * Vars.state.rules.solarMultiplier,
-        //                        0.4f, 4f
-        //                );
-
-        //                powerProduction = sunlightFactor;
-        //            }
-        //    }
-        //    };
-
+            consumePower(2.5f);
+            consumeLiquid(NHLiquids.ammonia, 5f / 60f).boost();
         }};
 
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{
@@ -180,9 +150,6 @@ public class ProductionBlock {
             );
             effectChance = 0.04f;
             size = 3;
-            ambientSound = Sounds.hum;
-            ambientSoundVolume = 0.06f;
-
             squareSprite = false;
 
             drawer = new DrawMulti(
@@ -213,19 +180,7 @@ public class ProductionBlock {
             //consumePower(5f);
         }};
 
-        opticalMediumDrill = new Drill("optical-medium-drill"){{
-            requirements(Category.production, with(NHItems.silicon, 20, NHItems.hardLight, 20));
-            drillTime = 360;
-            size = 3;
-            tier = 3;
-            itemCapacity = 20;
-            liquidCapacity = 20f;
-            updateEffect = Fx.pulverizeMedium;
-            drillEffect = Fx.mineBig;
-            
-            consumeLiquid(NHLiquids.quantumLiquid, 0.08f).boost();
-            liquidBoostIntensity = 1.5f;
-        }};
+        /*
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
@@ -236,8 +191,6 @@ public class ProductionBlock {
             mineSpeed = 6f;
             mineCount = 15;
             mineTier = 5;
-
-            powerConsBase = 120f;
 
             itemCapacity = 45;
             maxModules = 2;
@@ -289,8 +242,6 @@ public class ProductionBlock {
             mineSpeed = 10f;
             mineCount = 20;
             mineTier = 5;
-
-            powerConsBase = 180f;
             itemCapacity = 75;
 
             maxModules = 4;
@@ -367,8 +318,6 @@ public class ProductionBlock {
             itemCapacity = 120;
 
             maxModules = 8;
-
-            powerConsBase = 480f;
 
             updateEffectChance = 0.04f;
 
@@ -589,5 +538,7 @@ public class ProductionBlock {
                 Lines.square(module.x, module.y, 8, -Time.time / 8f);
             };
         }};
+
+         */
     }
 }

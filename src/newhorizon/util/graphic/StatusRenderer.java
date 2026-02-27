@@ -7,7 +7,6 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.graphics.gl.FrameBuffer;
 import arc.graphics.gl.Shader;
 import arc.math.Angles;
 import arc.math.Interp;
@@ -15,7 +14,6 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.struct.IntMap;
 import arc.struct.Seq;
-import arc.util.Reflect;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool;
@@ -25,7 +23,6 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import mindustry.world.Tile;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHShaders;
 import newhorizon.content.NHStatusEffects;
@@ -218,6 +215,20 @@ public class StatusRenderer {
                             particleLen * (fout * 0.4f + 0.6f) * warmup);
                 }
             }
+        });
+        register(NHStatusEffects.emp1, 120, (warmup, unit, status) -> {
+            ScreenShaderDrawer.drawDisplaceGlitch = warmup > 0.01f;
+            NHShaders.displaceGlitch.intensity = warmup * 1f;
+        });
+
+        register(NHStatusEffects.emp2, 130, (warmup, unit, status) -> {
+            ScreenShaderDrawer.drawDisplaceGlitch = warmup > 0.01f;
+            NHShaders.displaceGlitch.intensity = warmup * 1.6f;
+        });
+
+        register(NHStatusEffects.emp3, 140, (warmup, unit, status) -> {
+            ScreenShaderDrawer.drawDisplaceGlitch = warmup > 0.01f;
+            NHShaders.displaceGlitch.intensity = warmup * 2.2f;
         });
     }
 

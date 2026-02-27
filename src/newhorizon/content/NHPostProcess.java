@@ -13,10 +13,10 @@ import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
+import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
-import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Sounds;
@@ -36,7 +36,6 @@ import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
-import newhorizon.NewHorizon;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
 
@@ -330,7 +329,7 @@ public class NHPostProcess {
         if (NHSetting.getBool(NHSetting.OVERRIDE_UNIT_SHIELD)) overrideUnitShield();
         if (NHSetting.getBool(NHSetting.OVERRIDE_CORE_UNIT)) overrideCoreUnit();
         if (NHSetting.getBool(NHSetting.OVERRIDE_LOGISTIC)) overrideLogistic();
-        if (NHSetting.getBool(NHSetting.OVERRIDE_DRILL)) overrideDrill();
+        //if (NHSetting.getBool(NHSetting.OVERRIDE_DRILL)) overrideDrill();
         if (NHSetting.getBool(NHSetting.OVERRIDE_FACTORIES)) overrideFactories();
         if (NHSetting.getBool(NHSetting.OVERRIDE_POWER)) overridePower();
         if (NHSetting.getBool(NHSetting.OVERRIDE_UNIT)) overrideUnit();
@@ -1072,7 +1071,7 @@ public class NHPostProcess {
                 hitColor = backColor = trailColor = lightningColor = NHItems.zeta.color;
                 frontColor = NHItems.zeta.color;
                 ammoMultiplier = 1f;
-                hitSound = Sounds.titanExplosion;
+                hitSound = Sounds.explosionTitan;
 
                 status = StatusEffects.blasted;
 
@@ -1261,12 +1260,12 @@ public class NHPostProcess {
             type.envEnabled = Env.any;
         }
 
-		adjustContent(UnitTypes.tecta, content -> {
+        adjustContent(UnitTypes.tecta, content -> {
             UnitType unitType = (UnitType) content;
             unitType.abilities.each(ability -> ability instanceof ShieldArcAbility, ability -> {
-            ((ShieldArcAbility) ability).chanceDeflect = -1f;
-    });
-});
+                ((ShieldArcAbility) ability).chanceDeflect = -1f;
+            });
+        });
 
         hideContent(Blocks.payloadConveyor);
         hideContent(Blocks.payloadRouter);

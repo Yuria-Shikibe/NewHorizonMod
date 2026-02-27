@@ -67,7 +67,7 @@ public class RaidBullets {
             width = 40f;
 
             sprite = NHBullets.STRIKE;
-            hitSound = Sounds.explosionbig;
+            hitSound = Sounds.explosion;
 
             trailEffect = spark(45, 40);
 
@@ -117,7 +117,7 @@ public class RaidBullets {
             width = 22f;
 
             sprite = "large-orb";
-            hitSound = Sounds.explosionbig;
+            hitSound = Sounds.explosion;
 
             trailEffect = triSpark(45, 15);
 

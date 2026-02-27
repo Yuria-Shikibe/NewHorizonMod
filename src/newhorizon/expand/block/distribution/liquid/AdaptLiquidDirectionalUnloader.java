@@ -7,32 +7,25 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.entities.TargetPriority;
 import mindustry.entities.units.BuildPlan;
-import mindustry.game.Gamemode;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
-import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.NHGroups;
-import newhorizon.NHVars;
 import newhorizon.NewHorizon;
-import newhorizon.expand.entities.GravityTrapField;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.content;
 
 public class AdaptLiquidDirectionalUnloader extends Block {
     public TextureRegion[] topRegions = new TextureRegion[4];
@@ -60,25 +53,6 @@ public class AdaptLiquidDirectionalUnloader extends Block {
 
         config(Liquid.class, (AdaptLiquidDirectionalUnloaderBuild tile, Liquid Liquid) -> tile.unloadLiquid = Liquid);
         configClear((AdaptLiquidDirectionalUnloaderBuild tile) -> tile.unloadLiquid = null);
-    }
-
-    @Override
-    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        if (state.rules.mode() == Gamemode.sandbox) return true;
-
-        Seq<GravityTrapField> fields = new Seq<>();
-        NHGroups.gravityTraps.intersect(tile.worldx(), tile.worldy(), tilesize, tilesize, fields);
-        if (fields.isEmpty()) return false;
-        for (GravityTrapField field : fields) {
-            if (field.team() != team) return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        NHVars.renderer.drawGravityTrap();
     }
 
     @Override

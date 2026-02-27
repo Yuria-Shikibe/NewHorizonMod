@@ -21,6 +21,6 @@ public class GravityWellI implements LExecutor.LInstruction {
         int wx = x.numi();
         int wy = y.numi();
 
-        out.setbool(NHGroups.gravityTraps.any(wx, wy, 8, 8));
+        out.setbool(NHGroups.gravityFields.any(wx, wy, 8, 8));
     }
 }

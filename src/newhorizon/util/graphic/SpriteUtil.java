@@ -1,5 +1,6 @@
 package newhorizon.util.graphic;
 
+import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Point2;
 import arc.struct.IntIntMap;
@@ -10,12 +11,26 @@ public class SpriteUtil {
         4   2
           3
     */
+    @Deprecated
     public static final int[] ATLAS_INDEX_4_4 =
             {
                     0b00000000, 0b00000010, 0b00001010, 0b00001000,
                     0b00000100, 0b00000110, 0b00001110, 0b00001100,
                     0b00000101, 0b00000111, 0b00001111, 0b00001101,
                     0b00000001, 0b00000011, 0b00001011, 0b00001001,
+            };
+
+    /*
+          2
+        3   1
+          4
+    */
+    public static final int[] ATLAS_INDEX_4_4_VANILLA =
+            {
+                    0b1001, 0b1101, 0b1100, 0b1000,
+                    0b1011, 0b1111, 0b1110, 0b1010,
+                    0b0011, 0b0111, 0b0110, 0b0010,
+                    0b0001, 0b0101, 0b0100, 0b0000,
             };
 
     /*
@@ -32,6 +47,7 @@ public class SpriteUtil {
             };
 
     public static final int[] ATLAS_INDEX_4_12 = new int[ATLAS_INDEX_4_12_RAW.length];
+    public static final int[] ATLAS_INDEX_4_12_VANILLA = new int[ATLAS_INDEX_4_12_RAW.length];
     public static final IntIntMap ATLAS_INDEX_4_12_MAP = new IntIntMap();
 
     public static final Point2[] orthogonalPos = {
@@ -113,12 +129,32 @@ public class SpriteUtil {
         return tiles;
     }
 
+    public static TextureRegion[] loadIndexedRegions(String name, int count) {
+        TextureRegion[] regions = new TextureRegion[count];
+        for (int i = 0; i < count; i++) {
+            regions[i] = Core.atlas.find(name + "-" + i);
+        }
+        return regions;
+    };
+
+    public static TextureRegion[] splitRegionArray(String name, int tileWidth, int tileHeight) {
+        return splitRegionArray(Core.atlas.find(name), tileWidth, tileHeight, 0);
+    }
+
     public static TextureRegion[] splitRegionArray(TextureRegion region, int tileWidth, int tileHeight) {
         return splitRegionArray(region, tileWidth, tileHeight, 0);
     }
 
+    public static TextureRegion[] splitRegionArray(String name, int tileWidth, int tileHeight, int pad) {
+        return splitRegionArray(Core.atlas.find(name), tileWidth, tileHeight, pad, null);
+    }
+
     public static TextureRegion[] splitRegionArray(TextureRegion region, int tileWidth, int tileHeight, int pad) {
         return splitRegionArray(region, tileWidth, tileHeight, pad, null);
+    }
+
+    public static TextureRegion[] splitRegionArray(String name, int tileWidth, int tileHeight, int pad, int[] indexMap) {
+        return splitRegionArray(Core.atlas.find(name), tileWidth, tileHeight, pad, indexMap);
     }
 
     public static TextureRegion[] splitRegionArray(TextureRegion region, int tileWidth, int tileHeight, int pad, int[] indexMap) {

@@ -39,7 +39,6 @@ public class DrillModule extends Block {
     public float boostFinalMul = 0f;
     public float powerMul = 0f;
     public float powerExtra = 0f;
-    public boolean coreSend = false;
 
     public Cons<DrillModuleBuild> drawer = module -> {
     };
@@ -62,7 +61,7 @@ public class DrillModule extends Block {
         canOverdrive = false;
         drawDisabled = false;
 
-        ambientSound = Sounds.drill;
+        ambientSound = Sounds.loopDrill;
         ambientSoundVolume = 0.018f;
 
         group = BlockGroup.drills;
@@ -139,19 +138,7 @@ public class DrillModule extends Block {
         }
 
         public void apply(AdaptDrill.AdaptDrillBuild drill) {
-            drill.powerConsMul += powerMul;
-            drill.powerConsExtra += powerExtra;
-            drill.boostMul += boostSpeed;
-            for (Item[] convert : convertList) {
-                if (drill.dominantItem == convert[0]) {
-                    drill.convertItem = convert[1];
-                    drill.items.set(convert[0], 0);
-                    drill.boostFinalMul += convertMul.get(convert[0], boostFinalMul);
-                }
-            }
-            if (coreSend) {
-                drill.coreSend = true;
-            }
+
         }
     }
 }

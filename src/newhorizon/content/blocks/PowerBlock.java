@@ -1,30 +1,36 @@
 package newhorizon.content.blocks;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.entities.Effect;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.entities.Effect;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
+import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
-import mindustry.world.blocks.power.ThermalGenerator;
+import mindustry.world.blocks.power.SolarGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatValues;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.content.NHBlocks;
-import newhorizon.content.NHColor;
-import newhorizon.expand.block.drawer.*;
-import newhorizon.expand.block.power.GravityWallSubstation;
+import newhorizon.expand.block.drawer.DrawRegionFlip;
+import newhorizon.expand.block.drawer.DrawRegionRotated;
+import newhorizon.expand.block.drawer.DrawRotation;
+import newhorizon.expand.block.drawer.DrawScanLine;
+import newhorizon.expand.block.power.GravityWell;
+import newhorizon.expand.block.power.MultiBlockConsumeGenerator;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.draw.DrawLiquidAnimatedOffset;
 import newhorizon.expand.draw.DrawLiquidSmelt;
@@ -37,63 +43,134 @@ import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
     public static Block
-            nitrogenDissociator,
-            crystalDecompositionThermalGenerator, psiGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            photonPanel, nitrogenDissociator,
+            neutralizationGenerator,
+            crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
-        gravityTrapMidantha = new GravityWallSubstation("gravity-node-midantha") {{
-            requirements(Category.power, BuildVisibility.shown, with(Items.silicon, 5));
+        photonPanel = new SolarGenerator("photon-panel") {{
+            requirements(Category.power, with(
+                    NHItems.silicar, 20
+            ));
+            size = 3;
+            powerProduction = 0.5f;
 
-            size = 1;
-            health = 400;
-            laserRange = 8;
-            maxNodes = 10;
-            gravityRange = laserRange * tilesize * 1.5f;
+            buildType = () -> new SolarGeneratorBuild(){
+                boolean justCreated = true;
+                @Override
+                public void draw() {
+                    Draw.rect(baseRegions[Mathf.randomSeed(id, 0, baseRegions.length - 1)], x, y);
+                    Draw.rect(reflectRegions[Mathf.randomSeed(id + 123, 0, baseRegions.length - 1)], x, y);
+                    Draw.rect(topRegion, x, y);
+                }
+
+                @Override
+                public void updateTile() {
+                    super.updateTile();
+                    if (core() != null && timer(produceTimer, produceTime / productionEfficiency)){
+                        if (!justCreated) {
+                            core().handleItem(this, NHItems.hardLight);
+                        }else {
+                            justCreated = false;
+                        }
+                    }
+                }
+            };
+        }
+            public TextureRegion topRegion;
+            public TextureRegion[] baseRegions, reflectRegions;
+
+            public final float produceTime = 300f;
+            public final int produceTimer = timers++;
+
+            @Override
+            public void load() {
+                super.load();
+
+                baseRegions = new TextureRegion[3];
+                reflectRegions = new TextureRegion[3];
+
+                topRegion = Core.atlas.find(name + "-top");
+                for (int i = 0; i < 3; i++) {
+                    baseRegions[i] = Core.atlas.find(name + "-base" + (i + 1));
+                    reflectRegions[i] = Core.atlas.find(name + "-reflect" + (i + 1));
+                }
+            }
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.add(Stat.output, StatValues.items(produceTime, ItemStack.with(NHItems.hardLight, 1)));
+            }
+        };
+
+        neutralizationGenerator = new MultiBlockConsumeGenerator("neutralization-generator") {{
+            requirements(Category.power, ItemStack.with(
+                    NHItems.titanium, 30,
+                    NHItems.silicon, 45,
+                    NHItems.tungsten, 30
+            ));
+            addLink(
+                    2, 0, 1, 2, 1, 1,
+                    -1, 0, 1, -1, 1, 1,
+                    0, -1, 1, 1, -1, 1
+            );
+
+            canMirror = true;
+            rotations = new int[]{0, 3, 2, 1, 2, 1, 0, 3};
+
+            size = 2;
+            scaledHealth = 100f;
+
+            consumeLiquids(LiquidStack.with(NHLiquids.ammonia, 6 / 60f));
+            outputLiquid = new LiquidStack(NHLiquids.water, 12f / 60f);
+            powerProduction = 10f;
+
+            drawer = new DrawMulti(
+                    new DrawRotation() {{
+                        drawType = DRAW_X_MIRROR;
+                        suffix = "-inner";
+                    }},
+                    new DrawRotation() {{
+                        drawType = DRAW_Y_MIRROR;
+                        suffix = "-outer";
+                        xOffset = 12f;
+                    }},
+                    new DrawRotation() {{
+                        drawType = DRAW_Y_MIRROR;
+                        suffix = "-outer";
+                        xOffset = 12f;
+                        rotOffset = 3;
+                    }},
+                    new DrawRotation() {{
+                        drawType = DRAW_Y_MIRROR;
+                        suffix = "-outer";
+                        xOffset = 12f;
+                        rotOffset = 2;
+                    }}
+            );
+
+            consumeEffect = generateEffect = NHFx.square(Pal.power, 60, 6, 16, 3);
+
+            enableRotate();
         }};
 
-        gravityTrapSerpulo = new GravityWallSubstation("gravity-node-serpulo") {{
-            requirements(Category.power, BuildVisibility.shown, with(Items.copper, 10, Items.lead, 8));
-
-            size = 1;
-            health = 400;
-            laserRange = 8;
-            maxNodes = 10;
-            gravityRange = laserRange * tilesize * 1.5f;
-        }};
-
-        gravityTrapErekir = new GravityWallSubstation("gravity-node-erekir") {{
-            requirements(Category.power, BuildVisibility.shown, with(Items.beryllium, 15));
-
-            size = 1;
-            health = 400;
-            laserRange = 8;
-            maxNodes = 10;
-            gravityRange = laserRange * tilesize * 1.5f;
-            clipSize = gravityRange * 2f;
-        }};
-
-        gravityTrapSmall = new GravityWallSubstation("gravity-trap") {{
+        gravityTrapSmall = new GravityWell("gravity-trap") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 
             size = 2;
             health = 640;
-            laserRange = 16;
-            maxNodes = 20;
-            gravityRange = laserRange * tilesize * 1.5f;
-            clipSize = gravityRange * 2f;
+            gravityRange = 8 * tilesize;
         }};
 
-        gravityTrap = new GravityWallSubstation("gravity-trap-heavy") {{
+        gravityTrap = new GravityWell("gravity-trap-heavy") {{
             requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
 
             size = 3;
             health = 1250;
-            laserRange = 40;
-            maxNodes = 6;
-            gravityRange = laserRange * tilesize * 1.2f;
-            clipSize = gravityRange * 2f;
+            gravityRange = 15 * tilesize;
         }};
 
         armorBattery = new Battery("armor-battery") {{
@@ -131,6 +208,7 @@ public class PowerBlock {
             consumePowerBuffered(1000000f);
         }};
 
+        /*
         crystalDecompositionThermalGenerator = new RecipeGenericCrafter("crystal-decomposition-thermal-generator") {{
             requirements(Category.power, ItemStack.with(
                      NHItems.hardLight, 10,
@@ -245,29 +323,6 @@ public class PowerBlock {
             );
         }};
 
-        psiGenerator = new ThermalGenerator("psi-generator") {{
-            requirements(Category.power, ItemStack.with(
-                    NHItems.hardLight, 25, 
-                    NHItems.juniorProcessor, 50, 
-                    NHItems.carbide, 50, 
-                    NHItems.metalOxhydrigen, 25
-            ));
-            size = 2;
-            health = 600;
-            armor = 4f;
-            powerProduction = 300f / 60f;
-
-            lightColor = NHColor.darkEnrColor;
-
-            attribute = NHBlocks.quantum;
-
-            drawer = new DrawMulti(
-                new DrawDefault(),
-                new DrawGlowRegion() {{
-                    color = NHColor.darkEnrColor;
-                }}
-            );
-        }};
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
             requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
@@ -279,7 +334,6 @@ public class PowerBlock {
                 Lines.stroke(e.fout() * 1.375f);
                 Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
             });
-            //			//NHTechTree.add(Blocks.thoriumReactor,this);
             powerProduction = 1800f / 60f;
             health = 320;
             itemCapacity = 40;
@@ -398,5 +452,7 @@ public class PowerBlock {
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
+
+         */
     }
 }

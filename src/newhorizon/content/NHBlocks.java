@@ -17,21 +17,25 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.content.*;
+import mindustry.Vars;
+import mindustry.content.Fx;
+import mindustry.content.Items;
+import mindustry.content.Liquids;
+import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
-import mindustry.entities.Lightning;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.FlakBulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
-import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
+import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -40,14 +44,14 @@ import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.MendProjector;
-import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.LaserTurret;
+import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.Prop;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.environment.SteamVent;
-import mindustry.world.blocks.power.Battery;
-import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.sandbox.ItemSource;
 import mindustry.world.blocks.sandbox.LiquidSource;
@@ -58,26 +62,21 @@ import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import mindustry.Vars;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
-import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.FireExtinguisher;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShockwaveGenerator;
 import newhorizon.expand.block.drawer.ArcCharge;
-import newhorizon.expand.block.drawer.DrawArrowSequence;
-import newhorizon.expand.block.drawer.FlipRegionPart;
 import newhorizon.expand.block.special.HyperGenerator;
 import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.Webber;
 import newhorizon.expand.bullets.*;
-import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.game.NHPartProgress;
 import newhorizon.expand.game.NHUnitSorts;
 import newhorizon.util.func.NHFunc;
@@ -95,8 +94,6 @@ import static mindustry.entities.part.DrawPart.PartProgress.smoothReload;
 import static mindustry.type.ItemStack.with;
 
 public class NHBlocks {
-    public static Attribute quantum = Attribute.add("quantum");
-    
     public static Block reinForcedItemSource;
     public static Block reinForcedLiquidSource;
     public static Block hyperGenerator;
@@ -126,8 +123,6 @@ public class NHBlocks {
     public static Block metalScarp;
     public static Block metalVent;
     public static Block metalGroundHeat;
-    public static Block conglomerateRock;
-    public static Block conglomerateWall;
 
     private static void loadEnv() {
 
@@ -165,18 +160,9 @@ public class NHBlocks {
             f.decoration = metalScarp;
         };
 
-        conglomerateWall = new StaticWall("conglomerate-wall") {{
-            variants = 4;
-        }};
-
-        conglomerateRock = new Floor("conglomerate-rock", 3) {{
-            blendGroup = Blocks.stone;
-            wall = conglomerateWall;
-        }};
-
         metalGroundHeat = new Floor("metal-ground-heat", 3) {{
             wall = metalWall;
-            attributes.set(quantum, 1f);
+            attributes.set(NHContent.quantum, 1f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
             attributes.set(Attribute.heat, 1.25f);
@@ -209,13 +195,11 @@ public class NHBlocks {
             lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
             blendGroup = this;
 
-            attributes.set(quantum, 0.25f);
+            attributes.set(NHContent.quantum, 0.25f);
             attributes.set(Attribute.heat, 0.05f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
             attributes.set(Attribute.spores, -1f);
-
-//			cacheLayer = NHContent.quantum;
         }};
 
         quantumFieldDeep = new Floor("quantum-field-deep", 0) {{
@@ -233,7 +217,7 @@ public class NHBlocks {
             lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
             blendGroup = this;
 
-            attributes.set(quantum, 0.375f);
+            attributes.set(NHContent.quantum, 0.375f);
             attributes.set(Attribute.heat, 0.15f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
@@ -242,7 +226,6 @@ public class NHBlocks {
 
         quantumFieldDisturbing = new Floor("quantum-field-disturbing", 0) {
             {
-                drownTime = 180f;
                 status = NHStatusEffects.quantization;
                 statusDuration = 240f;
                 speedMultiplier = 1.3f;
@@ -257,7 +240,7 @@ public class NHBlocks {
 
                 wall = NHBlocks.metalWall;
 
-                attributes.set(quantum, 0.5f);
+                attributes.set(NHContent.quantum, 0.5f);
                 attributes.set(Attribute.heat, 0.25f);
                 attributes.set(Attribute.water, -1f);
                 attributes.set(Attribute.oil, -1f);
@@ -361,7 +344,7 @@ public class NHBlocks {
             heatColor = heatC;
 
             shake = 1.1f;
-            shootSound = Sounds.missileLarge;
+            shootSound = Sounds.shootMissileLarge;
 
             shoot = new AdaptedShootHelix() {{
                 flip = true;
@@ -398,7 +381,7 @@ public class NHBlocks {
                         status = NHStatusEffects.emp2;
                         statusDuration = 180f;
 
-                        hitSound = despawnSound = Sounds.dullExplosion;
+                        hitSound = despawnSound = Sounds.explosionDull;
                         hitSoundVolume = 0.6f;
                         hitSoundPitch -= 0.11f;
                         hitShake = 1.1f;
@@ -458,7 +441,7 @@ public class NHBlocks {
 
                         reloadMultiplier = 0.25f;
 
-                        hitSound = despawnSound = Sounds.largeExplosion;
+                        hitSound = despawnSound = Sounds.explosion;
                         hitShake = despawnShake = 6.1f;
 
                         shootEffect = EffectWrapper.wrap(NHFx.circleSplash, hitColor);
@@ -531,203 +514,6 @@ public class NHBlocks {
             coolant = new ConsumeLiquid(Liquids.water, 0.5f);
 
             squareSprite = false;
-        }};
-
-        ancientArtillery = new CaptureableTurret("ancient-artillery") {{
-            size = 8;
-            destructible = false;
-            sync = true;
-
-            health = 45000;
-            armor = 120;
-
-            lightColor = NHColor.ancientLightMid;
-            clipSize = 8 * 24;
-
-            outlineColor = Pal.darkOutline;
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.ancimembrane, 1200, NHItems.seniorProcessor, 300));
-
-            warmupMaintainTime = 90f;
-            shootWarmupSpeed /= 5f;
-            minWarmup = 0.9f;
-            shootCone = 15f;
-            rotateSpeed = 0.325f;
-            canOverdrive = false;
-            ammo(NHItems.fusionEnergy, NHBullets.ancientArtilleryProjectile);
-            shooter(NHItems.fusionEnergy, new ShootPattern());
-
-            ammoPerShot = 12;
-            maxAmmo = 180;
-
-            range = 1200;
-            trackingRange = range * 1.2f;
-            reload = 120;
-
-            unitSort = NHUnitSorts.slowest;
-
-            shake = 7;
-            recoil = 3;
-            shootY = -13.5f;
-            shootSound = NHSounds.flak;
-
-            consumePowerCond(5, TurretBuild::isActive);
-
-            enableDrawStatus = false;
-
-            drawer = new DrawTurret() {{
-                parts.addAll(
-                        new RegionPart("-additional") {{
-                            drawRegion = false;
-                            heatColor = Color.red;
-                            heatProgress = PartProgress.warmup;
-                            heatLightOpacity = 0.55f;
-                        }},
-                        new FlipRegionPart("-armor") {{
-                            outline = mirror = true;
-                            layerOffset = 0.2f;
-                            x = 2f;
-
-                            moveY = 16f;
-                            moveX = 8f;
-                            moveRot = -45;
-                            moves.add(new PartMove(PartProgress.recoil, 0, -6, 0));
-                        }},
-                        new FlipRegionPart("-back") {{
-                            outline = mirror = true;
-                            layerOffset = 0.3f;
-                            x = 2f;
-                            moveY = -2f;
-                            moveX = 5f;
-
-                            moves.add(new PartMove(PartProgress.recoil, 0, -4, 0));
-                        }},
-                        new FlipRegionPart("-cover") {{
-                            outline = true;
-                            layerOffset = 0.3f;
-                            turretHeatLayer = Layer.turretHeat + layerOffset;
-                            heatColor = Color.red;
-                            heatProgress = PartProgress.warmup;
-                            heatLightOpacity = 0.55f;
-                        }},
-                        new FlipRegionPart("-barrel") {{
-                            outline = mirror = true;
-                            layerOffset = 0.2f;
-                            x = 2f;
-
-                            turretHeatLayer = Layer.turretHeat + layerOffset;
-                            heatColor = Color.red;
-                            heatProgress = PartProgress.warmup;
-                            heatLightOpacity = 0.55f;
-
-                            moves.add(new PartMove(PartProgress.recoil, -1.75f, -8, -2.12f));
-                            moveY = 6f;
-                            moveX = 7.75f;
-                            moveRot = 3.6f;
-                        }},
-                        new FlipRegionPart("-tail") {{
-                            outline = mirror = true;
-                            layerOffset = 0.2f;
-                            x = 1f;
-                            moveY = -4f;
-                            moveX = 2f;
-                        }},
-                        new DrawArrowSequence() {{
-                            x = 0;
-                            y = 2f;
-                            arrows = 9;
-                            color = NHColor.ancientLightMid;
-                            colorTo = Color.red;
-                            colorToFinScl = 0.12f;
-                        }},
-                        new HaloPart() {{
-                            y = -52f;
-                            layer = Layer.bullet;
-                            color = NHColor.ancient;
-                            colorTo = NHColor.ancientLightMid;
-                            hollow = true;
-                            tri = false;
-
-                            shapes = 1;
-
-                            sides = 16;
-                            stroke = -1f;
-                            strokeTo = 3.4f;
-                            radius = 8f;
-                            radiusTo = 14.5f;
-
-                            haloRadius = 0;
-
-                            haloRotateSpeed = 2f;
-                        }},
-                        new HaloPart() {{
-                            y = -52f;
-                            layer = Layer.bullet;
-                            color = NHColor.ancient;
-                            colorTo = NHColor.ancientLightMid;
-                            tri = true;
-                            shapes = 2;
-                            radius = -1;
-                            radiusTo = 4.2f;
-                            triLength = 6;
-                            triLengthTo = 18;
-
-                            haloRadius = 14;
-                            haloRadiusTo = 25;
-                            haloRotateSpeed = 1.5f;
-                        }},
-                        new HaloPart() {{
-                            y = -52f;
-                            layer = Layer.bullet;
-                            color = NHColor.ancient;
-                            colorTo = NHColor.ancientLightMid;
-                            tri = true;
-                            shapes = 2;
-                            radius = -1;
-                            radiusTo = 4.2f;
-                            triLength = 0;
-                            triLengthTo = 4;
-
-                            haloRadius = 14;
-                            haloRadiusTo = 25;
-                            shapeRotation = 180;
-                            haloRotateSpeed = 1.5f;
-                        }},
-
-                        new HaloPart() {{
-                            y = -52f;
-                            layer = Layer.bullet;
-                            color = NHColor.ancient;
-                            colorTo = NHColor.ancientLightMid;
-                            tri = true;
-                            shapes = 2;
-                            radius = -1;
-                            radiusTo = 5f;
-                            triLength = 10;
-                            triLengthTo = 24;
-
-                            haloRadius = 15;
-                            haloRadiusTo = 28;
-                            haloRotateSpeed = -1f;
-                        }},
-                        new HaloPart() {{
-                            y = -52f;
-                            layer = Layer.bullet;
-                            color = NHColor.ancient;
-                            colorTo = NHColor.ancientLightMid;
-                            tri = true;
-                            shapes = 2;
-                            radius = -1;
-                            radiusTo = 5f;
-                            triLength = 0;
-                            triLengthTo = 6;
-
-                            haloRadius = 15;
-                            haloRadiusTo = 28;
-                            shapeRotation = 180;
-                            haloRotateSpeed = -1f;
-                        }}
-                );
-            }};
         }};
 
         prism = new ItemTurret("prism") {{
@@ -916,7 +702,7 @@ public class NHBlocks {
                 mag = 8f;
             }};
 
-            shootSound = Sounds.pulseBlast;
+            shootSound = Sounds.explosion;
             outlineColor = Pal.darkOutline;
             warmupMaintainTime = 45f;
             minWarmup = 0.9f;
@@ -950,7 +736,7 @@ public class NHBlocks {
 
                 maxHit = 8;
                 despawnShake = 5f;
-                hitSound = despawnSound = Sounds.plasmaboom;
+                hitSound = despawnSound = Sounds.beamPlasma;
                 statusDuration = 120f;
                 status = NHStatusEffects.emp1;
 
@@ -1182,14 +968,14 @@ public class NHBlocks {
                     under = mirror = true;
                     layerOffset = -0.1f;
                     moveX = 6f;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }}, new RegionPart("-side-down") {{
                     mirror = true;
                     layerOffset = -0.5f;
                     moveX = 10f;
                     moveY = 45f;
                     y = 10f;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }}, new RegionPart("-side-down") {{
                     mirror = true;
                     layerOffset = -0.35f;
@@ -1197,263 +983,23 @@ public class NHBlocks {
                     moveY = 7f;
                     y = -2f;
                     x = 8;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }}, new RegionPart("-side-down") {{
                     under = mirror = true;
                     layerOffset = -0.2f;
                     moveY = -33f;
                     y = -33f;
                     x = 14;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }});
 
                 parts.add(new ArcCharge() {{
-                    progress = smoothReload.inv().curve(Interp.pow5Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow5Out);
                     color = NHColor.darkEnrColor;
                     chargeY = t -> -35f;
                     shootY = t -> 90 * curve.apply(1 - t.smoothReload);
                 }});
             }};
-            buildType = () -> new ItemTurretBuild(){
-
-                // -------------------- 基础字段 --------------------
-                private final Vec2 energyOrb1 = new Vec2();   // 炮口能量球起点位置
-                private final Vec2 energyOrb2 = new Vec2();   // 炮口能量球终点位置（根据reload进度移动）
-                private float orbMoveProgress = 0f;           // 能量球移动进度 (0~1)
-                private final float orbMaxDist = size * tilesize * 0.98f; // 能量球最大移动距离
-
-                // 曲线/能量球相关参数
-                private static final float CURVE_STRENGTH = 8f; // 贝塞尔曲线偏移强度
-                private static final float ORB_UP_OFFSET = 0f;  // 起点上偏移（一般设为0）
-                private static final float SHRINK_SPEED = 2.4f; // 曲线收缩速度
-
-                // -------------------- 内部类：移动能量球 --------------------
-                private class MovingOrb{
-                    private final Vec2 start;       // 起点位置
-                    private final Vec2 end;         // 终点位置
-                    private final long spawnTime;   // 生成时间
-                    private final float lifespan = 800f; // 存活时长（毫秒）
-                    private final float baseSize;   // 初始半径大小
-
-                    public MovingOrb(Vec2 start, Vec2 end){
-                        this.start = start.cpy().add(0f, -ORB_UP_OFFSET); // 起点可微调高度
-                        this.end = end.cpy();
-                        this.spawnTime = Time.millis();
-                        this.baseSize = 2.5f + Mathf.random() * 2f;       // 初始大小随机化
-                    }
-
-                    // 判断能量球是否过期
-                    public boolean isExpired(){ return Time.timeSinceMillis(spawnTime) > lifespan; }
-
-                    // 返回进度 0~1
-                    public float fin(){ return Mathf.clamp(Time.timeSinceMillis(spawnTime)/lifespan); }
-
-                    // 根据进度插值计算当前位置
-                    public Vec2 pos(){ return start.cpy().lerp(end, fin()); }
-
-                    // 绘制能量球
-                    public void draw(){
-                        float f = fin();
-                        Vec2 p = pos();
-
-                        Draw.z(Layer.effect - 1.01f); // 设置绘制层级
-                        float size = baseSize * (1f - f * 0.4f); // 随着时间缩小
-                        float glow = size * 2.2f;                // 外发光大小
-
-                        // 半透明发光层
-                        Draw.color(heatColor, 0.45f);
-                        Fill.circle(p.x, p.y, glow);
-
-                        // 主体颜色
-                        Draw.color(heatColor);
-                        Fill.circle(p.x, p.y, size);
-
-                        // 中心白点
-                        Draw.color(Color.white, 0.7f * (1f - f));
-                        Fill.circle(p.x, p.y, size * 0.55f);
-                    }
-                }
-
-                // -------------------- 内部类：贝塞尔曲线 --------------------
-                private class BezierCurve{
-                    private final MovingOrb target;  // 曲线目标（移动能量球）
-                    private final long spawnTime;    // 曲线生成时间
-                    private final Color color;       // 曲线颜色
-                    private final Vec2 ctrlOffset;   // 控制点偏移量
-                    private final float baseAmp;     // 偏移基准幅度
-
-                    public BezierCurve(MovingOrb target, Color color){
-                        this.target = target;
-                        this.color = color;
-                        this.spawnTime = Time.millis();
-
-                        // 偏移强度与距离成比例，最低保证 5
-                        float rawAmp = target.start.dst(target.end) * 0.25f + Mathf.random() * 10f;
-                        this.baseAmp = Math.max(rawAmp, 5f) * CURVE_STRENGTH;
-
-                        // 随机生成控制点方向与大小
-                        float angle = Mathf.random(360f);
-                        float mag = Mathf.clamp(Mathf.random() * baseAmp, 5f, baseAmp);
-                        this.ctrlOffset = new Vec2(Angles.trnsx(angle, mag), Angles.trnsy(angle, mag));
-                    }
-
-                    // 曲线是否过期：能量球过期 或 曲线存在时间 > 1600ms
-                    public boolean isExpired(){ return target.isExpired() || (Time.timeSinceMillis(spawnTime) > 1600f); }
-
-                    // 曲线生命周期进度
-                    public float lifeProgress(){ return Mathf.clamp(Time.timeSinceMillis(spawnTime)/1600f); }
-
-                    // 获取当前控制点（随时间收缩）
-                    public Vec2 getControlPoint(){
-                        Vec2 start = energyOrb1.cpy();
-                        Vec2 end = target.pos().cpy();
-                        float lp = lifeProgress();
-
-                        // 收缩公式，速度由 SHRINK_SPEED 控制
-                        float shrinkFactor = Mathf.pow(0.08f, lp * SHRINK_SPEED);
-
-                        Vec2 offset = ctrlOffset.cpy().scl(shrinkFactor);
-
-                        // 限制偏移长度（避免太离谱）
-                        float maxOffset = start.dst(end) * 1.8f;
-                        if(offset.len() > maxOffset) offset.setLength(maxOffset);
-
-                        // 控制点位于中点偏移位置
-                        return start.cpy().lerp(end, 0.5f).add(offset);
-                    }
-
-                    // 绘制曲线
-                    public void draw(){
-                        //  改动点：不再 return，而是保证暂停时也绘制
-                        Vec2 start = energyOrb1.cpy();
-                        Vec2 end = target.pos().cpy();
-                        Vec2 ctrl = getControlPoint();
-
-                        Draw.z(Layer.effect - 1.01f);
-                        float alpha = Mathf.lerp(1f, 0.18f, lifeProgress());
-                        Draw.color(color.cpy().a(alpha));
-
-                        // 贝塞尔曲线绘制
-                        Lines.stroke(2f * (1f - lifeProgress() * 0.5f), color.cpy().a(alpha));
-                        Lines.curve(
-                                start.x, start.y,
-                                ctrl.x, ctrl.y,
-                                ctrl.x, ctrl.y,
-                                end.x, end.y,
-                                20 // 曲线分段数
-                        );
-                    }
-                }
-
-                // -------------------- 容器 --------------------
-                private final Seq<MovingOrb> movingOrbs = new Seq<>();    // 能量球容器
-                private final Seq<BezierCurve> activeCurves = new Seq<>();// 曲线容器
-
-                // 能量球生成几率参数
-                private static final float MOVING_ORB_SPAWN_MIN = 0.01f;
-                private static final float MOVING_ORB_SPAWN_MAX = 0.24f;
-
-                // -------------------- 逻辑更新 --------------------
-                @Override
-                public void update(){
-                    super.update();
-                    if(Vars.state.isPaused()) return; //  update 在暂停时停止，但 draw 仍会绘制已有对象
-
-                    float upAngle = Mathf.mod(rotation, 360f); // 炮塔朝向角度
-                    float baseOffset = 35f;
-
-                    // 计算能量球起点位置（炮口后方）
-                    energyOrb1.set(
-                            x + Angles.trnsx(upAngle + 180f, baseOffset),
-                            y + Angles.trnsy(upAngle + 180f, baseOffset)
-                    );
-
-                    // 计算能量球终点位置（炮口前方，根据装填进度）
-                    orbMoveProgress = Mathf.clamp(reloadCounter / reload, 0f, 1f);
-                    float currentOrbDist = orbMaxDist * orbMoveProgress;
-
-                    energyOrb2.set(
-                            energyOrb1.x + Angles.trnsx(upAngle, currentOrbDist),
-                            energyOrb1.y + Angles.trnsy(upAngle, currentOrbDist)
-                    );
-
-                    // 清理过期能量球与曲线
-                    movingOrbs.removeAll(MovingOrb::isExpired);
-                    activeCurves.removeAll(BezierCurve::isExpired);
-
-                    // 动态生成新能量球与曲线
-                    float fin = reloadCounter / reload;
-                    float spawnChance = Mathf.lerp(MOVING_ORB_SPAWN_MIN, MOVING_ORB_SPAWN_MAX, fin);
-
-                    if(Mathf.chanceDelta(spawnChance)){
-                        Vec2 start = energyOrb1.cpy().add(0f, -ORB_UP_OFFSET);
-                        MovingOrb mo = new MovingOrb(start, energyOrb2.cpy());
-                        movingOrbs.add(mo);
-                        activeCurves.add(new BezierCurve(mo, heatColor));
-                    }
-                }
-
-                // -------------------- 绘制 --------------------
-                @Override
-                public void draw(){
-                    super.draw();
-                    if(Vars.state.isPaused()){
-                        //  保证暂停时仍然绘制已有能量球和曲线
-                        for(MovingOrb mo : movingOrbs) mo.draw();
-                        for(BezierCurve curve : activeCurves) curve.draw();
-                        return;
-                    }
-
-                    float fin = reloadCounter / reload;
-                    if(fin <= 0.01f) return;
-
-                    // 绘制起点和终点能量球
-                    drawEnergyOrb(energyOrb1, fin);
-                    drawEnergyOrb(energyOrb2, fin);
-
-                    // 绘制能量球与曲线
-                    for(MovingOrb mo : movingOrbs) mo.draw();
-                    for(BezierCurve curve : activeCurves) curve.draw();
-
-                    // 半径计算（用于闪电效果）
-                    float innerRadius = size * tilesize * 0.74f * Interp.circleOut.apply(fin);
-                    float outerRadius = size * tilesize * 0.96f * Interp.circleOut.apply(fin);
-
-                    // 内环随机闪电
-                    if(Mathf.chanceDelta(0.12f * fin)){
-                        float ang = Mathf.random(360f);
-                        Vec2 inner = Tmp.v1.trns(ang, innerRadius).add(x, y).cpy();
-                        NHFx.chainLightningFade.at(energyOrb2.x, energyOrb2.y, 12f, heatColor, new Vec2(inner));
-                    }
-
-                    // 外环随机闪电
-                    if(Mathf.chanceDelta(0.08f * fin)){
-                        float ang = Mathf.random(360f);
-                        Vec2 outer = Tmp.v1.trns(ang, outerRadius).add(x, y).cpy();
-                        NHFx.chainLightningFade.at(energyOrb2.x, energyOrb2.y, 18f, heatColor, new Vec2(outer));
-                    }
-                }
-
-                // -------------------- 工具方法：绘制能量球 --------------------
-                private void drawEnergyOrb(Vec2 pos, float fin){
-                    Draw.z(Layer.effect-1.01f);
-
-                    // 外层发光
-                    float glowSize = 8f * fin + Mathf.absin(Time.time, 2f, 2f * fin);
-                    Draw.color(heatColor, 0.3f);
-                    Fill.circle(pos.x, pos.y, glowSize);
-
-                    // 核心层
-                    float coreSize = 4f * fin;
-                    Draw.color(heatColor);
-                    Fill.circle(pos.x, pos.y, coreSize);
-
-                    // 中心高亮
-                    Draw.color(Color.white, 0.6f);
-                    Fill.circle(pos.x, pos.y, coreSize * 0.6f);
-                }
-            };
-
 
             shoot = new ShootPattern();
             inaccuracy = 0;
@@ -1498,7 +1044,7 @@ public class NHBlocks {
 
             recoil = 18f;
             shake = 80f;
-            shootSound = Sounds.laserblast;
+            //shootSound = Sounds.laserblast;
             health = 800000;
             shootCone = 5f;
             maxAmmo = 80;
@@ -1631,7 +1177,7 @@ public class NHBlocks {
                 accelerateBegin = 0.1f;
                 accelerateEnd = 0.85f;
 
-                despawnSound = hitSound = Sounds.dullExplosion;
+                despawnSound = hitSound = Sounds.explosionDull;
 
                 velocityBegin = 6f;
                 velocityIncrease = -4f;
@@ -1666,6 +1212,9 @@ public class NHBlocks {
                 trailLength = 15;
                 trailWidth = 2f;
                 drawSize = 300f;
+
+                status = NHStatusEffects.blackWall;
+                statusDuration = 120f;
             }});
 
             shooter(NHItems.ancimembrane, new ShootSpread() {{
@@ -1735,8 +1284,8 @@ public class NHBlocks {
             rotateSpeed = 3f;
             firingMoveFract = 0.15F;
             shootDuration = 200.0F;
-            shootSound = Sounds.laserbig;
-            loopSound = Sounds.beam;
+            //shootSound = Sounds.shootLaser;
+            //loopSound = Sounds.loopBio;
             loopSoundVolume = 2.0F;
             shootType = NHBullets.atomSeparator;
 
@@ -1754,7 +1303,7 @@ public class NHBlocks {
             reload = 150f;
             range = 520f;
             unitSort = (u, x, y) -> -u.hitSize();
-            shootSound = Sounds.laserblast;
+            shootSound = Sounds.shootLaser;
             inaccuracy = 0f;
             //shoot = new ShootPattern() {{
             //    firstShotDelay = NHFx.darkEnergyChargeBegin.lifetime;
@@ -1803,7 +1352,7 @@ public class NHBlocks {
                             trailWidth = 2.5f;
                             lifetime = 140f;
                             shrinkX = shrinkY = 0;
-                            hitSound = Sounds.explosionbig;
+                            //hitSound = Sounds.explosionbig;
                             drawSize = 60f;
                             hitShake = despawnShake = 6f;
                             shootEffect = NHFx.instShoot(backColor, frontColor);
@@ -1901,7 +1450,7 @@ public class NHBlocks {
             inaccuracy = 9f;
 
             xRand = tilesize * size / 6.5f;
-            shootSound = Sounds.missile;
+            //shootSound = Sounds.missile;
             coolantMultiplier = 0.85f;
         }};
 
@@ -2113,7 +1662,7 @@ public class NHBlocks {
             range = 800f;
             trackingRange = range * 1.4f;
             inaccuracy = 0f;
-            shootSound = Sounds.laserbig;
+            //shootSound = Sounds.laserbig;
         }};
 
         executor = new ItemTurret("executor") {{
@@ -2162,7 +1711,7 @@ public class NHBlocks {
             effectColor = NHColor.thermoPst;
             itemCapacity = 40;
             itemDuration = 180f;
-            ambientSound = Sounds.pulse;
+            //ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
 
             consumePower(100.0F);
@@ -2191,7 +1740,7 @@ public class NHBlocks {
             lightningColor = NHColor.darkEnrColor;
             generateEffect = NHFx.blastgenerate;
             acceptEffect = NHFx.blastAccept;
-            blastSound = Sounds.explosionbig;
+            //blastSound = Sounds.explosionbig;
             status = NHStatusEffects.emp2;
             range = 240;
             health = 1200;
@@ -2383,13 +1932,13 @@ public class NHBlocks {
                             lightningLength = 8;
                             smokeEffect = Fx.shootBigSmoke2;
                             hitShake = 8f;
-                            hitSound = Sounds.plasmaboom;
+                            //hitSound = Sounds.plasmaboom;
                             status = StatusEffects.sapped;
 
                             statusDuration = 60f * 10;
                         }
                     };
-                    hitSound = Sounds.explosionbig;
+                    //hitSound = Sounds.explosionbig;
                     splashDamageRadius = 120f;
                     splashDamage = 200;
                     lightningDamage = 40f;
@@ -2487,6 +2036,7 @@ public class NHBlocks {
         TurretBlock.load();
         DefenseBlock.load();
         EnvironmentBlock.load();
+        FloodBlock.load();
         SpecialBlock.load();
         CraftingBlock.load();
         PowerBlock.load();

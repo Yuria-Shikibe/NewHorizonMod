@@ -2,10 +2,6 @@ package newhorizon.util.ui.dialog;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.gl.Shader;
-import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -18,8 +14,6 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHShaders;
-import newhorizon.content.blocks.*;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.NHUIFunc;
 

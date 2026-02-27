@@ -13,7 +13,7 @@ import mindustry.world.draw.DrawBlock;
 public class DrawParticleFlow extends DrawBlock {
     public float startX, startY, endX, endY;
     public float length = 1.5f, stroke = 0.6f;
-    public float range = 4;
+    public float range = 5;
     public Color color = Pal.techBlue.cpy().lerp(Color.white, 0.4f);
     public float particleAlpha = 1f, particleLife = 90f;
     public int particles = 45;

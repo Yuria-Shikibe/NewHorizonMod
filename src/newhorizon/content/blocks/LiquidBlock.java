@@ -4,15 +4,47 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.liquid.LiquidRouter;
+import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.liquid.AdaptPump;
+import newhorizon.expand.block.stream.*;
 
 import static mindustry.type.ItemStack.with;
 
 public class LiquidBlock {
-    public static Block turboPumpSmall, turboPump, standardLiquidStorage, heavyLiquidStorage;
+    public static Block
+            streamSource, streamExtractor, streamRepeater, streamRedirector, streamSplitter,
+            turboPumpSmall, turboPump, standardLiquidStorage, heavyLiquidStorage;
 
     public static void load() {
+        streamSource = new StreamSource("stream-source"){{
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+        }};
+
+        streamExtractor = new StreamExtractor("stream-extractor"){{
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+
+            rotateDraw = true;
+        }};
+
+        streamRepeater = new StreamRepeater("stream-repeater"){{
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+
+            rotateDraw = true;
+        }};
+
+        streamRedirector = new StreamRedirector("stream-redirector"){{
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+
+            rotateDraw = true;
+        }};
+
+        streamSplitter = new StreamSplitter("stream-splitter"){{
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+
+            rotateDraw = true;
+        }};
+
         turboPumpSmall = new AdaptPump("turbo-pump-small") {{
             requirements(Category.liquid, with(Items.silicon, 10));
             consumePower(0.1f);

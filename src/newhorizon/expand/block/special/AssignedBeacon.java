@@ -124,11 +124,6 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
                                         build.items.add(stack.item, stack.amount);
                                     }
                                 }
-                                if (crafter1.outputPayloads != null){
-                                    for (PayloadStack stack : crafter1.outputPayloads) {
-                                        build.getPayloads().add(stack.item, stack.amount);
-                                    }
-                                }
                             }
                         }else {
                             if (crafter.outputItems != null){

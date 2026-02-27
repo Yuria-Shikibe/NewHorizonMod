@@ -205,11 +205,11 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled {
             x += vel.x;
             y += vel.y;
 
-            NHGroups.gravityTraps.intersect(x - drawSize / 2f, y - drawSize / 2f, drawSize, drawSize, b -> {
-                if (b.team() != team && b.active()) {
+            NHGroups.gravityFields.intersect(x - drawSize / 2f, y - drawSize / 2f, drawSize, drawSize, b -> {
+                if (b.owner != team) {
                     intercepted = true;
                     toCarry.unit.damage(toCarry.unit.health * 0.3f);
-                    PosLightning.createEffect(b, this, b.team().color, 2, PosLightning.WIDTH);
+                    PosLightning.createEffect(b, this, b.owner.color, 2, PosLightning.WIDTH);
                     NHFx.square45_4_45.at(x, y, team.color);
                 }
             });

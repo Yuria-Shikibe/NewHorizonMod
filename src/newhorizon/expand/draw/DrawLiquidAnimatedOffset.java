@@ -6,14 +6,13 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Tmp;
-import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
+import mindustry.graphics.Layer;
 import mindustry.type.Liquid;
+import mindustry.world.Block;
 import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.draw.DrawLiquidTile;
-import mindustry.world.Block;
-import mindustry.graphics.Layer;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
 public class DrawLiquidAnimatedOffset extends DrawLiquidTile {

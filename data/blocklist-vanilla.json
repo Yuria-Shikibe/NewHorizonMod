@@ -1073,6 +1073,12 @@
 	"size": 1,
 	"color": 1348103167
 },
+"ore-wall-graphite": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1295592705
+},
 "ore-wall-tungsten": {
 	"synthetic": false,
 	"solid": false,
@@ -1613,6 +1619,12 @@
 	"size": 1,
 	"color": 2037743103
 },
+"unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1432115969
+},
 "mass-driver": {
 	"synthetic": true,
 	"solid": true,
@@ -2068,12 +2080,6 @@
 	"solid": true,
 	"size": 3,
 	"color": -1145983745
-},
-"unloader": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": -1432115969
 },
 "reinforced-container": {
 	"synthetic": true,
@@ -2553,7 +2559,7 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 4,
-	"color": -1465603841
+	"color": -1415339009
 },
 "landing-pad": {
 	"synthetic": true,
