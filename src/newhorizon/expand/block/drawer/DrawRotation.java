@@ -27,6 +27,9 @@ public class DrawRotation extends DrawBlock {
     public static final int DRAW_OBLIQUE = 4;
     //sprite with full directions. name-suffix-0/1/2/3
     public static final int DRAW_FULL = 5;
+    //sprite with central symmetry. name-suffix-0/1
+    public static final int DRAW_CENTRAL_SYMMETRY = 6;
+
 
     public TextureRegion[] rotRegions;
     public String suffix = "-rot";
@@ -61,6 +64,12 @@ public class DrawRotation extends DrawBlock {
                 }
             }
             case DRAW_FULL -> Draw.rect(regions[rotation], x, y, rotDeg);
+            case DRAW_CENTRAL_SYMMETRY -> {
+                switch (rotation) {
+                    case 0, 2 -> Draw.rect(regions[rotation], x, y, xSize, ySize);
+                    case 1, 3 -> Draw.rect(regions[rotation], x, y, xSize, ySize);
+                }
+            }
         }
     }
 
@@ -107,6 +116,10 @@ public class DrawRotation extends DrawBlock {
                 for (int i = 0; i < 4; i++) {
                     rotRegions[i] = Core.atlas.find(block.name + suffix + "-i");
                 }
+            }
+            case DRAW_CENTRAL_SYMMETRY -> {
+                rotRegions[0] = rotRegions[2] = Core.atlas.find(block.name + suffix + "-0");
+                rotRegions[1] = rotRegions[3] = Core.atlas.find(block.name + suffix + "-1");
             }
         }
     }

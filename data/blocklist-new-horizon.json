@@ -815,18 +815,6 @@
 	"size": 2,
 	"color": 255
 },
-"new-horizon-crystallizer": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-casting-foundry": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
 "new-horizon-stamping-facility": {
 	"synthetic": true,
 	"solid": true,
@@ -837,6 +825,30 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-sub-cooler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-hyper-cooler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-crystallizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-casting-foundry": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-plasticator": {
@@ -1077,6 +1089,24 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 8,
+	"color": 255
+},
+"new-horizon-multi-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-multi-junction": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-multi-armor-conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
 	"color": 255
 },
 "new-horizon-hard-light-rail": {
