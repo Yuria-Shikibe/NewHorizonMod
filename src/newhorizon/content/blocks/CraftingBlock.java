@@ -6,15 +6,11 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Interp;
-import arc.math.Mathf;
-import arc.struct.IntSeq;
-import arc.struct.Seq;
 import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.effect.RadialEffect;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -26,8 +22,9 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
-import newhorizon.expand.block.power.MultiBlockConsumeGenerator;
 import newhorizon.expand.block.production.factory.MultiBlockCrafter;
+import newhorizon.expand.draw.DrawLiquidSide4;
+import newhorizon.util.graphic.EffectWrapper;
 
 import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
@@ -39,22 +36,27 @@ public class CraftingBlock {
 
     public static Block
             silicarCrusher, processorManufactory, stampingFacility, heavyStampingFacility,
-            processorPrinter, condenseFacility, crystallizer, zetaFactory, zetaDissociator,
+            processorPrinter, condenseFacility, zetaFactory, zetaDissociator,
             subCooler, hyperCooler,
 
-            castingFoundry, plasticator, metalOxhydrigenSynthesizer,
-            metalOxhydrigenRestructuror, photocatalystFactoty, fusionEnergySealingFactory,
-            plasmaActivator, ultracooler, subcooler, particleActivator, heavyRollingMill,
+    castingFoundry, plasticator, metalOxhydrigenSynthesizer, crystallizer,
+            metalOxhydrigenRestructuror, photocatalystFactoty, fusionCoreEnergyFactory,
+            plasmaActivator, ultracooler, subcooler, particleActivator,
             phaseRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
 
-            xenSeparator, crucibleFoundry, processorEtchingFacility,
+    xenSeparator, crucibleFoundry, processorEtchingFacility,
+            heavyRollingMill, mixedRollingMill, duplexRollingMill,
 
-            processorEncoder, irdryonMixer, hugePlastaniumFactory, multipleSteelFactory,
+    rectificatior, phaseRectificatior, irdryonFluidFactory,
+
+    thoriumConverter, setonAlloyFactory,
+
+    processorEncoder, irdryonMixer, hugePlastaniumFactory, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
     public static void load() {
         loadColors();
-        silicarCrusher = new MultiBlockCrafter("silicar-crusher"){{
+        silicarCrusher = new MultiBlockCrafter("silicar-crusher") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.hardLight, 50,
                     NHItems.silicar, 45
@@ -511,7 +513,7 @@ public class CraftingBlock {
             outputItem = new ItemStack(Items.plastanium, 5);
         }};
 
-        metalOxhydrigenSynthesizer = new MultiBlockCrafter("metal-oxhydrigen-synthesizer") {{
+       /* metalOxhydrigenSynthesizer = new MultiBlockCrafter("metal-oxhydrigen-synthesizer") {{
             requirements(Category.crafting, with(
                     NHItems.presstanium, 60,
                     NHItems.juniorProcessor, 45
@@ -536,7 +538,7 @@ public class CraftingBlock {
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
 
             enableRotate();
-        }};
+        }};*/
 
         metalOxhydrigenRestructuror = new MultiBlockCrafter("metal-oxhydrigen-restructuror") {{
             requirements(Category.crafting, with(
@@ -569,7 +571,7 @@ public class CraftingBlock {
                         circleSpace = 5f;
                         flameRadiusScl = 10f;
                     }},*/
-                    new DrawArcSmeltRotated(){{
+                    new DrawArcSmeltRotated() {{
                         flameColor = midColor = drawColor;
                         flameRad = 2f;
                         circleSpace = 5f;
@@ -652,23 +654,35 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        fusionEnergySealingFactory = new GenericCrafter("fusion-energy-sealing-factory") {{
-            requirements(Category.crafting, with(
-                    NHItems.presstanium, 60,
-                    NHItems.juniorProcessor, 45
-            ));
-            hasItems = true;
-            liquidCapacity = 60f;
-            craftTime = 120f;
-
+        fusionCoreEnergyFactory = new GenericCrafter("fusion-core-energy-factory") {{
+            requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.thorium, 60, Items.graphite, 30));
+            craftEffect = Fx.smeltsmoke;
+            outputItem = new ItemStack(NHItems.fusionEnergy, 3);
+            craftTime = 90f;
             size = 3;
-            health = 640;
-            hasPower = hasLiquids = true;
-            craftEffect = updateEffect = NHFx.square(NHItems.fusionEnergy.color, 60, 6, 16, 3);
+            itemCapacity = 20;
+            liquidCapacity = 60f;
+            hasPower = hasLiquids = hasItems = true;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawCrucibleFlame() {{
+                        particles = 45;
+                        particleRad = 11f;
+                    }},
+                    new DrawDefault(),
+                    new DrawLiquidTile(NHLiquids.xenFluid, 37 / 4f),
+                    new DrawRotator(true) {{
+                        rotateSpeed = 4;
+                    }},
+                    new DrawRegion("-top")
+            );
 
-            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 6 / 60f, NHLiquids.xenFluid, 12 / 60f));
-            consumePower(2f);
-            outputItem = new ItemStack(NHItems.fusionEnergy, 1);
+            updateEffectChance = 0.075f;
+            updateEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, NHItems.fusionEnergy.color.cpy().a(0.53f));
+
+            consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 12 / 60f, NHLiquids.cryofluid, 6 / 60f));
+            /*     consumeItems(new ItemStack(NHItems.presstanium, 2), new ItemStack(NHItems.zeta, 6));*/
+            consumePower(6f);
         }};
 
         plasmaActivator = new GenericCrafter("plasma-activator") {{
@@ -755,6 +769,20 @@ public class CraftingBlock {
             armor = 4;
             itemCapacity = 20;
             liquidCapacity = 30f;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.xenFluid) {{
+                        alpha = 0.5f;
+                    }},
+                    new DrawArcSmelt(),
+                    new DrawParticles() {{
+                        color = NHLiquids.xenFluid.color.cpy().lerp(Pal.techBlue, 0.3f).lerp(Pal.coalBlack, 0.05f);
+                        particles = 10;
+                        particleSize = 2;
+                    }},
+                    new DrawDefault()
+            );
 
             craftTime = 120f;
             consumePower(60 / 60f);
@@ -1059,6 +1087,133 @@ public class CraftingBlock {
 
             enableRotate();
         }};
+
+
+        irdryonFluidFactory = new GenericCrafter("irdryon-fluid-factory") {
+            {
+                requirements(Category.crafting, with(Items.surgeAlloy, 20, NHItems.seniorProcessor, 50, NHItems.presstanium, 80, NHItems.irayrondPanel, 65));
+                craftEffect = Fx.smeltsmoke;
+                outputLiquid = new LiquidStack(NHLiquids.irdryonFluid, 6f / 60f);
+                craftTime = 60;
+                size = 2;
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawLiquidTile(NHLiquids.irdryonFluid),
+                        new DrawDefault(),
+                        new DrawPistons() {{
+                            angleOffset = 45;
+                            sinMag = 4f;
+                            sinScl = 5f;
+                            sides = 4;
+                            sideOffset = 0;
+                        }},
+                        new DrawRegion("-top"));
+                itemCapacity = 20;
+                hasPower = hasLiquids = hasItems = true;
+                consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 6 / 60f, NHLiquids.hydrazine, 12 / 60f));
+                consumePower(4f);
+            }
+        };
+
+        setonAlloyFactory = new GenericCrafter("dense-factory") {{
+            requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, NHItems.presstanium, 100, Items.surgeAlloy, 40));
+            craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 4f + e.finpow() * 14f, (x, y) -> {
+                Draw.color(NHLiquids.irdryonFluid.color);
+                Fill.square(e.x + x, e.y + y, e.fout() * 3f);
+            }));
+            outputItem = new ItemStack(NHItems.setonAlloy, 2);
+            craftTime = 60;
+            itemCapacity = 24;
+            liquidCapacity = 20f;
+            health = 500;
+            size = 3;
+            hasPower = hasLiquids = hasItems = true;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.irdryonFluid, 39 / 4f),
+                    new DrawCrucibleFlame(),
+                    new DrawDefault(),
+                    new DrawGlowRegion() {{
+                        color = Color.white;
+                        alpha = glowIntensity = 0.7f;
+                    }});
+
+            consumeLiquid(NHLiquids.irdryonFluid, 6 / 60f);
+            consumeItems(new ItemStack(NHItems.plastanium, 2), new ItemStack(NHItems.tungsten, 5));
+            consumePower(12f);
+        }};
+
+
+        rectificatior = new GenericCrafter("rectificatior") {{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+
+            size = 3;
+            health = 600;
+            armor = 4;
+            itemCapacity = 20;
+            liquidCapacity = 30f;
+
+            craftTime = 60f;
+            consumePower(60 / 60f);
+            consumeItem(NHItems.silicon, 1);
+            outputLiquids = LiquidStack.with(NHLiquids.photon, 3 / 60f);
+
+        }};
+
+
+        phaseRectificatior = new GenericCrafter("phase-rectificatior") {{
+            requirements(Category.crafting, with(
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 3;
+            scaledHealth = 100f;
+            itemCapacity = 20;
+            liquidCapacity = 100;
+            rotate = true;
+            invertFlip = true;
+            squareSprite = false;
+
+            hasLiquids = true;
+
+            craftTime = 120f;
+            consumePower(240f / 60f);
+            consumeItems(with(NHItems.phaseFabric, 1));
+            outputLiquids = LiquidStack.with(NHLiquids.photon, 12 / 60f);
+
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.photon, 0.2f) {{
+                        alpha = 0.7f;
+                    }},
+                    new DrawParticles() {{
+                        particles=15;
+                        particleRad = 10f;
+                        particleSize = 5f;
+                        color = NHLiquids.photon.color.cpy();
+                    }},
+                    new DrawArcSmelt() {{
+                        flameRad = 1.7f;
+                        circleSpace = 3f;
+                    }},
+                    new DrawLiquidSide4(),
+                    new DrawRegion()
+            );
+
+            liquidOutputDirections = new int[]{1};
+            ambientSound = Sounds.loopElectricHum;
+            ambientSoundVolume = 0.08f;
+
+            regionRotated1 = 3;
+            craftEffect = updateEffect = NHFx.square(NHLiquids.photon.color.cpy(), 60, 6, 16, 3);
+
+        }};
+
 
                 /*
         stampingPresser = new MultiBlockCrafter("stamping-presser") {{
