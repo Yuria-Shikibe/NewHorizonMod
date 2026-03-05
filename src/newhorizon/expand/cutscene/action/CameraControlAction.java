@@ -9,6 +9,10 @@ import newhorizon.expand.cutscene.components.Action;
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class CameraControlAction extends Action {
     public Vec2 target;
 

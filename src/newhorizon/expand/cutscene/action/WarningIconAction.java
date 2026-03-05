@@ -12,6 +12,10 @@ import newhorizon.util.ui.NHUIFunc;
 import static mindustry.Vars.headless;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class WarningIconAction extends Action {
     public int icon;
     public Team team;

@@ -10,6 +10,10 @@ import newhorizon.expand.cutscene.components.ActionControl;
 import static mindustry.Vars.headless;
 import static mindustry.Vars.player;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class WarningSoundAction extends Action {
     public int allySound, enemySound;
     public Team team;

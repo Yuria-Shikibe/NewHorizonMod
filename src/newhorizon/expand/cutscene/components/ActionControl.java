@@ -14,6 +14,9 @@ import java.util.regex.Pattern;
 
 import static mindustry.Vars.*;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
 public class ActionControl {
     public static ActionBus parseCode(String code, Building source) {
         ActionBus bus = new ActionBus();

@@ -6,6 +6,10 @@ import newhorizon.expand.cutscene.components.Action;
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class CurtainDrawAction extends Action {
     public CurtainDrawAction() {
         super(90);

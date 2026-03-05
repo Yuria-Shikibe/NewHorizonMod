@@ -8,6 +8,10 @@ import newhorizon.util.func.NHInterp;
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class InfoFadeInAction extends Action {
 
     public InfoFadeInAction() {
@@ -17,6 +21,6 @@ public class InfoFadeInAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        cutsceneUI.infoTable.actions(Actions.fadeIn(maxTimer / Time.toSeconds, NHInterp.bounce5Out));
+        cutsceneUI.infoTable.actions(Actions.fadeIn(duration / Time.toSeconds, NHInterp.bounce5Out));
     }
 }

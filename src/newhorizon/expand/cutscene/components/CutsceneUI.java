@@ -45,11 +45,11 @@ public class CutsceneUI {
     public float curtainProgress = 0;
     public float targetOverlayAlpha;
     public float overlayAlphaShiftSpeed = OVERLAY_SPEED;
-    public Image killStreak;
-    public Vec2 killStreakShake = new Vec2();
-    public float killStreakShakeTimer = 0f;
-    public float killStreakCountTimer = 0f;
-    public int killStreakCount = 0;
+    //public Image killStreak;
+    //public Vec2 killStreakShake = new Vec2();
+    //public float killStreakShakeTimer = 0f;
+    //public float killStreakCountTimer = 0f;
+    //public int killStreakCount = 0;
 
     public CutsceneUI() {
         if (headless) return;

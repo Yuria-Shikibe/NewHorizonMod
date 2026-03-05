@@ -12,6 +12,10 @@ import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class RaidAction extends Action {
     public Team team;
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0, inaccuracyRadius = 80;

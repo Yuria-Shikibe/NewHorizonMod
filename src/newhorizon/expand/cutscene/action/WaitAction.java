@@ -4,6 +4,10 @@ import arc.util.Strings;
 import arc.util.Time;
 import newhorizon.expand.cutscene.components.Action;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class WaitAction extends Action {
     //wait a few seconds.
     public WaitAction(float second) {
@@ -16,6 +20,6 @@ public class WaitAction extends Action {
 
     @Override
     public String phaseToString() {
-        return "wait" + " " + Strings.autoFixed(maxTimer / Time.toSeconds, 1);
+        return "wait" + " " + Strings.autoFixed(duration / Time.toSeconds, 1);
     }
 }

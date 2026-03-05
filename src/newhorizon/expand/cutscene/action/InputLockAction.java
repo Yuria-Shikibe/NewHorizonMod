@@ -7,6 +7,10 @@ import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class InputLockAction extends Action {
     public InputLockAction() {
         super(0f);

@@ -9,6 +9,10 @@ import newhorizon.expand.cutscene.components.Action;
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class InfoFadeOutAction extends Action {
     public InfoFadeOutAction() {
         super(15);
@@ -17,7 +21,7 @@ public class InfoFadeOutAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        cutsceneUI.infoTable.actions(Actions.fadeOut(maxTimer / Time.toSeconds, Interp.pow2In));
+        cutsceneUI.infoTable.actions(Actions.fadeOut(duration / Time.toSeconds, Interp.pow2In));
     }
 
     public void end() {
@@ -31,6 +35,6 @@ public class InfoFadeOutAction extends Action {
     public void skip() {
         if (headless) return;
         end();
-        cutsceneUI.infoTable.actions(Actions.fadeOut(maxTimer / Time.toSeconds, Interp.pow2In));
+        cutsceneUI.infoTable.actions(Actions.fadeOut(duration / Time.toSeconds, Interp.pow2In));
     }
 }

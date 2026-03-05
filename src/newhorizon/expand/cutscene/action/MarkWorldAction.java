@@ -10,6 +10,10 @@ import newhorizon.expand.cutscene.components.ui.MarkStyle;
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class MarkWorldAction extends Action {
     public int style;
     public float x, y, radius, time;

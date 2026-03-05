@@ -5,6 +5,10 @@ import newhorizon.expand.cutscene.components.Action;
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class CameraZoomAction extends Action {
     public float zoom = 1f;
 

@@ -8,6 +8,10 @@ import newhorizon.expand.cutscene.components.ActionControl;
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
+/**
+ * @deprecated This class is deprecated. Use logic statements instead.
+ */
+@Deprecated
 public class InfoTextAction extends Action {
     public String text;
 
