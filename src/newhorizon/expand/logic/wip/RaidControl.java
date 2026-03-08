@@ -1,4 +1,4 @@
-package newhorizon.expand.logic.statements;
+package newhorizon.expand.logic.wip;
 
 import arc.scene.ui.layout.Table;
 import mindustry.logic.LAssembler;
@@ -6,7 +6,6 @@ import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
 import newhorizon.content.NHContent;
-import newhorizon.expand.logic.instructions.RaidControlI;
 
 public class RaidControl extends LStatement {
     public String flag = "flag", timer = "event-timer", alertTime = "10", raidTime = "5", team = "@sharded",

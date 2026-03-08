@@ -1,4 +1,4 @@
-package newhorizon.expand.logic.instructions;
+package newhorizon.expand.logic.wip;
 
 import arc.math.geom.Bresenham2;
 import arc.struct.Seq;

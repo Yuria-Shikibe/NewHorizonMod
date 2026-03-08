@@ -1,6 +1,6 @@
 package newhorizon.expand.cutscene.action;
 
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;

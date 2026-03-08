@@ -3,9 +3,9 @@ package newhorizon.expand.cutscene.action;
 import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.gen.Building;
-import newhorizon.expand.cutscene.components.Action;
-import newhorizon.expand.cutscene.components.ActionControl;
-import newhorizon.expand.cutscene.components.ui.MarkStyle;
+import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ActionControl;
+import newhorizon.expand.logic.components.ui.MarkStyle;
 
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;

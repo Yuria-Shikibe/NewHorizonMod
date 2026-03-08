@@ -1,4 +1,4 @@
-package newhorizon.expand.cutscene.components.ui;
+package newhorizon.expand.logic.components.ui;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;

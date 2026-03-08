@@ -11,6 +11,7 @@ import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.game.MapObjectives;
+import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.LogicIO;
 import mindustry.graphics.CacheLayer;
@@ -27,8 +28,13 @@ import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.ReuseObjective;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.DefaultRaid;
+import newhorizon.expand.logic.NHLStatement;
 import newhorizon.expand.logic.ThreatLevel;
-import newhorizon.expand.logic.statements.*;
+import newhorizon.expand.logic.wip.*;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class NHContent extends Content {
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f;
@@ -71,21 +77,12 @@ public class NHContent extends Content {
 
         ThreatLevel.init();
 
-        LAssembler.customParsers.put("gravitywell", GravityWell::new);
-        LAssembler.customParsers.put("linetarget", LineTarget::new);
-        LAssembler.customParsers.put("randspawn", RandomSpawn::new);
-        LAssembler.customParsers.put("randtarget", RandomTarget::new);
-        LAssembler.customParsers.put("teamthreat", TeamThreat::new);
-
-        LAssembler.customParsers.put("raidcontrol", RaidControl::new);
-
-        LogicIO.allStatements.addUnique(GravityWell::new);
-        LogicIO.allStatements.addUnique(LineTarget::new);
-        LogicIO.allStatements.addUnique(RandomSpawn::new);
-        LogicIO.allStatements.addUnique(RandomTarget::new);
-        LogicIO.allStatements.addUnique(TeamThreat::new);
-
-        LogicIO.allStatements.addUnique(RaidControl::new);
+        registerStatement("gravitywell", GravityWell::new, GravityWell::new);
+        registerStatement("linetarget", LineTarget::new, LineTarget::new);
+        registerStatement("randspawn", RandomSpawn::new, RandomSpawn::new);
+        registerStatement("randtarget", RandomTarget::new, RandomTarget::new);
+        registerStatement("teamthreat", TeamThreat::new, TeamThreat::new);
+        registerStatement("raidcontrol", RaidControl::new, RaidControl::new);
 
         registerStatement("defaultraid", DefaultRaid::new, DefaultRaid::new);
 
@@ -93,6 +90,40 @@ public class NHContent extends Content {
         MapObjectives.registerObjective(TriggerObjective::new);
 
         MapObjectives.registerMarker(RaidIndicator::new);
+    }
+
+    public static void registerStatement(Class<? extends NHLStatement> lstatement) throws NoSuchMethodException {
+        Constructor<? extends NHLStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
+        parserCons.setAccessible(true);
+        
+        Constructor<? extends NHLStatement> defaultCons = lstatement.getDeclaredConstructor();
+        defaultCons.setAccessible(true);
+
+        Method getNameMethod = lstatement.getDeclaredMethod("getLStatementName");
+        getNameMethod.setAccessible(true);
+        String name;
+        try {
+            NHLStatement tempInstance = defaultCons.newInstance();
+            name = (String) getNameMethod.invoke(tempInstance);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Failed to get statement name from " + lstatement.getSimpleName(), e);
+        }
+
+        LAssembler.customParsers.put(name, (tokens) -> {
+            try {
+                return parserCons.newInstance((Object) tokens);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Failed to create instance of " + lstatement.getSimpleName() + " with tokens", e);
+            }
+        });
+        
+        LogicIO.allStatements.addUnique(() -> {
+            try {
+                return defaultCons.newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Failed to create default instance of " + lstatement.getSimpleName(), e);
+            }
+        });
     }
 
     public static void registerStatement(String name, Func<String[], LStatement> func, Prov<LStatement> prov) {

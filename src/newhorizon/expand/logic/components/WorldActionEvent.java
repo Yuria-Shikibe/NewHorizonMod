@@ -1,4 +1,4 @@
-package newhorizon.expand.cutscene.components;
+package newhorizon.expand.logic.components;
 
 import mindustry.game.Team;
 

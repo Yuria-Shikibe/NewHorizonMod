@@ -12,11 +12,12 @@ import mindustry.gen.Call;
 import mindustry.ui.Styles;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
-import newhorizon.expand.cutscene.components.WorldActionEvent;
+import newhorizon.expand.logic.components.WorldActionEvent;
 import newhorizon.util.ui.NHUIFunc;
 
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
+@Deprecated
 public class RaidEvent extends WorldActionEvent {
     //target position. override the targetFlag
     public float targetX = 0, targetY = 0, bulletDamage = 100, bulletInterval = 20f, inaccuracyRadius = 80;

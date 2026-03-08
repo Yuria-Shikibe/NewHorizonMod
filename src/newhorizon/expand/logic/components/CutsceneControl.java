@@ -1,4 +1,4 @@
-package newhorizon.expand.cutscene.components;
+package newhorizon.expand.logic.components;
 
 import arc.Events;
 import arc.struct.ObjectMap;
@@ -23,10 +23,12 @@ public class CutsceneControl {
 
     /** Currently executing main action bus */
     public ActionBus mainBus;
-    /** Queue of main action buses waiting to execute */
-    public Queue<ActionBus> waitingBuses = new Queue<>();
     /** Sub action buses that run in parallel */
     public Seq<ActionBus> subBuses = new Seq<>();
+    /** Queue of main action buses waiting to execute */
+    public Queue<ActionBus> waitingBuses = new Queue<>();
+    /** Cached action buses */
+    public ObjectMap<String, ActionBus> registeredBuses = new ObjectMap<>();
 
     public CutsceneControl() {
         Events.on(EventType.WorldLoadEvent.class, event -> clear());
@@ -109,28 +111,6 @@ public class CutsceneControl {
     }
 
     /**
-     * Pause all cutscene buses.
-     */
-    public void pauseAll() {
-        if (mainBus != null) {
-            mainBus.pause();
-        }
-        waitingBuses.each(ActionBus::pause);
-        subBuses.each(ActionBus::pause);
-    }
-
-    /**
-     * Resume all cutscene buses.
-     */
-    public void resumeAll() {
-        if (mainBus != null) {
-            mainBus.resume();
-        }
-        waitingBuses.each(ActionBus::resume);
-        subBuses.each(ActionBus::resume);
-    }
-
-    /**
      * Clear all cutscene buses and reset state.
      */
     public void clear() {
@@ -162,33 +142,5 @@ public class CutsceneControl {
         if (bus != null) {
             subBuses.add(bus);
         }
-    }
-
-    /**
-     * Check if any cutscene is currently playing.
-     */
-    public boolean isPlaying() {
-        return (mainBus != null && !mainBus.complete()) || !subBuses.isEmpty();
-    }
-
-    /**
-     * Check if the main cutscene is playing.
-     */
-    public boolean isMainPlaying() {
-        return mainBus != null && !mainBus.complete();
-    }
-
-    /**
-     * Get the total number of pending main buses.
-     */
-    public int pendingMainBuses() {
-        return waitingBuses.size + (mainBus != null ? 1 : 0);
-    }
-
-    /**
-     * Get the number of active sub buses.
-     */
-    public int activeSubBuses() {
-        return subBuses.size;
     }
 }

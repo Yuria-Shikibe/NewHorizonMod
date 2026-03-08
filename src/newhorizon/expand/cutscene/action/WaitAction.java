@@ -2,7 +2,7 @@ package newhorizon.expand.cutscene.action;
 
 import arc.util.Strings;
 import arc.util.Time;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 /**
  * @deprecated This class is deprecated. Use logic statements instead.
@@ -16,10 +16,5 @@ public class WaitAction extends Action {
 
     public WaitAction(String[] args) {
         super(Float.parseFloat(args[0]) * Time.toSeconds);
-    }
-
-    @Override
-    public String phaseToString() {
-        return "wait" + " " + Strings.autoFixed(duration / Time.toSeconds, 1);
     }
 }

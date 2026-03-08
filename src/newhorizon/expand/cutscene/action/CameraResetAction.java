@@ -4,7 +4,7 @@ import arc.Core;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
@@ -28,10 +28,5 @@ public class CameraResetAction extends Action {
         Tmp.v1.set(Core.camera.position).lerpDelta(Vars.player, progress());
         control.input.logicCamSpeed = 1000f;
         control.input.logicCamPan = Tmp.v1;
-    }
-
-    @Override
-    public String phaseToString() {
-        return "camera_reset";
     }
 }

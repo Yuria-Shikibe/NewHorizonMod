@@ -5,7 +5,7 @@ import arc.scene.ui.layout.Table;
 import mindustry.logic.*;
 import newhorizon.NHVars;
 import newhorizon.content.NHContent;
-import newhorizon.expand.cutscene.components.ActionControl;
+import newhorizon.expand.logic.components.ActionControl;
 
 public class AddMainActionBus extends LStatement {
     public String cutscene = "css";

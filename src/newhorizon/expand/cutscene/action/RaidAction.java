@@ -9,8 +9,8 @@ import mindustry.gen.Building;
 import mindustry.gen.Call;
 import newhorizon.content.NHBullets;
 import newhorizon.content.bullets.RaidBullets;
-import newhorizon.expand.cutscene.components.Action;
-import newhorizon.expand.cutscene.components.ActionControl;
+import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ActionControl;
 
 /**
  * @deprecated This class is deprecated. Use logic statements instead.

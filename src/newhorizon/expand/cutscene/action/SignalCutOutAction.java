@@ -4,7 +4,7 @@ import arc.flabel.FLabel;
 import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.util.Time;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
@@ -37,10 +37,5 @@ public class SignalCutOutAction extends Action {
         if (headless) return;
         end();
         cutsceneUI.textTable.actions(Actions.fadeOut(duration / Time.toSeconds, Interp.pow2In));
-    }
-
-    @Override
-    public String phaseToString() {
-        return "signal_cut_out";
     }
 }

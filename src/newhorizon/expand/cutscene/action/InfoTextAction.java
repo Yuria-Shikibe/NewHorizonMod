@@ -2,8 +2,8 @@ package newhorizon.expand.cutscene.action;
 
 import arc.flabel.FLabel;
 import mindustry.ui.Styles;
-import newhorizon.expand.cutscene.components.Action;
-import newhorizon.expand.cutscene.components.ActionControl;
+import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ActionControl;
 
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;

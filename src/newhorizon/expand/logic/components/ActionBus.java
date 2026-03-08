@@ -1,4 +1,4 @@
-package newhorizon.expand.cutscene.components;
+package newhorizon.expand.logic.components;
 
 import arc.Core;
 import newhorizon.util.struct.TimeQueue;
@@ -49,21 +49,5 @@ public class ActionBus extends TimeQueue<Action> {
             current.skip();
             super.skipCurrent();
         }
-    }
-
-    /**
-     * Pause the action bus execution.
-     */
-    @Override
-    public void pause() {
-        super.pause();
-    }
-
-    /**
-     * Resume the action bus execution.
-     */
-    @Override
-    public void resume() {
-        super.resume();
     }
 }

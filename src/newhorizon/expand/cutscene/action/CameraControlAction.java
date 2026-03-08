@@ -4,7 +4,7 @@ import arc.Core;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;

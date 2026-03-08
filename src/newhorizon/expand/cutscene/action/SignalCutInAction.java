@@ -2,7 +2,7 @@ package newhorizon.expand.cutscene.action;
 
 import arc.scene.actions.Actions;
 import arc.util.Time;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 import newhorizon.util.func.NHInterp;
 
 import static mindustry.Vars.headless;

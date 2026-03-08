@@ -1,4 +1,4 @@
-package newhorizon.expand.cutscene.components;
+package newhorizon.expand.logic.components;
 
 import arc.Core;
 import arc.Events;
@@ -11,7 +11,6 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
-import arc.scene.ui.Image;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
@@ -22,8 +21,8 @@ import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
-import newhorizon.expand.cutscene.components.ui.MarkBox;
-import newhorizon.expand.cutscene.components.ui.MarkStyle;
+import newhorizon.expand.logic.components.ui.MarkBox;
+import newhorizon.expand.logic.components.ui.MarkStyle;
 import newhorizon.util.annotation.ClientOnly;
 import newhorizon.util.annotation.HeadlessDisabled;
 

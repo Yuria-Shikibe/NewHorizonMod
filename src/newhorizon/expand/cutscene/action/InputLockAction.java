@@ -1,7 +1,7 @@
 package newhorizon.expand.cutscene.action;
 
 import arc.Core;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
@@ -23,10 +23,5 @@ public class InputLockAction extends Action {
         control.input.logicCamPan = Core.camera.position;
         control.input.logicCutscene = true;
         control.input.config.forceHide();
-    }
-
-    @Override
-    public String phaseToString() {
-        return "input_lock";
     }
 }

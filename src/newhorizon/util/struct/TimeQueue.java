@@ -94,33 +94,6 @@ public class TimeQueue<T extends TimeQueue.Timed> {
     }
 
     /**
-     * Pause the queue execution.
-     */
-    public void pause() {
-        paused = true;
-        if (current != null) {
-            current.pause();
-        }
-    }
-
-    /**
-     * Resume the queue execution.
-     */
-    public void resume() {
-        paused = false;
-        if (current != null) {
-            current.resume();
-        }
-    }
-
-    /**
-     * Check if the queue is paused.
-     */
-    public boolean isPaused() {
-        return paused;
-    }
-
-    /**
      * Check if the queue has completed all items.
      */
     public boolean complete() {
@@ -164,19 +137,6 @@ public class TimeQueue<T extends TimeQueue.Timed> {
 
         /** Check if the element has completed */
         boolean complete();
-
-        /** Pause the element */
-        default void pause() {
-        }
-
-        /** Resume the element */
-        default void resume() {
-        }
-
-        /** Check if the element is paused */
-        default boolean isPaused() {
-            return false;
-        }
 
         /** Skip the element execution */
         default void skip() {

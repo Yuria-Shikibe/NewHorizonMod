@@ -4,7 +4,7 @@ import arc.flabel.FLabel;
 import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.util.Time;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;

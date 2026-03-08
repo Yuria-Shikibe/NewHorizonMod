@@ -1,7 +1,7 @@
 package newhorizon.expand.cutscene.action;
 
 import arc.math.Interp;
-import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;

@@ -1,4 +1,4 @@
-package newhorizon.expand.cutscene.components;
+package newhorizon.expand.logic.components;
 
 import arc.struct.Seq;
 import arc.util.Log;

@@ -4,8 +4,8 @@ import arc.audio.Sound;
 import mindustry.game.Team;
 import mindustry.gen.Sounds;
 import newhorizon.content.NHSounds;
-import newhorizon.expand.cutscene.components.Action;
-import newhorizon.expand.cutscene.components.ActionControl;
+import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ActionControl;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.player;

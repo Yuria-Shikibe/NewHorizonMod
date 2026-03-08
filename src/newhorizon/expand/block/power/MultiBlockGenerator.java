@@ -17,7 +17,7 @@ import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.expand.BasicMultiBlock;
+import newhorizon.expand.block.BasicMultiBlock;
 
 public class MultiBlockGenerator extends BasicMultiBlock {
     /** The amount of power produced per tick in case of an efficiency of 1.0, which represents 100%. */

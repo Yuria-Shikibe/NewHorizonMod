@@ -1,4 +1,4 @@
-package newhorizon.expand.logic.instructions;
+package newhorizon.expand.logic.wip;
 
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;

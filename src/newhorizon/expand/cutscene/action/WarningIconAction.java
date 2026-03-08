@@ -5,8 +5,8 @@ import arc.graphics.g2d.TextureRegion;
 import mindustry.game.Team;
 import mindustry.ui.Styles;
 import newhorizon.content.NHContent;
-import newhorizon.expand.cutscene.components.Action;
-import newhorizon.expand.cutscene.components.ActionControl;
+import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ActionControl;
 import newhorizon.util.ui.NHUIFunc;
 
 import static mindustry.Vars.headless;

@@ -857,12 +857,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-metal-oxhydrigen-synthesizer": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-metal-oxhydrigen-restructuror": {
 	"synthetic": true,
 	"solid": true,
@@ -875,7 +869,7 @@
 	"size": 2,
 	"color": 255
 },
-"new-horizon-fusion-energy-sealing-factory": {
+"new-horizon-fusion-core-energy-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -951,6 +945,30 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-irdryon-fluid-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-dense-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-rectificatior": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-phase-rectificatior": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-photon-panel": {

@@ -1,4 +1,4 @@
-package newhorizon.expand.logic.instructions;
+package newhorizon.expand.logic.wip;
 
 import mindustry.game.Team;
 import mindustry.logic.LExecutor;

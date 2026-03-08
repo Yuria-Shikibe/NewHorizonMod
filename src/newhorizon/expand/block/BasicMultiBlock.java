@@ -1,4 +1,4 @@
-package newhorizon.expand;
+package newhorizon.expand.block;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;

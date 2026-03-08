@@ -2,8 +2,8 @@ package newhorizon;
 
 import arc.Core;
 import mindustry.Vars;
-import newhorizon.expand.cutscene.components.CutsceneControl;
-import newhorizon.expand.cutscene.components.CutsceneUI;
+import newhorizon.expand.logic.components.CutsceneControl;
+import newhorizon.expand.logic.components.CutsceneUI;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.util.game.UpdateProxy;
 import newhorizon.util.graphic.ScreenShaderDrawer;

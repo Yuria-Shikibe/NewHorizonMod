@@ -1,4 +1,4 @@
-package newhorizon.expand.cutscene.components;
+package newhorizon.expand.logic.components;
 
 import arc.math.Mathf;
 import arc.util.Time;
@@ -69,21 +69,6 @@ public abstract class Action implements TimeQueue.Timed {
     protected void onSkip() {
     }
 
-    @Override
-    public void pause() {
-        paused = true;
-    }
-
-    @Override
-    public void resume() {
-        paused = false;
-    }
-
-    @Override
-    public boolean isPaused() {
-        return paused;
-    }
-
     /**
      * Get the execution progress (0.0 to 1.0).
      * Returns 0.0 if maxTimer is 0 or negative.
@@ -105,35 +90,5 @@ public abstract class Action implements TimeQueue.Timed {
      */
     public boolean isSkipped() {
         return skipped;
-    }
-
-    /**
-     * Get a string representation of the action phase.
-     * Override for custom phase descriptions.
-     */
-    public String phaseToString() {
-        return "";
-    }
-
-    /**
-     * Get the action state.
-     */
-    public State getState() {
-        if (skipped) return State.SKIPPED;
-        if (paused) return State.PAUSED;
-        if (lifeTimer <= 0f) return State.PENDING;
-        if (lifeTimer >= duration) return State.COMPLETED;
-        return State.RUNNING;
-    }
-
-    /**
-     * Action execution states.
-     */
-    public enum State {
-        PENDING,
-        RUNNING,
-        PAUSED,
-        COMPLETED,
-        SKIPPED
     }
 }

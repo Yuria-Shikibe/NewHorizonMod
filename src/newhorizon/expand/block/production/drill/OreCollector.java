@@ -31,7 +31,7 @@ import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHContent;
-import newhorizon.expand.BasicMultiBlock;
+import newhorizon.expand.block.BasicMultiBlock;
 import newhorizon.util.func.MathUtil;
 import newhorizon.util.graphic.DrawFunc;
 

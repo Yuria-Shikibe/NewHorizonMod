@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import static mindustry.Vars.state;
 
+@Deprecated
 public class RaidEventObjective extends MapObjectives.MapObjective{
     public @MapObjectives.Second float duration = 60f * 10f;
     public String key = "raid-event";
