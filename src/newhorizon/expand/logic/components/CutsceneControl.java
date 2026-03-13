@@ -5,6 +5,7 @@ import arc.struct.ObjectMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.game.EventType;
 
 import static newhorizon.NHVars.cutsceneUI;
@@ -14,11 +15,15 @@ import static newhorizon.NHVars.cutsceneUI;
  * Manages main bus queue, sub buses, and waiting periods between cutscenes.
  */
 public class CutsceneControl {
-    /** Whether currently waiting between cutscenes */
+
+    public static final String CSS_ACTION_KEY_PREFIX = "[CSS_ACTION]";
+    public static final String CSS_ACTION_BUS_KEY_PREFIX = "[CSS_ACTION_BUS]";
+
+    // Whether currently waiting between cutscenes
     public boolean waiting = false;
-    /** Time spacing between cutscenes in ticks */
+    // Time spacing between cutscenes in ticks
     public float waitSpacing = 60f;
-    /** Current wait timer */
+    // Current wait timer
     public float waitTimer = 0f;
 
     /** Currently executing main action bus */
@@ -27,16 +32,11 @@ public class CutsceneControl {
     public Seq<ActionBus> subBuses = new Seq<>();
     /** Queue of main action buses waiting to execute */
     public Queue<ActionBus> waitingBuses = new Queue<>();
-    /** Cached action buses */
-    public ObjectMap<String, ActionBus> registeredBuses = new ObjectMap<>();
 
     public CutsceneControl() {
         Events.on(EventType.WorldLoadEvent.class, event -> clear());
     }
 
-    /**
-     * Update all cutscene buses. Should be called every frame.
-     */
     public void update() {
         updateMainBus();
         updateWaiting();
@@ -45,9 +45,6 @@ public class CutsceneControl {
         cutsceneUI.update();
     }
 
-    /**
-     * Update the main action bus.
-     */
     private void updateMainBus() {
         if (mainBus == null) return;
 
@@ -59,9 +56,6 @@ public class CutsceneControl {
         }
     }
 
-    /**
-     * Update waiting timer between cutscenes.
-     */
     private void updateWaiting() {
         if (!waiting) return;
 
@@ -72,18 +66,12 @@ public class CutsceneControl {
         }
     }
 
-    /**
-     * Start the next main bus from waiting queue.
-     */
     private void startNextMainBus() {
         if (mainBus == null && !waiting && !waitingBuses.isEmpty()) {
             mainBus = waitingBuses.removeLast();
         }
     }
 
-    /**
-     * Update all sub action buses and remove completed ones.
-     */
     private void updateSubBuses() {
         for (int i = subBuses.size - 1; i >= 0; i--) {
             ActionBus bus = subBuses.get(i);
@@ -94,9 +82,6 @@ public class CutsceneControl {
         }
     }
 
-    /**
-     * Skip all cutscene buses (main, waiting, and sub).
-     */
     public void skipAll() {
         if (mainBus != null) {
             mainBus.skip();
@@ -110,9 +95,6 @@ public class CutsceneControl {
         clear();
     }
 
-    /**
-     * Clear all cutscene buses and reset state.
-     */
     public void clear() {
         waiting = false;
         waitTimer = 0f;
@@ -121,10 +103,15 @@ public class CutsceneControl {
         subBuses.clear();
     }
 
-    /**
-     * Add a main action bus to the queue.
-     * If no main bus is running, starts immediately; otherwise queues it.
-     */
+    public static void saveAction(String name, String action) {
+        Vars.state.rules.tags.put(CSS_ACTION_KEY_PREFIX + name, action);
+    }
+
+    public static void saveActionBus(String name, String action) {
+        Vars.state.rules.tags.put(CSS_ACTION_BUS_KEY_PREFIX + name, action);
+    }
+
+    //Add a main action bus to the queue. If no main bus is running, starts immediately; otherwise queues it.
     public void addMainActionBus(ActionBus bus) {
         if (bus == null) return;
 
@@ -135,9 +122,7 @@ public class CutsceneControl {
         }
     }
 
-    /**
-     * Add a sub action bus that runs in parallel.
-     */
+    //Add a sub action bus that runs in parallel.
     public void addSubActionBus(ActionBus bus) {
         if (bus != null) {
             subBuses.add(bus);

@@ -25,7 +25,7 @@ public abstract class Action implements TimeQueue.Timed {
     @Override
     public void update() {
         if (paused || skipped) return;
-        
+
         if (lifeTimer < duration) {
             lifeTimer += Time.delta;
             act();

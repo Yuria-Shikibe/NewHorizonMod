@@ -7,7 +7,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.UnitType;
 import mindustry.world.blocks.logic.MemoryBlock;
-import newhorizon.expand.cutscene.action.*;
+import newhorizon.expand.logic.deprecated.cutscene.action.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

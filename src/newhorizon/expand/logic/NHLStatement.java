@@ -1,8 +1,6 @@
 package newhorizon.expand.logic;
 
-import arc.func.Func;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
@@ -11,12 +9,8 @@ import mindustry.logic.LStatement;
  * Base class for logic statements.
  */
 public class NHLStatement extends LStatement {
-    public static int tokenIndex = 0;
-    public static int tokenLength = 0;
 
-    public NHLStatement(String[] tokens) {
-
-    }
+    public NHLStatement(String[] tokens) {}
 
     public NHLStatement() {}
 
@@ -35,5 +29,11 @@ public class NHLStatement extends LStatement {
     @Override
     public void write(StringBuilder builder) {
         builder.append(getLStatementName());
+    }
+
+    public void writeTokens(StringBuilder builder, String... tokens) {
+        for (String token : tokens) {
+            builder.append(" ").append(token);
+        }
     }
 }
