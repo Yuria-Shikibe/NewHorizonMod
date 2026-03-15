@@ -57,7 +57,7 @@ public class AddMainActionBus extends LStatement {
         public void run(LExecutor exec) {
             String css = (String) cutscene.obj();
             Core.app.setClipboardText(css);
-            NHVars.cutscene.addMainActionBus(ActionControl.parseCode(css, null));
+            NHVars.cutscene.addMainActionBus(ActionControl.parseCode(css));
         }
     }
 }

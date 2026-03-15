@@ -1,34 +1,28 @@
-package newhorizon.expand.logic.deprecated.cutscene.action;
+package newhorizon.expand.logic.components.action;
 
 import arc.Core;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
-/**
- * @deprecated This class is deprecated. Use logic statements instead.
- */
-@Deprecated
 public class CameraControlAction extends Action {
     public Vec2 target;
 
-    public CameraControlAction(float duration, float x, float y) {
-        super(duration * Time.toSeconds);
-        target = new Vec2(x, y);
-    }
-
-    public CameraControlAction(String[] args) {
-        super(Float.parseFloat(args[0]) * Time.toSeconds);
-        target = new Vec2(Float.parseFloat(args[1]), Float.parseFloat(args[2]));
+    @Override
+    public void parseTokens(String[] tokens) {
+        duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
+        target = new Vec2(ParseUtil.getNextFloat(tokens), ParseUtil.getNextFloat(tokens));
     }
 
     @Override
     public void act() {
         if (headless) return;
+
         Tmp.v1.set(Core.camera.position).lerpDelta(target, progress());
         control.input.logicCamSpeed = 10f;
         control.input.logicCamPan = Tmp.v1;

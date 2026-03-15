@@ -10,30 +10,29 @@ import mindustry.logic.LVar;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
-import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.CutsceneControl;
 
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
-public class CurtainFadeIn extends ActionLStatement {
-    public String actionName = "Default_Curtain_Fade_In", duration = "2";
+public class CurtainFadeOut extends ActionLStatement {
+    public String actionName = "Default_Curtain_Fade_Out", duration = "2";
 
-    public CurtainFadeIn(String[] token) {
+    public CurtainFadeOut(String[] token) {
         actionName = ParseUtil.getFirstToken(token);
         duration = ParseUtil.getNextToken(token);
     }
 
-    public CurtainFadeIn() {}
+    public CurtainFadeOut() {}
 
     @Override
     public String getLStatementName() {
-        return "curtainfadein";
+        return "curtainfadeout";
     }
 
     @Override
     public void build(Table table) {
-        table.add(" Action Name: ").width(120f);
+        table.add(" Cutscene Name: ").width(120f);
         fields(table, actionName, str -> actionName = str);
     }
 
@@ -50,13 +49,13 @@ public class CurtainFadeIn extends ActionLStatement {
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new CurtainFadeInI(builder.var(actionName), builder.var(duration));
+        return new CurtainFadeOutI(builder.var(actionName), builder.var(duration));
     }
 
-    public class CurtainFadeInI extends ActionInstruction {
+    public class CurtainFadeOutI extends ActionInstruction {
         public LVar actionName, duration;
 
-        public CurtainFadeInI(LVar actionName, LVar duration) {
+        public CurtainFadeOutI(LVar actionName, LVar duration) {
             this.actionName = actionName;
             this.duration = duration;
         }

@@ -1,4 +1,4 @@
-package newhorizon.expand.logic.deprecated.cutscene.action;
+package newhorizon.expand.logic.components.action;
 
 import arc.audio.Sound;
 import mindustry.game.Team;

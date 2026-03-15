@@ -1,4 +1,4 @@
-package newhorizon.expand.logic.deprecated.cutscene.action;
+package newhorizon.expand.logic.components.action;
 
 import arc.flabel.FLabel;
 import arc.graphics.g2d.TextureRegion;

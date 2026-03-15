@@ -1,21 +1,18 @@
-package newhorizon.expand.logic.deprecated.cutscene.action;
+package newhorizon.expand.logic.components.action;
 
 import arc.scene.actions.Actions;
 import arc.util.Time;
+import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.util.func.NHInterp;
 
 import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
-/**
- * @deprecated This class is deprecated. Use logic statements instead.
- */
-@Deprecated
 public class SignalCutInAction extends Action {
-
-    public SignalCutInAction() {
-        super(30);
+    @Override
+    public void parseTokens(String[] tokens) {
+        duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
     }
 
     @Override

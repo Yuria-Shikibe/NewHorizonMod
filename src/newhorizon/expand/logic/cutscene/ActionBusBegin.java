@@ -1,6 +1,6 @@
 package newhorizon.expand.logic.cutscene;
 
-import newhorizon.expand.logic.NHLStatement;
+import newhorizon.expand.logic.ActionLStatement;
 
-public class ActionBusBegin extends NHLStatement {
+public class ActionBusBegin extends ActionLStatement {
 }

@@ -1,7 +1,8 @@
-package newhorizon.expand.logic.deprecated.cutscene.action;
+package newhorizon.expand.logic.components.action;
 
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
@@ -9,42 +10,25 @@ import mindustry.gen.Building;
 import mindustry.gen.Call;
 import newhorizon.content.NHBullets;
 import newhorizon.content.bullets.RaidBullets;
+import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ActionControl;
 
-/**
- * @deprecated This class is deprecated. Use logic statements instead.
- */
-@Deprecated
 public class RaidAction extends Action {
+    public int bulletType = 0;
     public Team team;
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0, inaccuracyRadius = 80;
-    public int bulletType = 0;
 
-    public RaidAction(String[] tokens, Building source) {
-        super(0f);
-        this.team = ActionControl.parseTeam(tokens[0]);
-        this.bulletType = Integer.parseInt(tokens[1]);
-        this.sourceX = ActionControl.parseFloat(tokens[2], source);
-        this.sourceY = ActionControl.parseFloat(tokens[3], source);
-        this.targetX = ActionControl.parseFloat(tokens[4], source);
-        this.targetY = ActionControl.parseFloat(tokens[5], source);
-        this.inaccuracyRadius = ActionControl.parseFloat(tokens[6], source);
-    }
-
-    public RaidAction(String[] tokens) {
-        super(0f);
-        this.team = ActionControl.parseTeam(tokens[0]);
-        this.bulletType = Integer.parseInt(tokens[1]);
-        this.sourceX = Float.parseFloat(tokens[2]);
-        this.sourceY = Float.parseFloat(tokens[3]);
-        this.targetX = Float.parseFloat(tokens[4]);
-        this.targetY = Float.parseFloat(tokens[5]);
-        this.inaccuracyRadius = Float.parseFloat(tokens[6]);
-    }
-
-    public RaidAction() {
-        super(0);
+    @Override
+    public void parseTokens(String[] tokens) {
+        duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
+        bulletType = ParseUtil.getNextInt(tokens);
+        team = ParseUtil.getNextTeam(tokens);
+        sourceX = ParseUtil.getFirstFloat(tokens);
+        sourceY = ParseUtil.getFirstFloat(tokens);
+        targetX = ParseUtil.getFirstFloat(tokens);
+        targetY = ParseUtil.getFirstFloat(tokens);
+        inaccuracyRadius = ParseUtil.getFirstFloat(tokens);
     }
 
     public BulletType bulletType() {

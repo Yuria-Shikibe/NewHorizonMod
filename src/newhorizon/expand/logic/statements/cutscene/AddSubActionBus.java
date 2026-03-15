@@ -55,7 +55,7 @@ public class AddSubActionBus extends LStatement {
         @Override
         public void run(LExecutor exec) {
             String css = (String) cutscene.obj();
-            NHVars.cutscene.addSubActionBus(ActionControl.parseCode(css, null));
+            NHVars.cutscene.addSubActionBus(ActionControl.parseCode(css));
         }
     }
 }

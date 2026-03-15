@@ -11,7 +11,6 @@ import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.game.MapObjectives;
-import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.LogicIO;
 import mindustry.graphics.CacheLayer;
@@ -28,7 +27,7 @@ import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.ReuseObjective;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.DefaultRaid;
-import newhorizon.expand.logic.NHLStatement;
+import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.wip.*;
 
@@ -92,18 +91,18 @@ public class NHContent extends Content {
         MapObjectives.registerMarker(RaidIndicator::new);
     }
 
-    public static void registerStatement(Class<? extends NHLStatement> lstatement) throws NoSuchMethodException {
-        Constructor<? extends NHLStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
+    public static void registerStatement(Class<? extends ActionLStatement> lstatement) throws NoSuchMethodException {
+        Constructor<? extends ActionLStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
         parserCons.setAccessible(true);
         
-        Constructor<? extends NHLStatement> defaultCons = lstatement.getDeclaredConstructor();
+        Constructor<? extends ActionLStatement> defaultCons = lstatement.getDeclaredConstructor();
         defaultCons.setAccessible(true);
 
         Method getNameMethod = lstatement.getDeclaredMethod("getLStatementName");
         getNameMethod.setAccessible(true);
         String name;
         try {
-            NHLStatement tempInstance = defaultCons.newInstance();
+            ActionLStatement tempInstance = defaultCons.newInstance();
             name = (String) getNameMethod.invoke(tempInstance);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Failed to get statement name from " + lstatement.getSimpleName(), e);
