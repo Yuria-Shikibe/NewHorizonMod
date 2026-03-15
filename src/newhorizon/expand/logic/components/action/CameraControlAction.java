@@ -11,19 +11,20 @@ import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
 public class CameraControlAction extends Action {
-    public Vec2 target;
+    public float worldX, worldY;
 
     @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
-        target = new Vec2(ParseUtil.getNextFloat(tokens), ParseUtil.getNextFloat(tokens));
+        worldX = ParseUtil.getNextFloat(tokens);
+        worldY = ParseUtil.getNextFloat(tokens);
     }
 
     @Override
     public void act() {
         if (headless) return;
 
-        Tmp.v1.set(Core.camera.position).lerpDelta(target, progress());
+        Tmp.v1.set(Core.camera.position).lerpDelta(worldX, worldY, progress());
         control.input.logicCamSpeed = 10f;
         control.input.logicCamPan = Tmp.v1;
     }

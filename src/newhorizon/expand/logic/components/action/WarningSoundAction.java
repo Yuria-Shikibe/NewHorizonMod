@@ -1,36 +1,29 @@
 package newhorizon.expand.logic.components.action;
 
 import arc.audio.Sound;
+import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.gen.Sounds;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ActionControl;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.player;
 
-/**
- * @deprecated This class is deprecated. Use logic statements instead.
- */
-@Deprecated
 public class WarningSoundAction extends Action {
     public int allySound, enemySound;
     public Team team;
 
-    public WarningSoundAction(int allySound, int enemySound, Team team) {
-        super(0);
-        this.allySound = allySound;
-        this.enemySound = enemySound;
-        this.team = team;
+    @Override
+    public void parseTokens(String[] tokens) {
+        duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
+        allySound = ParseUtil.getNextInt(tokens);
+        enemySound = ParseUtil.getNextInt(tokens);
+        team = ParseUtil.getNextTeam(tokens);
     }
 
-    public WarningSoundAction(String[] args) {
-        super(0);
-        allySound = Integer.parseInt(args[0]);
-        enemySound = Integer.parseInt(args[1]);
-        team = ActionControl.parseTeam(args[2]);
-    }
 
     public Sound warningSound(int soundID) {
         return switch (soundID) {
@@ -45,6 +38,7 @@ public class WarningSoundAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
+
         if (player.team() == team) {
             warningSound(allySound).play();
         } else {

@@ -7,6 +7,7 @@ import arc.func.Prov;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
@@ -29,6 +30,9 @@ import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.DefaultRaid;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ThreatLevel;
+import newhorizon.expand.logic.components.ActionControl;
+import newhorizon.expand.logic.components.action.NullAction;
+import newhorizon.expand.logic.cutscene.actionBus.*;
 import newhorizon.expand.logic.wip.*;
 
 import java.lang.reflect.Constructor;
@@ -76,53 +80,60 @@ public class NHContent extends Content {
 
         ThreatLevel.init();
 
-        registerStatement("gravitywell", GravityWell::new, GravityWell::new);
-        registerStatement("linetarget", LineTarget::new, LineTarget::new);
-        registerStatement("randspawn", RandomSpawn::new, RandomSpawn::new);
-        registerStatement("randtarget", RandomTarget::new, RandomTarget::new);
-        registerStatement("teamthreat", TeamThreat::new, TeamThreat::new);
-        registerStatement("raidcontrol", RaidControl::new, RaidControl::new);
+        //registerStatement("gravitywell", GravityWell::new, GravityWell::new);
+        //registerStatement("linetarget", LineTarget::new, LineTarget::new);
+        //registerStatement("randspawn", RandomSpawn::new, RandomSpawn::new);
+        //registerStatement("randtarget", RandomTarget::new, RandomTarget::new);
+        //registerStatement("teamthreat", TeamThreat::new, TeamThreat::new);
+        //registerStatement("raidcontrol", RaidControl::new, RaidControl::new);
+        //registerStatement("defaultraid", DefaultRaid::new, DefaultRaid::new);
 
-        registerStatement("defaultraid", DefaultRaid::new, DefaultRaid::new);
+        registerStatement(InitBus.class);
+        registerStatement(SaveBus.class);
+        registerStatement(GetBus.class);
+        registerStatement(AddAction.class);
+        registerStatement(RunMainBus.class);
+        registerStatement(RunSubBus.class);
+
+        ActionControl.registerAction(NullAction.class);
 
         MapObjectives.registerObjective(ReuseObjective::new);
         MapObjectives.registerObjective(TriggerObjective::new);
-
         MapObjectives.registerMarker(RaidIndicator::new);
     }
 
-    public static void registerStatement(Class<? extends ActionLStatement> lstatement) throws NoSuchMethodException {
-        Constructor<? extends ActionLStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
-        parserCons.setAccessible(true);
-        
-        Constructor<? extends ActionLStatement> defaultCons = lstatement.getDeclaredConstructor();
-        defaultCons.setAccessible(true);
-
-        Method getNameMethod = lstatement.getDeclaredMethod("getLStatementName");
-        getNameMethod.setAccessible(true);
-        String name;
+    public static void registerStatement(Class<? extends ActionLStatement> lstatement){
         try {
+            Constructor<? extends ActionLStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
+            Constructor<? extends ActionLStatement> defaultCons = lstatement.getDeclaredConstructor();
+            Method getNameMethod = lstatement.getDeclaredMethod("getLStatementName");
+
+            parserCons.setAccessible(true);
+            defaultCons.setAccessible(true);
+            getNameMethod.setAccessible(true);
+
+            String name;
+
             ActionLStatement tempInstance = defaultCons.newInstance();
             name = (String) getNameMethod.invoke(tempInstance);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to get statement name from " + lstatement.getSimpleName(), e);
-        }
 
-        LAssembler.customParsers.put(name, (tokens) -> {
-            try {
-                return parserCons.newInstance((Object) tokens);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException("Failed to create instance of " + lstatement.getSimpleName() + " with tokens", e);
-            }
-        });
-        
-        LogicIO.allStatements.addUnique(() -> {
-            try {
-                return defaultCons.newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException("Failed to create default instance of " + lstatement.getSimpleName(), e);
-            }
-        });
+            LAssembler.customParsers.put(name, (tokens) -> {
+                try {
+                    return parserCons.newInstance((Object) tokens);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException("Failed to create instance of " + lstatement.getSimpleName() + " with tokens", e);
+                }
+            });
+            LogicIO.allStatements.addUnique(() -> {
+                try {
+                    return defaultCons.newInstance();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException("Failed to create default instance of " + lstatement.getSimpleName(), e);
+                }
+            });
+        }catch (Exception e){
+            Log.err(e);
+        }
     }
 
     public static void registerStatement(String name, Func<String[], LStatement> func, Prov<LStatement> prov) {

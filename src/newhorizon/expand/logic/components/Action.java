@@ -1,5 +1,6 @@
 package newhorizon.expand.logic.components;
 
+import arc.func.Func;
 import arc.math.Mathf;
 import arc.util.Time;
 import newhorizon.util.struct.TimeQueue;

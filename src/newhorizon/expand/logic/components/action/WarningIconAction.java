@@ -2,9 +2,11 @@ package newhorizon.expand.logic.components.action;
 
 import arc.flabel.FLabel;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.ui.Styles;
 import newhorizon.content.NHContent;
+import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ActionControl;
 import newhorizon.util.ui.NHUIFunc;
@@ -12,28 +14,19 @@ import newhorizon.util.ui.NHUIFunc;
 import static mindustry.Vars.headless;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-/**
- * @deprecated This class is deprecated. Use logic statements instead.
- */
-@Deprecated
 public class WarningIconAction extends Action {
     public int icon;
     public Team team;
-    public String message;
+    public String text;
 
-    public WarningIconAction(int icon, Team team, String message) {
-        super(0);
-        this.icon = icon;
-        this.team = team;
-        this.message = message;
+    @Override
+    public void parseTokens(String[] tokens) {
+        duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
+        icon = ParseUtil.getNextInt(tokens);
+        team = ParseUtil.getNextTeam(tokens);
+        text = ParseUtil.getNextString(tokens);
     }
 
-    public WarningIconAction(String[] args) {
-        super(0);
-        icon = Integer.parseInt(args[0]);
-        team = ActionControl.parseTeam(args[1]);
-        message = ActionControl.parseString(args[2]);
-    }
 
     public TextureRegion warningIcon() {
         return switch (icon) {
@@ -55,7 +48,7 @@ public class WarningIconAction extends Action {
                 t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(team.color);
             }).growX().pad(OFFSET / 2).fillY().row();
 
-            t.table(l -> l.add(new FLabel("<< " + message + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
+            t.table(l -> l.add(new FLabel("<< " + text + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
     }
 }

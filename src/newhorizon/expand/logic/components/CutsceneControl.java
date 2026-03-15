@@ -107,8 +107,16 @@ public class CutsceneControl {
         Vars.state.rules.tags.put(CSS_ACTION_KEY_PREFIX + name, action);
     }
 
+    public static String getAction(String name) {
+        return Vars.state.rules.tags.get(CSS_ACTION_KEY_PREFIX + name, "");
+    }
+
     public static void saveActionBus(String name, String action) {
         Vars.state.rules.tags.put(CSS_ACTION_BUS_KEY_PREFIX + name, action);
+    }
+
+    public static String getActionBus(String name) {
+        return Vars.state.rules.tags.get(CSS_ACTION_BUS_KEY_PREFIX + name, "");
     }
 
     //Add a main action bus to the queue. If no main bus is running, starts immediately; otherwise queues it.

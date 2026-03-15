@@ -46,11 +46,4 @@ public class ActionLStatement extends LStatement {
         @Override
         public void run(LExecutor exec) {}
     }
-
-    @SuppressWarnings("InnerClassMayBeStatic")
-    public class BasicAction extends Action {
-        public BasicAction(float duration) {
-            super(duration * Time.toSeconds);
-        }
-    }
 }
