@@ -6,14 +6,19 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.game.Team;
 import mindustry.type.UnitType;
+import newhorizon.expand.entities.Spawner;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.entities.Spawner;
 
 public class JumpInAction extends Action {
     public UnitType unitType;
     public Team team;
     public float worldX = 0, worldY = 0, angle = 0, delay = 5, inaccuracyRadius = 0;
+
+    @Override
+    public String actionName() {
+        return "jump_in";
+    }
 
     @Override
     public void parseTokens(String[] tokens) {

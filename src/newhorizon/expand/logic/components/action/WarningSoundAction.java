@@ -16,6 +16,11 @@ public class WarningSoundAction extends Action {
     public Team team;
 
     @Override
+    public String actionName() {
+        return "warning_sound";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
         allySound = ParseUtil.getNextInt(tokens);

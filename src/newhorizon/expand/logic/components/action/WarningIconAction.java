@@ -19,6 +19,11 @@ public class WarningIconAction extends Action {
     public String text;
 
     @Override
+    public String actionName() {
+        return "warning_icon";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
         icon = ParseUtil.getNextInt(tokens);

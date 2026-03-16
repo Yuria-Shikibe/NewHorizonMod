@@ -1,7 +1,6 @@
 package newhorizon.expand.logic.components.action;
 
 import arc.Core;
-import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -12,6 +11,11 @@ import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
 public class CameraResetAction extends Action {
+    @Override
+    public String actionName() {
+        return "camera_reset";
+    }
+
     @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;

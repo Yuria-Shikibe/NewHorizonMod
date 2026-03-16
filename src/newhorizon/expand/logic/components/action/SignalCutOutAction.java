@@ -11,6 +11,10 @@ import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class SignalCutOutAction extends Action {
+    @Override
+    public String actionName() {
+        return "signal_cut_out";
+    }
 
     @Override
     public void parseTokens(String[] tokens) {

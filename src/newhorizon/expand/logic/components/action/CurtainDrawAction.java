@@ -1,7 +1,6 @@
 package newhorizon.expand.logic.components.action;
 
 import arc.math.Interp;
-import arc.math.geom.Vec2;
 import arc.util.Time;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
@@ -11,6 +10,11 @@ import static newhorizon.NHVars.cutsceneUI;
 
 
 public class CurtainDrawAction extends Action {
+    @Override
+    public String actionName() {
+        return "curtain_draw";
+    }
+
     @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;

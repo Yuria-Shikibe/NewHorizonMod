@@ -10,7 +10,7 @@ import static newhorizon.NHVars.cutsceneUI;
 public class CurtainFadeOutAction extends Action {
     @Override
     public String actionName() {
-        return "curtainfadeout";
+        return "curtain_fade_out";
     }
 
     @Override

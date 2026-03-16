@@ -15,6 +15,11 @@ public class MarkWorldAction extends Action {
     public float worldX, worldY, markRadius, markTime;
 
     @Override
+    public String actionName() {
+        return "mark_world";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
         style = ParseUtil.getNextInt(tokens);

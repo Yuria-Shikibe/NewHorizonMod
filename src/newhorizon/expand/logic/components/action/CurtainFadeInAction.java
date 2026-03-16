@@ -1,6 +1,5 @@
 package newhorizon.expand.logic.components.action;
 
-import arc.math.geom.Vec2;
 import arc.util.Time;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
@@ -11,7 +10,7 @@ import static newhorizon.NHVars.cutsceneUI;
 public class CurtainFadeInAction extends Action {
     @Override
     public String actionName() {
-        return "curtainfadein";
+        return "curtain_fade_in";
     }
 
     @Override

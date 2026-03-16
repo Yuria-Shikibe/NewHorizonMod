@@ -8,6 +8,11 @@ import static mindustry.Vars.*;
 
 public class UIHideAction extends Action {
     @Override
+    public String actionName() {
+        return "ui_hide";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
     }

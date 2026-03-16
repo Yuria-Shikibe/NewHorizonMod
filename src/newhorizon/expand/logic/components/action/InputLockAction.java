@@ -11,6 +11,11 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class InputLockAction extends Action {
     @Override
+    public String actionName() {
+        return "input_lock";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
     }

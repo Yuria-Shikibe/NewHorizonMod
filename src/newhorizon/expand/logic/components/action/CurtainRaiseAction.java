@@ -10,6 +10,11 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class CurtainRaiseAction extends Action {
     @Override
+    public String actionName() {
+        return "curtain_raise";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
     }

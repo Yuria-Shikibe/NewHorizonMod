@@ -18,6 +18,11 @@ public class RaidAction extends Action {
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0, inaccuracyRadius = 80;
 
     @Override
+    public String actionName() {
+        return "raid";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
         bulletType = ParseUtil.getNextInt(tokens);

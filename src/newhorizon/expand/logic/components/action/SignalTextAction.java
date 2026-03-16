@@ -13,6 +13,11 @@ public class SignalTextAction extends Action {
     public String text;
 
     @Override
+    public String actionName() {
+        return "signal_text";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
         text = ParseUtil.getNextString(tokens);

@@ -11,6 +11,11 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class InfoFadeInAction extends Action {
     @Override
+    public String actionName() {
+        return "info_fade_in";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
     }

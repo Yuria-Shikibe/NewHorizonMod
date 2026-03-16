@@ -1,7 +1,6 @@
 package newhorizon.expand.logic.components.action;
 
 import arc.Core;
-import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
 import newhorizon.expand.logic.ParseUtil;
@@ -13,7 +12,10 @@ import static mindustry.Vars.headless;
 public class CameraControlAction extends Action {
     public float worldX, worldY;
 
-
+    @Override
+    public String actionName() {
+        return "camera_control";
+    }
 
     @Override
     public void parseTokens(String[] tokens) {

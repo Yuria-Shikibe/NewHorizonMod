@@ -11,6 +11,11 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class SignalCutInAction extends Action {
     @Override
+    public String actionName() {
+        return "signal_cut_in";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
     }

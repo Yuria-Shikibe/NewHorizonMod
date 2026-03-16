@@ -99,7 +99,6 @@ public class NHContent extends Content {
         CutsceneControl.registerAction(CurtainFadeInAction.class);
         CutsceneControl.registerAction(CurtainFadeOutAction.class);
 
-
         MapObjectives.registerObjective(ReuseObjective::new);
         MapObjectives.registerObjective(TriggerObjective::new);
         MapObjectives.registerMarker(RaidIndicator::new);
