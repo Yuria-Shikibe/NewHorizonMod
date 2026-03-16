@@ -1,26 +1,22 @@
 package newhorizon.expand.logic.cutscene.actionBus;
 
-import arc.scene.ui.layout.Table;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
-import mindustry.logic.LVar;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ActionLStatement;
-import newhorizon.expand.logic.ParseUtil;
-import newhorizon.expand.logic.components.CutsceneControl;
 
-import static newhorizon.NHVars.cutscene;
+//clear LExecutor text buffer, begin a new bus
+public class InitActons extends ActionLStatement {
 
-public class RunSubBus extends ActionLStatement {
+    public InitActons(String[] token) {
+    }
 
-    public RunSubBus(String[] token) {}
-
-    public RunSubBus() {}
+    public InitActons() {}
 
     @Override
     public String getLStatementName() {
-        return "runsubbus";
+        return "initactions";
     }
 
     @Override
@@ -30,13 +26,13 @@ public class RunSubBus extends ActionLStatement {
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new RunSubBusI();
+        return new InitBusI();
     }
 
-    public class RunSubBusI extends ActionInstruction {
+    public class InitBusI extends ActionInstruction {
         @Override
         public void run(LExecutor exec) {
-            cutscene.addSubActionBus(CutsceneControl.parseCode(exec.textBuffer.toString()));
+            exec.textBuffer.setLength(0);
         }
     }
 }

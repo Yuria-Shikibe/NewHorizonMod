@@ -10,6 +10,11 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class CurtainFadeInAction extends Action {
     @Override
+    public String actionName() {
+        return "curtainfadein";
+    }
+
+    @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
     }

@@ -7,7 +7,6 @@ import mindustry.gen.Sounds;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.logic.components.ActionControl;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.player;

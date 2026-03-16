@@ -13,6 +13,8 @@ import static mindustry.Vars.headless;
 public class CameraControlAction extends Action {
     public float worldX, worldY;
 
+
+
     @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;

@@ -27,13 +27,13 @@ import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.ReuseObjective;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
-import newhorizon.expand.logic.DefaultRaid;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ThreatLevel;
-import newhorizon.expand.logic.components.ActionControl;
+import newhorizon.expand.logic.components.CutsceneControl;
+import newhorizon.expand.logic.components.action.CurtainFadeInAction;
+import newhorizon.expand.logic.components.action.CurtainFadeOutAction;
 import newhorizon.expand.logic.components.action.NullAction;
 import newhorizon.expand.logic.cutscene.actionBus.*;
-import newhorizon.expand.logic.wip.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -88,14 +88,17 @@ public class NHContent extends Content {
         //registerStatement("raidcontrol", RaidControl::new, RaidControl::new);
         //registerStatement("defaultraid", DefaultRaid::new, DefaultRaid::new);
 
-        registerStatement(InitBus.class);
-        registerStatement(SaveBus.class);
-        registerStatement(GetBus.class);
+        registerStatement(InitActons.class);
+        registerStatement(SaveActions.class);
+        registerStatement(GetActions.class);
         registerStatement(AddAction.class);
         registerStatement(RunMainBus.class);
         registerStatement(RunSubBus.class);
 
-        ActionControl.registerAction(NullAction.class);
+        CutsceneControl.registerAction(NullAction.class);
+        CutsceneControl.registerAction(CurtainFadeInAction.class);
+        CutsceneControl.registerAction(CurtainFadeOutAction.class);
+
 
         MapObjectives.registerObjective(ReuseObjective::new);
         MapObjectives.registerObjective(TriggerObjective::new);

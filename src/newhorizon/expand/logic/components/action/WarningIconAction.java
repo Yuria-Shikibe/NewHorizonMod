@@ -8,7 +8,6 @@ import mindustry.ui.Styles;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.logic.components.ActionControl;
 import newhorizon.util.ui.NHUIFunc;
 
 import static mindustry.Vars.headless;

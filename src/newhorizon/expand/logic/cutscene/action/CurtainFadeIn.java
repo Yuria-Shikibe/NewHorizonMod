@@ -17,11 +17,10 @@ import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class CurtainFadeIn extends ActionLStatement {
-    public String actionName = "Default_Curtain_Fade_In", duration = "2";
+    public String duration = "2";
 
     public CurtainFadeIn(String[] token) {
-        actionName = ParseUtil.getFirstToken(token);
-        duration = ParseUtil.getNextToken(token);
+        duration = ParseUtil.getFirstToken(token);
     }
 
     public CurtainFadeIn() {}
@@ -33,8 +32,8 @@ public class CurtainFadeIn extends ActionLStatement {
 
     @Override
     public void build(Table table) {
-        table.add(" Action Name: ").width(120f);
-        fields(table, actionName, str -> actionName = str);
+        table.add(" Duration: ");
+        fields(table, duration, str -> duration = str);
     }
 
     @Override
@@ -45,25 +44,24 @@ public class CurtainFadeIn extends ActionLStatement {
     @Override
     public void write(StringBuilder builder) {
         super.write(builder);
-        writeTokens(builder, actionName);
+        writeTokens(builder, duration);
     }
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new CurtainFadeInI(builder.var(actionName), builder.var(duration));
+        return new CurtainFadeInI(builder.var(duration));
     }
 
     public class CurtainFadeInI extends ActionInstruction {
-        public LVar actionName, duration;
+        public LVar duration;
 
-        public CurtainFadeInI(LVar actionName, LVar duration) {
-            this.actionName = actionName;
+        public CurtainFadeInI(LVar duration) {
             this.duration = duration;
         }
 
         @Override
         public void run(LExecutor exec) {
-            CutsceneControl.saveAction(actionName.name, String.valueOf(duration.numval));
+            exec.textBuffer.append("curtainfadein").append(" ").append(duration);
         }
     }
 }

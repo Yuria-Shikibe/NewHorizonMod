@@ -4,7 +4,7 @@ import arc.scene.ui.layout.Table;
 import mindustry.logic.*;
 import newhorizon.NHVars;
 import newhorizon.content.NHContent;
-import newhorizon.expand.logic.components.ActionControl;
+import newhorizon.expand.logic.components.CutsceneControl;
 
 public class AddSubActionBus extends LStatement {
     public String cutscene = "css";
@@ -55,7 +55,7 @@ public class AddSubActionBus extends LStatement {
         @Override
         public void run(LExecutor exec) {
             String css = (String) cutscene.obj();
-            NHVars.cutscene.addSubActionBus(ActionControl.parseCode(css));
+            NHVars.cutscene.addSubActionBus(CutsceneControl.parseCode(css));
         }
     }
 }

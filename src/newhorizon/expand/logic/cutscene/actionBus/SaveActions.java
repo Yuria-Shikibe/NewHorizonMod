@@ -10,18 +10,18 @@ import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.CutsceneControl;
 
-public class SaveBus extends ActionLStatement {
+public class SaveActions extends ActionLStatement {
     public String actionBusName = "Action_Bus";
 
-    public SaveBus(String[] token) {
+    public SaveActions(String[] token) {
         actionBusName = ParseUtil.getFirstToken(token);
     }
 
-    public SaveBus() {}
+    public SaveActions() {}
 
     @Override
     public String getLStatementName() {
-        return "savebus";
+        return "saveactions";
     }
 
     @Override
