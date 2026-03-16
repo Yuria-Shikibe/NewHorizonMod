@@ -91,7 +91,7 @@ public class NHContent extends Content {
         registerStatement(InitActons.class);
         registerStatement(SaveActions.class);
         registerStatement(GetActions.class);
-        registerStatement(AddAction.class);
+        //registerStatement(AddAction.class);
         registerStatement(RunMainBus.class);
         registerStatement(RunSubBus.class);
 
