@@ -1,8 +1,6 @@
 package newhorizon.expand.logic.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import arc.util.Strings;
-import arc.util.Time;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
@@ -10,29 +8,32 @@ import mindustry.logic.LVar;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
-import newhorizon.expand.logic.components.CutsceneControl;
 
-import static mindustry.Vars.headless;
-import static newhorizon.NHVars.cutsceneUI;
+public class CameraControl extends ActionLStatement {
+    public String duration = "5", cameraX = "0", cameraY = "0";
 
-public class CurtainFadeOut extends ActionLStatement {
-    public String duration = "2";
-
-    public CurtainFadeOut(String[] token) {
+    public CameraControl(String[] token) {
         duration = ParseUtil.getFirstToken(token);
+        cameraX = ParseUtil.getNextToken(token);
+        cameraY = ParseUtil.getNextToken(token);
     }
 
-    public CurtainFadeOut() {}
+    public CameraControl() {}
 
     @Override
     public String getLStatementName() {
-        return "curtainfadeout";
+        return "cameracontrol";
     }
 
     @Override
     public void build(Table table) {
         table.add(" Duration: ");
         fields(table, duration, str -> duration = str);
+        table.row();
+        table.add(" CameraX: ");
+        fields(table, cameraX, str -> cameraX = str);
+        table.add(" CameraY: ");
+        fields(table, cameraY, str -> cameraY = str);
     }
 
     @Override
@@ -43,24 +44,26 @@ public class CurtainFadeOut extends ActionLStatement {
     @Override
     public void write(StringBuilder builder) {
         super.write(builder);
-        writeTokens(builder, duration);
+        writeTokens(builder, duration, cameraX, cameraY);
     }
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new CurtainFadeOutI(builder.var(duration));
+        return new CameraControlI(builder.var(duration), builder.var(cameraX), builder.var(cameraY));
     }
 
-    public class CurtainFadeOutI extends ActionInstruction {
-        public LVar duration;
+    public class CameraControlI extends ActionInstruction {
+        public LVar duration, cameraX, cameraY;
 
-        public CurtainFadeOutI(LVar duration) {
+        public CameraControlI(LVar duration, LVar cameraX, LVar cameraY) {
             this.duration = duration;
+            this.cameraX = cameraX;
+            this.cameraY = cameraY;
         }
 
         @Override
         public void run(LExecutor exec) {
-            exec.textBuffer.append("curtain_fade_out").append(" ").append(duration);
+            exec.textBuffer.append("curtainfadein").append(" ").append(duration);
         }
     }
 }
