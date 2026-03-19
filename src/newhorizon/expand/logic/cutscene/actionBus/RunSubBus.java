@@ -25,7 +25,7 @@ public class RunSubBus extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHContent.nhcutscene;
     }
 
     @Override

@@ -28,12 +28,12 @@ public class GetActions extends ActionLStatement {
     @Override
     public void build(Table table) {
         table.add(" Action Bus Name: ");
-        fields(table, actionBusName, str -> actionBusName = str);
+        fields(table, actionBusName, str -> actionBusName = str).width(0f).growX().padRight(3);
     }
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHContent.nhcutscene;
     }
 
     @Override

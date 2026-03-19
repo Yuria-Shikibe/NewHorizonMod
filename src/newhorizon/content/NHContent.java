@@ -33,6 +33,8 @@ import newhorizon.expand.logic.components.CutsceneControl;
 import newhorizon.expand.logic.components.action.CurtainFadeInAction;
 import newhorizon.expand.logic.components.action.CurtainFadeOutAction;
 import newhorizon.expand.logic.components.action.NullAction;
+import newhorizon.expand.logic.cutscene.action.CurtainFadeIn;
+import newhorizon.expand.logic.cutscene.action.CurtainFadeOut;
 import newhorizon.expand.logic.cutscene.actionBus.*;
 
 import java.lang.reflect.Constructor;
@@ -61,7 +63,7 @@ public class NHContent extends Content {
 
     public static Attribute quantum, density;
 
-    public static LCategory nhwproc, nhwprocevent, nhcutscene, nhaction, nhcamera, nhcurtain, nhinfo, nhevent, nhsignal, nhui, nhalert;
+    public static LCategory nhwproc, nhcutscene, nhaction;
 
     public static void loadPriority() {
         new NHContent().load();
@@ -91,9 +93,11 @@ public class NHContent extends Content {
         registerStatement(InitActons.class);
         registerStatement(SaveActions.class);
         registerStatement(GetActions.class);
-        //registerStatement(AddAction.class);
         registerStatement(RunMainBus.class);
         registerStatement(RunSubBus.class);
+
+        registerStatement(CurtainFadeIn.class);
+        registerStatement(CurtainFadeOut.class);
 
         CutsceneControl.registerAction(NullAction.class);
         CutsceneControl.registerAction(CurtainFadeInAction.class);

@@ -163,9 +163,8 @@ public class CutsceneUI {
             setFillParent(true);
             touchable = Touchable.enabled;
             align(Align.topLeft);
-            button("Skip Cutscene", Icon.play, () -> {
-                cutscene.mainBus.skip();
-            }).marginLeft(8f).size(320, 50f).padTop(Vars.mobile ? 60 : 0);
+            button("Skip Cutscene", Icon.play, () -> cutscene.mainBus.skip())
+                    .marginLeft(8f).size(320, 50f).padTop(Vars.mobile ? 60 : 0);
         }};
     }
 
