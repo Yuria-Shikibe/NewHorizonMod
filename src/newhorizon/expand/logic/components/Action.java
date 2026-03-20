@@ -2,6 +2,7 @@ package newhorizon.expand.logic.components;
 
 import arc.func.Func;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Time;
 import newhorizon.util.struct.TimeQueue;
 
@@ -26,21 +27,15 @@ public abstract class Action implements TimeQueue.Timed {
     }
 
     @Override
-    public boolean complete() {
-        return lifeTimer >= duration;
-    }
+    public boolean complete() {return lifeTimer >= duration;}
 
     @Override
-    public void begin() {
-        lifeTimer = 0f;
-    }
-
-    public void act() {
-    }
+    public void begin(){}
 
     @Override
-    public void end() {
-    }
+    public void end(){}
+
+    public void act(){}
 
     public float progress() {
         if (duration <= 0f) return 0f;

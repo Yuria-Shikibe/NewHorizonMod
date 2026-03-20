@@ -1,6 +1,8 @@
 package newhorizon.util.struct;
 
 import arc.struct.Queue;
+import arc.util.Log;
+import newhorizon.expand.logic.components.Action;
 
 /**
  * A queue of timed elements that run sequentially.
@@ -11,8 +13,6 @@ public class TimeQueue<T extends TimeQueue.Timed> {
     public Queue<T> queue = new Queue<>();
     /** Currently executing item */
     public T current;
-    /** Whether the queue is paused */
-    protected boolean paused = false;
 
     public TimeQueue() {
     }
@@ -62,8 +62,6 @@ public class TimeQueue<T extends TimeQueue.Timed> {
      * Update the queue. Should be called every frame.
      */
     public void update() {
-        if (paused) return;
-
         // Start next item if current is null
         if (current == null && !queue.isEmpty()) {
             current = queue.removeLast();
@@ -78,6 +76,7 @@ public class TimeQueue<T extends TimeQueue.Timed> {
 
         // Update current item
         if (current != null && !current.complete()) {
+            //Log.info(current instanceof Action action? action.lifeTimer + "/" + action.duration: 0 + "asdasd");
             current.update();
         }
     }

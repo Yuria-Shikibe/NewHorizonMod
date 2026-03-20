@@ -23,8 +23,7 @@ import static newhorizon.NHVars.cutsceneUI;
  */
 public class CutsceneControl {
 
-    public static final String CSS_ACTION_KEY_PREFIX = "[CSS_ACTION]";
-    public static final String CSS_ACTION_BUS_KEY_PREFIX = "[CSS_ACTION_BUS]";
+    public static final String CSS_ACTION = "[CSS_ACTION]";
     public static ObjectMap<String, Func<String[], ? extends Action>> actionParser = new ObjectMap<>();
 
     // Whether currently waiting between cutscenes
@@ -76,6 +75,7 @@ public class CutsceneControl {
 
     public static Action parseAction(String tokens) {
         try {
+            Log.info("Parsing String: " + tokens);
             Seq<String> tokensArray = parseToken(tokens);
             String actionName = tokensArray.remove(0);
             String[] args = tokensArray.toArray(String.class);
@@ -100,6 +100,7 @@ public class CutsceneControl {
 
         mainBus.update();
         if (mainBus.complete()) {
+            Log.info("MainBus has been completed");
             mainBus = null;
             waiting = true;
             cutsceneUI.reset();
@@ -132,19 +133,6 @@ public class CutsceneControl {
         }
     }
 
-    public void skipAll() {
-        if (mainBus != null) {
-            mainBus.skip();
-        }
-        if (!waitingBuses.isEmpty()) {
-            waitingBuses.each(ActionBus::skip);
-        }
-        if (!subBuses.isEmpty()) {
-            subBuses.each(ActionBus::skip);
-        }
-        clear();
-    }
-
     public void clear() {
         waiting = false;
         waitTimer = 0f;
@@ -153,20 +141,12 @@ public class CutsceneControl {
         subBuses.clear();
     }
 
-    public static void saveAction(String name, String action) {
-        Vars.state.rules.tags.put(CSS_ACTION_KEY_PREFIX + name, action);
-    }
-
-    public static String getAction(String name) {
-        return Vars.state.rules.tags.get(CSS_ACTION_KEY_PREFIX + name, "");
-    }
-
     public static void saveActionBus(String name, String action) {
-        Vars.state.rules.tags.put(CSS_ACTION_BUS_KEY_PREFIX + name, action);
+        Vars.state.rules.tags.put(CSS_ACTION + name, action);
     }
 
     public static String getActionBus(String name) {
-        return Vars.state.rules.tags.get(CSS_ACTION_BUS_KEY_PREFIX + name, "");
+        return Vars.state.rules.tags.get(CSS_ACTION + name, "");
     }
 
     //Add a main action bus to the queue. If no main bus is running, starts immediately; otherwise queues it.

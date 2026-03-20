@@ -19,7 +19,8 @@ public class CurtainFadeOut extends ActionLStatement {
     public String duration = "2";
 
     public CurtainFadeOut(String[] token) {
-        duration = ParseUtil.getFirstToken(token);
+        ParseUtil.getFirstFloat(token);
+        duration = ParseUtil.getNextToken(token);
     }
 
     public CurtainFadeOut() {}
@@ -60,7 +61,8 @@ public class CurtainFadeOut extends ActionLStatement {
 
         @Override
         public void run(LExecutor exec) {
-            exec.textBuffer.append("curtain_fade_out").append(" ").append(duration);
+            exec.textBuffer.append("curtain_fade_out").append(" ").append(duration.numf());
+            exec.textBuffer.append("\n");
         }
     }
 }
