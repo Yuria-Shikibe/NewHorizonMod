@@ -43,12 +43,17 @@ public class CutsceneControl {
 
     public static void registerAction(Class<? extends Action> actionClass) {
         try {
-            Action action = actionClass.getDeclaredConstructor().newInstance();
-            actionParser.put(action.actionName(), tokens -> {
-                action.parseTokens(tokens);
-                return action;
+            Action actionInstance = actionClass.getDeclaredConstructor().newInstance();
+            actionParser.put(actionInstance.actionName(), tokens -> {
+                try {
+                    Action action = actionClass.getDeclaredConstructor().newInstance();
+                    action.parseTokens(tokens);
+                    return action;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             });
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -79,9 +84,11 @@ public class CutsceneControl {
             Seq<String> tokensArray = parseToken(tokens);
             String actionName = tokensArray.remove(0);
             String[] args = tokensArray.toArray(String.class);
-            return actionParser.get(actionName).get(args);
+            Action action = actionParser.get(actionName).get(args);
+            Log.info("Action: " + action);
+            return action;
         }catch (Exception e) {
-            Log.err("Error when parsing token:" + tokens);
+            Log.err("Error when parsing token: " + tokens);
             Log.err(e);
             return new NullAction();
         }
