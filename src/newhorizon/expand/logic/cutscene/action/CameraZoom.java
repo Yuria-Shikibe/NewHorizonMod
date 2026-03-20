@@ -1,8 +1,6 @@
 package newhorizon.expand.logic.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import arc.util.Strings;
-import arc.util.Time;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
@@ -10,25 +8,21 @@ import mindustry.logic.LVar;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
-import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.logic.components.CutsceneControl;
 
-import static mindustry.Vars.headless;
-import static newhorizon.NHVars.cutsceneUI;
+public class CameraZoom extends ActionLStatement {
+    public String duration = "2", zoom = "1";
 
-public class CurtainFadeIn extends ActionLStatement {
-    public String duration = "2";
-
-    public CurtainFadeIn(String[] token) {
+    public CameraZoom(String[] token) {
         ParseUtil.getFirstFloat(token);
         duration = ParseUtil.getNextToken(token);
+        zoom = ParseUtil.getNextToken(token);
     }
 
-    public CurtainFadeIn() {}
+    public CameraZoom() {}
 
     @Override
     public String getLStatementName() {
-        return "curtainfadein";
+        return "camerazoom";
     }
 
     @Override
@@ -50,20 +44,22 @@ public class CurtainFadeIn extends ActionLStatement {
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new CurtainFadeInI(builder.var(duration));
+        return new CameraZoomI(builder.var(duration), builder.var(zoom));
     }
 
-    public class CurtainFadeInI extends ActionInstruction {
-        public LVar duration;
+    public class CameraZoomI extends ActionInstruction {
+        public LVar duration, zoom;
 
-        public CurtainFadeInI(LVar duration) {
+        public CameraZoomI(LVar duration, LVar zoom) {
             this.duration = duration;
+            this.zoom = zoom;
         }
 
         @Override
         public void run(LExecutor exec) {
-            startExec(exec, "curtain_fade_in");
-            writeExec(exec, duration);
+            startExec(exec, "camera_zoom");
+            writeExec(exec, duration, zoom);
         }
     }
 }
+

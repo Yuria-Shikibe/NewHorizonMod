@@ -9,21 +9,19 @@ import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
 
-public class CameraControl extends ActionLStatement {
-    public String duration = "5", cameraX = "0", cameraY = "0";
+public class InfoText extends ActionLStatement {
+    public String duration = "2", text = "<Please Type Text Here>";
 
-    public CameraControl(String[] token) {
+    public InfoText(String[] token) {
         ParseUtil.getFirstFloat(token);
         duration = ParseUtil.getNextToken(token);
-        cameraX = ParseUtil.getNextToken(token);
-        cameraY = ParseUtil.getNextToken(token);
     }
 
-    public CameraControl() {}
+    public InfoText() {}
 
     @Override
     public String getLStatementName() {
-        return "cameracontrol";
+        return "infotext";
     }
 
     @Override
@@ -31,11 +29,7 @@ public class CameraControl extends ActionLStatement {
         table.add(" Duration: ");
         fields(table, duration, str -> duration = str);
         table.row();
-        table.add(" Camera Pos: < X: ");
-        fields(table, cameraX, str -> cameraX = str);
-        table.add(" , Y: ");
-        fields(table, cameraY, str -> cameraY = str);
-        table.add(" > ");
+        fields(table, text, str -> text = str).width(0).growX().padLeft(3);
     }
 
     @Override
@@ -46,27 +40,26 @@ public class CameraControl extends ActionLStatement {
     @Override
     public void write(StringBuilder builder) {
         super.write(builder);
-        writeTokens(builder, duration, cameraX, cameraY);
+        writeTokens(builder, duration, text);
     }
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new CameraControlI(builder.var(duration), builder.var(cameraX), builder.var(cameraY));
+        return new InfoTextI(builder.var(duration), builder.var(text));
     }
 
-    public class CameraControlI extends ActionInstruction {
-        public LVar duration, cameraX, cameraY;
+    public class InfoTextI extends ActionInstruction {
+        public LVar duration, text;
 
-        public CameraControlI(LVar duration, LVar cameraX, LVar cameraY) {
+        public InfoTextI(LVar duration, LVar text) {
             this.duration = duration;
-            this.cameraX = cameraX;
-            this.cameraY = cameraY;
+            this.text = text;
         }
 
         @Override
         public void run(LExecutor exec) {
-            startExec(exec, "camera_control");
-            writeExec(exec, duration, cameraX, cameraY);
+            startExec(exec, "info_text");
+            writeExec(exec, duration, text);
         }
     }
 }

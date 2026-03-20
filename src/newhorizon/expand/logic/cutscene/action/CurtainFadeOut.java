@@ -61,8 +61,8 @@ public class CurtainFadeOut extends ActionLStatement {
 
         @Override
         public void run(LExecutor exec) {
-            exec.textBuffer.append("curtain_fade_out").append(" ").append(duration.numf());
-            exec.textBuffer.append("\n");
+            startExec(exec, "curtain_fade_out");
+            writeExec(exec, duration);
         }
     }
 }

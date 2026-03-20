@@ -1,8 +1,6 @@
 package newhorizon.expand.logic.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import arc.util.Strings;
-import arc.util.Time;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
@@ -10,25 +8,20 @@ import mindustry.logic.LVar;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
-import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.logic.components.CutsceneControl;
 
-import static mindustry.Vars.headless;
-import static newhorizon.NHVars.cutsceneUI;
-
-public class CurtainFadeIn extends ActionLStatement {
+public class InputUnlock extends ActionLStatement {
     public String duration = "2";
 
-    public CurtainFadeIn(String[] token) {
+    public InputUnlock(String[] token) {
         ParseUtil.getFirstFloat(token);
         duration = ParseUtil.getNextToken(token);
     }
 
-    public CurtainFadeIn() {}
+    public InputUnlock() {}
 
     @Override
     public String getLStatementName() {
-        return "curtainfadein";
+        return "inputunlock";
     }
 
     @Override
@@ -50,19 +43,19 @@ public class CurtainFadeIn extends ActionLStatement {
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new CurtainFadeInI(builder.var(duration));
+        return new InputUnlockI(builder.var(duration));
     }
 
-    public class CurtainFadeInI extends ActionInstruction {
+    public class InputUnlockI extends ActionInstruction {
         public LVar duration;
 
-        public CurtainFadeInI(LVar duration) {
+        public InputUnlockI(LVar duration) {
             this.duration = duration;
         }
 
         @Override
         public void run(LExecutor exec) {
-            startExec(exec, "curtain_fade_in");
+            startExec(exec, "input_unlock");
             writeExec(exec, duration);
         }
     }
