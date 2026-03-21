@@ -29,11 +29,14 @@ public class CameraZoom extends ActionLStatement {
     public void build(Table table) {
         table.add(" Duration: ");
         fields(table, duration, str -> duration = str);
+        table.row();
+        table.add(" Zoom: ");
+        fields(table, zoom, str -> zoom = str);
     }
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHContent.actionCameraControl;
     }
 
     @Override

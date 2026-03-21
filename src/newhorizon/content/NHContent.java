@@ -29,12 +29,10 @@ import newhorizon.expand.game.MapObjectives.ReuseObjective;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ThreatLevel;
+import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.CutsceneControl;
-import newhorizon.expand.logic.components.action.CurtainFadeInAction;
-import newhorizon.expand.logic.components.action.CurtainFadeOutAction;
-import newhorizon.expand.logic.components.action.NullAction;
-import newhorizon.expand.logic.cutscene.action.CurtainFadeIn;
-import newhorizon.expand.logic.cutscene.action.CurtainFadeOut;
+import newhorizon.expand.logic.components.action.*;
+import newhorizon.expand.logic.cutscene.action.*;
 import newhorizon.expand.logic.cutscene.actionBus.*;
 
 import java.lang.reflect.Constructor;
@@ -63,7 +61,9 @@ public class NHContent extends Content {
 
     public static Attribute quantum, density;
 
-    public static LCategory nhwproc, nhcutscene, nhaction;
+    public static LCategory
+            nhwproc, nhcutscene, nhaction,
+            actionCameraControl, actionInputControl;
 
     public static void loadPriority() {
         new NHContent().load();
@@ -78,7 +78,11 @@ public class NHContent extends Content {
     public static void loadLast() {
         nhwproc = new LCategory("nh-wproc", Pal.heal.cpy().lerp(Pal.gray, 0.2f));
         nhcutscene = new LCategory("nh-cutscene", Pal.remove.cpy().lerp(Pal.gray, 0.3f));
+
         nhaction = new LCategory("nh-action", Pal.surge.cpy().lerp(Pal.gray, 0.3f));
+
+        actionCameraControl = new LCategory("nh-action-camera-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0.1f));
+        actionInputControl = new LCategory("nh-action-input-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0.2f));
 
         ThreatLevel.init();
 
@@ -96,16 +100,30 @@ public class NHContent extends Content {
         registerStatement(RunMainBus.class);
         registerStatement(RunSubBus.class);
 
-        registerStatement(CurtainFadeIn.class);
-        registerStatement(CurtainFadeOut.class);
-
         CutsceneControl.registerAction(NullAction.class);
-        CutsceneControl.registerAction(CurtainFadeInAction.class);
-        CutsceneControl.registerAction(CurtainFadeOutAction.class);
+
+        loadActions();
 
         MapObjectives.registerObjective(ReuseObjective::new);
         MapObjectives.registerObjective(TriggerObjective::new);
         MapObjectives.registerMarker(RaidIndicator::new);
+    }
+
+    public static void loadActions() {
+        registerAction(CameraControl.class, CameraControlAction.class);
+        registerAction(CameraZoom.class, CameraZoomAction.class);
+        registerAction(CameraReset.class, CameraResetAction.class);
+
+        registerAction(CurtainFadeIn.class, CurtainFadeInAction.class);
+        registerAction(CurtainFadeOut.class, CurtainFadeOutAction.class);
+
+        registerAction(InputLock.class, InputLockAction.class);
+        registerAction(InputUnlock.class, InputUnlockAction.class);
+    }
+
+    public static void registerAction(Class<? extends ActionLStatement> lstatement, Class<? extends Action> actionClass) {
+        registerStatement(lstatement);
+        CutsceneControl.registerAction(actionClass);
     }
 
     public static void registerStatement(Class<? extends ActionLStatement> lstatement){

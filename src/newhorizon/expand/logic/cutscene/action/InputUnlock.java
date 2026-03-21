@@ -32,7 +32,7 @@ public class InputUnlock extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHContent.actionInputControl;
     }
 
     @Override

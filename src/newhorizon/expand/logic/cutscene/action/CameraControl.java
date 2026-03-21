@@ -40,7 +40,7 @@ public class CameraControl extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHContent.actionCameraControl;
     }
 
     @Override

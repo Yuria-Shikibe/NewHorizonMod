@@ -32,7 +32,7 @@ public class CameraReset extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHContent.actionCameraControl;
     }
 
     @Override
