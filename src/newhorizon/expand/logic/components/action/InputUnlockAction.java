@@ -15,11 +15,6 @@ public class InputUnlockAction extends Action {
     }
 
     @Override
-    public void parseTokens(String[] tokens) {
-        duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
-    }
-
-    @Override
     public void end() {
         if (headless) return;
 

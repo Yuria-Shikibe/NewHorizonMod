@@ -42,7 +42,7 @@ public class CameraZoom extends ActionLStatement {
     @Override
     public void write(StringBuilder builder) {
         super.write(builder);
-        writeTokens(builder, duration);
+        writeTokens(builder, duration, zoom);
     }
 
     @Override

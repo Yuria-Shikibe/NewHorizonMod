@@ -29,4 +29,14 @@ public class CameraResetAction extends Action {
         control.input.logicCamSpeed = 1000f;
         control.input.logicCamPan = Tmp.v1;
     }
+
+    @Override
+    public void end() {
+        skip();
+    }
+
+    @Override
+    public void skip() {
+        control.input.logicCutscene = false;
+    }
 }

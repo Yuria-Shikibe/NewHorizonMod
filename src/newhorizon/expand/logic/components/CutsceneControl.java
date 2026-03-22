@@ -84,9 +84,7 @@ public class CutsceneControl {
             Seq<String> tokensArray = parseToken(tokens);
             String actionName = tokensArray.remove(0);
             String[] args = tokensArray.toArray(String.class);
-            Action action = actionParser.get(actionName).get(args);
-            Log.info("Action: " + action);
-            return action;
+            return actionParser.get(actionName).get(args);
         }catch (Exception e) {
             Log.err("Error when parsing token: " + tokens);
             Log.err(e);

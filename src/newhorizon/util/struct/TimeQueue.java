@@ -64,7 +64,6 @@ public class TimeQueue<T extends TimeQueue.Timed> {
     public void update() {
         // Start next item if current is null
         if (current == null && !queue.isEmpty()) {
-            Log.info("asdasd");
             current = queue.removeLast();
             current.begin();
         }

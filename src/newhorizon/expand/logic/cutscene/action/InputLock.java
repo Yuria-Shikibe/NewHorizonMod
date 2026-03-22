@@ -10,12 +10,7 @@ import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
 
 public class InputLock extends ActionLStatement {
-    public String duration = "2";
-
-    public InputLock(String[] token) {
-        ParseUtil.getFirstFloat(token);
-        duration = ParseUtil.getNextToken(token);
-    }
+    public InputLock(String[] token) {}
 
     public InputLock() {}
 
@@ -25,38 +20,20 @@ public class InputLock extends ActionLStatement {
     }
 
     @Override
-    public void build(Table table) {
-        table.add(" Duration: ");
-        fields(table, duration, str -> duration = str);
-    }
-
-    @Override
     public LCategory category() {
         return NHContent.actionInputControl;
     }
 
     @Override
-    public void write(StringBuilder builder) {
-        super.write(builder);
-        writeTokens(builder, duration);
-    }
-
-    @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new InputLockI(builder.var(duration));
+        return new InputLockI();
     }
 
     public class InputLockI extends ActionInstruction {
-        public LVar duration;
-
-        public InputLockI(LVar duration) {
-            this.duration = duration;
-        }
-
         @Override
         public void run(LExecutor exec) {
             startExec(exec, "input_lock");
-            writeExec(exec, duration);
+            endExec(exec);
         }
     }
 }
