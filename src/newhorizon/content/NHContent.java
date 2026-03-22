@@ -123,6 +123,8 @@ public class NHContent extends Content {
 
         registerAction(InputLock.class, InputLockAction.class);
         registerAction(InputUnlock.class, InputUnlockAction.class);
+
+        registerAction(WarningIcon.class, WarningIconAction.class);
     }
 
     public static void registerAction(Class<? extends ActionLStatement> lstatement, Class<? extends Action> actionClass) {

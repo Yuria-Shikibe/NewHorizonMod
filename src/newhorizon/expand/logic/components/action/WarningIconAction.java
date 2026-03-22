@@ -2,6 +2,7 @@ package newhorizon.expand.logic.components.action;
 
 import arc.flabel.FLabel;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.Log;
 import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.ui.Styles;
@@ -25,7 +26,7 @@ public class WarningIconAction extends Action {
 
     @Override
     public void parseTokens(String[] tokens) {
-        duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
+        duration = Math.max(ParseUtil.getFirstFloat(tokens), 1f) * Time.toSeconds;
         icon = ParseUtil.getNextInt(tokens);
         team = ParseUtil.getNextTeam(tokens);
         text = ParseUtil.getNextString(tokens);
@@ -44,7 +45,8 @@ public class WarningIconAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        NHUIFunc.showLabel(duration, t -> {
+
+        NHUIFunc.showLabel(duration / Time.toSeconds, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
                 t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(team.color);

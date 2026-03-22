@@ -21,7 +21,7 @@ public class Wait extends ActionLStatement {
 
     @Override
     public String getLStatementName() {
-        return "wait";
+        return "wait_action";
     }
 
     @Override

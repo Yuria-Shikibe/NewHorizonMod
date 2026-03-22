@@ -10,7 +10,7 @@ import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
 
 public class WarningIcon extends ActionLStatement {
-    public String duration = "2", icon = "objective", team = "@sharded", text = "<INCOMING EVENT>";
+    public String duration = "2.5", icon = "0", team = "@crux", text = "<default-warning-text>";
 
     public WarningIcon(String[] token) {
         ParseUtil.getFirstFloat(token);
@@ -70,7 +70,7 @@ public class WarningIcon extends ActionLStatement {
 
         @Override
         public void run(LExecutor exec) {
-            startExec(exec, "wait");
+            startExec(exec, "warning_icon");
             writeExec(exec, duration, icon, team, text);
         }
     }
