@@ -63,7 +63,7 @@ public class NHContent extends Content {
 
     public static LCategory
             nhwproc, nhcutscene, nhaction,
-            actionCameraControl, actionInputControl;
+            actionCameraControl, actionInputControl, actionCurtainControl, actionFlowControl;
 
     public static void loadPriority() {
         new NHContent().load();
@@ -81,8 +81,10 @@ public class NHContent extends Content {
 
         nhaction = new LCategory("nh-action", Pal.surge.cpy().lerp(Pal.gray, 0.3f));
 
-        actionCameraControl = new LCategory("nh-action-camera-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0.1f));
-        actionInputControl = new LCategory("nh-action-input-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0.2f));
+        actionFlowControl = new LCategory("nh-action-flow-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0f));
+        actionCameraControl = new LCategory("nh-action-camera-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(20f));
+        actionInputControl = new LCategory("nh-action-input-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(40f));
+        actionCurtainControl = new LCategory("nh-action-curtain-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(60f));
 
         ThreatLevel.init();
 
@@ -110,12 +112,14 @@ public class NHContent extends Content {
     }
 
     public static void loadActions() {
-        registerAction(CameraControl.class, CameraControlAction.class);
-        registerAction(CameraZoom.class, CameraZoomAction.class);
-        registerAction(CameraReset.class, CameraResetAction.class);
+        registerAction(Wait.class, WaitAction.class);
 
         registerAction(CurtainFadeIn.class, CurtainFadeInAction.class);
         registerAction(CurtainFadeOut.class, CurtainFadeOutAction.class);
+
+        registerAction(CameraControl.class, CameraControlAction.class);
+        registerAction(CameraZoom.class, CameraZoomAction.class);
+        registerAction(CameraReset.class, CameraResetAction.class);
 
         registerAction(InputLock.class, InputLockAction.class);
         registerAction(InputUnlock.class, InputUnlockAction.class);

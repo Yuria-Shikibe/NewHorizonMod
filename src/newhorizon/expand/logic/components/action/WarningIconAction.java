@@ -44,7 +44,7 @@ public class WarningIconAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        NHUIFunc.showLabel(2.5f, t -> {
+        NHUIFunc.showLabel(duration, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
                 t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(team.color);
