@@ -53,8 +53,8 @@ void main() {
     vec2 uv1 = uv;
     vec2 uv2 = 0.5 * uv1 + 0.5 * uv;
 
-    float hex1 = smoothstep(0.05, 0.0, HexCoords(uv1 / 12).y);
-    float hex2 = smoothstep(0.1, 0.0, HexCoords(uv2 / 3).y);
+    float hex1 = smoothstep(0.05, 0.0, HexCoords(uv1 / 12.0).y);
+    float hex2 = smoothstep(0.1, 0.0, HexCoords(uv2 / 3.0).y);
     float intensity = dot(sin(uv * vec2(cos(uv.x * 1.3), 7.0) + t * 2.0), vec2(0.7, 0.55974)) * 1.2 + 3.0;
 
     float onHexGrid = max(hex1, hex2);
@@ -87,7 +87,7 @@ void main() {
     vec2 uv1_wave = uv_wave;
     vec2 uv2_wave = 0.5 * uv1_wave + 0.5 * uv_wave;
 
-    float hex1_wave = smoothstep(0.05, 0.0, HexCoords(uv1_wave / 6).y);
+    float hex1_wave = smoothstep(0.05, 0.0, HexCoords(uv1_wave / 6.0).y);
     float hex2_wave = smoothstep(0.1, 0.0, HexCoords(uv2_wave / 1.5).y);
     float onHexGrid_wave = max(hex1_wave, hex2_wave);
 
