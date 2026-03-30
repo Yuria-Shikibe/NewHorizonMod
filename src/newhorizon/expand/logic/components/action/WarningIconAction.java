@@ -14,7 +14,7 @@ import static mindustry.Vars.headless;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class WarningIconAction extends Action {
-    public int icon;
+    public int icon, labelType;
     public Team team;
     public String text;
 

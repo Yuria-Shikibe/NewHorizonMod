@@ -5,12 +5,10 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Table;
-import arc.util.Eachable;
 import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.ctype.UnlockableContent;
-import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -23,7 +21,7 @@ import newhorizon.content.NHLiquids;
 
 import static mindustry.Vars.*;
 
-public class StreamSource extends Block {
+public class StreamSource extends StreamBlock {
     public TextureRegion rotRegion;
 
     public StreamSource(String name) {
@@ -81,7 +79,7 @@ public class StreamSource extends Block {
         return new TextureRegion[]{region};
     }
 
-    public class StreamSourceBuild extends Building implements StreamBeamBuild{
+    public class StreamSourceBuild extends StreamBuild {
         public @Nullable Liquid source;
         public StreamBeam stream;
 

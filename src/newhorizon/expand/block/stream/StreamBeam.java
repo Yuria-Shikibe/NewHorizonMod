@@ -58,7 +58,7 @@ public class StreamBeam {
             if (!(building == null || building.block.underBullets)) {
                 target = building;
                 distance = i;
-                if (building instanceof StreamBeamBuild sbb) clog = !sbb.acceptStream(this);
+                if (building instanceof StreamBlock.StreamBuild sbb) clog = !sbb.acceptStream(this);
                 break;
             }
         }
@@ -106,22 +106,14 @@ public class StreamBeam {
             float cap = amountCap > 0? amountCap * source.edelta(): 5;
             float maxAmount = Math.min(cap, source.liquids.get(currentLiquid));
 
-            if (target != null && target.liquids != null){
+            if (target != null && target.liquids != null && target instanceof StreamBlock.StreamBuild sbb && sbb.acceptStream(this)){
                 float maxAccept = Math.min(target.block.liquidCapacity - target.liquids.get(currentLiquid), maxAmount);
-                if (target instanceof StreamBeamBuild sbb && sbb.acceptStream(this)) {
-                    target.handleLiquid(source, currentLiquid, maxAccept);
-                    sbb.handleStream(this);
-                } else if (!(target.block instanceof LiquidBlock) && target.block.liquidFilter[currentLiquid.id]){
-                    target.handleLiquid(source, currentLiquid, maxAccept);
-                }
+                target.handleLiquid(source, currentLiquid, maxAccept);
+                sbb.handleStream(this);
             }
             lastOutput = maxAmount;
             source.liquids.remove(currentLiquid, maxAmount);
         }
-
-        //if (Mathf.chanceDelta(lastOutput / 0.2f)) {
-        //    getEffect().at(source.x, source.y, getRotation() * 90f, currentLiquid.color);
-        //}
     }
 
     public int getRotation(){
@@ -189,17 +181,5 @@ public class StreamBeam {
         if (source == null || source.liquids == null || currentLiquid == null) return 0f;
         float value = Mathf.clamp(lastOutput / (0.5f * Time.delta));
         return value < 0.01f ? 0: Mathf.sqrt(value);
-    }
-
-    public Point2 calculateRotatedPosition(Point2 pos, int blockSize, int rotation) {
-        int shift = (blockSize + 1) % 2;
-        int px = pos.x, py = pos.y;
-
-        return switch (rotation) {
-            case 1 -> new Point2(-py + shift, px);
-            case 2 -> new Point2(-px + shift, -py + shift);
-            case 3 -> new Point2(py, -px + shift);
-            default -> new Point2(px, py); // default rotation 0
-        };
     }
 }

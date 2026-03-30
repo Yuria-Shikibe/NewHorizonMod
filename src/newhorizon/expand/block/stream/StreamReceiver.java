@@ -1,20 +1,14 @@
 package newhorizon.expand.block.stream;
 
-import arc.math.geom.Geometry;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import newhorizon.content.NHLiquids;
-import newhorizon.expand.block.inner.LinkBlock;
 
-import static mindustry.Vars.tilesize;
-
-public class StreamRepeater extends StreamBlock {
-    public StreamRepeater(String name) {
+public class StreamReceiver extends StreamBlock {
+    public StreamReceiver(String name) {
         super(name);
 
         update = true;
@@ -34,30 +28,21 @@ public class StreamRepeater extends StreamBlock {
         removeBar("liquid");
     }
 
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[rotation].x * 14 * tilesize,
-                y * tilesize + Geometry.d4[rotation].y * 14 * tilesize);
-    }
 
-
-    public class StreamRepeaterBuild extends StreamBuild {
+    public class StreamReceiverBuild extends StreamBuild {
         public StreamBeam stream;
 
         @Override
         public void created() {
             super.created();
             stream = new StreamBeam(this);
-            stream.beamLength = 7;
+            stream.beamLength = 13;
         }
 
         @Override
         public void updateTile() {
             stream.update();
+            dumpLiquid(liquids.current());
         }
 
         @Override
@@ -68,7 +53,7 @@ public class StreamRepeater extends StreamBlock {
 
         @Override
         public boolean acceptStream(StreamBeam stream) {
-            return stream.getRotation() == rotation;
+            return (stream.getRotation() + 2) % 4 != rotation;
         }
 
         @Override
