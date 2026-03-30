@@ -29,7 +29,6 @@ import static arc.graphics.g2d.Lines.lineAngle;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 
-@Deprecated
 public class RaidBullets {
     public static final Rand rand = new Rand();
     public static BulletType raidBullet_1, raidBullet_2, raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8;

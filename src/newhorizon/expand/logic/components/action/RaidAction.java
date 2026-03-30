@@ -13,8 +13,8 @@ import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 
 public class RaidAction extends Action {
-    public int bulletType = 0;
     public Team team;
+    public int bulletType = 0, bulletCount = 5;
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0, inaccuracyRadius = 80;
 
     @Override
@@ -25,13 +25,18 @@ public class RaidAction extends Action {
     @Override
     public void parseTokens(String[] tokens) {
         duration = ParseUtil.getFirstFloat(tokens) * Time.toSeconds;
-        bulletType = ParseUtil.getNextInt(tokens);
+
         team = ParseUtil.getNextTeam(tokens);
-        sourceX = ParseUtil.getFirstFloat(tokens);
-        sourceY = ParseUtil.getFirstFloat(tokens);
-        targetX = ParseUtil.getFirstFloat(tokens);
-        targetY = ParseUtil.getFirstFloat(tokens);
-        inaccuracyRadius = ParseUtil.getFirstFloat(tokens);
+
+        bulletType = ParseUtil.getNextInt(tokens);
+        bulletCount = ParseUtil.getNextInt(tokens);
+
+        sourceX = ParseUtil.getNextFloat(tokens);
+        sourceY = ParseUtil.getNextFloat(tokens);
+        targetX = ParseUtil.getNextFloat(tokens);
+        targetY = ParseUtil.getNextFloat(tokens);
+
+        inaccuracyRadius = ParseUtil.getNextFloat(tokens);
     }
 
     public BulletType bulletType() {
