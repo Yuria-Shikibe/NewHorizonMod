@@ -22,6 +22,7 @@ public class NHStats {
             installableBlocks = new Stat("installable-blocks", StatCat.function),
             compatibleBlocks = new Stat("compatible-blocks", StatCat.function),
             overrides = new Stat("overrides", StatCat.optional),
-            baseRepairAmount = new Stat("base-repair-amount", StatCat.function);
-
+            baseRepairAmount = new Stat("base-repair-amount", StatCat.function),
+            streamCap = new Stat("stream-cap", StatCat.function),
+            streamLength = new Stat("stream-length", StatCat.function);
 }

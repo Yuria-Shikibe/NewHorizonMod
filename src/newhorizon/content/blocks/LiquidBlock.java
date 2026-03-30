@@ -13,7 +13,7 @@ import static mindustry.type.ItemStack.with;
 
 public class LiquidBlock {
     public static Block
-            streamSource, streamExtractor, streamRepeater, streamRedirector, streamSplitter,
+            streamSource, streamExtractor, streamReceiver, streamRepeater, streamRedirector, streamSplitter,
             turboPumpSmall, turboPump, standardLiquidStorage, heavyLiquidStorage;
 
     public static void load() {
@@ -25,6 +25,10 @@ public class LiquidBlock {
             requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
 
             rotateDraw = true;
+        }};
+
+        streamReceiver = new StreamReceiver("stream-receiver"){{
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
         }};
 
         streamRepeater = new StreamRepeater("stream-repeater"){{

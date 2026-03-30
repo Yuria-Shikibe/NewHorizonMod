@@ -1049,6 +1049,12 @@
 	"size": 1,
 	"color": 255
 },
+"new-horizon-stream-receiver": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
 "new-horizon-stream-repeater": {
 	"synthetic": true,
 	"solid": true,

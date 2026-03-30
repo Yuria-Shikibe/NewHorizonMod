@@ -424,6 +424,7 @@ new-horizon-standard-shield-generator 1 1 2 0
 new-horizon-standard-storage 1 1 2 0
 new-horizon-steady-stack-rail 1 0 1 0
 new-horizon-stream-extractor 1 1 1 0
+new-horizon-stream-receiver 1 1 1 0
 new-horizon-stream-redirector 1 1 1 0
 new-horizon-stream-repeater 1 1 1 0
 new-horizon-stream-source 1 1 1 0
