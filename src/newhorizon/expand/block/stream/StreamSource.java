@@ -26,18 +26,10 @@ public class StreamSource extends StreamBlock {
 
     public StreamSource(String name) {
         super(name);
-        update = true;
-        solid = true;
-        rotate = true;
-        hasLiquids = true;
-        liquidCapacity = 6f;
         configurable = true;
-        outputsLiquid = true;
         saveConfig = true;
         noUpdateDisabled = true;
         displayFlow = false;
-        group = BlockGroup.liquids;
-        envEnabled = Env.any;
         clearOnDoubleTap = true;
 
         config(Liquid.class, (StreamSourceBuild tile, Liquid l) -> {
@@ -55,23 +47,6 @@ public class StreamSource extends StreamBlock {
     public void load() {
         super.load();
         rotRegion = Core.atlas.find(name + "-rot");
-    }
-
-
-    @Override
-    public void setBars(){
-        super.setBars();
-        removeBar("liquid");
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[rotation].x * 6 * tilesize,
-                y * tilesize + Geometry.d4[rotation].y * 6 * tilesize);
     }
 
     @Override

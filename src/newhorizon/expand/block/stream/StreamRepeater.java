@@ -14,66 +14,18 @@ import newhorizon.expand.block.inner.LinkBlock;
 import static mindustry.Vars.tilesize;
 
 public class StreamRepeater extends StreamBlock {
+
     public StreamRepeater(String name) {
         super(name);
 
-        update = true;
-        solid = true;
-        rotate = true;
-        hasLiquids = true;
-        liquidCapacity = 6f;
-        outputsLiquid = false;
-        noUpdateDisabled = true;
-        group = BlockGroup.liquids;
-        envEnabled = Env.any;
+        streamLength = new int[]{7, -1, -1, -1};
+        streamCap = new float[]{-1f, -1, -1, -1};
     }
-
-    @Override
-    public void setBars(){
-        super.setBars();
-        removeBar("liquid");
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[rotation].x * 14 * tilesize,
-                y * tilesize + Geometry.d4[rotation].y * 14 * tilesize);
-    }
-
 
     public class StreamRepeaterBuild extends StreamBuild {
-        public StreamBeam stream;
-
-        @Override
-        public void created() {
-            super.created();
-            stream = new StreamBeam(this);
-            stream.beamLength = 7;
-        }
-
-        @Override
-        public void updateTile() {
-            stream.update();
-        }
-
-        @Override
-        public void draw() {
-            super.draw();
-            stream.draw();
-        }
-
         @Override
         public boolean acceptStream(StreamBeam stream) {
             return stream.getRotation() == rotation;
-        }
-
-        @Override
-        public boolean acceptLiquid(Building source, Liquid liquid) {
-            return liquid instanceof NHLiquids.Stream && source instanceof StreamBuild;
         }
     }
 }

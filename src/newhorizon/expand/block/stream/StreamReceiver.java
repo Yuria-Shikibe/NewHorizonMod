@@ -2,32 +2,17 @@ package newhorizon.expand.block.stream;
 
 import mindustry.gen.Building;
 import mindustry.type.Liquid;
-import mindustry.world.Block;
-import mindustry.world.meta.BlockGroup;
-import mindustry.world.meta.Env;
 import newhorizon.content.NHLiquids;
 
 public class StreamReceiver extends StreamBlock {
     public StreamReceiver(String name) {
         super(name);
 
-        update = true;
-        solid = true;
-        rotate = true;
-        hasLiquids = true;
-        liquidCapacity = 6f;
-        outputsLiquid = false;
-        noUpdateDisabled = true;
-        group = BlockGroup.liquids;
-        envEnabled = Env.any;
-    }
+        streamLength = new int[]{13, -1, -1, -1};
+        streamCap = new float[]{0.5f, -1, -1, -1};
 
-    @Override
-    public void setBars(){
-        super.setBars();
-        removeBar("liquid");
+        outputsLiquid = true;
     }
-
 
     public class StreamReceiverBuild extends StreamBuild {
         public StreamBeam stream;

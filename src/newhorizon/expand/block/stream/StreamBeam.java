@@ -26,28 +26,27 @@ import static mindustry.Vars.world;
 public class StreamBeam {
     public float lastStrokeScale, lastOutput;
     public Color lastColor = Color.clear.cpy();
-    public static final Rand rand = new Rand();
+
+    public float amountCap = -1f;
+    public int beamLength = 5;
 
     public Liquid currentLiquid;
     public Building source, target;
     public int distance;
     public boolean clog;
-    public int beamLength = 5;
 
-    public int offsetX, offsetY, rotationOffset;
-    public float amountCap = -1f;
+    public int rotationOffset;
     public Liquid filter;
 
     public StreamBeam(Building source) {
         this.source = source;
-        offsetX = offsetY = 0;
     }
 
     public void update(){
         if (source == null) return;
 
-        target = null;
         clog = false;
+        target = null;
         distance = beamLength;
 
         for (int i = 0; i <= beamLength; i++){
@@ -66,21 +65,6 @@ public class StreamBeam {
         getCurrentLiquid();
         lastStrokeScale = Mathf.lerpDelta(lastStrokeScale, beamStrokeScale(), 0.05f);
         transportLiquid();
-    }
-
-    public Effect getEffect() {
-        float len = target == null? (distance + 1): distance;
-        float length = len * 8f;
-
-        return new Effect(length, e -> {
-            rand.setSeed(e.id);
-            Tmp.v1.set(4f + length * e.fin(), rand.random(-3f * lastStrokeScale, 3f * lastStrokeScale)).rotate(e.rotation);
-            float threshold = distance / len;
-            Draw.color(e.color);
-            Draw.alpha(1 - Mathf.curve(e.fin(), threshold, 1f));
-            Lines.stroke(0.5f);
-            Lines.lineAngle(Tmp.v1.x + e.x, Tmp.v1.y + e.y, e.rotation, 2f);
-        });
     }
 
     public void getCurrentLiquid(){
