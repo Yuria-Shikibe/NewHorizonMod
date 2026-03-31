@@ -13,9 +13,17 @@ import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 
 public class RaidAction extends Action {
+
+
+    public String raidType = "PRESET_RAID_0";
+
+    public String warningIcon = "raid";
+    public String warningSound = "alarm";
+    public String warningText = "default_raid_text";
+
     public Team team;
     public int bulletType = 0, bulletCount = 5;
-    public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0, inaccuracyRadius = 80;
+    public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0;
 
     @Override
     public String actionName() {
@@ -35,8 +43,6 @@ public class RaidAction extends Action {
         sourceY = ParseUtil.getNextFloat(tokens);
         targetX = ParseUtil.getNextFloat(tokens);
         targetY = ParseUtil.getNextFloat(tokens);
-
-        inaccuracyRadius = ParseUtil.getNextFloat(tokens);
     }
 
     public BulletType bulletType() {
@@ -64,7 +70,7 @@ public class RaidAction extends Action {
     }
 
     public void createBullet() {
-        Tmp.v1.trns(Mathf.random(360f), Mathf.random(inaccuracyRadius));
+        Tmp.v1.trns(Mathf.random(360f), 1);
         float dst = Mathf.dst(sourceX, sourceY, targetX, targetY);
         float ang = Angles.angle(sourceX, sourceY, targetX, targetY);
         float lifetimeScl = dst / (bulletType().speed * bulletType().lifetime);
