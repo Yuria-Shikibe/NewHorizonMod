@@ -19,6 +19,8 @@ public class ScreenShaderDrawer {
 
     public static boolean drawDisplaceGlitch = false;
 
+    private static boolean capturing = false;
+
     public static void init(){
         Events.run(EventType.Trigger.drawOver, () -> {
             Draw.draw(Layer.min, ScreenShaderDrawer::drawBegin);
@@ -26,20 +28,33 @@ public class ScreenShaderDrawer {
         });
     }
 
+    private static boolean hasActiveEffects(){
+        return drawDisplaceGlitch;
+    }
+
     public static void drawBegin(){
+        if (!hasActiveEffects()) {
+            capturing = false;
+            return;
+        }
+
         pingPong1.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
         pingPong2.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
 
         pingPong1.begin();
+        capturing = true;
     }
 
     public static void drawEnd(Camera camera){
+        if (!capturing) return;
+
         FrameBuffer from = pingPong1;
 
         if(drawDisplaceGlitch) from = pingPong(from, NHShaders.displaceGlitch, camera);
 
         from.end();
         from.blit(Shaders.screenspace);
+        capturing = false;
     }
 
     public static void drawEnd(){
