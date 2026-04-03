@@ -1267,35 +1267,24 @@ public class NHPostProcess {
             });
         });
 
-        hideContent(Blocks.payloadConveyor);
-        hideContent(Blocks.payloadRouter);
-        hideContent(Blocks.reinforcedPayloadConveyor);
-        hideContent(Blocks.reinforcedPayloadRouter);
-        //hideContent(Blocks.payloadMassDriver);
-        //hideContent(Blocks.largePayloadMassDriver);
-        hideContent(Blocks.deconstructor);
-        hideContent(Blocks.smallDeconstructor);
-        hideContent(Blocks.constructor);
-        hideContent(Blocks.largeConstructor);
+        Block[] vanillaFactories = {
+            Blocks.payloadConveyor, Blocks.payloadRouter, Blocks.reinforcedPayloadConveyor, Blocks.reinforcedPayloadRouter,
+            Blocks.deconstructor, Blocks.smallDeconstructor, Blocks.constructor, Blocks.largeConstructor,
+            Blocks.groundFactory, Blocks.airFactory, Blocks.navalFactory,
+            Blocks.additiveReconstructor, Blocks.multiplicativeReconstructor, Blocks.exponentialReconstructor, Blocks.tetrativeReconstructor,
+            Blocks.tankFabricator, Blocks.tankRefabricator, Blocks.tankAssembler,
+            Blocks.mechFabricator, Blocks.mechRefabricator, Blocks.mechAssembler,
+            Blocks.shipFabricator, Blocks.shipRefabricator, Blocks.shipAssembler,
+            Blocks.primeRefabricator, Blocks.basicAssemblerModule
+        };
 
-        hideContent(Blocks.groundFactory);
-        hideContent(Blocks.airFactory);
-        hideContent(Blocks.navalFactory);
-        hideContent(Blocks.additiveReconstructor);
-        hideContent(Blocks.multiplicativeReconstructor);
-        hideContent(Blocks.exponentialReconstructor);
-        hideContent(Blocks.tetrativeReconstructor);
-        hideContent(Blocks.tankFabricator);
-        hideContent(Blocks.tankRefabricator);
-        hideContent(Blocks.tankAssembler);
-        hideContent(Blocks.mechFabricator);
-        hideContent(Blocks.mechRefabricator);
-        hideContent(Blocks.mechAssembler);
-        hideContent(Blocks.shipFabricator);
-        hideContent(Blocks.shipRefabricator);
-        hideContent(Blocks.shipAssembler);
-        hideContent(Blocks.primeRefabricator);
-        hideContent(Blocks.basicAssemblerModule);
+        for(Block b : vanillaFactories){
+            if(b != null){
+                b.envRequired = Env.none;
+                b.envDisabled = Env.none;
+                b.envEnabled = Env.any;
+            }
+        }
     }
 
     private static void overrideCoreUnit() {

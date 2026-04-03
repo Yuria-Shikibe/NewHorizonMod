@@ -11,9 +11,10 @@ import newhorizon.content.NHBullets;
 import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.cutscene.types.RaidControllerType;
 
 public class RaidAction extends Action {
-
+    public String raidControllerType = "defaultController";
 
     public String raidType = "PRESET_RAID_0";
 
