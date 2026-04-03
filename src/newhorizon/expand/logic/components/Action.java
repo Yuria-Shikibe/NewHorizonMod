@@ -1,8 +1,6 @@
 package newhorizon.expand.logic.components;
 
-import arc.func.Func;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import newhorizon.util.struct.TimeQueue;
 
@@ -12,11 +10,17 @@ public abstract class Action implements TimeQueue.Timed {
 
     public Action() {}
 
+    public boolean skippable() {
+        return true;
+    }
+
     public String actionName() {
         return "Action";
     }
 
     public void parseTokens(String[] tokens) {}
+
+    public void postInit() {}
 
     @Override
     public void update() {

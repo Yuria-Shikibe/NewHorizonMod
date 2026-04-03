@@ -48,6 +48,7 @@ public class CutsceneControl {
                 try {
                     Action action = actionClass.getDeclaredConstructor().newInstance();
                     action.parseTokens(tokens);
+                    action.postInit();
                     return action;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
