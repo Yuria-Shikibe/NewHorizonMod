@@ -1,6 +1,5 @@
 package newhorizon.expand.logic.components.action;
 
-import arc.Core;
 import arc.flabel.FLabel;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -12,12 +11,13 @@ import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.ui.Styles;
 import newhorizon.content.NHBullets;
-import newhorizon.content.NHSounds;
 import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.cutscene.types.AlertType;
+import newhorizon.expand.logic.cutscene.types.HudIcon;
 import newhorizon.expand.logic.cutscene.types.RaidControllerType;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -26,7 +26,7 @@ import java.util.Objects;
 import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-public class RaidAction extends Action {
+public class EventRaidAction extends Action {
     public String raidControllerType = "defaultController";
     public String flag = "raid-executor", timer = "raid-timer";
 
@@ -34,8 +34,8 @@ public class RaidAction extends Action {
 
     public String raidType = "PRESET_RAID_0";
 
-    public String hudIcon = "raid";
-    public String warningSound = "alarm";
+    public HudIcon hudIcon = HudIcon.defaultRaid;
+    public AlertType warningSound = AlertType.alarm;
     public String warningText = "default_raid_text";
 
     public Team team;
@@ -47,7 +47,7 @@ public class RaidAction extends Action {
 
     @Override
     public String actionName() {
-        return "raid";
+        return "event-raid";
     }
 
     @Override
@@ -75,8 +75,8 @@ public class RaidAction extends Action {
                 bulletType = ParseUtil.getNextInt(tokens);
                 bulletCount = ParseUtil.getNextInt(tokens);
 
-                hudIcon = ParseUtil.getNextToken(tokens);
-                warningSound = ParseUtil.getNextToken(tokens);
+                hudIcon = HudIcon.valueOf(ParseUtil.getNextToken(tokens));
+                warningSound = AlertType.valueOf(ParseUtil.getNextToken(tokens));
                 warningText = ParseUtil.getNextString(tokens);
             }
             case teamDefaultController -> {
@@ -88,32 +88,32 @@ public class RaidAction extends Action {
                 bulletType = ParseUtil.getNextInt(tokens);
                 bulletCount = ParseUtil.getNextInt(tokens);
 
-                hudIcon = ParseUtil.getNextToken(tokens);
-                warningSound = ParseUtil.getNextToken(tokens);
+                hudIcon = HudIcon.valueOf(ParseUtil.getNextToken(tokens));
+                warningSound = AlertType.valueOf(ParseUtil.getNextToken(tokens));
                 warningText = ParseUtil.getNextString(tokens);
             }
             case coordinateDefaultController -> {
                 team = ParseUtil.getNextTeam(tokens);
                 raidType = ParseUtil.getNextToken(tokens);
 
-                sourceX = ParseUtil.getFirstFloat(tokens);
-                sourceY = ParseUtil.getFirstFloat(tokens);
-                targetX = ParseUtil.getFirstFloat(tokens);
-                targetY = ParseUtil.getFirstFloat(tokens);
+                sourceX = ParseUtil.getNextFloat(tokens);
+                sourceY = ParseUtil.getNextFloat(tokens);
+                targetX = ParseUtil.getNextFloat(tokens);
+                targetY = ParseUtil.getNextFloat(tokens);
             }
             case coordinateCustomController ->{
                 team = ParseUtil.getNextTeam(tokens);
                 bulletType = ParseUtil.getNextInt(tokens);
                 bulletCount = ParseUtil.getNextInt(tokens);
 
-                hudIcon = ParseUtil.getNextToken(tokens);
-                warningSound = ParseUtil.getNextToken(tokens);
+                hudIcon = HudIcon.valueOf(ParseUtil.getNextToken(tokens));
+                warningSound = AlertType.valueOf(ParseUtil.getNextToken(tokens));
                 warningText = ParseUtil.getNextString(tokens);
 
-                sourceX = ParseUtil.getFirstFloat(tokens);
-                sourceY = ParseUtil.getFirstFloat(tokens);
-                targetX = ParseUtil.getFirstFloat(tokens);
-                targetY = ParseUtil.getFirstFloat(tokens);
+                sourceX = ParseUtil.getNextFloat(tokens);
+                sourceY = ParseUtil.getNextFloat(tokens);
+                targetX = ParseUtil.getNextFloat(tokens);
+                targetY = ParseUtil.getNextFloat(tokens);
             }
         }
     }
@@ -136,12 +136,12 @@ public class RaidAction extends Action {
     public void begin() {
         if (headless) return;
 
-        NHSounds.alert2.play();
+        warningSound.sound.play();
         NHUIFunc.showLabel(duration / Time.toSeconds, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
                 t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0,-9).color(team.color).row()).pad(0).growX();
-                t2.image(Core.atlas.find(hudIcon)).fill().color(team.color);
+                t2.image(hudIcon.icon).fill().color(team.color);
                 t2.table(right -> right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, -9, 0, 0).color(team.color).row()).pad(0).growX();
             }).growX().pad(OFFSET / 2).fillY().row();
 

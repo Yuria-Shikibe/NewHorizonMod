@@ -124,6 +124,8 @@ public class NHContent extends Content {
         registerAction(InputLock.class, InputLockAction.class);
         registerAction(InputUnlock.class, InputUnlockAction.class);
 
+        registerAction(EventRaid.class, EventRaidAction.class);
+
         registerAction(WarningIcon.class, WarningIconAction.class);
     }
 

@@ -1,5 +1,6 @@
 package newhorizon.expand.logic;
 
+import arc.func.Cons;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import mindustry.logic.LAssembler;
@@ -38,6 +39,10 @@ public class ActionLStatement extends LStatement {
         for (String token : tokens) {
             builder.append(" ").append(token);
         }
+    }
+
+    public void buildRowTable(Table table, Cons<Table> cons) {
+        table.table(cons).expand().left().row();
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
