@@ -1,5 +1,6 @@
 package newhorizon.expand.logic.components.action;
 
+import arc.Core;
 import arc.flabel.FLabel;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -32,13 +33,10 @@ public class EventRaidAction extends Action {
 
     public String flag = "raid-executor", timer = "raid-timer";
 
-    public boolean overrideDefaultTeam = false;
+    public boolean overrideDefaultTeam = false, overrideRaidStats = false, overrideDefaultCoordinate = false;
+
     public Team team = Team.crux;
-
-    public float alertTime = 15f, raidTime = 5f;
-    public float raidScale = 1, inaccuracy = 40f;
-
-    public boolean overrideDefaultCoordinate = false;
+    public float alertTime = 15f, raidTime = 5f, raidScale = 1, inaccuracy = 40f;
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0;
 
     private int raidCounter;
@@ -60,15 +58,29 @@ public class EventRaidAction extends Action {
         flag = ParseUtil.getNextToken(tokens);
         timer = ParseUtil.getNextToken(tokens);
 
-        alertTime = ParseUtil.getNextFloat(tokens) * Time.toSeconds;
-        raidTime = ParseUtil.getNextFloat(tokens) * Time.toSeconds;
+        overrideDefaultTeam = ParseUtil.getNextBool(tokens);
+        overrideRaidStats = ParseUtil.getNextBool(tokens);
+        overrideDefaultCoordinate = ParseUtil.getNextBool(tokens);
+
+        if (overrideDefaultTeam) {
+            team = ParseUtil.getNextTeam(tokens);
+        }
+
+        if (overrideRaidStats) {
+            alertTime = ParseUtil.getNextFloat(tokens);
+            raidTime = ParseUtil.getNextFloat(tokens);
+            raidScale = ParseUtil.getNextFloat(tokens);
+            inaccuracy = ParseUtil.getNextFloat(tokens);
+        }
+
+        if (overrideDefaultCoordinate) {
+            sourceX = ParseUtil.getNextFloat(tokens);
+            sourceY = ParseUtil.getNextFloat(tokens);
+            targetX = ParseUtil.getNextFloat(tokens);
+            targetY = ParseUtil.getNextFloat(tokens);
+        }
 
         duration = alertTime + raidTime;
-
-        sourceX = ParseUtil.getNextFloat(tokens);
-        sourceY = ParseUtil.getNextFloat(tokens);
-        targetX = ParseUtil.getNextFloat(tokens);
-        targetY = ParseUtil.getNextFloat(tokens);
     }
 
     public BulletType bulletType() {
@@ -79,17 +91,17 @@ public class EventRaidAction extends Action {
     public void begin() {
         if (headless) return;
 
-        /*
-        warningSound.sound.play();
+        raidType.raidAlarmSound.play();
+
         NHUIFunc.showLabel(duration / Time.toSeconds, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
                 t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0,-9).color(team.color).row()).pad(0).growX();
-                t2.image(hudIcon.icon).fill().color(team.color);
+                t2.image(raidType.warningIcon).fill().color(team.color);
                 t2.table(right -> right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, -9, 0, 0).color(team.color).row()).pad(0).growX();
             }).growX().pad(OFFSET / 2).fillY().row();
 
-            t.table(l -> l.add(new FLabel("<< " + warningText + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
+            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + raidType.name()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
 
         state.rules.objectives.each(mapObjective -> {
@@ -103,8 +115,6 @@ public class EventRaidAction extends Action {
                 }
             }
         });
-
-         */
     }
 
     public void end() {

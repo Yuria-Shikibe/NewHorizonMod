@@ -78,6 +78,16 @@ public class ParseUtil {
         return Strings.parseInt(getToken(tokens), 0);
     }
 
+    public static boolean getFirstBool(String[] tokens) {
+        tokenIndex = 0;
+        return getToken(tokens).equals("true");
+    }
+
+    public static boolean getNextBool(String[] tokens) {
+        tokenIndex++;
+        return getToken(tokens).equals("true");
+    }
+
     public static String getFirstString(String[] tokens) {
         tokenIndex = 0;
         return getToken(tokens).replace("[n]", "\n");

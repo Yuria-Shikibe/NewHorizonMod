@@ -56,6 +56,16 @@ public class ActionLStatement extends LStatement {
             exec.textBuffer.append(actionName);
         }
 
+        public void appendExec(LExecutor exec, String value) {
+            exec.textBuffer.append(" ").append(value);
+        }
+
+        public void appendExec(LExecutor exec, LVar... vars) {
+            for (LVar var : vars) {
+                exec.textBuffer.append(" ").append(var.isobj? var.name : var.numf());
+            }
+        }
+
         public void writeExec(LExecutor exec, LVar... vars) {
             for (LVar var : vars) {
                 exec.textBuffer.append(" ").append(var.isobj? var.name : var.numf());
