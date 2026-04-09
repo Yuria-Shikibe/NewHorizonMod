@@ -8,6 +8,8 @@ import mindustry.game.Team;
 import mindustry.logic.GlobalVars;
 import mindustry.type.UnitType;
 
+import static mindustry.Vars.state;
+
 public class ParseUtil {
     public static int tokenIndex = 0;
 
@@ -23,6 +25,7 @@ public class ParseUtil {
         String token = getToken(tokens);
 
         switch (token) {
+            case "@waveteam": return state.rules.waveTeam;
             case "@derelict": return Team.derelict;
             case "@sharded": return Team.sharded;
             case "@crux": return Team.crux;

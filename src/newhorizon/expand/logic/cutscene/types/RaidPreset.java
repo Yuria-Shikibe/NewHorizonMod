@@ -8,7 +8,7 @@ import newhorizon.content.NHSounds;
 import newhorizon.content.bullets.RaidBullets;
 
 public enum RaidPreset {
-    PRESET_RAID_0(RaidBullets.raidBullet_1, NHSounds.alarm, NHContent.raid),
+    PRESET_RAID_0(RaidBullets.raidBullet_1, NHSounds.alarm, NHContent.raid, 15, 5, 1, 40),
     ;
 
     public static final RaidPreset[] all = values();
@@ -17,10 +17,23 @@ public enum RaidPreset {
     public final Sound raidAlarmSound;
     public final TextureRegion warningIcon;
 
-    RaidPreset(BulletType bulletType, Sound raidAlarmSound, TextureRegion warningIcon) {
+    public final float alertTime;
+    public final float raidTime;
+    public final float raidScale;
+    public final float inaccuracy;
+
+    RaidPreset(
+            BulletType bulletType, Sound raidAlarmSound, TextureRegion warningIcon,
+            float alertTime, float raidTime, float raidScale, float inaccuracy
+    ) {
         this.bulletType = bulletType;
         this.raidAlarmSound = raidAlarmSound;
         this.warningIcon = warningIcon;
+
+        this.alertTime = alertTime;
+        this.raidTime = raidTime;
+        this.inaccuracy = inaccuracy;
+        this.raidScale = raidScale;
     }
 
 }

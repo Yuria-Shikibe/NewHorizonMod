@@ -33,7 +33,7 @@ public class EventRaidAction extends Action {
 
     public String flag = "raid-executor", timer = "raid-timer";
 
-    public boolean overrideDefaultTeam = false, overrideRaidStats = false, overrideDefaultCoordinate = false;
+    public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
     public Team team = Team.crux;
     public float alertTime = 15f, raidTime = 5f, raidScale = 1, inaccuracy = 40f;
@@ -57,15 +57,9 @@ public class EventRaidAction extends Action {
 
         flag = ParseUtil.getNextToken(tokens);
         timer = ParseUtil.getNextToken(tokens);
+        team = ParseUtil.getNextTeam(tokens);
 
-        overrideDefaultTeam = ParseUtil.getNextBool(tokens);
         overrideRaidStats = ParseUtil.getNextBool(tokens);
-        overrideDefaultCoordinate = ParseUtil.getNextBool(tokens);
-
-        if (overrideDefaultTeam) {
-            team = ParseUtil.getNextTeam(tokens);
-        }
-
         if (overrideRaidStats) {
             alertTime = ParseUtil.getNextFloat(tokens);
             raidTime = ParseUtil.getNextFloat(tokens);
@@ -73,6 +67,7 @@ public class EventRaidAction extends Action {
             inaccuracy = ParseUtil.getNextFloat(tokens);
         }
 
+        overrideDefaultCoordinate = ParseUtil.getNextBool(tokens);
         if (overrideDefaultCoordinate) {
             sourceX = ParseUtil.getNextFloat(tokens);
             sourceY = ParseUtil.getNextFloat(tokens);
@@ -80,7 +75,17 @@ public class EventRaidAction extends Action {
             targetY = ParseUtil.getNextFloat(tokens);
         }
 
+    }
+
+    @Override
+    public void postInit() {
+        super.postInit();
+
         duration = alertTime + raidTime;
+
+        if (!overrideRaidStats) {
+
+        }
     }
 
     public BulletType bulletType() {

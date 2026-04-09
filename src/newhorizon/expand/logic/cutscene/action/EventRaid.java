@@ -1,60 +1,62 @@
 package newhorizon.expand.logic.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.game.Team;
+import arc.util.Log;
 import mindustry.logic.LAssembler;
+import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
 import mindustry.ui.Styles;
+import newhorizon.content.NHContent;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
-import newhorizon.expand.logic.cutscene.types.AlertType;
-import newhorizon.expand.logic.cutscene.types.HudIcon;
-import newhorizon.expand.logic.cutscene.types.RaidControllerType;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
 
 public class EventRaid extends ActionLStatement {
     public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_0");
     public String flag = "raid-executor", timer = "raid-timer";
 
-    public boolean overrideDefaultTeam = false, overrideRaidStats = false, overrideDefaultCoordinate = false;
+    public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
-    public String team;
-    public String alertTime = "15", raidTime = "5", raidScale = "1", inaccuracy = "40";
+    public String team = "@waveteam";
+    public String alertTime = "15", raidTime = "5", raidScale = "5", inaccuracy = "40";
     public String sourceX = "0", sourceY = "0", targetX = "0", targetY = "0";
 
-    public EventRaid(String[] tokens) {
-        ParseUtil.getFirstToken(tokens);
-        raidType = RaidPreset.valueOf(ParseUtil.getNextToken(tokens));
-        flag = ParseUtil.getNextToken(tokens);
-        timer = ParseUtil.getNextToken(tokens);
+    public EventRaid(String[] token) {
+        ParseUtil.getFirstToken(token);
 
-        overrideDefaultTeam = ParseUtil.getNextBool(tokens);
-        if (overrideDefaultTeam) {
-            team = ParseUtil.getNextToken(tokens);
-        }
+        raidType = RaidPreset.valueOf(ParseUtil.getNextToken(token));
+        flag = ParseUtil.getNextToken(token);
+        timer = ParseUtil.getNextToken(token);
+        team = ParseUtil.getNextToken(token);
 
-        overrideRaidStats = ParseUtil.getNextBool(tokens);
+        overrideRaidStats = ParseUtil.getNextBool(token);
         if (overrideRaidStats) {
-            alertTime = ParseUtil.getNextToken(tokens);
-            raidTime = ParseUtil.getNextToken(tokens);
-            raidScale = ParseUtil.getNextToken(tokens);
-            inaccuracy = ParseUtil.getNextToken(tokens);
+            alertTime = ParseUtil.getNextToken(token);
+            raidTime = ParseUtil.getNextToken(token);
+            raidScale = ParseUtil.getNextToken(token);
+            inaccuracy = ParseUtil.getNextToken(token);
         }
 
-        overrideDefaultCoordinate = ParseUtil.getNextBool(tokens);
+        overrideDefaultCoordinate = ParseUtil.getNextBool(token);
         if (overrideDefaultCoordinate) {
-            sourceX = ParseUtil.getNextToken(tokens);
-            sourceY = ParseUtil.getNextToken(tokens);
-            targetX = ParseUtil.getNextToken(tokens);
-            targetY = ParseUtil.getNextToken(tokens);
+            sourceX = ParseUtil.getNextToken(token);
+            sourceY = ParseUtil.getNextToken(token);
+            targetX = ParseUtil.getNextToken(token);
+            targetY = ParseUtil.getNextToken(token);
         }
     }
 
     public EventRaid() {}
 
+    @Override
     public String getLStatementName() {
         return "raidevent";
+    }
+
+    @Override
+    public LCategory category() {
+        return NHContent.nhwproc;
     }
 
     @Override
@@ -82,29 +84,18 @@ public class EventRaid extends ActionLStatement {
         });
 
         buildRowTable(table, t -> {
-            t.add(" Override Default Team: ");
-            t.button(b -> b.clicked(() -> {
-                overrideDefaultTeam = !overrideDefaultTeam;
-                b.setChecked(overrideDefaultTeam);
-                rebuild(table);
-            }), Styles.clearTogglei, () -> {}).size(40, 40).color(table.color).left().padLeft(2);
+            t.add(" From Team : ");
+            fields(t, team, str -> team = str);
         });
 
-        if (overrideDefaultTeam) {
-            buildRowTable(table, t -> {
-                t.add(" Team: ").padLeft(20f);
-                fields(t, team, str -> team = str);
-            });
-        }
-
-        buildRowTable(table, t -> {
-            t.add(" Override Default Raid Stats: ");
-            t.button(b -> b.clicked(() -> {
+        buildRowTable(table, t -> t.button(b -> {
+            b.label(() -> " Override Default Raid Stats ");
+            b.clicked(() -> {
                 overrideRaidStats = !overrideRaidStats;
                 b.setChecked(overrideRaidStats);
                 rebuild(table);
-            }), Styles.clearTogglei, () -> {}).size(40, 40).color(table.color).left().padLeft(2);
-        });
+            });
+        }, Styles.grayt, () -> {}).size(0, 40));
 
         if (overrideRaidStats) {
             buildRowTable(table, t -> {
@@ -126,14 +117,14 @@ public class EventRaid extends ActionLStatement {
             });
         }
 
-        buildRowTable(table, t -> {
-            t.add(" Override Default Raid Coordinate: ");
-            t.button(b -> b.clicked(() -> {
+        buildRowTable(table, t -> t.button(b -> {
+            b.label(() -> " Override Default Raid Coordinate ");
+            b.clicked(() -> {
                 overrideDefaultCoordinate = !overrideDefaultCoordinate;
                 b.setChecked(overrideDefaultCoordinate);
                 rebuild(table);
-            }), Styles.clearTogglei, () -> {}).size(40, 40).color(table.color).left().padLeft(2);
-        });
+            });
+        }, Styles.grayt, () -> {}).size(0, 40));
 
         if (overrideDefaultCoordinate) {
             buildRowTable(table, t -> {
@@ -157,20 +148,18 @@ public class EventRaid extends ActionLStatement {
     @Override
     public void write(StringBuilder builder) {
         super.write(builder);
-        writeTokens(builder, raidType.name(), flag, timer);
-        writeTokens(builder, String.valueOf(overrideDefaultTeam));
-        if (overrideDefaultTeam) writeTokens(builder, team);
+        writeTokens(builder, raidType.name(), flag, timer, team);
         writeTokens(builder, String.valueOf(overrideRaidStats));
         if (overrideRaidStats) writeTokens(builder, alertTime, raidTime, raidScale, inaccuracy);
         writeTokens(builder, String.valueOf(overrideDefaultCoordinate));
         if (overrideDefaultCoordinate) writeTokens(builder, sourceX, sourceY, targetX, targetY);
+
     }
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
         return new EventRaidI(
-                raidType, builder.var(flag), builder.var(timer),
-                overrideDefaultTeam, builder.var(team),
+                raidType, builder.var(flag), builder.var(timer), builder.var(team),
                 overrideRaidStats, builder.var(alertTime), builder.var(raidTime), builder.var(raidScale), builder.var(inaccuracy),
                 overrideDefaultCoordinate, builder.var(sourceX), builder.var(sourceY), builder.var(targetX), builder.var(targetY)
         );
@@ -180,23 +169,20 @@ public class EventRaid extends ActionLStatement {
         public RaidPreset raidType;
         public LVar flag, timer;
 
-        public boolean overrideDefaultTeam, overrideRaidStats, overrideDefaultCoordinate;
+        public boolean overrideRaidStats, overrideDefaultCoordinate;
 
         public LVar team;
         public LVar alertTime, raidTime, raidScale, inaccuracy ;
         public LVar sourceX, sourceY, targetX, targetY;
 
         public EventRaidI(
-                RaidPreset raidType, LVar flag, LVar timer,
-                boolean overrideDefaultTeam, LVar team,
+                RaidPreset raidType, LVar flag, LVar timer, LVar team,
                 boolean overrideRaidStats, LVar alertTime, LVar raidTime, LVar raidScale, LVar inaccuracy,
                 boolean overrideDefaultCoordinate, LVar sourceX, LVar sourceY, LVar targetX, LVar targetY
         ) {
             this.raidType = raidType;
             this.flag = flag;
             this.timer = timer;
-
-            this.overrideDefaultTeam = overrideDefaultTeam;
             this.team = team;
 
             this.overrideRaidStats = overrideRaidStats;
@@ -214,11 +200,9 @@ public class EventRaid extends ActionLStatement {
 
         @Override
         public void run(LExecutor exec) {
-            startExec(exec, "info_fade_in");
+            startExec(exec, "event-raid");
             appendExec(exec, raidType.name());
-            appendExec(exec, flag, timer);
-            appendExec(exec, String.valueOf(overrideDefaultTeam));
-            if (overrideDefaultTeam) appendExec(exec, team);
+            appendExec(exec, flag, timer, team);
             appendExec(exec, String.valueOf(overrideRaidStats));
             if (overrideRaidStats) appendExec(exec, alertTime, raidTime, raidScale, inaccuracy);
             appendExec(exec, String.valueOf(overrideDefaultCoordinate));

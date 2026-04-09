@@ -126,7 +126,7 @@ public class NHContent extends Content {
 
         registerAction(EventRaid.class, EventRaidAction.class);
 
-        registerAction(WarningIcon.class, WarningIconAction.class);
+        //registerAction(WarningIcon.class, WarningIconAction.class);
     }
 
     public static void registerAction(Class<? extends ActionLStatement> lstatement, Class<? extends Action> actionClass) {
