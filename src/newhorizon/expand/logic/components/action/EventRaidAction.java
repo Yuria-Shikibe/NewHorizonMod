@@ -19,6 +19,7 @@ import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.cutscene.types.AlertType;
 import newhorizon.expand.logic.cutscene.types.HudIcon;
 import newhorizon.expand.logic.cutscene.types.RaidControllerType;
+import newhorizon.expand.logic.cutscene.types.RaidPreset;
 import newhorizon.util.ui.NHUIFunc;
 
 import java.util.Objects;
@@ -27,21 +28,18 @@ import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class EventRaidAction extends Action {
-    public String raidControllerType = "defaultController";
+    public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_0");
+
     public String flag = "raid-executor", timer = "raid-timer";
 
+    public boolean overrideDefaultTeam = false;
+    public Team team = Team.crux;
+
     public float alertTime = 15f, raidTime = 5f;
+    public float raidScale = 1, inaccuracy = 40f;
 
-    public String raidType = "PRESET_RAID_0";
-
-    public HudIcon hudIcon = HudIcon.defaultRaid;
-    public AlertType warningSound = AlertType.alarm;
-    public String warningText = "default_raid_text";
-
-    public Team team;
-    public int bulletType = 0, bulletCount = 5;
+    public boolean overrideDefaultCoordinate = false;
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0;
-    public float inaccuracy = 40f;
 
     private int raidCounter;
 
@@ -57,7 +55,7 @@ public class EventRaidAction extends Action {
 
     @Override
     public void parseTokens(String[] tokens) {
-        RaidControllerType type = RaidControllerType.valueOf(ParseUtil.getFirstToken(tokens));
+        raidType = RaidPreset.valueOf(ParseUtil.getFirstToken(tokens));
 
         flag = ParseUtil.getNextToken(tokens);
         timer = ParseUtil.getNextToken(tokens);
@@ -67,75 +65,21 @@ public class EventRaidAction extends Action {
 
         duration = alertTime + raidTime;
 
-        switch (type) {
-            case defaultController -> {
-                raidType = ParseUtil.getNextToken(tokens);
-            }
-            case customController -> {
-                bulletType = ParseUtil.getNextInt(tokens);
-                bulletCount = ParseUtil.getNextInt(tokens);
-
-                hudIcon = HudIcon.valueOf(ParseUtil.getNextToken(tokens));
-                warningSound = AlertType.valueOf(ParseUtil.getNextToken(tokens));
-                warningText = ParseUtil.getNextString(tokens);
-            }
-            case teamDefaultController -> {
-                team = ParseUtil.getNextTeam(tokens);
-                raidType = ParseUtil.getNextToken(tokens);
-            }
-            case teamCustomController -> {
-                team = ParseUtil.getNextTeam(tokens);
-                bulletType = ParseUtil.getNextInt(tokens);
-                bulletCount = ParseUtil.getNextInt(tokens);
-
-                hudIcon = HudIcon.valueOf(ParseUtil.getNextToken(tokens));
-                warningSound = AlertType.valueOf(ParseUtil.getNextToken(tokens));
-                warningText = ParseUtil.getNextString(tokens);
-            }
-            case coordinateDefaultController -> {
-                team = ParseUtil.getNextTeam(tokens);
-                raidType = ParseUtil.getNextToken(tokens);
-
-                sourceX = ParseUtil.getNextFloat(tokens);
-                sourceY = ParseUtil.getNextFloat(tokens);
-                targetX = ParseUtil.getNextFloat(tokens);
-                targetY = ParseUtil.getNextFloat(tokens);
-            }
-            case coordinateCustomController ->{
-                team = ParseUtil.getNextTeam(tokens);
-                bulletType = ParseUtil.getNextInt(tokens);
-                bulletCount = ParseUtil.getNextInt(tokens);
-
-                hudIcon = HudIcon.valueOf(ParseUtil.getNextToken(tokens));
-                warningSound = AlertType.valueOf(ParseUtil.getNextToken(tokens));
-                warningText = ParseUtil.getNextString(tokens);
-
-                sourceX = ParseUtil.getNextFloat(tokens);
-                sourceY = ParseUtil.getNextFloat(tokens);
-                targetX = ParseUtil.getNextFloat(tokens);
-                targetY = ParseUtil.getNextFloat(tokens);
-            }
-        }
+        sourceX = ParseUtil.getNextFloat(tokens);
+        sourceY = ParseUtil.getNextFloat(tokens);
+        targetX = ParseUtil.getNextFloat(tokens);
+        targetY = ParseUtil.getNextFloat(tokens);
     }
 
     public BulletType bulletType() {
-        return switch (bulletType) {
-            case 1 -> RaidBullets.raidBullet_1;
-            case 2 -> RaidBullets.raidBullet_2;
-            case 3 -> RaidBullets.raidBullet_3;
-            case 4 -> RaidBullets.raidBullet_4;
-            case 5 -> RaidBullets.raidBullet_5;
-            case 6 -> RaidBullets.raidBullet_6;
-            case 7 -> RaidBullets.raidBullet_7;
-            case 8 -> RaidBullets.raidBullet_8;
-            default -> NHBullets.railGun1;
-        };
+        return RaidBullets.raidBullet_1;
     }
 
     @Override
     public void begin() {
         if (headless) return;
 
+        /*
         warningSound.sound.play();
         NHUIFunc.showLabel(duration / Time.toSeconds, t -> {
             t.background(Styles.black5);
@@ -159,6 +103,8 @@ public class EventRaidAction extends Action {
                 }
             }
         });
+
+         */
     }
 
     public void end() {
