@@ -19,7 +19,7 @@ public class EventRaid extends ActionLStatement {
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
     public String team = "@waveteam";
-    public String alertTime = "15", raidTime = "5", raidScale = "5", inaccuracy = "40";
+    public String alertTime = "15", raidTime = "5", raidScale = "1", inaccuracy = "40";
     public String sourceX = "0", sourceY = "0", targetX = "0", targetY = "0";
 
     public EventRaid(String[] token) {
@@ -76,16 +76,18 @@ public class EventRaid extends ActionLStatement {
         });
 
         buildRowTable(table, t -> {
-            t.add(" Objective Config: < Flag : ");
+            t.add(" Objective Flag : ");
             fields(t, flag, str -> flag = str).width(180f);
-            t.add(" , Objective Flag : ");
+        });
+
+        buildRowTable(table, t -> {
+            t.add(" Objective Timer : ");
             fields(t, timer, str -> timer = str).width(180f);
-            t.add(" > ");
         });
 
         buildRowTable(table, t -> {
             t.add(" From Team : ");
-            fields(t, team, str -> team = str);
+            fields(t, team, str -> team = str).width(180f);
         });
 
         buildRowTable(table, t -> t.button(b -> {

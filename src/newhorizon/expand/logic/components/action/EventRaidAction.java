@@ -4,6 +4,7 @@ import arc.Core;
 import arc.flabel.FLabel;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
@@ -61,18 +62,18 @@ public class EventRaidAction extends Action {
 
         overrideRaidStats = ParseUtil.getNextBool(tokens);
         if (overrideRaidStats) {
-            alertTime = ParseUtil.getNextFloat(tokens);
-            raidTime = ParseUtil.getNextFloat(tokens);
+            alertTime = ParseUtil.getNextFloat(tokens) * Time.toSeconds;
+            raidTime = ParseUtil.getNextFloat(tokens) * Time.toSeconds;
             raidScale = ParseUtil.getNextFloat(tokens);
-            inaccuracy = ParseUtil.getNextFloat(tokens);
+            inaccuracy = ParseUtil.getNextFloat(tokens) * tilesize;
         }
 
         overrideDefaultCoordinate = ParseUtil.getNextBool(tokens);
         if (overrideDefaultCoordinate) {
-            sourceX = ParseUtil.getNextFloat(tokens);
-            sourceY = ParseUtil.getNextFloat(tokens);
-            targetX = ParseUtil.getNextFloat(tokens);
-            targetY = ParseUtil.getNextFloat(tokens);
+            sourceX = ParseUtil.getNextFloat(tokens) * tilesize;
+            sourceY = ParseUtil.getNextFloat(tokens) * tilesize;
+            targetX = ParseUtil.getNextFloat(tokens) * tilesize;
+            targetY = ParseUtil.getNextFloat(tokens) * tilesize;
         }
 
     }
@@ -84,12 +85,11 @@ public class EventRaidAction extends Action {
         duration = alertTime + raidTime;
 
         if (!overrideRaidStats) {
-
+            alertTime = raidType.alertTime * Time.toSeconds;
+            raidTime = raidType.raidTime * Time.toSeconds;
+            raidScale = raidType.raidScale;
+            inaccuracy = raidType.inaccuracy;
         }
-    }
-
-    public BulletType bulletType() {
-        return RaidBullets.raidBullet_1;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class EventRaidAction extends Action {
 
         raidType.raidAlarmSound.play();
 
-        NHUIFunc.showLabel(duration / Time.toSeconds, t -> {
+        NHUIFunc.showLabel(4.5f, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
                 t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0,-9).color(team.color).row()).pad(0).growX();
@@ -109,6 +109,7 @@ public class EventRaidAction extends Action {
             t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + raidType.name()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
 
+        /*
         state.rules.objectives.each(mapObjective -> {
             if (mapObjective instanceof TriggerObjective obj && Objects.equals(obj.timer, timer)) {
                 obj.trigger(alertTime * Time.toSeconds);
@@ -120,15 +121,20 @@ public class EventRaidAction extends Action {
                 }
             }
         });
+
+         */
     }
 
+    /*
     public void end() {
         state.rules.objectiveFlags.remove(flag);
     }
 
+     */
+
     @Override
     public void act() {
-        int raidCount = Mathf.round(((lifeTimer - alertTime) / raidTime) * raidCounter);
+        int raidCount = Mathf.round(Mathf.maxZero(lifeTimer - alertTime) / Time.toSeconds * raidScale);
         int raid = raidCount - raidCounter;
         raidCounter = raidCount;
 
@@ -138,10 +144,10 @@ public class EventRaidAction extends Action {
     }
 
     public void createBullet() {
-        Tmp.v1.trns(Mathf.random(360f), 1);
+        Tmp.v1.trns(Mathf.random(360f), inaccuracy);
         float dst = Mathf.dst(sourceX, sourceY, targetX, targetY);
         float ang = Angles.angle(sourceX, sourceY, targetX, targetY);
-        float lifetimeScl = dst / (bulletType().speed * bulletType().lifetime);
-        Call.createBullet(bulletType(), team, sourceX + Tmp.v1.x, sourceY + Tmp.v1.y, ang, -1, 1f, lifetimeScl);
+        float lifetimeScl = dst / (raidType.bulletType.speed * raidType.bulletType.lifetime);
+        Call.createBullet(raidType.bulletType, team, sourceX + Tmp.v1.x, sourceY + Tmp.v1.y, ang, -1, 1f, lifetimeScl);
     }
 }

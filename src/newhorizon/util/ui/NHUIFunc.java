@@ -126,7 +126,7 @@ public class NHUIFunc {
             });
             color.a(0);
             actions(
-                    Actions.fadeIn(0.45f, NHInterp.bounce5Out),
+                    Actions.fadeIn(0.5f, NHInterp.bounce5Out),
                     Actions.delay(duration - 1f),
                     Actions.fadeOut(0.5f),
                     Actions.remove()
