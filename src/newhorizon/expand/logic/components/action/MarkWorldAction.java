@@ -43,8 +43,6 @@ public class MarkWorldAction extends Action {
     @Override
     public void end() {
         if (headless) return;
-
-        cutsceneUI.mark(worldX, worldY, markRadius, markTime * Time.toSeconds, team.color, getMarkStyle());
     }
 
     @Override

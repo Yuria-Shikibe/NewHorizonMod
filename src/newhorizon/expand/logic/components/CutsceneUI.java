@@ -15,13 +15,15 @@ import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.Align;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
-import newhorizon.expand.logic.components.ui.MarkBox;
+import newhorizon.NHUI;
+import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.components.ui.MarkStyle;
 import newhorizon.util.annotation.ClientOnly;
 import newhorizon.util.annotation.HeadlessDisabled;
@@ -35,7 +37,7 @@ import static newhorizon.NHVars.cutsceneUI;
 @HeadlessDisabled
 public class CutsceneUI {
     public final float OVERLAY_SPEED = 0.0065f;
-    public final ObjectMap<String, MarkBox> markers = new ObjectMap<>();
+    public final Seq<HudMarker> markers = new Seq<>();
     public WidgetGroup root, overlay, curtain;
     public Table textTable, textArea, infoTable, skip;
     public FLabel textLabel, infoLabel;
@@ -44,11 +46,6 @@ public class CutsceneUI {
     public float curtainProgress = 0;
     public float targetOverlayAlpha;
     public float overlayAlphaShiftSpeed = OVERLAY_SPEED;
-    //public Image killStreak;
-    //public Vec2 killStreakShake = new Vec2();
-    //public float killStreakShakeTimer = 0f;
-    //public float killStreakCountTimer = 0f;
-    //public int killStreakCount = 0;
 
     public CutsceneUI() {
         if (headless) return;
@@ -247,12 +244,14 @@ public class CutsceneUI {
         overlay.clear();
     }
 
-    @HeadlessDisabled
-    public void mark(float x, float y, float radius, float lifetime, Color color, MarkStyle style) {
-        if (headless) return;
-        MarkBox box = new MarkBox();
-        box.init(radius, color, new Vec2(x, y), style);
-        if (lifetime > 0) box.lifetime = lifetime;
-        box.addSelf();
+    public void addMarker(HudMarker marker) {
+        cutsceneUI.root.addChild(marker);
+        markers.add(marker);
+
+        NHUI.rebuildEventList();
+    }
+
+    public void removeMarker(HudMarker marker) {
+        markers.remove(marker);
     }
 }

@@ -36,6 +36,9 @@ public class DelayCollapser extends WidgetGroup {
         addChild(table);
     }
 
+    public DelayCollapser(Table objectiveTable, Object o) {
+    }
+
     public DelayCollapser setDuration(float seconds) {
         this.seconds = seconds;
         return this;

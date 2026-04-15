@@ -39,15 +39,6 @@ public class TimeQueue<T extends TimeQueue.Timed> {
     }
 
     /**
-     * Insert an item at the front of the queue (will execute next).
-     */
-    public void insertNext(T item) {
-        if (item != null) {
-            queue.addLast(item);
-        }
-    }
-
-    /**
      * Clear all pending items and stop current execution.
      */
     public void clear() {

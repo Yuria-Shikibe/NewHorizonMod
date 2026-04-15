@@ -121,8 +121,8 @@ public class NHUIFunc {
             touchable = Touchable.disabled;
             update(() -> {
                 if (state.isMenu()) remove();
-                setWidth(NHUI.getWidth());
-                setPosition(0, (NHUI.getHeight() - height) / 2);
+                setWidth(Core.graphics.getWidth());
+                setPosition(0, (Core.graphics.getHeight() - height) / 2);
             });
             color.a(0);
             actions(

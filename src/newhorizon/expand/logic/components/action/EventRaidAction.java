@@ -18,6 +18,7 @@ import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.cutscene.types.AlertType;
 import newhorizon.expand.logic.cutscene.types.HudIcon;
 import newhorizon.expand.logic.cutscene.types.RaidControllerType;
@@ -65,7 +66,7 @@ public class EventRaidAction extends Action {
             alertTime = ParseUtil.getNextFloat(tokens) * Time.toSeconds;
             raidTime = ParseUtil.getNextFloat(tokens) * Time.toSeconds;
             raidScale = ParseUtil.getNextFloat(tokens);
-            inaccuracy = ParseUtil.getNextFloat(tokens) * tilesize;
+            inaccuracy = ParseUtil.getNextFloat(tokens);
         }
 
         overrideDefaultCoordinate = ParseUtil.getNextBool(tokens);
@@ -82,14 +83,14 @@ public class EventRaidAction extends Action {
     public void postInit() {
         super.postInit();
 
-        duration = alertTime + raidTime;
-
         if (!overrideRaidStats) {
             alertTime = raidType.alertTime * Time.toSeconds;
             raidTime = raidType.raidTime * Time.toSeconds;
             raidScale = raidType.raidScale;
             inaccuracy = raidType.inaccuracy;
         }
+
+        duration = alertTime + raidTime;
     }
 
     @Override
@@ -102,12 +103,14 @@ public class EventRaidAction extends Action {
             t.background(Styles.black5);
             t.table(t2 -> {
                 t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0,-9).color(team.color).row()).pad(0).growX();
-                t2.image(raidType.warningIcon).fill().color(team.color);
+                t2.image(Core.atlas.find(raidType.warningIcon)).fill().color(team.color);
                 t2.table(right -> right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, -9, 0, 0).color(team.color).row()).pad(0).growX();
             }).growX().pad(OFFSET / 2).fillY().row();
 
             t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + raidType.name()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
+
+        new HudMarker().setMarkPosition(targetX, targetY).setDuration(alertTime).setMarkColor(team.color).setRadius(inaccuracy).addMarker();
 
         /*
         state.rules.objectives.each(mapObjective -> {

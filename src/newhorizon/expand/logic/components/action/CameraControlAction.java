@@ -29,9 +29,7 @@ public class CameraControlAction extends Action {
         if (headless) return;
 
         control.input.logicCutscene = true;
-
-        Tmp.v1.set(Core.camera.position).lerpDelta(worldX, worldY, progress());
-        control.input.logicCamSpeed = 1000f;
-        control.input.logicCamPan = Tmp.v1;
+        //control.input.logicCamSpeed = 1000f;
+        control.input.logicCamPan = Tmp.v1.set(worldX, worldY);
     }
 }
