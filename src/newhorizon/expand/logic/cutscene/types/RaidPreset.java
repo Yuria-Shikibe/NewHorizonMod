@@ -9,7 +9,7 @@ import newhorizon.content.NHSounds;
 import newhorizon.content.bullets.RaidBullets;
 
 public enum RaidPreset {
-    PRESET_RAID_0(RaidBullets.raidBullet_1, NHSounds.alarm, "raid", 15, 5, 1, 40),
+    PRESET_RAID_0(RaidBullets.raidBullet_1, NHSounds.alarm, "objective-2", 15, 5, 1, 40),
     ;
 
     public static final RaidPreset[] all = values();

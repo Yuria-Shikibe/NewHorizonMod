@@ -9,26 +9,23 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
-import arc.scene.ui.Button;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
-import arc.util.Scaling;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.CameraControlAction;
-import newhorizon.expand.logic.components.action.CameraResetAction;
 import newhorizon.expand.logic.components.action.InputLockAction;
 import newhorizon.expand.logic.components.action.InputUnlockAction;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.DelaySlideBar;
-import newhorizon.util.ui.ObjectiveSign;
 
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
@@ -45,6 +42,7 @@ public class HudMarker extends Table {
     public Color markColor = Pal.accent;
     public Vec2 markPoint = new Vec2();
 
+    public float delay = 3;
     public float duration = 5;
     public float radius = 24f;
     public float angle = 0f;
@@ -100,7 +98,7 @@ public class HudMarker extends Table {
     }
 
     public void removeMarker() {
-        actions(Actions.fadeOut(0.5f), Actions.remove());
+        actions(Actions.delay(delay), Actions.fadeOut(0.5f), Actions.remove());
     }
 
     @Override
@@ -122,9 +120,9 @@ public class HudMarker extends Table {
                             () -> "     " + "World Event",
                             () -> Mathf.clamp(lifeTimer / duration)
                     )).padLeft(20f).height(40).expandX().fillX()),
-                    new Table(table -> table.image(NHContent.raid).size(56).pad(-8).expandX().left()),
+                    new Table(table -> table.image(Core.atlas.find(NewHorizon.name("ADFSDS"))).color(markColor).size(54).pad(-8).expandX().left()),
                     new Table(table -> table.button(Icon.eyeSmall, Styles.clearNonei, () -> {
-                        displayAlpha = 10f;
+                        displayAlpha = 30f;
                         ActionBus bus = new ActionBus();
                         bus.addAll(
                                 new InputLockAction(),
@@ -160,13 +158,7 @@ public class HudMarker extends Table {
                         originVec.y > height * (1 - padding);
 
         drawOnWorld();
-
         if (outer) drawOnHud();
-
-    }
-
-    public void drawOnMinimap() {
-        //Vars.renderer.minimap.asdasdasdasdasdasdsa
     }
 
     public void drawOnWorld() {
@@ -179,7 +171,12 @@ public class HudMarker extends Table {
         Draw.rect(NHContent.pointerRegion, screenVec.x, screenVec.y, iconSize, iconSize, angle);
     }
 
-    public float getStrokeScale() {
+    public void drawLineStroke(boolean outer, boolean center) {
+        Lines.stroke((outer? strokeOuter: strokeInner) * getScale(), Pal.gray);
+        Draw.alpha(color.a * Mathf.clamp(displayAlpha, center? 0.5f: 0.1f, 1f));
+    }
+
+    public float getScale() {
         return Mathf.clamp(Vars.renderer.getDisplayScale(), 0.5f, 2f);
     }
 
@@ -188,15 +185,13 @@ public class HudMarker extends Table {
     }
 
     public void drawCrossHair() {
-        Lines.stroke(strokeOuter * getStrokeScale(), Pal.gray);
-        Draw.alpha(color.a * Mathf.clamp(displayAlpha, 0.1f, 1f));
+        drawLineStroke(true, false);
         for (int i : Mathf.signs) {
             Lines.line(Math.max(0, i) * width, originVec.y, originVec.x + getCenterSize() * i * 2, originVec.y);
             Lines.line(originVec.x, Math.max(0, i) * height, originVec.x, originVec.y + getCenterSize() * i * 2);
         }
 
-        Lines.stroke(strokeInner * getStrokeScale(), markColor);
-        Draw.alpha(color.a * Mathf.clamp(displayAlpha, 0.1f, 1f));
+        drawLineStroke(false, false);
         for (int i : Mathf.signs) {
             Lines.line(Math.max(0, i) * width, originVec.y, originVec.x + getCenterSize() * i * 2, originVec.y);
             Lines.line(originVec.x, Math.max(0, i) * height, originVec.x, originVec.y + getCenterSize() * i * 2);
@@ -204,12 +199,9 @@ public class HudMarker extends Table {
     }
 
     public void drawProcessBar() {
-        Lines.stroke(strokeOuter * getStrokeScale(), Pal.gray);
-        Draw.alpha(color.a * Mathf.clamp(displayAlpha, 0.5f, 1f));
+        drawLineStroke(true, true);
         Lines.circle(originVec.x, originVec.y, getCenterSize() * 2f);
-
-        Lines.stroke(strokeInner * getStrokeScale(), markColor);
-        Draw.alpha(color.a * Mathf.clamp(displayAlpha, 0.5f, 1f));
-        DrawFunc.circlePercent(originVec.x, originVec.y, getCenterSize() * 2f, lifeTimer / duration, 0);
+        drawLineStroke(false, true);
+        DrawFunc.circlePercent(originVec.x, originVec.y, getCenterSize() * 2f, Mathf.clamp(lifeTimer / duration), 0);
     }
 }
