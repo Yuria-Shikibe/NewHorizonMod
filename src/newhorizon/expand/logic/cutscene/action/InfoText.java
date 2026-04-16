@@ -5,7 +5,7 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
 
@@ -34,7 +34,7 @@ public class InfoText extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHLogic.nhaction;
     }
 
     @Override

@@ -3,7 +3,7 @@ package newhorizon.expand.logic.cutscene.action;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
 
 public class UIShow extends ActionLStatement {
@@ -19,7 +19,7 @@ public class UIShow extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.actionInputControl;
+        return NHLogic.actionInputControl;
     }
 
     @Override

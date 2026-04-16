@@ -5,7 +5,7 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
 
@@ -36,7 +36,7 @@ public class CameraZoom extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.actionCameraControl;
+        return NHLogic.actionCameraControl;
     }
 
     @Override

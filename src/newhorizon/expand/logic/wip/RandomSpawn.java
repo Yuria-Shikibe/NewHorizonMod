@@ -5,7 +5,7 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 
 public class RandomSpawn extends LStatement {
     public String seed = "0", x = "sx", y = "sy";
@@ -45,7 +45,7 @@ public class RandomSpawn extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhwproc;
+        return NHLogic.nhwproc;
     }
 
     public void write(StringBuilder builder) {

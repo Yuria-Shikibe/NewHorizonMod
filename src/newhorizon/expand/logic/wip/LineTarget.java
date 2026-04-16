@@ -5,7 +5,7 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 
 public class LineTarget extends LStatement {
     public String team = "@sharded", sourceX = "0", sourceY = "0", targetX = "0", targetY = "0", outX = "0", outY = "0";
@@ -70,7 +70,7 @@ public class LineTarget extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhwproc;
+        return NHLogic.nhwproc;
     }
 
     @Override

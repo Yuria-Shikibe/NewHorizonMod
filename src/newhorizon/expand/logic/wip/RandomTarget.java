@@ -5,7 +5,7 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 
 public class RandomTarget extends LStatement {
     public String team = "@sharded", seed = "0", x = "tx", y = "ty", turretW = "0", generatorW = "0", factoryW = "0", coreW = "1";
@@ -72,7 +72,7 @@ public class RandomTarget extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhwproc;
+        return NHLogic.nhwproc;
     }
 
     public void write(StringBuilder builder) {

@@ -16,16 +16,13 @@ import mindustry.gen.Icon;
 import mindustry.gen.LogicIO;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
 import mindustry.logic.LStatement;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.platform.FloatPlatformDrawer;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.game.MapMarker.RaidIndicator;
-import newhorizon.expand.game.MapObjectives.ReuseObjective;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ThreatLevel;
@@ -39,7 +36,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class NHContent extends Content {
+public class NHContent{
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f;
     public static final float HEX_SHIELD_LAYER = 56.172f;
     public static final float QUANTUM_LAYER = Layer.blockOver + 0.1919f;
@@ -61,10 +58,6 @@ public class NHContent extends Content {
 
     public static Attribute quantum, density;
 
-    public static LCategory
-            nhwproc, nhcutscene, nhaction,
-            actionCameraControl, actionInputControl, actionCurtainControl, actionFlowControl;
-
     public static void loadPriority() {
         new NHContent().load();
     }
@@ -76,15 +69,6 @@ public class NHContent extends Content {
     }
 
     public static void loadLast() {
-        nhwproc = new LCategory("nh-wproc", Pal.heal.cpy().lerp(Pal.gray, 0.2f));
-        nhcutscene = new LCategory("nh-cutscene", Pal.remove.cpy().lerp(Pal.gray, 0.3f));
-
-        nhaction = new LCategory("nh-action", Pal.surge.cpy().lerp(Pal.gray, 0.3f));
-
-        actionFlowControl = new LCategory("nh-action-flow-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0f));
-        actionCameraControl = new LCategory("nh-action-camera-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(20f));
-        actionInputControl = new LCategory("nh-action-input-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(40f));
-        actionCurtainControl = new LCategory("nh-action-curtain-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(60f));
 
         ThreatLevel.init();
 
@@ -96,86 +80,7 @@ public class NHContent extends Content {
         //registerStatement("raidcontrol", RaidControl::new, RaidControl::new);
         //registerStatement("defaultraid", DefaultRaid::new, DefaultRaid::new);
 
-        registerStatement(InitActons.class);
-        registerStatement(SaveActions.class);
-        registerStatement(GetActions.class);
-        registerStatement(RunMainBus.class);
-        registerStatement(RunSubBus.class);
-
-        CutsceneControl.registerAction(NullAction.class);
-
-        loadActions();
-
-        MapObjectives.registerObjective(ReuseObjective::new);
-        MapObjectives.registerObjective(TriggerObjective::new);
-        MapObjectives.registerMarker(RaidIndicator::new);
-    }
-
-    public static void loadActions() {
-        registerAction(Wait.class, WaitAction.class);
-
-        registerAction(CurtainFadeIn.class, CurtainFadeInAction.class);
-        registerAction(CurtainFadeOut.class, CurtainFadeOutAction.class);
-
-        registerAction(CameraControl.class, CameraControlAction.class);
-        registerAction(CameraZoom.class, CameraZoomAction.class);
-        registerAction(CameraReset.class, CameraResetAction.class);
-
-        registerAction(InputLock.class, InputLockAction.class);
-        registerAction(InputUnlock.class, InputUnlockAction.class);
-
-        registerAction(EventRaid.class, EventRaidAction.class);
-
-        //registerAction(WarningIcon.class, WarningIconAction.class);
-    }
-
-    public static void registerAction(Class<? extends ActionLStatement> lstatement, Class<? extends Action> actionClass) {
-        registerStatement(lstatement);
-        CutsceneControl.registerAction(actionClass);
-    }
-
-    public static void registerStatement(Class<? extends ActionLStatement> lstatement){
-        try {
-            Constructor<? extends ActionLStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
-            Constructor<? extends ActionLStatement> defaultCons = lstatement.getDeclaredConstructor();
-            Method getNameMethod = lstatement.getDeclaredMethod("getLStatementName");
-
-            parserCons.setAccessible(true);
-            defaultCons.setAccessible(true);
-            getNameMethod.setAccessible(true);
-
-            String name;
-
-            ActionLStatement tempInstance = defaultCons.newInstance();
-            name = (String) getNameMethod.invoke(tempInstance);
-
-            LAssembler.customParsers.put(name, (tokens) -> {
-                try {
-                    return parserCons.newInstance((Object) tokens);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException("Failed to create instance of " + lstatement.getSimpleName() + " with tokens", e);
-                }
-            });
-            LogicIO.allStatements.addUnique(() -> {
-                try {
-                    return defaultCons.newInstance();
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException("Failed to create default instance of " + lstatement.getSimpleName(), e);
-                }
-            });
-        }catch (Exception e){
-            Log.err(e);
-        }
-    }
-
-    public static void registerStatement(String name, Func<String[], LStatement> func, Prov<LStatement> prov) {
-        LAssembler.customParsers.put(name, func);
-        LogicIO.allStatements.addUnique(prov);
-    }
-
-    @Override
-    public ContentType getContentType() {
-        return ContentType.error;
+        //MapObjectives.registerMarker(RaidIndicator::new);
     }
 
     public void load() {
@@ -183,6 +88,7 @@ public class NHContent extends Content {
 
         Icon.icons.put("midantha", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("midantha"))));
         Icon.icons.put("nh", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("icon-2"))));
+
         UltFire.load();
 
         crossRegion = Core.atlas.find("cross");

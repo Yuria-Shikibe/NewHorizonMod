@@ -1,13 +1,10 @@
 package newhorizon.expand.logic.cutscene.action;
 
-import arc.scene.ui.layout.Table;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
-import mindustry.logic.LVar;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
-import newhorizon.expand.logic.ParseUtil;
 
 public class InputUnlock extends ActionLStatement {
 
@@ -22,7 +19,7 @@ public class InputUnlock extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.actionInputControl;
+        return NHLogic.actionInputControl;
     }
 
     @Override

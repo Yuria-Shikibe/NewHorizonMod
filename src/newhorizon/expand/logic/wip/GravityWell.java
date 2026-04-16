@@ -5,7 +5,7 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 
 public class GravityWell extends LStatement {
     public String x = "0", y = "0", out = "0";
@@ -45,7 +45,7 @@ public class GravityWell extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhwproc;
+        return NHLogic.nhwproc;
     }
 
     public void write(StringBuilder builder) {

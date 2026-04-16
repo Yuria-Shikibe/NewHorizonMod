@@ -5,7 +5,7 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 
 public class SpawnBullet extends LStatement {
     public String team = "@sharded", type = "0", seed = "0", count = "0", sourceX = "0", sourceY = "0", targetX = "0", targetY = "0", inaccuracy = "0";
@@ -76,7 +76,7 @@ public class SpawnBullet extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhcutscene;
+        return NHLogic.nhcutscene;
     }
 
     public void write(StringBuilder builder) {

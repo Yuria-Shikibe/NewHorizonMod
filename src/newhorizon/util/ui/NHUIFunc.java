@@ -197,7 +197,6 @@ public class NHUIFunc {
             container.setTranslation(0, table.getPrefHeight());
             container.actions(
                     Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
-                    //nesting actions() calls is necessary so the right prefHeight() is used
                     Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove()))
             );
         });

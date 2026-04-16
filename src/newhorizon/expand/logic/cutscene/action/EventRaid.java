@@ -1,13 +1,12 @@
 package newhorizon.expand.logic.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
 import mindustry.ui.Styles;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
@@ -56,7 +55,7 @@ public class EventRaid extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhwproc;
+        return NHLogic.nhwproc;
     }
 
     @Override

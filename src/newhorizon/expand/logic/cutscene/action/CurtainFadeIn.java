@@ -1,20 +1,13 @@
 package newhorizon.expand.logic.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import arc.util.Strings;
-import arc.util.Time;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ParseUtil;
-import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.logic.components.CutsceneControl;
-
-import static mindustry.Vars.headless;
-import static newhorizon.NHVars.cutsceneUI;
 
 public class CurtainFadeIn extends ActionLStatement {
     public String duration = "2";
@@ -39,7 +32,7 @@ public class CurtainFadeIn extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhaction;
+        return NHLogic.nhaction;
     }
 
     @Override

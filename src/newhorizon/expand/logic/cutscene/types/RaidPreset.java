@@ -1,10 +1,8 @@
 package newhorizon.expand.logic.cutscene.types;
 
 import arc.audio.Sound;
-import arc.graphics.g2d.TextureRegion;
 import mindustry.entities.bullet.BulletType;
 import newhorizon.NewHorizon;
-import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.content.bullets.RaidBullets;
 

@@ -1,13 +1,10 @@
 package newhorizon.expand.logic.cutscene.actionBus;
 
-import arc.scene.ui.layout.Table;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
-import mindustry.logic.LVar;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
-import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.CutsceneControl;
 
 import static newhorizon.NHVars.cutscene;
@@ -25,7 +22,7 @@ public class RunSubBus extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhcutscene;
+        return NHLogic.nhcutscene;
     }
 
     @Override

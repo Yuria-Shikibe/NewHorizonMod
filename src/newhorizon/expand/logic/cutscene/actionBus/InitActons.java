@@ -3,7 +3,7 @@ package newhorizon.expand.logic.cutscene.actionBus;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
-import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
 
 //clear LExecutor text buffer, begin a new bus
@@ -21,7 +21,7 @@ public class InitActons extends ActionLStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.nhcutscene;
+        return NHLogic.nhcutscene;
     }
 
     @Override
