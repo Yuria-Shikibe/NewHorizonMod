@@ -4,6 +4,7 @@ import arc.Core;
 import arc.flabel.FLabel;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.scene.style.Drawable;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -30,6 +31,7 @@ public class EventRaidAction extends Action {
     public float alertTime = 15f, raidTime = 5f, raidScale = 1, inaccuracy = 40f;
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0;
 
+    private boolean popupDisplayed;
     private int raidCounter;
 
     @Override
@@ -85,14 +87,11 @@ public class EventRaidAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-
-        raidType.raidAlarmSound.play();
-
+        NHUIFunc.showToast((Drawable) Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
         NHUIFunc.showLabel(4.5f, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
                 var icon = Core.atlas.find(raidType.warningIcon);
-                Log.info(icon.width + " " + icon.height);
                 if (icon.width == 192) {
                     t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0,-9).color(team.color).row()).pad(0).growX();
                     t2.image(icon).fill().color(team.color);
@@ -135,6 +134,11 @@ public class EventRaidAction extends Action {
         int raidCount = Mathf.round(Mathf.maxZero(lifeTimer - alertTime) / Time.toSeconds * raidScale);
         int raid = raidCount - raidCounter;
         raidCounter = raidCount;
+
+        if (lifeTimer > alertTime && !popupDisplayed) {
+            popupDisplayed = true;
+            NHUIFunc.showToast((Drawable) Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
+        }
 
         for (int i = 0; i < raid; i++) {
             createBullet();

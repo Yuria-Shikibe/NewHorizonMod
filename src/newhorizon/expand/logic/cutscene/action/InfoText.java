@@ -26,10 +26,12 @@ public class InfoText extends ActionLStatement {
 
     @Override
     public void build(Table table) {
-        table.add(" Duration: ");
-        fields(table, duration, str -> duration = str);
-        table.row();
-        fields(table, text, str -> text = str).width(0).growX().padLeft(3);
+        buildRowTable(table, t -> {
+            t.add(" Duration: ");
+            fields(t, duration, str -> duration = str);
+        });
+
+        buildRowTable(table, t -> fields(t, text, str -> text = str).width(0).growX().padLeft(3));
     }
 
     @Override

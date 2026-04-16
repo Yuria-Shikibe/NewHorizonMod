@@ -33,17 +33,8 @@ public class NHLogic {
     public static LCategory actionCameraControl, actionInputControl, actionCurtainControl, actionFlowControl;
 
     public static void load(){
-        NHLogic.nhwproc = new LCategory("nh-wproc", Pal.heal.cpy().lerp(Pal.gray, 0.2f));
-        NHLogic.nhcutscene = new LCategory("nh-cutscene", Pal.remove.cpy().lerp(Pal.gray, 0.3f));
-
-        NHLogic.nhaction = new LCategory("nh-action", Pal.surge.cpy().lerp(Pal.gray, 0.3f));
-
-        NHLogic.actionFlowControl = new LCategory("nh-action-flow-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0f));
-        NHLogic.actionCameraControl = new LCategory("nh-action-camera-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(20f));
-        NHLogic.actionInputControl = new LCategory("nh-action-input-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(40f));
-        NHLogic.actionCurtainControl = new LCategory("nh-action-curtain-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(60f));
-
-        loadStatements();
+        loadLCategory();
+        loadLStatements();
         loadActions();
 
         if (NHSetting.getBool(NHSetting.EVENT_RAID)){
@@ -58,7 +49,20 @@ public class NHLogic {
         }
     }
 
-    public static void loadStatements() {
+    public static void loadLCategory() {
+        NHLogic.nhwproc = new LCategory("nh-wproc", Pal.heal.cpy().lerp(Pal.gray, 0.2f));
+        NHLogic.nhcutscene = new LCategory("nh-cutscene", Pal.remove.cpy().lerp(Pal.gray, 0.3f));
+
+        NHLogic.nhaction = new LCategory("nh-action", Pal.surge.cpy().lerp(Pal.gray, 0.3f));
+
+        NHLogic.actionFlowControl = new LCategory("nh-action-flow-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(0f));
+        NHLogic.actionCameraControl = new LCategory("nh-action-camera-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(20f));
+        NHLogic.actionInputControl = new LCategory("nh-action-input-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(40f));
+        NHLogic.actionCurtainControl = new LCategory("nh-action-curtain-control", Pal.surge.cpy().lerp(Pal.gray, 0.3f).shiftHue(60f));
+
+    }
+
+    public static void loadLStatements() {
         registerStatement(InitActons.class);
         registerStatement(SaveActions.class);
         registerStatement(GetActions.class);
@@ -124,7 +128,6 @@ public class NHLogic {
             Log.err(e);
         }
     }
-
 
     public static void registerDefaultRaid(){
         registerWproc("wait 300\n" + "setflag \"raid-trigger\" true", "raid protection period");

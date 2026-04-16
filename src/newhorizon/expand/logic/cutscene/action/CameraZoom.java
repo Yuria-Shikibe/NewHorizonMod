@@ -27,11 +27,15 @@ public class CameraZoom extends ActionLStatement {
 
     @Override
     public void build(Table table) {
-        table.add(" Duration: ");
-        fields(table, duration, str -> duration = str);
-        table.row();
-        table.add(" Zoom: ");
-        fields(table, zoom, str -> zoom = str);
+        buildRowTable(table, t -> {
+            t.add(" Duration: ");
+            fields(t, duration, str -> duration = str);
+        });
+
+        buildRowTable(table, t -> {
+            t.add(" Zoom: ");
+            fields(t, zoom, str -> zoom = str);
+        });
     }
 
     @Override

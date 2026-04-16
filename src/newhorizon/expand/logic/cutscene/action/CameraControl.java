@@ -28,14 +28,18 @@ public class CameraControl extends ActionLStatement {
 
     @Override
     public void build(Table table) {
-        table.add(" Duration: ");
-        fields(table, duration, str -> duration = str);
-        table.row();
-        table.add(" Camera Pos: < X: ");
-        fields(table, cameraX, str -> cameraX = str);
-        table.add(" , Y: ");
-        fields(table, cameraY, str -> cameraY = str);
-        table.add(" > ");
+        buildRowTable(table, t -> {
+            t.add(" Duration: ");
+            fields(t, duration, str -> duration = str);
+        });
+
+        buildRowTable(table, t -> {
+            t.add(" Camera Pos: < X: ");
+            fields(t, cameraX, str -> cameraX = str);
+            t.add(" , Y: ");
+            fields(t, cameraY, str -> cameraY = str);
+            t.add(" > ");
+        });
     }
 
     @Override

@@ -2,39 +2,18 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.func.Cons;
-import arc.func.Func;
-import arc.func.Prov;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
-import arc.util.Log;
 import mindustry.Vars;
-import mindustry.ctype.Content;
-import mindustry.ctype.ContentType;
-import mindustry.game.MapObjectives;
 import mindustry.gen.Icon;
-import mindustry.gen.LogicIO;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LStatement;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.platform.FloatPlatformDrawer;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.expand.game.MapMarker.RaidIndicator;
-import newhorizon.expand.game.MapObjectives.TriggerObjective;
-import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.ThreatLevel;
-import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.logic.components.CutsceneControl;
-import newhorizon.expand.logic.components.action.*;
-import newhorizon.expand.logic.cutscene.action.*;
-import newhorizon.expand.logic.cutscene.actionBus.*;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class NHContent{
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f;
@@ -93,7 +72,6 @@ public class NHContent{
 
         crossRegion = Core.atlas.find("cross");
         sourceCenter = Core.atlas.find(NewHorizon.name("source-center"));
-        timeIcon = Core.atlas.find(NewHorizon.name("time-icon"));
         xenIcon = Core.atlas.find(NewHorizon.name("xen-icon"));
         upgrade = Core.atlas.find(NewHorizon.name("upgrade"));
         upgrade2 = Core.atlas.find(NewHorizon.name("upgrade2"));

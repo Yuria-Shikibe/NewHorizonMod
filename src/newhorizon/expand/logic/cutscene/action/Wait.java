@@ -26,8 +26,10 @@ public class Wait extends ActionLStatement {
 
     @Override
     public void build(Table table) {
-        table.add(" Duration: ");
-        fields(table, duration, str -> duration = str);
+        buildRowTable(table, t -> {
+            t.add(" Duration: ");
+            fields(t, duration, str -> duration = str);
+        });
     }
 
     @Override
