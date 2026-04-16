@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Vec2;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -31,17 +32,18 @@ import static arc.math.Angles.randLenVectors;
 
 public class RaidBullets {
     public static final Rand rand = new Rand();
-    public static BulletType raidBullet_1, raidBullet_2, raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8;
+    public static final Vec2 v = new Vec2();
+    public static BulletType defaultRaidBullet1, raidBullet_2, raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8;
 
     public static void load() {
-        raidBullet_1 = new BasicRaidBulletType() {{
+        defaultRaidBullet1 = new BasicRaidBulletType() {{
             speed = 12f;
             lifetime = 120f;
 
-            damage = 2000;
+            damage = 600;
 
-            splashDamageRadius = 80f;
-            splashDamage = 1000f;
+            splashDamageRadius = 55f;
+            splashDamage = 400f;
 
             splashDamagePierce = true;
             scaledSplashDamage = true;
@@ -55,24 +57,35 @@ public class RaidBullets {
             absorbable = true;
             despawnHit = true;
 
-            trailLength = 40;
+            trailLength = 25;
             trailChance = 1f;
             trailParam = 6;
             drawSize = 120f;
             hitShake = despawnShake = 16f;
 
             shrinkX = shrinkY = 0;
-            height = 65f;
-            width = 40f;
+            height = 55f;
+            width = 22f;
 
-            sprite = NHBullets.STRIKE;
+            //sprite = NHBullets.STRIKE;
             hitSound = Sounds.explosion;
 
-            trailEffect = spark(45, 40);
+            trailRotation = true;
+            trailEffect = new Effect(25, e -> {
+                color(e.color, Color.white, e.fin());
+                stroke(0.6f + e.fout() * 1.7f);
+                rand.setSeed(e.id);
+
+                for(int i = 0; i < 2; i++){
+                    float rot = e.rotation + rand.range(15f) + 180f;
+                    v.trns(rot, rand.random(e.fin() * 27f));
+                    lineAngle(e.x + v.x, e.y + v.y, rot, e.fout() * rand.random(15f, 27f) + 1.5f);
+                }
+            });
 
             despawnEffect = new OptionalMultiEffect(
-                    spark(90, 120), spark(40, 150), spark(60, 135),
-                    circle(35, 45), circle(25, 60), circle(25, 75), circle(30, 100)
+                    spark(90, 40), spark(40, 60), spark(60, 75),
+                    circle(35, 35), circle(25, 40), circle(25, 50), circle(30, 60)
             );
         }};
 
@@ -192,6 +205,17 @@ public class RaidBullets {
 
             rand.setSeed(e.id);
             randLenVectors(e.id, (int) (radius / 6f), e.finpow() * radius, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * rand.random(2f, 4f) * radius / 10f + 1f));
+        });
+    }
+
+    public static Effect hexSpark(float lifetime, float radius) {
+        return new Effect(lifetime, e -> {
+            rand.setSeed(e.id);
+            Draw.color(e.color, Color.white, e.fin());
+            randLenVectors(e.id, (int) (radius / 8), 3f + radius * e.fin(), 5f, (x, y) -> {
+                float randN = rand.random(120f);
+                Fill.poly(e.x + x, e.y + y, 6, e.fout() * (radius / 3f) * rand.random(0.8f, 1.2f), e.rotation + randN * e.fin());
+            });
         });
     }
 

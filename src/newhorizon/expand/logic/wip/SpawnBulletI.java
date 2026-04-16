@@ -58,7 +58,7 @@ public class SpawnBulletI implements LExecutor.LInstruction {
     public BulletType bulletType(int type) {
         if (type < 10000) {
             return switch (type) {
-                case 1 -> RaidBullets.raidBullet_1;
+                case 1 -> RaidBullets.defaultRaidBullet1;
                 case 2 -> RaidBullets.raidBullet_2;
                 case 3 -> RaidBullets.raidBullet_3;
                 case 4 -> RaidBullets.raidBullet_4;
