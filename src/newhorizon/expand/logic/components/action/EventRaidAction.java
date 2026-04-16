@@ -2,6 +2,7 @@ package newhorizon.expand.logic.components.action;
 
 import arc.Core;
 import arc.flabel.FLabel;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.scene.style.Drawable;
@@ -87,7 +88,7 @@ public class EventRaidAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        NHUIFunc.showToast((Drawable) Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
+        NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
         NHUIFunc.showLabel(4.5f, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
@@ -137,7 +138,7 @@ public class EventRaidAction extends Action {
 
         if (lifeTimer > alertTime && !popupDisplayed) {
             popupDisplayed = true;
-            NHUIFunc.showToast((Drawable) Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
+            NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
         }
 
         for (int i = 0; i < raid; i++) {

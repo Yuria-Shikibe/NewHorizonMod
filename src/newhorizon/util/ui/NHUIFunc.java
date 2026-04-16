@@ -4,6 +4,7 @@ import arc.Core;
 import arc.audio.Sound;
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
@@ -173,7 +174,7 @@ public class NHUIFunc {
         }
     }
 
-    public static void showToast(Drawable icon, String text, Sound sound) {
+    public static void showToast(TextureRegion icon, String text, Sound sound) {
         if (state.isMenu()) return;
         if (headless) return;
 

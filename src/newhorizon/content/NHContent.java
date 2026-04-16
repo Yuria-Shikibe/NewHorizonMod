@@ -6,6 +6,8 @@ import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
 import mindustry.Vars;
+import mindustry.ctype.Content;
+import mindustry.ctype.ContentType;
 import mindustry.gen.Icon;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
@@ -15,7 +17,7 @@ import newhorizon.expand.block.distribution.platform.FloatPlatformDrawer;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.logic.ThreatLevel;
 
-public class NHContent{
+public class NHContent extends Content {
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f;
     public static final float HEX_SHIELD_LAYER = 56.172f;
     public static final float QUANTUM_LAYER = Layer.blockOver + 0.1919f;
@@ -60,6 +62,11 @@ public class NHContent{
         //registerStatement("defaultraid", DefaultRaid::new, DefaultRaid::new);
 
         //MapObjectives.registerMarker(RaidIndicator::new);
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return ContentType.error;
     }
 
     public void load() {

@@ -172,7 +172,7 @@ public class HudMarker extends Table {
     }
 
     public void drawLineStroke(boolean outer, boolean center) {
-        Lines.stroke((outer? strokeOuter: strokeInner) * getScale(), Pal.gray);
+        Lines.stroke((outer? strokeOuter: strokeInner) * getScale(), (outer? Pal.gray: markColor));
         Draw.alpha(color.a * Mathf.clamp(displayAlpha, center? 0.5f: 0.1f, 1f));
     }
 
