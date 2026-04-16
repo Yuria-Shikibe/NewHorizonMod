@@ -8,13 +8,11 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
-import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Align;
 import mindustry.Vars;
@@ -24,8 +22,6 @@ import mindustry.gen.Tex;
 import mindustry.ui.Styles;
 import newhorizon.NHUI;
 import newhorizon.expand.logic.components.ui.HudMarker;
-import newhorizon.expand.logic.components.ui.MarkStyle;
-import newhorizon.util.annotation.ClientOnly;
 import newhorizon.util.annotation.HeadlessDisabled;
 
 import static mindustry.Vars.headless;
@@ -206,7 +202,6 @@ public class CutsceneUI {
         return cutscene.mainBus != null && !cutscene.mainBus.complete();
     }
 
-    @ClientOnly
     public void reset() {
         if (headless) return;
         controlOverride = false;

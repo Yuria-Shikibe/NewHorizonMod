@@ -25,7 +25,7 @@ import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
 import newhorizon.NHSetting;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.struct.Vec2Seq;

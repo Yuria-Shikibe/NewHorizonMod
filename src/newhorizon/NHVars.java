@@ -11,17 +11,14 @@ import newhorizon.util.ui.TableFunc;
 
 public class NHVars {
     public static NHModCore core;
-
     public static NHWorldData worldData;
     public static NHRenderer renderer;
-    public static NHInputListener listener;
 
     public static CutsceneControl cutscene;
     public static CutsceneUI cutsceneUI;
 
     public static void init() {
         worldData = new NHWorldData();
-        listener = new NHInputListener();
 
         UpdateProxy.init();
 
@@ -41,6 +38,5 @@ public class NHVars {
 
         NHSetting.loadUI();
         if (NHSetting.getBool(NHSetting.DEBUG_PANEL)) TableFunc.tableMain();
-
     }
 }

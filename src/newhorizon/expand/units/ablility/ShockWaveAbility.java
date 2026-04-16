@@ -19,7 +19,7 @@ import mindustry.type.UnitType;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 
 public class ShockWaveAbility extends Ability {
     protected static final Seq<Unit> all = new Seq<>();

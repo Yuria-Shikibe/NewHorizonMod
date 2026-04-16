@@ -43,7 +43,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.state;

@@ -11,7 +11,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;
 import mindustry.graphics.Drawf;
 import newhorizon.expand.bullets.TypeDamageBulletType;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 
 public class AdaptLaserBulletType extends LaserBulletType implements TypeDamageBulletType {
     public String bundleName = "bullet-name";

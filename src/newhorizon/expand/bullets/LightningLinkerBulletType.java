@@ -23,7 +23,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;

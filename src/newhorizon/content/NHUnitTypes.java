@@ -73,7 +73,7 @@ import newhorizon.expand.units.unitEntity.ProbeEntity;
 import newhorizon.expand.units.unitType.AncientUnitType;
 import newhorizon.expand.units.unitType.NHUnitType;
 import newhorizon.expand.units.unitType.content.Destruction;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;

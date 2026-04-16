@@ -29,7 +29,7 @@ import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 
 import static mindustry.Vars.tilesize;
 

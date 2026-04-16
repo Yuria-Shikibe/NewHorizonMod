@@ -1,4 +1,4 @@
-package newhorizon.util.feature;
+package newhorizon.util.game;
 
 import arc.func.Cons;
 import arc.graphics.Color;

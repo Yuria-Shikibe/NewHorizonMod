@@ -10,7 +10,7 @@ import mindustry.entities.bullet.ContinuousBulletType;
 import mindustry.gen.Bullet;
 import mindustry.type.StatusEffect;
 import newhorizon.content.NHStatusEffects;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 
 import static mindustry.Vars.state;
 
