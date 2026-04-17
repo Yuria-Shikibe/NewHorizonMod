@@ -12,7 +12,7 @@ import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
 
 public class EventRaid extends ActionLStatement {
-    public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_0");
+    public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_1");
     public String flag = "raid-executor", timer = "raid-timer";
 
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;

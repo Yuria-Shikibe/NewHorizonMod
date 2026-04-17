@@ -121,13 +121,6 @@ public class RaidControlI implements LExecutor.LInstruction {
         if (type.numi() < 10000) {
             return switch (type.numi()) {
                 case 1 -> RaidBullets.defaultRaidBullet1;
-                case 2 -> RaidBullets.raidBullet_2;
-                case 3 -> RaidBullets.raidBullet_3;
-                case 4 -> RaidBullets.raidBullet_4;
-                case 5 -> RaidBullets.raidBullet_5;
-                case 6 -> RaidBullets.raidBullet_6;
-                case 7 -> RaidBullets.raidBullet_7;
-                case 8 -> RaidBullets.raidBullet_8;
                 default -> NHBullets.railGun1;
             };
         }

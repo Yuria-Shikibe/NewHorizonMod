@@ -22,7 +22,7 @@ import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class EventRaidAction extends Action {
-    public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_0");
+    public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_1");
 
     public String flag = "raid-executor", timer = "raid-timer";
 

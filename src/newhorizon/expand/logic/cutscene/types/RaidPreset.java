@@ -7,7 +7,10 @@ import newhorizon.content.NHSounds;
 import newhorizon.content.bullets.RaidBullets;
 
 public enum RaidPreset {
-    PRESET_RAID_0(RaidBullets.defaultRaidBullet1, NHSounds.alarm, "objective-2", 15, 5, 1, 40),
+    PRESET_RAID_1(RaidBullets.defaultRaidBullet1, NHSounds.alarm, "event-default-raid-t1", 15, 5, 1, 40),
+    PRESET_RAID_2(RaidBullets.defaultRaidBullet2, NHSounds.alarm, "event-default-raid-t1", 15, 5, 1, 40),
+    PRESET_RAID_3(RaidBullets.defaultRaidBullet3, NHSounds.alarm, "event-default-raid-t1", 15, 5, 1, 40),
+
     ;
 
     public static final RaidPreset[] all = values();
