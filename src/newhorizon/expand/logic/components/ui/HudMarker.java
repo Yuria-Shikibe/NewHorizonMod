@@ -1,8 +1,10 @@
 package newhorizon.expand.logic.components.ui;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -14,7 +16,9 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import newhorizon.NewHorizon;
@@ -27,6 +31,7 @@ import newhorizon.util.func.NHInterp;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.DelaySlideBar;
 
+import static mindustry.Vars.tilesize;
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 
@@ -164,6 +169,7 @@ public class HudMarker extends Table {
     public void drawOnWorld() {
         drawCrossHair();
         drawProcessBar();
+        drawArrow();
     }
 
     public void drawOnHud() {
@@ -184,6 +190,16 @@ public class HudMarker extends Table {
         return radius * Vars.renderer.getDisplayScale();
     }
 
+    public void drawArrow(){
+        float space = 6f;
+        Tmp.v1.trns(angle + 180, getCenterSize() * 2f + 18 * getScale()).add(originVec);
+
+        drawLineStroke(true, true);
+        Fill.poly(Tmp.v1.x, Tmp.v1.y, 3, (8 + space) * getScale(), angle);
+        drawLineStroke(false, true);
+        Fill.poly(Tmp.v1.x, Tmp.v1.y, 3, 8 * getScale(), angle);
+        Draw.color();
+    }
     public void drawCrossHair() {
         drawLineStroke(true, false);
         for (int i : Mathf.signs) {

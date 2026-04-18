@@ -24,8 +24,6 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class EventRaidAction extends Action {
     public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_1");
 
-    public String flag = "raid-executor", timer = "raid-timer";
-
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
     public Team team = Team.crux;
@@ -48,9 +46,6 @@ public class EventRaidAction extends Action {
     @Override
     public void parseTokens(String[] tokens) {
         raidType = RaidPreset.valueOf(ParseUtil.getFirstToken(tokens));
-
-        flag = ParseUtil.getNextToken(tokens);
-        timer = ParseUtil.getNextToken(tokens);
         team = ParseUtil.getNextTeam(tokens);
 
         overrideRaidStats = ParseUtil.getNextBool(tokens);
@@ -127,7 +122,13 @@ public class EventRaidAction extends Action {
             t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + raidType.name()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
 
-        new HudMarker().setMarkPosition(targetX, targetY).setDuration(alertTime).setMarkColor(team.color).setRadius(inaccuracy).addMarker();
+        new HudMarker()
+                .setMarkPosition(targetX, targetY)
+                .setDuration(alertTime)
+                .setMarkColor(team.color)
+                .setRadius(inaccuracy)
+                .setAngle(Angles.angle(sourceX, sourceY, targetX, targetY))
+                .addMarker();
     }
 
     @Override
