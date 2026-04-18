@@ -20,15 +20,11 @@ import newhorizon.util.struct.Vec2Seq;
 import static mindustry.Vars.headless;
 
 public class TracerRaidBulletType extends BasicRaidBulletType {
-    protected static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2();
-    protected static final Rand rand = new Rand();
-
     public int tracerCount = 1;
     public int tracerLength = 12;
     public float tracerWidth = 3f;
     public float tracerRandRange = 10f;
     public float tracerUpdateInterval = 3f;
-
 
     @Override
     public void init(Bullet b) {

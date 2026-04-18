@@ -2,11 +2,8 @@ package newhorizon.expand.logic.components.action;
 
 import arc.Core;
 import arc.flabel.FLabel;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.scene.style.Drawable;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.game.Team;
@@ -119,7 +116,7 @@ public class EventRaidAction extends Action {
                 }
             }).growX().pad(OFFSET / 2).fillY().row();
 
-            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + raidType.name()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
+            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + raidType.name().replace("_", "-").toLowerCase() + ".alert") + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
 
         new HudMarker()

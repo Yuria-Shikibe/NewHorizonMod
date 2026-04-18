@@ -22,6 +22,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
+import newhorizon.expand.bullets.raid.RailRaidBulletType;
 import newhorizon.expand.bullets.raid.TracerRaidBulletType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -38,6 +39,7 @@ public class RaidBullets {
     public static BulletType
             defaultRaidBullet1, defaultRaidBullet2, defaultRaidBullet3,
             explosiveRaidBullet1, explosiveRaidBullet2, explosiveRaidBullet3,
+            railRaidBullet1, railRaidBullet2, railRaidBullet3,
             raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8;
 
     public static void load() {
@@ -269,6 +271,61 @@ public class RaidBullets {
 
             despawnEffect = new OptionalMultiEffect(
                     spark(90, 40), spark(40, 60), spark(60, 75),
+                    circle(35, 100), circle(25, 110), circle(25, 120), circle(30, 135)
+            );
+        }};
+
+        railRaidBullet1 = new RailRaidBulletType() {{
+            speed = 15f;
+            lifetime = 120f;
+
+            damage = 5000;
+
+            splashDamageRadius = 125f;
+            splashDamage = 300f;
+
+            splashDamagePierce = true;
+            scaledSplashDamage = true;
+            collides = false;
+            collidesGround = false;
+            collideFloor = true;
+            collidesAir = true;
+
+            hittable = true;
+            reflectable = false;
+            absorbable = false;
+            despawnHit = true;
+            setDefaults = false;
+
+            drawSize = 120f;
+            hitShake = despawnShake = 16f;
+
+            shrinkX = shrinkY = 0;
+            height = 60f;
+            width = 32f;
+
+            trailLength = -1;
+            trailInterval = 1.25f;
+            trailParam = 8;
+            sprite = NHBullets.STRIKE;
+            hitSound = Sounds.explosion;
+
+            trailRotation = true;
+            trailEffect = new Effect(15f, e -> {
+                for (int j : Mathf.signs) {
+                    for (int i = 0; i < 2; ++i) {
+                        Draw.color(e.color);
+                        float m = i == 0 ? 1f : 0.5f;
+                        float rot = e.rotation + 180f;
+                        float w = 8f * e.fout() * m;
+                        DrawFunc.tri(e.x, e.y, w, 22f + Mathf.randomSeedRange(e.id, 8.0F) * m, rot + j * 60f);
+                        Fill.circle(e.x, e.y, w / 2f);
+                    }
+                }
+            });
+
+            despawnEffect = new OptionalMultiEffect(
+                    NHFx.hitSpark,
                     circle(35, 100), circle(25, 110), circle(25, 120), circle(30, 135)
             );
         }};

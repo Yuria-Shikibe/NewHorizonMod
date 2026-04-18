@@ -174,6 +174,7 @@ public class HudMarker extends Table {
 
     public void drawOnHud() {
         float angle = Angles.angle(width / 2, height / 2, originVec.x, originVec.y) - 90;
+        drawLineStroke(false, true);
         Draw.rect(NHContent.pointerRegion, screenVec.x, screenVec.y, iconSize, iconSize, angle);
     }
 

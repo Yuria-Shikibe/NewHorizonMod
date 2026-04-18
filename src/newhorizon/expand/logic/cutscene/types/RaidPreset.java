@@ -10,7 +10,7 @@ public enum RaidPreset {
     PRESET_RAID_1(RaidBullets.defaultRaidBullet1, NHSounds.alert2, "event-default-raid-t1", 15, 5, 1, 40),
     PRESET_RAID_2(RaidBullets.defaultRaidBullet2, NHSounds.alert2, "event-default-raid-t2", 15, 5, 1, 40),
     PRESET_RAID_3(RaidBullets.defaultRaidBullet3, NHSounds.alert2, "event-default-raid-t1", 15, 5, 1, 40),
-    EXPLOSIVE_RAID_1(RaidBullets.explosiveRaidBullet1, NHSounds.alert2, "event-default-raid-t1", 15, 5, 1, 40),
+    EXPLOSIVE_RAID_1(RaidBullets.railRaidBullet1, NHSounds.alert2, "event-default-raid-t1", 15, 5, 1, 40),
 
     ;
 
