@@ -62,8 +62,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = true;
-            despawnHit = false;
-            setDefaults = false;
 
             trailLength = 25;
             trailChance = 1f;
@@ -115,8 +113,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = true;
-            despawnHit = false;
-            setDefaults = false;
 
             trailLength = 30;
             trailChance = 1f;
@@ -173,8 +169,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = true;
-            despawnHit = false;
-            setDefaults = false;
 
             trailLength = 40;
             trailChance = 1f;
@@ -234,8 +228,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = false;
-            despawnHit = true;
-            setDefaults = false;
 
             tracerCount = 1;
             tracerLength = 12;
@@ -294,8 +286,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = false;
-            despawnHit = true;
-            setDefaults = false;
 
             drawSize = 120f;
             hitShake = despawnShake = 16f;

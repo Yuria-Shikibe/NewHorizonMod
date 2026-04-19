@@ -174,21 +174,21 @@ public class NHUIFunc {
         }
     }
 
-    public static void showToast(TextureRegion icon, String text, Sound sound) {
+    public static void showToast(TextureRegion icon, String text, Sound sound, Color color) {
         if (state.isMenu()) return;
         if (headless) return;
 
         scheduleToast(() -> {
             sound.play();
 
-            Table table = new Table(Tex.pane2);
+            Table table = new Table(Tex.paneSolid);
             table.update(() -> {
                 if (state.isMenu() || !ui.hudfrag.shown) {
                     table.remove();
                 }
             });
             table.margin(12);
-            table.image(icon).size(48).scaling(Scaling.fit).pad(-4).padLeft(12);
+            table.image(icon).size(48).scaling(Scaling.fit).pad(-4).padLeft(12).color(color);
             table.add(text).wrap().width(280f).get().setAlignment(Align.center, Align.center);
             table.pack();
 
@@ -197,8 +197,8 @@ public class NHUIFunc {
             container.top().add(table);
             container.setTranslation(0, table.getPrefHeight());
             container.actions(
-                    Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
-                    Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove()))
+                    Actions.translateBy(0, -table.getPrefHeight() + 4f, 1f, Interp.fade), Actions.delay(2.5f),
+                    Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight() - 4f, 1f, Interp.fade), Actions.remove()))
             );
         });
     }
