@@ -35,24 +35,14 @@ public class CraftingBlock {
     public static Color stampingArc, processorBlue;
 
     public static Block
-            silicarCrusher, processorManufactory, stampingFacility, heavyStampingFacility,
-            processorPrinter, condenseFacility, zetaFactory, zetaDissociator,
-            subCooler, hyperCooler,
-
-    castingFoundry, plasticator, metalOxhydrigenSynthesizer, crystallizer,
-            metalOxhydrigenRestructuror, photocatalystFactory, fusionCoreEnergyFactory,
-            plasmaActivator, ultracooler, subcooler, particleActivator,
+            silicarCrusher, processorManuFactory, stampingFacility, heavyStampingFacility,
+            processorPrinter,
+            subCooler, hyperCooler, metalOxhydrigenRestructuror, photocatalystFactory, plasticator, crystallizer,
             phaseRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
-
-    xenSeparator, crucibleFoundry, processorEtchingFacility,
-            heavyRollingMill, mixedRollingMill, duplexRollingMill,
-
-    rectificatior, phaseRectificatior, irdryonFluidFactory,
-
-    thoriumConverter, setonAlloyFactory,
-
-    processorEncoder, irdryonMixer, hugePlastaniumFactory, multipleSteelFactory,
-            irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
+            particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
+            rectificatior, phaseRectificatior,
+            castingFoundry, crucibleFoundry, heavyRollingMill, xenSeparator, processorEtchingFacility,
+            irdryonFluidFactory, setonAlloyFactory;
 
     public static void load() {
         loadColors();
@@ -107,7 +97,7 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        processorManufactory = new GenericCrafter("processor-manufactory") {{
+        processorManuFactory = new GenericCrafter("processor-manufactory") {{
             requirements(Category.crafting, with(
                     NHItems.hardLight, 60,
                     NHItems.graphite, 45,
@@ -757,6 +747,31 @@ public class CraftingBlock {
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 12 / 60f, NHLiquids.cryofluid, 6 / 60f));
             /*     consumeItems(new ItemStack(NHItems.presstanium, 2), new ItemStack(NHItems.zeta, 6));*/
             consumePower(6f);
+        }};
+
+        thoriumTransmuter = new GenericCrafter("thorium-transmuter") {{
+            requirements(Category.crafting, with(
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 4;
+            scaledHealth = 100f;
+            itemCapacity = 20;
+            liquidCapacity = 30f;
+
+            hasLiquids = true;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion()
+            );
+
+            craftTime = 120f;
+            consumeItems(with(NHItems.thorium, 3));
+            consumeLiquids(LiquidStack.with(NHLiquids.proton, 4 / 60f, NHLiquids.neutron, 4 / 60f));
+            consumePower(1f);
+            outputItems = with(NHItems.fissileMatter, 2);
         }};
 
         particleActivator = new GenericCrafter("particle-activator") {{
