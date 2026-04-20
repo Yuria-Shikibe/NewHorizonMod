@@ -2,11 +2,9 @@ package newhorizon.expand.logic.components.action;
 
 import arc.Core;
 import arc.flabel.FLabel;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.scene.style.Drawable;
-import arc.util.Log;
+import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.game.Team;
@@ -15,6 +13,7 @@ import mindustry.ui.Styles;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ui.HudMarker;
+import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -23,8 +22,6 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class EventRaidAction extends Action {
     public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_1");
-
-    public String flag = "raid-executor", timer = "raid-timer";
 
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
@@ -48,9 +45,6 @@ public class EventRaidAction extends Action {
     @Override
     public void parseTokens(String[] tokens) {
         raidType = RaidPreset.valueOf(ParseUtil.getFirstToken(tokens));
-
-        flag = ParseUtil.getNextToken(tokens);
-        timer = ParseUtil.getNextToken(tokens);
         team = ParseUtil.getNextTeam(tokens);
 
         overrideRaidStats = ParseUtil.getNextBool(tokens);
@@ -88,7 +82,9 @@ public class EventRaidAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
+        String key = raidType.name().replace("_", "-").toLowerCase();
+        NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), Core.bundle.format("css-raid." + key + ".popup",
+                Strings.fixed(targetX / tilesize, 1), Strings.fixed(targetY / tilesize, 1)), raidType.raidAlarmSound, team.color);
         NHUIFunc.showLabel(4.5f, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
@@ -124,10 +120,17 @@ public class EventRaidAction extends Action {
                 }
             }).growX().pad(OFFSET / 2).fillY().row();
 
-            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + raidType.name()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
+            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + key + ".alert") + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
 
-        new HudMarker().setMarkPosition(targetX, targetY).setDuration(alertTime).setMarkColor(team.color).setRadius(inaccuracy).addMarker();
+        new RaidMarker()
+                .setMarkPosition(targetX, targetY)
+                .setDuration(alertTime)
+                .setMarkColor(team.color)
+                .setRadius(inaccuracy)
+                .setAngle(Angles.angle(sourceX, sourceY, targetX, targetY))
+                .setIcon(Core.atlas.find(raidType.warningIcon))
+                .addMarker();
     }
 
     @Override
@@ -138,7 +141,9 @@ public class EventRaidAction extends Action {
 
         if (lifeTimer > alertTime && !popupDisplayed) {
             popupDisplayed = true;
-            NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), "[#ff7b69]Caution: []Attack " + targetX + "," + targetY, raidType.raidAlarmSound);
+            String key = raidType.name().replace("_", "-").toLowerCase();
+            NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), Core.bundle.format("css-raid." + key + ".popup",
+                    Strings.fixed(targetX / tilesize, 1), Strings.fixed(targetY / tilesize, 1)), raidType.raidAlarmSound, team.color);
         }
 
         for (int i = 0; i < raid; i++) {

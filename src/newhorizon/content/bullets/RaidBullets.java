@@ -22,10 +22,12 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
+import newhorizon.expand.bullets.raid.RailRaidBulletType;
 import newhorizon.expand.bullets.raid.TracerRaidBulletType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
+import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
 import static arc.graphics.g2d.Lines.stroke;
@@ -36,6 +38,8 @@ public class RaidBullets {
     public static final Vec2 v = new Vec2();
     public static BulletType
             defaultRaidBullet1, defaultRaidBullet2, defaultRaidBullet3,
+            explosiveRaidBullet1, explosiveRaidBullet2, explosiveRaidBullet3,
+            railRaidBullet1, railRaidBullet2, railRaidBullet3,
             raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8;
 
     public static void load() {
@@ -58,7 +62,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = true;
-            despawnHit = true;
 
             trailLength = 25;
             trailChance = 1f;
@@ -95,10 +98,10 @@ public class RaidBullets {
             speed = 13.5f;
             lifetime = 120f;
 
-            damage = 1000;
+            damage = 1200;
 
             splashDamageRadius = 75f;
-            splashDamage = 600f;
+            splashDamage = 750f;
 
             splashDamagePierce = true;
             scaledSplashDamage = true;
@@ -110,7 +113,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = true;
-            despawnHit = true;
 
             trailLength = 30;
             trailChance = 1f;
@@ -152,10 +154,10 @@ public class RaidBullets {
             speed = 15f;
             lifetime = 120f;
 
-            damage = 1500;
+            damage = 2000;
 
             splashDamageRadius = 100f;
-            splashDamage = 1000f;
+            splashDamage = 1200f;
 
             splashDamagePierce = true;
             scaledSplashDamage = true;
@@ -167,7 +169,6 @@ public class RaidBullets {
             hittable = true;
             reflectable = false;
             absorbable = true;
-            despawnHit = true;
 
             trailLength = 40;
             trailChance = 1f;
@@ -207,6 +208,118 @@ public class RaidBullets {
                     circle(35, 80), circle(25, 90), circle(25, 100), circle(30, 120)
             );
         }};
+
+        explosiveRaidBullet1 = new TracerRaidBulletType() {{
+            speed = 4f;
+            lifetime = 120f;
+
+            damage = 5000;
+
+            splashDamageRadius = 125f;
+            splashDamage = 300f;
+
+            splashDamagePierce = true;
+            scaledSplashDamage = true;
+            collides = false;
+            collidesGround = false;
+            collideFloor = true;
+            collidesAir = true;
+
+            hittable = true;
+            reflectable = false;
+            absorbable = false;
+
+            tracerCount = 1;
+            tracerLength = 12;
+            tracerWidth = 4f;
+            tracerRandRange = 10f;
+            tracerUpdateInterval = 0.75f;
+
+            trailLength = 35;
+            trailChance = 1f;
+            trailParam = 8;
+            drawSize = 120f;
+            hitShake = despawnShake = 16f;
+
+            shrinkX = shrinkY = 0;
+            height = 48f;
+            width = 48f;
+
+            sprite = "large-bomb";
+            hitSound = Sounds.explosion;
+
+            trailRotation = true;
+            trailEffect = new Effect(50, e -> {
+                color(e.color);
+                rand.setSeed(e.id);
+                float fin = e.fin() / rand.random(0.5f, 1f), fout = 1f - fin, angle = rand.random(360f), len = rand.random(0.5f, 1f);
+                if(fin <= 1f){
+                    Tmp.v1.trns(angle, fin * 24f * len);
+
+                    alpha((0.5f - Math.abs(fin - 0.5f)) * 2f);
+                    Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 0.5f + fout * 4f);
+                }
+            });
+
+            despawnEffect = new OptionalMultiEffect(
+                    spark(90, 40), spark(40, 60), spark(60, 75),
+                    circle(35, 100), circle(25, 110), circle(25, 120), circle(30, 135)
+            );
+        }};
+
+        railRaidBullet1 = new RailRaidBulletType() {{
+            speed = 15f;
+            lifetime = 120f;
+
+            damage = 5000;
+
+            splashDamageRadius = 125f;
+            splashDamage = 300f;
+
+            splashDamagePierce = true;
+            scaledSplashDamage = true;
+            collides = false;
+            collidesGround = false;
+            collideFloor = true;
+            collidesAir = true;
+
+            hittable = true;
+            reflectable = false;
+            absorbable = false;
+
+            drawSize = 120f;
+            hitShake = despawnShake = 16f;
+
+            shrinkX = shrinkY = 0;
+            height = 60f;
+            width = 32f;
+
+            trailLength = -1;
+            trailInterval = 1.25f;
+            trailParam = 8;
+            sprite = NHBullets.STRIKE;
+            hitSound = Sounds.explosion;
+
+            trailRotation = true;
+            trailEffect = new Effect(15f, e -> {
+                for (int j : Mathf.signs) {
+                    for (int i = 0; i < 2; ++i) {
+                        Draw.color(e.color);
+                        float m = i == 0 ? 1f : 0.5f;
+                        float rot = e.rotation + 180f;
+                        float w = 8f * e.fout() * m;
+                        DrawFunc.tri(e.x, e.y, w, 22f + Mathf.randomSeedRange(e.id, 8.0F) * m, rot + j * 60f);
+                        Fill.circle(e.x, e.y, w / 2f);
+                    }
+                }
+            });
+
+            despawnEffect = new OptionalMultiEffect(
+                    NHFx.hitSpark,
+                    circle(35, 100), circle(25, 110), circle(25, 120), circle(30, 135)
+            );
+        }};
+
         raidBullet_3 = NHBullets.railGun1;
         raidBullet_4 = NHBullets.railGun2;
         raidBullet_5 = NHBullets.railGun3;

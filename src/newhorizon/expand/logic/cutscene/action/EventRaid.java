@@ -13,7 +13,6 @@ import newhorizon.expand.logic.cutscene.types.RaidPreset;
 
 public class EventRaid extends ActionLStatement {
     public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_1");
-    public String flag = "raid-executor", timer = "raid-timer";
 
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
@@ -25,8 +24,6 @@ public class EventRaid extends ActionLStatement {
         ParseUtil.getFirstToken(token);
 
         raidType = RaidPreset.valueOf(ParseUtil.getNextToken(token));
-        flag = ParseUtil.getNextToken(token);
-        timer = ParseUtil.getNextToken(token);
         team = ParseUtil.getNextToken(token);
 
         overrideRaidStats = ParseUtil.getNextBool(token);
@@ -72,16 +69,6 @@ public class EventRaid extends ActionLStatement {
                 b.label(() -> raidType.name());
                 b.clicked(() -> showSelect(b, RaidPreset.all, raidType, cType -> raidType = cType, 2, cell -> cell.size(240, 50)));
             }, Styles.logict, () -> {}).size(240, 40).color(table.color).left().padLeft(2);
-        });
-
-        buildRowTable(table, t -> {
-            t.add(" Objective Flag : ");
-            fields(t, flag, str -> flag = str).width(180f);
-        });
-
-        buildRowTable(table, t -> {
-            t.add(" Objective Timer : ");
-            fields(t, timer, str -> timer = str).width(180f);
         });
 
         buildRowTable(table, t -> {
@@ -149,7 +136,7 @@ public class EventRaid extends ActionLStatement {
     @Override
     public void write(StringBuilder builder) {
         super.write(builder);
-        writeTokens(builder, raidType.name(), flag, timer, team);
+        writeTokens(builder, raidType.name(), team);
         writeTokens(builder, String.valueOf(overrideRaidStats));
         if (overrideRaidStats) writeTokens(builder, alertTime, raidTime, raidScale, inaccuracy);
         writeTokens(builder, String.valueOf(overrideDefaultCoordinate));
@@ -160,7 +147,7 @@ public class EventRaid extends ActionLStatement {
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
         return new EventRaidI(
-                raidType, builder.var(flag), builder.var(timer), builder.var(team),
+                raidType, builder.var(team),
                 overrideRaidStats, builder.var(alertTime), builder.var(raidTime), builder.var(raidScale), builder.var(inaccuracy),
                 overrideDefaultCoordinate, builder.var(sourceX), builder.var(sourceY), builder.var(targetX), builder.var(targetY)
         );
@@ -168,7 +155,6 @@ public class EventRaid extends ActionLStatement {
 
     public class EventRaidI extends ActionInstruction {
         public RaidPreset raidType;
-        public LVar flag, timer;
 
         public boolean overrideRaidStats, overrideDefaultCoordinate;
 
@@ -177,13 +163,11 @@ public class EventRaid extends ActionLStatement {
         public LVar sourceX, sourceY, targetX, targetY;
 
         public EventRaidI(
-                RaidPreset raidType, LVar flag, LVar timer, LVar team,
+                RaidPreset raidType, LVar team,
                 boolean overrideRaidStats, LVar alertTime, LVar raidTime, LVar raidScale, LVar inaccuracy,
                 boolean overrideDefaultCoordinate, LVar sourceX, LVar sourceY, LVar targetX, LVar targetY
         ) {
             this.raidType = raidType;
-            this.flag = flag;
-            this.timer = timer;
             this.team = team;
 
             this.overrideRaidStats = overrideRaidStats;
@@ -203,7 +187,7 @@ public class EventRaid extends ActionLStatement {
         public void run(LExecutor exec) {
             startExec(exec, "event-raid");
             appendExec(exec, raidType.name());
-            appendExec(exec, flag, timer, team);
+            appendExec(exec, team);
             appendExec(exec, String.valueOf(overrideRaidStats));
             if (overrideRaidStats) appendExec(exec, alertTime, raidTime, raidScale, inaccuracy);
             appendExec(exec, String.valueOf(overrideDefaultCoordinate));

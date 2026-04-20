@@ -1,9 +1,13 @@
 package newhorizon.expand.logic.components.ui;
 
 import arc.Core;
+import arc.func.Prov;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
@@ -14,7 +18,9 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import newhorizon.NewHorizon;
@@ -23,24 +29,27 @@ import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.CameraControlAction;
 import newhorizon.expand.logic.components.action.InputLockAction;
 import newhorizon.expand.logic.components.action.InputUnlockAction;
+import newhorizon.expand.logic.cutscene.types.RaidPreset;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.DelaySlideBar;
 
+import static mindustry.Vars.tilesize;
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class HudMarker extends Table {
-    private static final Vec2 screenVec = new Vec2(), originVec = new Vec2();
-    private float lifeTimer = 0;
-    private float displayAlpha = 30f;
+    protected static final Vec2 screenVec = new Vec2(), originVec = new Vec2();
+    protected float lifeTimer = 0;
+    protected float displayAlpha = 30f;
 
-    private static final float padding = 0.05f;
-    private static final float strokeInner = 3f, strokeOuter = 9f;
-    private static final float iconSize = 80f;
+    protected static final float padding = 0.05f;
+    protected static final float strokeInner = 3f, strokeOuter = 9f;
+    protected static final float iconSize = 80f;
 
     public Color markColor = Pal.accent;
     public Vec2 markPoint = new Vec2();
+    public TextureRegion icon = NHContent.icon2;
 
     public float delay = 3;
     public float duration = 5;
@@ -84,6 +93,11 @@ public class HudMarker extends Table {
         return this;
     }
 
+    public HudMarker setIcon(TextureRegion icon) {
+        this.icon = icon;
+        return this;
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);
@@ -111,16 +125,20 @@ public class HudMarker extends Table {
         return lifeTimer > duration;
     }
 
+    public Prov<String> displayText() {
+        return () -> "World Event";
+    }
+
     public Table getDisplayStack() {
         return new Table(t -> {
             t.defaults().growX().fillY().padBottom(6f).pad(6f);
             t.add(new Stack(
                     new Table(table -> table.add(new DelaySlideBar(
                             () -> markColor,
-                            () -> "     " + "World Event",
+                            () -> "     " + displayText().get(),
                             () -> Mathf.clamp(lifeTimer / duration)
                     )).padLeft(20f).height(40).expandX().fillX()),
-                    new Table(table -> table.image(Core.atlas.find(NewHorizon.name("ADFSDS"))).color(markColor).size(54).pad(-8).expandX().left()),
+                    new Table(table -> table.image(icon).color(markColor).size(54).pad(-8).expandX().left()),
                     new Table(table -> table.button(Icon.eyeSmall, Styles.clearNonei, () -> {
                         displayAlpha = 30f;
                         ActionBus bus = new ActionBus();
@@ -164,10 +182,12 @@ public class HudMarker extends Table {
     public void drawOnWorld() {
         drawCrossHair();
         drawProcessBar();
+        drawArrow();
     }
 
     public void drawOnHud() {
         float angle = Angles.angle(width / 2, height / 2, originVec.x, originVec.y) - 90;
+        drawLineStroke(false, true);
         Draw.rect(NHContent.pointerRegion, screenVec.x, screenVec.y, iconSize, iconSize, angle);
     }
 
@@ -184,6 +204,8 @@ public class HudMarker extends Table {
         return radius * Vars.renderer.getDisplayScale();
     }
 
+    public void drawArrow(){}
+
     public void drawCrossHair() {
         drawLineStroke(true, false);
         for (int i : Mathf.signs) {
@@ -198,10 +220,5 @@ public class HudMarker extends Table {
         }
     }
 
-    public void drawProcessBar() {
-        drawLineStroke(true, true);
-        Lines.circle(originVec.x, originVec.y, getCenterSize() * 2f);
-        drawLineStroke(false, true);
-        DrawFunc.circlePercent(originVec.x, originVec.y, getCenterSize() * 2f, Mathf.clamp(lifeTimer / duration), 0);
-    }
+    public void drawProcessBar() {}
 }
