@@ -208,7 +208,7 @@ public class CraftingBlock {
                     NHItems.silicon, 60
             ));
 
-            size = 3;
+            size = 2;
             health = 600;
             armor = 4;
             itemCapacity = 20;
@@ -728,24 +728,17 @@ public class CraftingBlock {
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
-                    new DrawCrucibleFlame() {{
-                        particles = 45;
-                        particleRad = 11f;
-                    }},
+                    new DrawLiquidTile(),
                     new DrawDefault(),
-                    new DrawLiquidTile(NHLiquids.xenFluid, 37 / 4f),
-                    new DrawRotator(true) {{
-                        rotateSpeed = 4;
-                    }},
-                    new DrawRegion("-top")
+                    new DrawGlowRegion() {{
+                        color = NHItems.zeta.color;
+                    }}
             );
 
-            updateEffectChance = 0.075f;
             updateEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, NHItems.fusionEnergy.color.cpy().a(0.53f));
 
             outputItem = new ItemStack(NHItems.fusionEnergy, 1);
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 12 / 60f, NHLiquids.cryofluid, 6 / 60f));
-            /*     consumeItems(new ItemStack(NHItems.presstanium, 2), new ItemStack(NHItems.zeta, 6));*/
             consumePower(6f);
         }};
 
@@ -812,13 +805,24 @@ public class CraftingBlock {
                     NHItems.juniorProcessor, 45
             ));
 
-            size = 2;
+            size = 3;
             scaledHealth = 100f;
             itemCapacity = 20;
             liquidCapacity = 20f;
 
             hasLiquids = true;
+            rotate = true;
 
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.xenFluid, 0.2f) {{
+                        alpha = 0.7f;
+                    }},
+                    //new DrawLiquidSide4(),
+                    new DrawRegion()
+            );
+
+            liquidOutputDirections = new int[]{1};
             craftTime = 120f;
             consumePower(240f / 60f);
             consumeItems(with(NHItems.graphite, 2, NHItems.thorium, 1));
