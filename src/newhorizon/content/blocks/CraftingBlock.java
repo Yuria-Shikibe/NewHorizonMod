@@ -41,8 +41,8 @@ public class CraftingBlock {
             phaseRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
-            castingFoundry, crucibleFoundry, heavyRollingMill, xenSeparator, processorEtchingFacility,
-            irdryonFluidFactory, setonAlloyFactory;
+            castingFoundry, crucibleFoundry, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
+            irdryonFluidFactory, setonAlloyFactory, ccbFactory;
 
     public static void load() {
         loadColors();
@@ -832,6 +832,47 @@ public class CraftingBlock {
 
         }};
 
+        multipleRollingMill = new GenericCrafter("multiple-rolling-mill") {{
+            requirements(Category.crafting, with(
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 3;
+            itemCapacity = 30;
+
+            craftTime = 120f;
+            consumePower(240f / 60f);
+            consumeItems(with(NHItems.presstanium, 2, NHItems.metalOxhydrigen, 1));
+            outputItem = new ItemStack(NHItems.multipleSteel, 2);
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion()
+            );
+        }};
+
+        mixedRollingMill = new GenericCrafter("mixed-rolling-mill") {{
+            requirements(Category.crafting, with(
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 3;
+            itemCapacity = 30;
+
+            craftTime = 240f;
+            consumePower(240f / 60f);
+            consumeItems(with(NHItems.graphite, 5, NHItems.tungsten, 3));
+            outputItem = new ItemStack(NHItems.multipleSteel, 4);
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion(),
+                    new DrawRegion("-top")
+            );
+        }};
+
         heavyRollingMill = new MultiBlockCrafter("heavy-rolling-mill") {{
             requirements(Category.crafting, with(
                     NHItems.presstanium, 60,
@@ -1184,6 +1225,28 @@ public class CraftingBlock {
             consumeLiquid(NHLiquids.irdryonFluid, 6 / 60f);
             consumeItems(new ItemStack(NHItems.plastanium, 2), new ItemStack(NHItems.tungsten, 5));
             consumePower(12f);
+        }};
+
+        ccbFactory = new MultiBlockCrafter("ccb-factory") {{
+            requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 45));
+
+            size = 3;
+            addLink(-1, 2, 2, 1, 2, 1, 1, 3, 1, -1, -3, 2, 1, -2, 1, 1, -3, 1, -3, -1, 2, -2, 1, 1, -3, 1, 1, 2, -1, 2, 2, 1, 1, 3, 1, 1);
+
+            itemCapacity = 30;
+            liquidCapacity = 30f;
+            craftTime = 120;
+            hasLiquids = true;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.neutron),
+                    new DrawRegion()
+            );
+
+            consumeItems(new ItemStack(NHItems.nodexPlate, 3), new ItemStack(NHItems.zeta, 4));
+            consumeLiquid(NHLiquids.neutron, 12 / 60f);
+            outputItems = with(NHItems.hadronicomp, 2);
         }};
 
                 /*
