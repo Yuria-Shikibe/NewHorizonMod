@@ -1,16 +1,22 @@
 package newhorizon.content.blocks;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
+import arc.math.Mathf;
+import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.gen.Building;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -23,11 +29,13 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.factory.MultiBlockCrafter;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
 import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
+import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
@@ -41,7 +49,7 @@ public class CraftingBlock {
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
             castingFoundry, crucibleFoundry, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
-            irdryonFluidFactory, irdryonPhaseAscender, setonAlloyFactory, positivePhaseDecayer, negativePhaseDecayer, ccbFactory;
+            irdryonFluidFactory, irdryonPhaseAscender, setonAlloyFactory, positivePhaseDecayer, negativePhaseDecayer, nodexFactory, ancimembraneConcentrator, ccbFactory;
 
     public static void load() {
         loadColors();
@@ -1299,6 +1307,127 @@ public class CraftingBlock {
             enableRotate();
         }};
 
+        nodexFactory = new GenericCrafter("nodex-factory") {{
+            requirements(Category.crafting,
+                    ItemStack.with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80,
+                            NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
+
+            size = 3;
+            health = 2100;
+            armor = 14;
+            itemCapacity = 40;
+            craftTime = 60f;
+
+            drawer = new DrawPrinter(NHItems.nodexPlate) {{
+                printColor = NHColor.darkEnrColor;
+                lightColor = Color.valueOf("#E1BAFF");
+                moveLength = 4.2f;
+                time = 25f;
+            }};
+
+            clipSize = size * tilesize * 2f;
+
+            craftEffect = new Effect(25f, e -> {
+                Draw.color(NHColor.darkEnrColor);
+                Angles.randLenVectors(e.id, 4, 24 * e.fout() * e.fout(), (x, y) -> {
+                    Lines.stroke(e.fout() * 1.7f);
+                    Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
+                });
+            });
+            updateEffect = NHStatusEffects.quantization.effect;
+
+            consumePower(1600 / 60f);
+            consumeItems(new ItemStack(NHItems.seniorProcessor, 1), new ItemStack(NHItems.setonAlloy, 2));
+            outputItems = with(NHItems.nodexPlate, 2);
+        }};
+        ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
+            size = 3;
+
+            lightRadius /= 2f;
+
+            requirements(Category.crafting,
+                    ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
+
+            craftTime = 60f;
+
+            health = 2100;
+            armor = 14;
+            craftEffect = NHFx.crossBlast(NHColor.ancient, 45f, 45f);
+            craftEffect.lifetime *= 1.5f;
+            updateEffect = NHFx.squareRand(NHColor.ancient, 5f, 15f);
+            hasPower = hasItems = hasLiquids = true;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x3"),
+                    new DrawLiquidTile(NHLiquids.quantumLiquid),
+                    new DrawRegion("-bottom-2"),
+                    new DrawCrucibleFlame() {
+                        {
+                            flameColor = NHColor.ancient;
+                            midColor = Color.valueOf("2e2f34");
+                            circleStroke = 1.05f;
+                            circleSpace = 2.65f;
+                        }
+
+                        @Override
+                        public void draw(Building build) {
+                            if (build.warmup() > 0f && flameColor.a > 0.001f) {
+                                Lines.stroke(circleStroke * build.warmup());
+
+                                float si = Mathf.absin(flameRadiusScl, flameRadiusMag);
+                                float a = alpha * build.warmup();
+
+                                Draw.blend(Blending.additive);
+                                Draw.color(flameColor, a);
+
+                                float base = (Time.time / particleLife);
+                                rand.setSeed(build.id);
+                                for (int i = 0; i < particles; i++) {
+                                    float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
+                                    float angle = rand.random(360f) + (Time.time / rotateScl) % 360f;
+                                    float len = particleRad * particleInterp.apply(fout);
+                                    Draw.alpha(a * (1f - Mathf.curve(fin, 1f - fadeMargin)));
+                                    Fill.square(
+                                            build.x + Angles.trnsx(angle, len),
+                                            build.y + Angles.trnsy(angle, len),
+                                            particleSize * fin * build.warmup(), 45
+                                    );
+                                }
+
+                                Draw.blend();
+
+                                Draw.color(midColor, build.warmup());
+                                Lines.square(build.x, build.y, (flameRad + circleSpace + si) * build.warmup(), 45);
+
+                                Draw.reset();
+                            }
+                        }
+                    },
+                    new DrawDefault(),
+                    new DrawGlowRegion() {{
+                        color = NHColor.ancient;
+                        layer = -1;
+                        glowIntensity = 1.1f;
+                        alpha = 1.1f;
+                    }},
+                    new DrawRotator(1f, "-top") {
+                        @Override
+                        public void draw(Building build) {
+                            Drawf.spinSprite(rotator, build.x + x, build.y + y, DrawFunc.rotator_90(DrawFunc.cycle(build.totalProgress() * rotateSpeed, 0, craftTime), 0.15f));
+                        }
+                    }
+            );
+
+            itemCapacity = 40;
+            liquidCapacity = 40f;
+            consumePower(1600 / 60f);
+
+            consumeItems(new ItemStack(NHItems.multipleSteel, 2), new ItemStack(NHItems.irayrondPanel, 3));
+            consumeLiquid(NHLiquids.quantumLiquid, 12 / 60f);
+            outputItems = with(NHItems.ancimembrane, 2);
+
+        }};
+
         ccbFactory = new MultiBlockCrafter("ccb-factory") {{
             requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 45));
 
@@ -2044,118 +2173,6 @@ public class CraftingBlock {
                     new DrawRegionFlip("-top")
             );
         }};
-        upgradeSortFactory = new RecipeGenericCrafter("nodex-factory") {{
-            requirements(Category.crafting,
-                    ItemStack.with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80,
-                            NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
-
-            size = 3;
-            rotate = false;
-            health = 2100;
-            armor = 14;
-            itemCapacity = 40;
-            hasPower = hasItems = true;
-
-            drawer = new DrawPrinter(NHItems.nodexPlate) {{
-                printColor = NHColor.darkEnrColor;
-                lightColor = Color.valueOf("#E1BAFF");
-                moveLength = 4.2f;
-                time = 25f;
-            }};
-            clipSize = size * tilesize * 2f;
-
-            craftEffect = new Effect(25f, e -> {
-                Draw.color(NHColor.darkEnrColor);
-                Angles.randLenVectors(e.id, 4, 24 * e.fout() * e.fout(), (x, y) -> {
-                    Lines.stroke(e.fout() * 1.7f);
-                    Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
-                });
-            });
-            updateEffect = NHStatusEffects.quantization.effect;
-
-            consumePower(1600 / 60f);
-        }};
-        ancimembraneConcentrator = new RecipeGenericCrafter("ancimembrane-concentrator") {{
-            size = 3;
-            rotate = false;
-
-            lightRadius /= 2f;
-
-            requirements(Category.crafting,
-                    ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
-
-            craftTime = 120f;
-
-            health = 2100;
-            armor = 14;
-            craftEffect = NHFx.crossBlast(NHColor.ancient, 45f, 45f);
-            craftEffect.lifetime *= 1.5f;
-            updateEffect = NHFx.squareRand(NHColor.ancient, 5f, 15f);
-            hasPower = hasItems = hasLiquids = true;
-
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.quantumLiquid), new DrawRegion("-bottom-2"),
-                    new DrawCrucibleFlame() {
-                        {
-                            flameColor = NHColor.ancient;
-                            midColor = Color.valueOf("2e2f34");
-                            circleStroke = 1.05f;
-                            circleSpace = 2.65f;
-                        }
-
-                        @Override
-                        public void draw(Building build) {
-                            if (build.warmup() > 0f && flameColor.a > 0.001f) {
-                                Lines.stroke(circleStroke * build.warmup());
-
-                                float si = Mathf.absin(flameRadiusScl, flameRadiusMag);
-                                float a = alpha * build.warmup();
-
-                                Draw.blend(Blending.additive);
-                                Draw.color(flameColor, a);
-
-                                float base = (Time.time / particleLife);
-                                rand.setSeed(build.id);
-                                for (int i = 0; i < particles; i++) {
-                                    float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
-                                    float angle = rand.random(360f) + (Time.time / rotateScl) % 360f;
-                                    float len = particleRad * particleInterp.apply(fout);
-                                    Draw.alpha(a * (1f - Mathf.curve(fin, 1f - fadeMargin)));
-                                    Fill.square(
-                                            build.x + Angles.trnsx(angle, len),
-                                            build.y + Angles.trnsy(angle, len),
-                                            particleSize * fin * build.warmup(), 45
-                                    );
-                                }
-
-                                Draw.blend();
-
-                                Draw.color(midColor, build.warmup());
-                                Lines.square(build.x, build.y, (flameRad + circleSpace + si) * build.warmup(), 45);
-
-                                Draw.reset();
-                            }
-                        }
-                    },
-                    new DrawDefault(),
-                    new DrawGlowRegion() {{
-                        color = NHColor.ancient;
-                        layer = -1;
-                        glowIntensity = 1.1f;
-                        alpha = 1.1f;
-                    }},
-                    new DrawRotator(1f, "-top") {
-                        @Override
-                        public void draw(Building build) {
-                            Drawf.spinSprite(rotator, build.x + x, build.y + y, DrawFunc.rotator_90(DrawFunc.cycle(build.totalProgress() * rotateSpeed, 0, craftTime), 0.15f));
-                        }
-                    }
-            );
-
-            itemCapacity = 40;
-            liquidCapacity = 40f;
-            consumePower(1600 / 60f);
-        }};
-
          */
     }
 
