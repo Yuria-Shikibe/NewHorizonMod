@@ -42,7 +42,7 @@ public class CraftingBlock {
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
             castingFoundry, crucibleFoundry, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
-            irdryonFluidFactory, setonAlloyFactory, ccbFactory;
+            irdryonFluidFactory, setonAlloyFactory, positivePhaseDecayer, negativePhaseDecayer, ccbFactory;
 
     public static void load() {
         loadColors();
@@ -818,7 +818,7 @@ public class CraftingBlock {
                     new DrawLiquidTile(NHLiquids.xenFluid, 0.2f) {{
                         alpha = 0.7f;
                     }},
-                    //new DrawLiquidSide4(),
+                    new DrawLiquidSide4(),
                     new DrawRegion()
             );
 
@@ -1225,6 +1225,72 @@ public class CraftingBlock {
             consumeLiquid(NHLiquids.irdryonFluid, 6 / 60f);
             consumeItems(new ItemStack(NHItems.plastanium, 2), new ItemStack(NHItems.tungsten, 5));
             consumePower(12f);
+        }};
+
+        positivePhaseDecayer = new MultiBlockCrafter("positive-phase-decayer") {{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.seniorProcessor, 300,
+                    NHItems.phaseFabric, 300,
+                    NHItems.surgeAlloy, 450,
+                    NHItems.carbide, 600,
+                    NHItems.multipleSteel, 240
+            ));
+            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            size = 4;
+            health = 3000;
+            armor = 10f;
+            craftTime = 60;
+            itemCapacity = 45;
+            liquidCapacity = 45;
+            hasLiquids = true;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x5"),
+                    new DrawRegionFlip("-rot")
+            );
+
+            consumeItems(new ItemStack(NHItems.fusionEnergy, 2), new ItemStack(NHItems.zeta, 1));
+            consumeLiquid(NHLiquids.proton, 3 / 60f);
+            outputItems = with(NHItems.thermoCorePositive, 3);
+
+            lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.125f);
+            updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
+
+            enableRotate();
+        }};
+
+        negativePhaseDecayer = new MultiBlockCrafter("negative-phase-decayer") {{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.seniorProcessor, 300,
+                    NHItems.phaseFabric, 300,
+                    NHItems.surgeAlloy, 450,
+                    NHItems.carbide, 600,
+                    NHItems.multipleSteel, 240
+            ));
+            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            size = 4;
+            health = 3000;
+            armor = 10f;
+            craftTime = 60;
+            itemCapacity = 45;
+            liquidCapacity = 45;
+            hasLiquids = true;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x5"),
+                    new DrawRegionFlip("-rot")
+            );
+
+            consumeItems(new ItemStack(NHItems.fissileMatter, 2), new ItemStack(NHItems.zeta, 1));
+            consumeLiquid(NHLiquids.neutron, 3 / 60f);
+            outputItems = with(NHItems.thermoCoreNegative, 3);
+
+            lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.125f);
+            updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
+
+            enableRotate();
         }};
 
         ccbFactory = new MultiBlockCrafter("ccb-factory") {{
