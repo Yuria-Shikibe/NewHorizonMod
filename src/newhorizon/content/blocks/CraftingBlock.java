@@ -646,8 +646,15 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
-                    new DrawLiquidTile(NHLiquids.ammonia, 0.5f),
-                    new DrawLiquidTile(NHLiquids.hydrazine, 0.5f),
+                    new DrawLiquidRegionRotated(NHLiquids.ammonia) {{
+                        suffix = "-liquid-ammonia";
+                    }},
+                    new DrawLiquidRegionRotated(NHLiquids.photon) {{
+                        suffix = "-liquid-photon";
+                    }},
+                    new DrawLiquidRegionRotated(NHLiquids.hydrazine) {{
+                        suffix = "-liquid-hydrazine";
+                    }},
                     new DrawRegion()
             );
 
@@ -1002,6 +1009,9 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x5"),
+                    new DrawRegionFlip() {{
+                        suffix = "-rot";
+                    }},
                     new DrawFlameRotated() {{
                         suffix = "-flame";
                     }}
@@ -1119,7 +1129,8 @@ public class CraftingBlock {
                         sides = 4;
                         sideOffset = 0;
                     }},
-                    new DrawRegion("-top"));
+                    new DrawRegion("-top")
+            );
 
             craftEffect = Fx.smeltsmoke;
         }};
@@ -1290,7 +1301,7 @@ public class CraftingBlock {
             });
             updateEffect = NHStatusEffects.quantization.effect;
 
-            clipSize = size * tilesize * 2f;
+//            clipSize = size * tilesize * 2f;
         }};
         ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
             requirements(Category.crafting, ItemStack.with(
@@ -1401,6 +1412,8 @@ public class CraftingBlock {
                     new DrawLiquidTile(NHLiquids.neutron),
                     new DrawRegion()
             );
+
+            clipSize = size * tilesize * 2f;
         }};
 
                 /*
