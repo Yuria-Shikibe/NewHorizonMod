@@ -228,8 +228,9 @@ public class CraftingBlock {
 
 
             drawer = new DrawMulti(
-                    /*new DrawParticles() {{
-                        particles=15;
+                    new DrawBaseRegion("-3x3"),
+                    new DrawParticles() {{
+                        particles = 15;
                         particleRad = 10f;
                         particleSize = 5f;
                         color = NHLiquids.photon.color.cpy();
@@ -238,14 +239,18 @@ public class CraftingBlock {
                         flameRad = 1.7f;
                         circleSpace = 3f;
                     }},
-                     */
-                    new DrawRegion()
+                    new DrawRegion(),
+                    new DrawGlowRegion() {{
+                        suffix = "-glow";
+                        rotate = true;
+                        color = NHLiquids.photon.color.cpy();
+                    }}
             );
 
             ambientSound = Sounds.loopElectricHum;
             ambientSoundVolume = 0.08f;
 
-            craftEffect = updateEffect = NHFx.square(NHLiquids.photon.color.cpy(), 60, 6, 16, 3);
+            craftEffect = updateEffect = NHFx.squareLine(NHLiquids.photon.color.cpy(), 30, 3, 16, 4);
 
         }};
 

@@ -815,6 +815,18 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-rectificatior": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-phase-rectificatior": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-stamping-facility": {
 	"synthetic": true,
 	"solid": true,
@@ -863,10 +875,10 @@
 	"size": 2,
 	"color": 255
 },
-"new-horizon-photocatalyst-factoty": {
+"new-horizon-photocatalyst-factory": {
 	"synthetic": true,
 	"solid": true,
-	"size": 2,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-fusion-core-energy-factory": {
@@ -875,28 +887,34 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-plasma-activator": {
+"new-horizon-thorium-transmuter": {
 	"synthetic": true,
 	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-subcooler": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-ultracooler": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
+	"size": 4,
 	"color": 255
 },
 "new-horizon-particle-activator": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-plasma-activator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-multiple-rolling-mill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-mixed-rolling-mill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-heavy-rolling-mill": {
@@ -953,19 +971,43 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-irdryon-phase-ascender": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-dense-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
 	"color": 255
 },
-"new-horizon-rectificatior": {
+"new-horizon-positive-phase-decayer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-negative-phase-decayer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-nodex-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
 	"color": 255
 },
-"new-horizon-phase-rectificatior": {
+"new-horizon-ancimembrane-concentrator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-ccb-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
