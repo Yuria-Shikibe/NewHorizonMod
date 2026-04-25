@@ -153,6 +153,11 @@ public class MultiBlockCrafter extends BasicMultiBlock {
     }
 
     @Override
+    public boolean rotatedOutput(int x, int y){
+        return false;
+    }
+
+    @Override
     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
         drawer.drawPlan(this, plan, list);
     }
