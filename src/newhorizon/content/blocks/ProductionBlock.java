@@ -8,16 +8,16 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
+import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
 import newhorizon.content.*;
-import newhorizon.expand.block.drawer.DrawDrillPistonsInterp;
-import newhorizon.expand.block.drawer.DrawRotator;
-import newhorizon.expand.block.drawer.DrawTeamTop;
+import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.drill.AdaptDrill;
+import newhorizon.expand.block.production.drill.DrillModule;
 import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
@@ -215,6 +215,43 @@ public class ProductionBlock {
                     new DrawRegion("-top"),
                     new DrawTeamTop()
             );
+
+            consumePower(1.5f);
+        }};
+
+        airRadiator = new DrillModule("air-radiator") {{
+            requirements(Category.production, with(NHItems.graphite, 114));
+
+            size = 2;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawRotator() {{
+                        suffix = "-rotator";
+                        rotateSpeed = 3f;
+                    }},
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawRotation() {{
+                        suffix = "-rot";
+                        layer = Layer.blockOver;
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                    }
+                        @Override
+                        public void draw(Building build) {
+                            if (build instanceof DrillModule.DrillModuleBuild b && b.drillBuild != null) {
+                                super.draw(b);
+                            }
+                        }
+                    }
+            );
+
+            buildType = () -> new DrillModuleBuild() {
+                @Override
+                public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
+                    drill.moduleBoost += 0.5f * timeScale();
+                }
+            };
 
             consumePower(1.5f);
         }};

@@ -277,7 +277,9 @@ public class MultiBlockCrafter extends BasicMultiBlock {
                 if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
                     updateEffect.at(x + Mathf.range(size * updateEffectSpread), y + Mathf.range(size * updateEffectSpread));
                 }
-            }else warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+            } else {
+                warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+            }
             totalProgress += warmup * Time.delta;
             if(progress >= 1f) craft();
             dumpOutputs();

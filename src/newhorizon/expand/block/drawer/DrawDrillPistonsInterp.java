@@ -18,10 +18,10 @@ public class DrawDrillPistonsInterp extends DrawPistons {
     @Override
     public void draw(Building build){
         if (build instanceof Drill.DrillBuild drill) {
-            float progress = drill.timeDrilled * 2f;
+            float progress = drill.timeDrilled;
             for(int i = 0; i < sides; i++){
                 float scl = Mathf.absin(progress + sinOffset + sideOffset * sinScl * i, sinScl, 1);
-                float len = Interp.smooth.apply(scl) * sinMag + lenOffset;
+                float len = Interp.exp5.apply(scl) * sinMag + lenOffset;
                 float angle = angleOffset + i * 360f / sides;
                 TextureRegion reg = regiont.found() && (Mathf.equal(angle, 315) || Mathf.equal(angle, 135)) ? regiont :
                         angle >= 135 && angle < 315 ? region2 : region1;

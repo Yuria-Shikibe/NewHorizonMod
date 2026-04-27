@@ -9,6 +9,8 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
+import mindustry.ui.Bar;
+import mindustry.world.blocks.defense.OverdriveProjector;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
@@ -22,10 +24,8 @@ public class AdaptDrill extends Drill {
         super(name);
         size = 4;
         itemCapacity = 40;
-
         hasLiquids = false;
         canOverdrive = false;
-        drawTeamOverlay = false;
     }
 
     @Override
@@ -38,6 +38,16 @@ public class AdaptDrill extends Drill {
     public void load(){
         super.load();
         drawer.load(this);
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+        addBar("boost", (AdaptDrillBuild build) -> new Bar(
+                () -> Core.bundle.format("bar.boost", Mathf.round(build.moduleBoost * 100)),
+                () -> Pal.accent,
+                () -> (float) build.modules.size / maxModules)
+        );
     }
 
     @Override
@@ -94,7 +104,7 @@ public class AdaptDrill extends Drill {
                 float speed = (1 + moduleBoost) * efficiency;
 
                 lastDrillSpeed = (speed * dominantItems * warmup) / delay;
-                warmup = Mathf.approachDelta(warmup, speed, warmupSpeed);
+                warmup = Mathf.approachDelta(warmup, efficiency, warmupSpeed);
                 progress += delta() * dominantItems * speed * warmup;
 
                 if(Mathf.chanceDelta(updateEffectChance * warmup))

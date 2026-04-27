@@ -11,6 +11,7 @@ import arc.struct.EnumSet;
 import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Strings;
 import arc.util.io.Reads;
@@ -34,15 +35,15 @@ import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 public class DrillModule extends Block {
-    public float boostSpeed = 0f;
     public DrawBlock drawer = new DrawDefault();
 
     public DrillModule(String name) {
         super(name);
         size = 2;
         solid = true;
-        destructible = true;
         rotate = true;
+        update = true;
+        destructible = true;
         enableDrawStatus = false;
         group = BlockGroup.drills;
         flags = EnumSet.of(BlockFlag.drill);
@@ -52,6 +53,12 @@ public class DrillModule extends Block {
     public void load(){
         super.load();
         drawer.load(this);
+    }
+
+    @Override
+    public void loadIcon() {
+        super.loadIcon();
+        uiIcon = Core.atlas.find(name + "-icon", name);
     }
 
     @Override
@@ -87,7 +94,11 @@ public class DrillModule extends Block {
 
         @Override
         public void updateTile() {
-            warmup = Mathf.approachDelta(warmup, efficiency, 0.02f);
+            if (drillBuild != null) {
+                warmup = Mathf.approachDelta(warmup, efficiency, 0.02f);
+            } else {
+                warmup = Mathf.approachDelta(warmup, 0, 0.02f);
+            }
             totalProgress += warmup * edelta();
         }
 
