@@ -19,9 +19,9 @@ public class DrawTeamTop extends DrawBlock {
 
     @Override
     public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {
-        if (block.teamRegion.found() && player != null) {
-            Draw.color(player.team().color);
-            Draw.rect(block.teamRegions[player.team().id], plan.x, plan.y);
+        if(plan.worldContext && player != null && block.teamRegion != null && block.teamRegion.found()){
+            if(block.teamRegions[player.team().id] == block.teamRegion) Draw.color(player.team().color);
+            Draw.rect(block.teamRegions[player.team().id], plan.drawx(), plan.drawy());
             Draw.color();
         }
     }
