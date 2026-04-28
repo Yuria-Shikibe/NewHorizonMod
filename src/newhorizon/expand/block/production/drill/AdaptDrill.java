@@ -25,7 +25,6 @@ public class AdaptDrill extends Drill {
         size = 4;
         itemCapacity = 40;
         hasLiquids = false;
-        canOverdrive = false;
     }
 
     @Override

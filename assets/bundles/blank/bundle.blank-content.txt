@@ -223,6 +223,9 @@ block.new-horizon-resonance-mining-facility.description =
 block.new-horizon-air-radiator.name = 
 block.new-horizon-air-radiator.description = 
 #block.new-horizon-air-radiator.detail = 
+block.new-horizon-liquid-radiator.name = 
+block.new-horizon-liquid-radiator.description = 
+#block.new-horizon-liquid-radiator.detail = 
 #DISTRIBUTION PART
 block.new-horizon-reinforced-item-source.name = 
 block.new-horizon-reinforced-item-source.description = 

@@ -44,6 +44,7 @@ public class DrillModule extends Block {
         rotate = true;
         update = true;
         destructible = true;
+        canOverdrive = false;
         enableDrawStatus = false;
         group = BlockGroup.drills;
         flags = EnumSet.of(BlockFlag.drill);
@@ -95,7 +96,7 @@ public class DrillModule extends Block {
         @Override
         public void updateTile() {
             if (drillBuild != null) {
-                warmup = Mathf.approachDelta(warmup, efficiency, 0.02f);
+                warmup = Mathf.approachDelta(warmup, efficiency * drillBuild.warmup, 0.02f);
             } else {
                 warmup = Mathf.approachDelta(warmup, 0, 0.02f);
             }
@@ -121,6 +122,11 @@ public class DrillModule extends Block {
                 }
             }
             return drill.modules.size < drill.maxModules();
+        }
+
+        @Override
+        public boolean shouldConsume() {
+            return drillBuild != null && drillBuild.warmup > 0;
         }
 
         public void apply(AdaptDrill.AdaptDrillBuild drill) {

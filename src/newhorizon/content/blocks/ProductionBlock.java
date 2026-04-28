@@ -30,7 +30,7 @@ public class ProductionBlock {
             //liquidConvertor, xenExtractor, xenIterator,
             scanCollector,
             resonanceMiningFacility, beamMiningFacility, implosionMiningFacility,
-            airRadiator,
+            airRadiator, liquidRadiator,
             speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
@@ -249,11 +249,47 @@ public class ProductionBlock {
             buildType = () -> new DrillModuleBuild() {
                 @Override
                 public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
-                    drill.moduleBoost += 0.5f * timeScale();
+                    drill.moduleBoost += 0.5f * efficiency;
                 }
             };
 
             consumePower(1.5f);
+        }};
+
+        liquidRadiator = new DrillModule("liquid-radiator") {{
+            requirements(Category.production, with(NHItems.graphite, 114));
+
+            size = 2;
+            hasLiquids = true;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawLiquidTile(NHLiquids.water),
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawRotation() {{
+                        suffix = "-rot";
+                        layer = Layer.blockOver;
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                    }
+                        @Override
+                        public void draw(Building build) {
+                            if (build instanceof DrillModule.DrillModuleBuild b && b.drillBuild != null) {
+                                super.draw(b);
+                            }
+                        }
+                    }
+            );
+
+            buildType = () -> new DrillModuleBuild() {
+                @Override
+                public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
+                    drill.moduleBoost += 0.75f * efficiency;
+                }
+            };
+
+            consumePower(1.5f);
+            consumeLiquid(NHLiquids.water, 0.05f);
         }};
 
         /*
