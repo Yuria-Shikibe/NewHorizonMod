@@ -533,6 +533,24 @@
 	"size": 5,
 	"color": 255
 },
+"new-horizon-ore-copper-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -643992577
+},
+"new-horizon-ore-lead-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1937790465
+},
+"new-horizon-ore-titanium-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1937790465
+},
 "new-horizon-ore-zeta": {
 	"synthetic": false,
 	"solid": false,

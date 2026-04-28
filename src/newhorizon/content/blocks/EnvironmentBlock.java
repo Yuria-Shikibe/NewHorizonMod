@@ -1,6 +1,7 @@
 package newhorizon.content.blocks;
 
 import mindustry.content.Blocks;
+import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.MultiPacker;
@@ -18,6 +19,7 @@ public class EnvironmentBlock {
     public static Floor armorClear;
 
     public static Block
+            oreCopperDense, oreLeadDense, oreTitaniumDense,
             oreZeta, oreSilicon, oreSilicar,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
@@ -36,6 +38,27 @@ public class EnvironmentBlock {
             zetaCrystalFloor;
 
     public static void load() {
+        oreCopperDense = new OreBlock("ore-copper-dense") {{
+            variants = 3;
+            useColor = true;
+            itemDrop = NHItems.copper;
+            mapColor.set(itemDrop.color);
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreLeadDense = new OreBlock("ore-lead-dense") {{
+            variants = 3;
+            useColor = true;
+            itemDrop = NHItems.lead;
+            mapColor.set(itemDrop.color);
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreTitaniumDense = new OreBlock("ore-titanium-dense") {{
+            variants = 3;
+            useColor = true;
+            itemDrop = NHItems.titanium;
+            mapColor.set(itemDrop.color);
+            attributes.set(NHContent.density, 1f);
+        }};
         oreZeta = new OreBlock("ore-zeta") {{
             oreDefault = true;
             variants = 3;
