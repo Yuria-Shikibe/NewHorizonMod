@@ -6,6 +6,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
@@ -22,6 +23,7 @@ import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
 import static mindustry.type.ItemStack.with;
+import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
@@ -195,8 +197,14 @@ public class ProductionBlock {
             warmupSpeed = 0.035f;
 
             drillEffect = Fx.mineHuge;
-            updateEffect = Fx.pulverizeRed;
-            updateEffectChance = 0.03f;
+            updateEffect = new Effect(30f, e -> {
+                Draw.color(e.color, Color.white, e.fout() * 0.66f);
+                Draw.alpha(0.55f * e.fout() + 0.5f);
+                Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 17f, (x, y) -> {
+                    Fill.square(e.x + x, e.y + y, e.fout() * rand(e.id).random(2.5f, 4));
+                });
+            });
+            updateEffectChance = 0.06f;
 
             drawer = new DrawMulti(
                     new DrawRegion("-base"),
@@ -213,10 +221,45 @@ public class ProductionBlock {
                         suffix = "-piston1";
                     }},
                     new DrawRegion("-top"),
-                    new DrawTeamTop()
+                    new DrawTeamTop(),
+                    new DrawDrillOreTop()
             );
 
             consumePower(1.5f);
+        }};
+
+        beamMiningFacility = new AdaptDrill("beam-mining-facility") {{
+            requirements(Category.production, with(NHItems.graphite, 114));
+
+            size = 4;
+            tier = 3;
+
+            drawRim = false;
+            hasPower = true;
+
+            drillTime = 240;
+            itemCapacity = 20;
+            warmupSpeed = 0.035f;
+
+            drillEffect = Fx.mineHuge;
+            updateEffect = new Effect(30f, e -> {
+                Draw.color(e.color, Color.white, e.fout() * 0.66f);
+                Draw.alpha(0.55f * e.fout() + 0.5f);
+                Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 17f, (x, y) -> {
+                    Fill.square(e.x + x, e.y + y, e.fout() * rand(e.id).random(2.5f, 4), 45);
+                });
+            });
+            updateEffectChance = 0.06f;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-4x4"),
+                    new DrawDrillMineBeam(),
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawDrillOreTop()
+            );
+
+            consumePower(5f);
         }};
 
         airRadiator = new DrillModule("air-radiator") {{

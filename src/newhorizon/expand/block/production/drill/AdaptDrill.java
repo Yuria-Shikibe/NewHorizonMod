@@ -43,7 +43,7 @@ public class AdaptDrill extends Drill {
     public void setBars() {
         super.setBars();
         addBar("boost", (AdaptDrillBuild build) -> new Bar(
-                () -> Core.bundle.format("bar.boost", Mathf.round(build.moduleBoost * 100)),
+                () -> Core.bundle.format("nh.bar.module-boost", build.modules.size, maxModules, Mathf.round(build.moduleBoost * 100)),
                 () -> Pal.accent,
                 () -> (float) build.modules.size / maxModules)
         );
@@ -140,6 +140,7 @@ public class AdaptDrill extends Drill {
         @Override
         public void onProximityUpdate() {
             super.onProximityUpdate();
+            modules.each(build -> build.drillBuild = null);
             modules.clear();
             proximity.each(building -> {
                 if (building instanceof DrillModule.DrillModuleBuild module) {

@@ -395,6 +395,12 @@
 	"size": 4,
 	"color": 255
 },
+"new-horizon-beam-mining-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
 "new-horizon-air-radiator": {
 	"synthetic": true,
 	"solid": true,
