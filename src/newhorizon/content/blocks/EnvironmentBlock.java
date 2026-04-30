@@ -21,7 +21,8 @@ public class EnvironmentBlock {
     public static Block
             oreCopperDense, oreLeadDense, oreScrapDense, oreCoalDense, oreTitaniumDense, oreThoriumDense,
             oreBerylliumDense, oreTungstenDense, oreCrystalThoriumDense,
-            oreZeta, oreSilicon, oreSilicar,
+            oreZeta, oreSilicar,
+            oreZetaDense, oreSilicarDense,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
@@ -64,25 +65,22 @@ public class EnvironmentBlock {
             attributes.set(NHContent.density, 1f);
         }};
 
-        oreZeta = new OreBlock("ore-zeta") {{
+        oreZeta = new OreBlock("ore-zeta", NHItems.zeta) {{
             oreDefault = true;
-            variants = 3;
-            oreThreshold = 0.95F;
-            oreScale = 20.380953F;
-            itemDrop = NHItems.zeta;
-            localizedName = itemDrop.localizedName;
-            mapColor.set(itemDrop.color);
-            useColor = true;
+            oreThreshold = 0.95f;
+            oreScale = 20.380953f;
         }};
-        oreSilicar = new OreBlock("ore-silicar") {{
+        oreSilicar = new OreBlock("ore-silicar", NHItems.silicar) {{
             oreDefault = true;
-            variants = 3;
-            oreThreshold = 0.95F;
-            oreScale = 20.380953F;
-            itemDrop = NHItems.silicar;
-            localizedName = itemDrop.localizedName;
-            mapColor.set(itemDrop.color);
-            useColor = true;
+            oreThreshold = 0.95f;
+            oreScale = 20.380953f;
+        }};
+
+        oreZetaDense = new OreBlock("ore-zeta-dense", NHItems.zeta) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreSilicarDense = new OreBlock("ore-silicar-dense", NHItems.silicar) {{
+            attributes.set(NHContent.density, 1f);
         }};
 
         oreSmallTitanium = new OreVein("ore-small-titanium", NHItems.titanium, 0.5f);

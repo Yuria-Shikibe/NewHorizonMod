@@ -309,12 +309,14 @@ new-horizon-ore-lead-dense 0 0 1 9207721
 new-horizon-ore-normal-titanium 0 0 1 9282019
 new-horizon-ore-pure-titanium 0 0 1 9282019
 new-horizon-ore-silicar 0 0 1 6192029
+new-horizon-ore-silicar-dense 0 0 1 6192029
 new-horizon-ore-silicon 0 0 1 5461596
 new-horizon-ore-small-titanium 0 0 1 9282019
 new-horizon-ore-thorium-dense 0 0 1 16360391
 new-horizon-ore-titanium-dense 0 0 1 9282019
 new-horizon-ore-tungsten-dense 0 0 1 7768730
 new-horizon-ore-zeta 0 0 1 16757632
+new-horizon-ore-zeta-dense 0 0 1 16757632
 new-horizon-particle-activator 1 1 2 0
 new-horizon-particle-modulator 1 1 1 0
 new-horizon-particle-processor-basic 1 1 2 0

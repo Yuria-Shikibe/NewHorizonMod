@@ -593,6 +593,18 @@
 	"size": 1,
 	"color": 1585159679
 },
+"new-horizon-ore-zeta-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -5013249
+},
+"new-horizon-ore-silicar-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1585159679
+},
 "new-horizon-ore-small-titanium": {
 	"synthetic": false,
 	"solid": false,
