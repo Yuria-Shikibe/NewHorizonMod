@@ -19,7 +19,8 @@ public class EnvironmentBlock {
     public static Floor armorClear;
 
     public static Block
-            oreCopperDense, oreLeadDense, oreTitaniumDense,
+            oreCopperDense, oreLeadDense, oreScrapDense, oreCoalDense, oreTitaniumDense, oreThoriumDense,
+            oreBerylliumDense, oreTungstenDense, oreCrystalThoriumDense,
             oreZeta, oreSilicon, oreSilicar,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
@@ -38,27 +39,31 @@ public class EnvironmentBlock {
             zetaCrystalFloor;
 
     public static void load() {
-        oreCopperDense = new OreBlock("ore-copper-dense") {{
-            variants = 3;
-            useColor = true;
-            itemDrop = NHItems.copper;
-            mapColor.set(itemDrop.color);
+        oreCopperDense = new OreBlock("ore-copper-dense", NHItems.copper) {{
             attributes.set(NHContent.density, 1f);
         }};
-        oreLeadDense = new OreBlock("ore-lead-dense") {{
-            variants = 3;
-            useColor = true;
-            itemDrop = NHItems.lead;
-            mapColor.set(itemDrop.color);
+        oreLeadDense = new OreBlock("ore-lead-dense", NHItems.lead) {{
             attributes.set(NHContent.density, 1f);
         }};
-        oreTitaniumDense = new OreBlock("ore-titanium-dense") {{
-            variants = 3;
-            useColor = true;
-            itemDrop = NHItems.titanium;
-            mapColor.set(itemDrop.color);
+        oreCoalDense = new OreBlock("ore-coal-dense", NHItems.coal) {{
             attributes.set(NHContent.density, 1f);
         }};
+        oreTitaniumDense = new OreBlock("ore-titanium-dense", NHItems.titanium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreThoriumDense = new OreBlock("ore-thorium-dense", NHItems.thorium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreBerylliumDense = new OreBlock("ore-beryllium-dense", NHItems.beryllium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreTungstenDense = new OreBlock("ore-tungsten-dense", NHItems.tungsten) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreCrystalThoriumDense = new OreBlock("ore-crystal-thorium-dense", NHItems.thorium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+
         oreZeta = new OreBlock("ore-zeta") {{
             oreDefault = true;
             variants = 3;

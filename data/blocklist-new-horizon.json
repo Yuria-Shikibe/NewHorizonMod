@@ -545,11 +545,41 @@
 	"size": 1,
 	"color": -1937790465
 },
+"new-horizon-ore-coal-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 656877567
+},
 "new-horizon-ore-titanium-dense": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": -1937790465
+	"color": -1918770177
+},
+"new-horizon-ore-thorium-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -106706945
+},
+"new-horizon-ore-beryllium-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 982476031
+},
+"new-horizon-ore-tungsten-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1988795135
+},
+"new-horizon-ore-crystal-thorium-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -106706945
 },
 "new-horizon-ore-zeta": {
 	"synthetic": false,
