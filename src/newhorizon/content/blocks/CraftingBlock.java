@@ -808,8 +808,12 @@ public class CraftingBlock {
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
                     new DrawRegion(),
-                    new DrawSpecialRotation(1f, "-rotator", craftTime/3, 0.15f, 180f)
-            );
+                    new DrawRotator(1f, "-rotator") {
+                        @Override
+                        public void draw(Building build) {
+                            Drawf.spinSprite(rotator, build.x + x, build.y + y, DrawFunc.rotator_90(DrawFunc.cycle(build.totalProgress() * rotateSpeed, 0, craftTime/3), 0.15f));
+                        }
+                    });
         }};
 
         heavyRollingMill = new MultiBlockCrafter("heavy-rolling-mill") {{
@@ -1391,7 +1395,12 @@ public class CraftingBlock {
                         glowIntensity = 1.1f;
                         alpha = 1.1f;
                     }},
-                    new DrawSpecialRotation(1f, "-top", craftTime, 0.15f, 90f)
+                    new DrawRotator(1f, "-top") {
+                        @Override
+                        public void draw(Building build) {
+                            Drawf.spinSprite(rotator, build.x + x, build.y + y, DrawFunc.rotator_90(DrawFunc.cycle(build.totalProgress() * rotateSpeed, 0, craftTime), 0.15f));
+                        }
+                    }
             );
 
             craftEffect = NHFx.crossBlast(NHColor.ancient, 45f, 45f);
