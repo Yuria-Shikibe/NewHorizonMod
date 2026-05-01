@@ -31,18 +31,15 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
-import newhorizon.expand.game.MapObjectives.ReuseObjective;
-import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.frag.PayloadInventoryFragment;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.underline;
+import static newhorizon.NHVars.cutsceneUI;
 
 public class NHUI {
     public static final float maxWidth = 65f * 5f + 4f;
@@ -50,6 +47,8 @@ public class NHUI {
     public static Table itemInv;
     public static WidgetGroup HUD_waves_editor;
     public static Element infoTable;
+
+    public static Table objectiveList, eventList;
 
     public static NHWorldSettingDialog nhWorldSettingDialog;
     public static PayloadInventoryFragment payloadInventoryFragment;
@@ -62,7 +61,7 @@ public class NHUI {
             getReferences();
             rebuildSkipButton();
             preProcess();
-            buildObjectiveTable();
+            buildListTable();
             postProcess();
         } catch (Exception e) {
             Log.err(e);
@@ -125,10 +124,15 @@ public class NHUI {
         HUD_waves.add(infoTable).width(maxWidth).left();
     }
 
-    public static void buildObjectiveTable() {
+    public static void buildListTable() {
         HUD_waves.row().add(new Table(Tex.buttonEdge4, t -> {
             Table infoT = new Table();
             infoT.touchable = Touchable.childrenOnly;
+
+            objectiveList = new Table();
+            eventList = new Table();
+
+            rebuildEventList();
 
             ImageButton b = new ImageButton(Icon.downOpen, Styles.clearNonei);
             b.clicked(() -> {
@@ -136,14 +140,17 @@ public class NHUI {
                     infoT.clear();
                     infoT.table().padTop(4);
                     ScrollPane pane = infoT.pane(Styles.smallPane, i -> {
-                        i.align(Align.topLeft).defaults().growX().fillY().row();
-                        state.rules.objectives.each(mapObjective -> {
-                            Boolp shown = () -> mapObjective.qualified() && !mapObjective.hidden;
-                            DelayCollapser col = new DelayCollapser(getObjectiveTable(mapObjective), !shown.get());
-                            col.setCollapsed(true, () -> !shown.get());
-                            i.add(col).row();
-                        });
-                    }).grow().maxHeight(NHUI.getHeight() / 2f).get();
+                        i.table(p -> {
+                            p.align(Align.topLeft).defaults().growX().fillY().row();
+                            state.rules.objectives.each(mapObjective -> {
+                                Boolp shown = () -> mapObjective.qualified() && !mapObjective.hidden;
+                                DelayCollapser col = new DelayCollapser(getObjectiveTable(mapObjective), !shown.get());
+                                col.setCollapsed(true, () -> !shown.get());
+                                p.add(col).row();
+                            });
+                        }).growX().row();
+                        i.add(eventList).growX().row();
+                    }).grow().maxHeight(Core.graphics.getHeight() / 2f).get();
                     pane.name = "pane";
                     pane.setFadeScrollBars(true);
                     pane.setForceScroll(false, true);
@@ -152,23 +159,45 @@ public class NHUI {
                     Core.scene.unfocus(infoT);
                 }
             });
-            b.update(() -> {
-                if (state.isMenu()) b.setChecked(false);
-            });
+
+            b.update(() -> {if (state.isMenu()) b.setChecked(false);});
 
             t.table(bl -> {
-                bl.table(table -> table.label(() -> {
-                    AtomicInteger activeCount = new AtomicInteger();
-                    state.rules.objectives.each(obj -> {
-                        if (obj.qualified() && !obj.hidden) activeCount.getAndIncrement();
-                    });
-                    return activeCount.get() == 0 ? "[lightgray]No Objective[]" : activeCount.get() + " Objective(s)";
-                }).maxWidth(maxWidth - 40).pad(8, 16, 8, 0).row()).growX().height(50).marginLeft(10f);
+                bl.table(table -> {
+                    table.label(NHUI::getDisplayObjectiveCount).labelAlign(Align.left).maxWidth(maxWidth - 40).pad(2, 16, 4, 0).row();
+                    table.label(NHUI::getDisplayEventCount).labelAlign(Align.left).maxWidth(maxWidth - 40).pad(4, 16, 2, 0).row();
+                }).growX().height(50).marginLeft(10f);
                 bl.add(b).size(50).padLeft(10f);
             }).growX().fillY().margin(4f).padBottom(4f);
 
             t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
         })).left().margin(10f).growX().row();
+    }
+
+    public static void rebuildEventList() {
+        eventList.clear();
+        eventList.align(Align.topLeft).defaults().growX().fillY().row();
+        for (var eventHudMarker: cutsceneUI.markers) {
+            Boolp shown = eventHudMarker::completed;
+            DelayCollapser col = new DelayCollapser(eventHudMarker.getDisplayStack(), shown.get());
+            col.setCollapsed(true, shown);
+            eventList.add(col).row();
+        }
+    }
+
+    public static String getDisplayObjectiveCount() {
+        int activeCount = 0;
+        for (var mapObjective: state.rules.objectives) {
+            if (mapObjective.qualified() && !mapObjective.hidden) {
+                activeCount ++;
+            }
+        }
+        return activeCount == 0 ? "[lightgray]No Objective[]" : activeCount + " Objective(s)";
+    }
+
+    public static String getDisplayEventCount() {
+        int eventCount = cutsceneUI.markers.size;
+        return eventCount == 0 ? "[lightgray]No Event[]" : eventCount + " Event(s)";
     }
 
     public static Table getObjectiveTable(MapObjectives.MapObjective e) {
@@ -297,37 +326,6 @@ public class NHUI {
                         obj::isCompleted
                 ));
             }
-
-            if (e instanceof ReuseObjective obj) {
-                Floatp countup = obj::getCountup;
-                Floatp realTime = () -> obj.duration * state.rules.objectiveTimerMultiplier;
-                t.add(objectiveTable(
-                        Icon.refresh.getRegion(),
-                        () -> (int) countup.get(),
-                        () -> (int) realTime.get(),
-                        () -> UI.formatTime(countup.get()) + "/" + UI.formatTime(realTime.get()),
-                        obj::isCompleted,
-                        false
-                ));
-            }
-
-            if (e instanceof TriggerObjective obj) {
-                Floatp countup = obj::getCountup;
-                Floatp realTime = () -> obj.duration;
-                TextureRegion region = NHContent.objective;
-                if (obj.timer.contains("event-0") || obj.timer.contains("raid")) region = NHContent.raid;
-                if (obj.timer.contains("event-1") || obj.timer.contains("fleet")) region = NHContent.fleet;
-
-                TextureRegion finalRegion = region;
-                t.add(new Stack(
-                        new Table(table -> table.add(new DelaySlideBar(
-                                () -> Pal.accent,
-                                () -> "     " + UI.formatTime(countup.get()) + "/" + UI.formatTime(realTime.get()),
-                                () -> Mathf.clamp(countup.get() / realTime.get())
-                        )).padLeft(20f).height(40).expandX().fillX()),
-                        new Table(table -> table.image(finalRegion).size(56).pad(-8).expandX().left())
-                ));
-            }
         });
     }
 
@@ -345,13 +343,5 @@ public class NHUI {
 
     public static Stack objectiveTable(TextureRegion region, Intp value, Intp target, Prov<CharSequence> info, Boolp checked) {
         return objectiveTable(region, value, target, info, checked, true);
-    }
-
-    public static float getWidth() {
-        return Core.graphics.getWidth();
-    }
-
-    public static float getHeight() {
-        return Core.graphics.getHeight();
     }
 }

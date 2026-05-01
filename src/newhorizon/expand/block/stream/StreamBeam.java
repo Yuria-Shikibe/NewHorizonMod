@@ -26,28 +26,27 @@ import static mindustry.Vars.world;
 public class StreamBeam {
     public float lastStrokeScale, lastOutput;
     public Color lastColor = Color.clear.cpy();
-    public static final Rand rand = new Rand();
+
+    public float amountCap = -1f;
+    public int beamLength = 5;
 
     public Liquid currentLiquid;
     public Building source, target;
     public int distance;
     public boolean clog;
-    public int beamLength = 5;
 
-    public int offsetX, offsetY, rotationOffset;
-    public float amountCap = -1f;
+    public int rotationOffset;
     public Liquid filter;
 
     public StreamBeam(Building source) {
         this.source = source;
-        offsetX = offsetY = 0;
     }
 
     public void update(){
         if (source == null) return;
 
-        target = null;
         clog = false;
+        target = null;
         distance = beamLength;
 
         for (int i = 0; i <= beamLength; i++){
@@ -58,7 +57,7 @@ public class StreamBeam {
             if (!(building == null || building.block.underBullets)) {
                 target = building;
                 distance = i;
-                if (building instanceof StreamBeamBuild sbb) clog = !sbb.acceptStream(this);
+                if (building instanceof StreamBlock.StreamBuild sbb) clog = !sbb.acceptStream(this);
                 break;
             }
         }
@@ -66,21 +65,6 @@ public class StreamBeam {
         getCurrentLiquid();
         lastStrokeScale = Mathf.lerpDelta(lastStrokeScale, beamStrokeScale(), 0.05f);
         transportLiquid();
-    }
-
-    public Effect getEffect() {
-        float len = target == null? (distance + 1): distance;
-        float length = len * 8f;
-
-        return new Effect(length, e -> {
-            rand.setSeed(e.id);
-            Tmp.v1.set(4f + length * e.fin(), rand.random(-3f * lastStrokeScale, 3f * lastStrokeScale)).rotate(e.rotation);
-            float threshold = distance / len;
-            Draw.color(e.color);
-            Draw.alpha(1 - Mathf.curve(e.fin(), threshold, 1f));
-            Lines.stroke(0.5f);
-            Lines.lineAngle(Tmp.v1.x + e.x, Tmp.v1.y + e.y, e.rotation, 2f);
-        });
     }
 
     public void getCurrentLiquid(){
@@ -106,22 +90,14 @@ public class StreamBeam {
             float cap = amountCap > 0? amountCap * source.edelta(): 5;
             float maxAmount = Math.min(cap, source.liquids.get(currentLiquid));
 
-            if (target != null && target.liquids != null){
+            if (target != null && target.liquids != null && target instanceof StreamBlock.StreamBuild sbb && sbb.acceptStream(this)){
                 float maxAccept = Math.min(target.block.liquidCapacity - target.liquids.get(currentLiquid), maxAmount);
-                if (target instanceof StreamBeamBuild sbb && sbb.acceptStream(this)) {
-                    target.handleLiquid(source, currentLiquid, maxAccept);
-                    sbb.handleStream(this);
-                } else if (!(target.block instanceof LiquidBlock) && target.block.liquidFilter[currentLiquid.id]){
-                    target.handleLiquid(source, currentLiquid, maxAccept);
-                }
+                target.handleLiquid(source, currentLiquid, maxAccept);
+                sbb.handleStream(this);
             }
             lastOutput = maxAmount;
             source.liquids.remove(currentLiquid, maxAmount);
         }
-
-        //if (Mathf.chanceDelta(lastOutput / 0.2f)) {
-        //    getEffect().at(source.x, source.y, getRotation() * 90f, currentLiquid.color);
-        //}
     }
 
     public int getRotation(){
@@ -189,17 +165,5 @@ public class StreamBeam {
         if (source == null || source.liquids == null || currentLiquid == null) return 0f;
         float value = Mathf.clamp(lastOutput / (0.5f * Time.delta));
         return value < 0.01f ? 0: Mathf.sqrt(value);
-    }
-
-    public Point2 calculateRotatedPosition(Point2 pos, int blockSize, int rotation) {
-        int shift = (blockSize + 1) % 2;
-        int px = pos.x, py = pos.y;
-
-        return switch (rotation) {
-            case 1 -> new Point2(-py + shift, px);
-            case 2 -> new Point2(-px + shift, -py + shift);
-            case 3 -> new Point2(py, -px + shift);
-            default -> new Point2(px, py); // default rotation 0
-        };
     }
 }

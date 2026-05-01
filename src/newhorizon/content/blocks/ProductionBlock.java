@@ -3,37 +3,37 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
+import arc.math.Mathf;
+import arc.math.Rand;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
+import mindustry.gen.Building;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
-import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.draw.*;
-import mindustry.world.meta.BlockGroup;
 import newhorizon.content.*;
-import newhorizon.expand.block.drawer.DrawRotator;
+import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
 import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
-import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.type.ItemStack.with;
+import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker, tungstenReconstructor, titaniumReconstructor,
-            liquidConvertor, xenExtractor, xenIterator,
-            scanCollector;
-    public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
-    public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
+            sandCracker,
+            //tungstenReconstructor, titaniumReconstructor,
+            //liquidConvertor, xenExtractor, xenIterator,
+            scanCollector,
+            resonanceMiningFacility, beamMiningFacility, implosionMiningFacility,
+            airRadiator, liquidRadiator,
+            speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
 
@@ -74,6 +74,7 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
+        /*
         tungstenReconstructor = new RecipeGenericCrafter("tungsten-reconstructor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
@@ -180,58 +181,161 @@ public class ProductionBlock {
             //consumePower(5f);
         }};
 
-        /*
+         */
+
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
-            requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
-            mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
+            requirements(Category.production, with(NHItems.graphite, 114));
 
-            health = 900;
-            armor = 6f;
+            size = 4;
+            tier = 3;
 
-            mineSpeed = 6f;
-            mineCount = 15;
-            mineTier = 5;
+            drawRim = false;
+            hasPower = true;
 
-            itemCapacity = 45;
-            maxModules = 2;
+            drillTime = 240;
+            itemCapacity = 20;
+            warmupSpeed = 0.035f;
 
+            drillEffect = Fx.mineHuge;
             updateEffect = new Effect(30f, e -> {
-                Rand rand = rand(e.id);
                 Draw.color(e.color, Color.white, e.fout() * 0.66f);
                 Draw.alpha(0.55f * e.fout() + 0.5f);
                 Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 17f, (x, y) -> {
-                    Fill.square(e.x + x, e.y + y, e.fout() * rand.random(2.5f, 4));
+                    Fill.square(e.x + x, e.y + y, e.fout() * rand(e.id).random(2.5f, 4));
                 });
             });
+            updateEffectChance = 0.06f;
 
-            updateEffectChance = 0.1f;
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawDrillPistonsInterp() {{
+                        sinScl = 4f;
+                        sinMag = 3.5f;
+                        suffix = "-piston0";
+                    }},
+                    new DrawDrillPistonsInterp() {{
+                        sinScl = 4f;
+                        sinMag = 3.5f;
+                        sinOffset = Mathf.pi * 8f;
+                        angleOffset = 45;
+                        suffix = "-piston1";
+                    }},
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawDrillOreTop()
+            );
 
-            drawer = b -> {
-                float rad = 9.2f + Mathf.absin(8, 1);
-                float base = (Time.time / 30f);
-                Tmp.c1.set(b.dominantItem.color).lerp(Color.white, 0.2f).a(b.warmup);
-                Draw.color(Tmp.c1);
-                Lines.stroke(1.2f);
-                for (int i = 0; i < 32; i++) {
-                    rand.setSeed(b.id + i);
-                    float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
-                    float angle = rand.random(360f);
-                    float len = 12.5f * Interp.pow2.apply(fout);
-                    Lines.lineAngle(
-                            b.x + Angles.trnsx(angle, len),
-                            b.y + Angles.trnsy(angle, len),
-                            angle, 6 * fin
-                    );
-                }
-
-                Tmp.c1.set(Pal.techBlue).lerp(Color.white, 0.2f).a(b.warmup / 1.1f);
-                Draw.color(Tmp.c1);
-                Lines.stroke(1.32f);
-                Lines.circle(b.x, b.y, rad);
-
-                Draw.reset();
-            };
+            consumePower(1.5f);
         }};
+
+        beamMiningFacility = new AdaptDrill("beam-mining-facility") {{
+            requirements(Category.production, with(NHItems.graphite, 114));
+
+            size = 4;
+            tier = 3;
+
+            drawRim = false;
+            hasPower = true;
+
+            drillTime = 240;
+            itemCapacity = 20;
+            warmupSpeed = 0.035f;
+
+            drillEffect = Fx.mineHuge;
+            updateEffect = new Effect(30f, e -> {
+                Draw.color(e.color, Color.white, e.fout() * 0.66f);
+                Draw.alpha(0.55f * e.fout() + 0.5f);
+                Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 17f, (x, y) -> {
+                    Fill.square(e.x + x, e.y + y, e.fout() * rand(e.id).random(2.5f, 4), 45);
+                });
+            });
+            updateEffectChance = 0.06f;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-4x4"),
+                    new DrawDrillMineBeam(),
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawDrillOreTop()
+            );
+
+            consumePower(5f);
+        }};
+
+        airRadiator = new DrillModule("air-radiator") {{
+            requirements(Category.production, with(NHItems.graphite, 114));
+
+            size = 2;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawRotator() {{
+                        suffix = "-rotator";
+                        rotateSpeed = 3f;
+                    }},
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawRotation() {{
+                        suffix = "-rot";
+                        layer = Layer.blockOver;
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                    }
+                        @Override
+                        public void draw(Building build) {
+                            if (build instanceof DrillModule.DrillModuleBuild b && b.drillBuild != null) {
+                                super.draw(b);
+                            }
+                        }
+                    }
+            );
+
+            buildType = () -> new DrillModuleBuild() {
+                @Override
+                public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
+                    drill.moduleBoost += 0.5f * efficiency;
+                }
+            };
+
+            consumePower(1.5f);
+        }};
+
+        liquidRadiator = new DrillModule("liquid-radiator") {{
+            requirements(Category.production, with(NHItems.graphite, 114));
+
+            size = 2;
+            hasLiquids = true;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawLiquidTile(NHLiquids.water),
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawRotation() {{
+                        suffix = "-rot";
+                        layer = Layer.blockOver;
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                    }
+                        @Override
+                        public void draw(Building build) {
+                            if (build instanceof DrillModule.DrillModuleBuild b && b.drillBuild != null) {
+                                super.draw(b);
+                            }
+                        }
+                    }
+            );
+
+            buildType = () -> new DrillModuleBuild() {
+                @Override
+                public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
+                    drill.moduleBoost += 0.75f * efficiency;
+                }
+            };
+
+            consumePower(1.5f);
+            consumeLiquid(NHLiquids.water, 0.05f);
+        }};
+
+        /*
         beamMiningFacility = new AdaptDrill("beam-mining-facility") {{
             requirements(Category.production, with(NHItems.metalOxhydrigen, 60, Items.tungsten, 90, Items.surgeAlloy, 80, Items.phaseFabric, 60, NHItems.zeta, 60));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});

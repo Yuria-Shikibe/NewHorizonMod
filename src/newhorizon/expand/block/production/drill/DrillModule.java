@@ -11,8 +11,11 @@ import arc.struct.EnumSet;
 import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Strings;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
@@ -21,6 +24,8 @@ import mindustry.type.Item;
 import mindustry.ui.Fonts;
 import mindustry.world.Block;
 import mindustry.world.Edges;
+import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHStats;
@@ -30,100 +35,82 @@ import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 public class DrillModule extends Block {
-    public TextureRegion[] topRegion;
-    public TextureRegion baseRegion;
-
-    public Seq<Item[]> convertList = new Seq<>();
-    public ObjectFloatMap<Item> convertMul = new ObjectFloatMap<>();
-    public float boostSpeed = 0f;
-    public float boostFinalMul = 0f;
-    public float powerMul = 0f;
-    public float powerExtra = 0f;
-
-    public Cons<DrillModuleBuild> drawer = module -> {
-    };
+    public DrawBlock drawer = new DrawDefault();
 
     public DrillModule(String name) {
         super(name);
         size = 2;
-
-        update = false;
         solid = true;
-        destructible = true;
         rotate = true;
-
-        drawCracks = false;
-
-        hasItems = false;
-        hasLiquids = false;
-        hasPower = false;
-
+        update = true;
+        destructible = true;
         canOverdrive = false;
-        drawDisabled = false;
-
-        ambientSound = Sounds.loopDrill;
-        ambientSoundVolume = 0.018f;
-
+        enableDrawStatus = false;
         group = BlockGroup.drills;
         flags = EnumSet.of(BlockFlag.drill);
     }
 
     @Override
-    public void load() {
+    public void load(){
         super.load();
-        baseRegion = Core.atlas.find(name + "-base");
-        topRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-top"), 64, 64, 1);
+        drawer.load(this);
     }
 
     @Override
-    public void setStats() {
-        super.setStats();
-        if (powerMul != 0 || powerExtra != 0)
-            stats.add(NHStats.powerConsModifier, Core.bundle.get("nh.stat.power-cons-modifier"), Strings.autoFixed(powerMul * 100, 0), Strings.autoFixed(powerExtra, 0));
-        if (boostSpeed != 0 || boostFinalMul != 0)
-            stats.add(NHStats.minerBoosModifier, Core.bundle.get("nh.stat.miner-boost-modifier"), Strings.autoFixed(boostSpeed * 100, 0), Strings.autoFixed(boostFinalMul * 100, 0));
-        if (convertList.size > 0) stats.add(NHStats.itemConvertList, getConvertList());
+    public void loadIcon() {
+        super.loadIcon();
+        uiIcon = Core.atlas.find(name + "-icon", name);
     }
-
-    public String getConvertList() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < convertList.size; i++) {
-            Item[] convert = convertList.get(i);
-            String cvt = Fonts.getUnicodeStr(convert[0].name) + convert[0].localizedName + " -> " + Fonts.getUnicodeStr(convert[1].name) + convert[1].localizedName + "(" + Strings.autoFixed((convertMul.get(convert[0], boostFinalMul)) * 100, 0) + "%)" + (i == convertList.size - 1 ? "" : "\n");
-            builder.append(cvt);
-        }
-        return builder.toString();
-    }
-
 
     @Override
-    public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
-        Draw.rect(region, plan.drawx(), plan.drawy());
-        Draw.rect(topRegion[plan.rotation + 8], plan.drawx(), plan.drawy());
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        drawer.drawPlan(this, plan, list);
+    }
 
-        drawPlanConfig(plan, list);
+    @Override
+    public TextureRegion[] icons(){
+        return drawer.finalIcons(this);
+    }
+
+    @Override
+    public void getRegionsToOutline(Seq<TextureRegion> out){
+        drawer.getRegionsToOutline(this, out);
     }
 
     public class DrillModuleBuild extends Building {
         public @Nullable AdaptDrill.AdaptDrillBuild drillBuild;
-        public float smoothWarmup, targetWarmup;
+        public float totalProgress;
+        public float warmup;
 
         @Override
-        public void draw() {
-            Draw.rect(baseRegion, x, y);
-            Draw.z(Layer.blockOver);
-            drawTeamTop();
+        public void draw(){
+            drawer.draw(this);
+        }
+
+        @Override
+        public void drawLight(){
+            super.drawLight();
+            drawer.drawLight(this);
+        }
+
+        @Override
+        public void updateTile() {
             if (drillBuild != null) {
-                Draw.rect(topRegion[rotation], x, y);
-                Draw.rect(topRegion[rotation + 4], Geometry.d4x(rotation) * size * tilesize + x, Geometry.d4y(rotation) * size * tilesize + y);
+                warmup = Mathf.approachDelta(warmup, efficiency * drillBuild.warmup, 0.02f);
             } else {
-                Draw.rect(topRegion[rotation + 8], x, y);
+                warmup = Mathf.approachDelta(warmup, 0, 0.02f);
             }
+            totalProgress += warmup * edelta();
+        }
 
-            drawer.get(this);
+        @Override
+        public float warmup() {
+            return warmup;
+        }
 
-            targetWarmup = (drillBuild != null && drillBuild.modules.contains(this)) ? drillBuild.warmup : 0;
-            smoothWarmup = Mathf.lerp(smoothWarmup, targetWarmup, 0.02f);
+        @Override
+        public float totalProgress() {
+            return totalProgress;
         }
 
         public boolean canApply(AdaptDrill.AdaptDrillBuild drill) {
@@ -137,8 +124,30 @@ public class DrillModule extends Block {
             return drill.modules.size < drill.maxModules();
         }
 
+        @Override
+        public boolean shouldConsume() {
+            return drillBuild != null && drillBuild.warmup > 0;
+        }
+
         public void apply(AdaptDrill.AdaptDrillBuild drill) {
 
+        }
+
+        public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
+
+        }
+
+        @Override
+        public void write(Writes write) {
+            write.f(warmup);
+            write.f(totalProgress);
+        }
+
+        @Override
+        public void read(Reads read, byte revision) {
+            super.read(read, revision);
+            warmup = read.f();
+            totalProgress = read.f();
         }
     }
 }

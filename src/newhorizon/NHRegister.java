@@ -5,16 +5,12 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.net.Net;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
-import newhorizon.expand.net.packet.AlertToastPacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
-import newhorizon.expand.net.packet.WarnHUDPacket;
 
 public class NHRegister {
     static {
         Net.registerPacket(LongInfoMessageCallPacket::new);
         Net.registerPacket(ActiveAbilityTriggerPacket::new);
-        Net.registerPacket(WarnHUDPacket::new);
-        Net.registerPacket(AlertToastPacket::new);
     }
 
     public static void load() {

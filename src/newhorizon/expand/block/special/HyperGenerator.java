@@ -42,7 +42,7 @@ import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.EffectBulletType;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 

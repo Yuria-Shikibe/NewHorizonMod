@@ -27,7 +27,7 @@ import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.expand.bullets.AdaptedSapBulletType;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 
 import static mindustry.Vars.tilesize;
 

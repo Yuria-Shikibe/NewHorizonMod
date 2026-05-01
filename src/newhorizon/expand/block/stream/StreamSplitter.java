@@ -1,39 +1,27 @@
 package newhorizon.expand.block.stream;
 
 import arc.math.geom.Geometry;
+import arc.util.Time;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
+import mindustry.world.meta.StatUnit;
+import newhorizon.content.NHStats;
 
 import static mindustry.Vars.tilesize;
 
 public class StreamSplitter extends StreamRepeater{
     public StreamSplitter(String name) {
         super(name);
+
+        streamLength = new int[]{3, -1, -1, -1};
+        streamCap = new float[]{0.1f, -1, -1, -1};
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        drawPotentialLinks(x, y);
-        drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[rotation].x * 4 * tilesize,
-                y * tilesize + Geometry.d4[rotation].y * 4 * tilesize);
-
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[(rotation + 1) % 4].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[(rotation + 1) % 4].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[(rotation + 1) % 4].x * 6 * tilesize,
-                y * tilesize + Geometry.d4[(rotation + 1) % 4].y * 6 * tilesize);
-
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[(rotation + 3) % 4].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[(rotation + 3) % 4].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[(rotation + 3) % 4].x * 6 * tilesize,
-                y * tilesize + Geometry.d4[(rotation + 3) % 4].y * 6 * tilesize);
+    public void setStats() {
+        super.setStats();
+        stats.add(NHStats.streamCap, streamCap[0] * Time.toSeconds, StatUnit.perSecond);
     }
-
 
     public class StreamSplitterBuild extends StreamRepeaterBuild{
         public StreamBeam streamForward;
@@ -42,17 +30,12 @@ public class StreamSplitter extends StreamRepeater{
         @Override
         public void created() {
             super.created();
-            efficiency = 1f;
-            stream.beamLength = 3;
-            stream.amountCap = 0.1f;
-
             streamForward = new StreamBeam(this);
         }
 
         @Override
-        public void update() {
-            stream.update();
-
+        public void updateTile() {
+            super.updateTile();
             streamForward.rotationOffset = lastDirection;
             streamForward.update();
         }

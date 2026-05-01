@@ -1,6 +1,7 @@
 package newhorizon.expand.block.stream;
 
 import arc.math.geom.Geometry;
+import arc.util.Time;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -8,76 +9,32 @@ import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHLiquids;
+import newhorizon.content.NHStats;
 import newhorizon.expand.block.inner.LinkBlock;
 
 import static mindustry.Vars.tilesize;
 
-public class StreamRepeater extends Block {
+public class StreamRepeater extends StreamBlock {
+
     public StreamRepeater(String name) {
         super(name);
 
-        update = true;
-        solid = true;
-        rotate = true;
-        hasLiquids = true;
-        liquidCapacity = 6f;
-        outputsLiquid = false;
-        noUpdateDisabled = true;
-        group = BlockGroup.liquids;
-        envEnabled = Env.any;
+        streamLength = new int[]{7, -1, -1, -1};
+        streamCap = new float[]{-1f, -1, -1, -1};
     }
 
     @Override
-    public void setBars(){
-        super.setBars();
-        removeBar("liquid");
+    public void setStats() {
+        super.setStats();
+        stats.add(NHStats.streamLength, streamLength[0]);
     }
 
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[rotation].x * 14 * tilesize,
-                y * tilesize + Geometry.d4[rotation].y * 14 * tilesize);
-    }
-
-
-    public class StreamRepeaterBuild extends Building implements StreamBeamBuild {
-        public StreamBeam stream;
-
-        @Override
-        public void created() {
-            super.created();
-            stream = new StreamBeam(this);
-            stream.beamLength = 13;
-        }
-
-        @Override
-        public void update() {
-            stream.update();
-        }
-
-        @Override
-        public void draw() {
-            super.draw();
-            stream.draw();
-        }
-
+    public class StreamRepeaterBuild extends StreamBuild {
         @Override
         public boolean acceptStream(StreamBeam stream) {
             return stream.getRotation() == rotation;
-        }
-
-        @Override
-        public boolean acceptLiquid(Building source, Liquid liquid) {
-            if (liquid instanceof NHLiquids.Stream) {
-                return source instanceof StreamBeamBuild ||
-                        (source instanceof LinkBlock.LinkBuild entity && entity.linkBuild instanceof StreamBeamBuild);
-            }
-            return false;
         }
     }
 }

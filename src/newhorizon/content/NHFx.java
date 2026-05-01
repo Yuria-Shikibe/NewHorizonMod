@@ -25,7 +25,7 @@ import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
 import newhorizon.NHSetting;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.struct.Vec2Seq;
@@ -1746,6 +1746,20 @@ public class NHFx {
                 float s = e.fout(Interp.pow3In) * (size + rand.range(size / 3f));
                 Fill.square(e.x + x, e.y + y, s, 45);
                 Drawf.light(e.x + x, e.y + y, s * 2.25f, color, 0.7f);
+            });
+        });
+    }
+
+    public static Effect squareLine(Color color, float lifetime, int num, float range, float size) {
+        return new Effect(lifetime, e -> {
+            Draw.color(color);
+            rand.setSeed(e.id);
+            randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
+                float s1 = e.fslope() * (size + rand.range(size / 3f));
+                float s2 = e.fout(Interp.pow3In) * (size + rand.range(size / 3f));
+                Lines.stroke(s2 * 0.75f);
+                Lines.square(e.x + x, e.y + y, s1, 45);
+                Drawf.light(e.x + x, e.y + y, s1 * 2.25f, color, 0.7f);
             });
         });
     }

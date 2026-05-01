@@ -1,6 +1,7 @@
 package newhorizon.content.blocks;
 
 import mindustry.content.Blocks;
+import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.MultiPacker;
@@ -18,7 +19,10 @@ public class EnvironmentBlock {
     public static Floor armorClear;
 
     public static Block
-            oreZeta, oreSilicon, oreSilicar,
+            oreCopperDense, oreLeadDense, oreScrapDense, oreCoalDense, oreTitaniumDense, oreThoriumDense,
+            oreBerylliumDense, oreTungstenDense, oreCrystalThoriumDense,
+            oreZeta, oreSilicar,
+            oreZetaDense, oreSilicarDense,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
@@ -36,25 +40,47 @@ public class EnvironmentBlock {
             zetaCrystalFloor;
 
     public static void load() {
-        oreZeta = new OreBlock("ore-zeta") {{
-            oreDefault = true;
-            variants = 3;
-            oreThreshold = 0.95F;
-            oreScale = 20.380953F;
-            itemDrop = NHItems.zeta;
-            localizedName = itemDrop.localizedName;
-            mapColor.set(itemDrop.color);
-            useColor = true;
+        oreCopperDense = new OreBlock("ore-copper-dense", NHItems.copper) {{
+            attributes.set(NHContent.density, 1f);
         }};
-        oreSilicar = new OreBlock("ore-silicar") {{
+        oreLeadDense = new OreBlock("ore-lead-dense", NHItems.lead) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreCoalDense = new OreBlock("ore-coal-dense", NHItems.coal) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreTitaniumDense = new OreBlock("ore-titanium-dense", NHItems.titanium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreThoriumDense = new OreBlock("ore-thorium-dense", NHItems.thorium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreBerylliumDense = new OreBlock("ore-beryllium-dense", NHItems.beryllium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreTungstenDense = new OreBlock("ore-tungsten-dense", NHItems.tungsten) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreCrystalThoriumDense = new OreBlock("ore-crystal-thorium-dense", NHItems.thorium) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+
+        oreZeta = new OreBlock("ore-zeta", NHItems.zeta) {{
             oreDefault = true;
-            variants = 3;
-            oreThreshold = 0.95F;
-            oreScale = 20.380953F;
-            itemDrop = NHItems.silicar;
-            localizedName = itemDrop.localizedName;
-            mapColor.set(itemDrop.color);
-            useColor = true;
+            oreThreshold = 0.95f;
+            oreScale = 20.380953f;
+        }};
+        oreSilicar = new OreBlock("ore-silicar", NHItems.silicar) {{
+            oreDefault = true;
+            oreThreshold = 0.95f;
+            oreScale = 20.380953f;
+        }};
+
+        oreZetaDense = new OreBlock("ore-zeta-dense", NHItems.zeta) {{
+            attributes.set(NHContent.density, 1f);
+        }};
+        oreSilicarDense = new OreBlock("ore-silicar-dense", NHItems.silicar) {{
+            attributes.set(NHContent.density, 1f);
         }};
 
         oreSmallTitanium = new OreVein("ore-small-titanium", NHItems.titanium, 0.5f);

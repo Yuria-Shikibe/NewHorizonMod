@@ -8,7 +8,6 @@ import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.struct.Seq;
 import arc.util.Eachable;
-import newhorizon.util.annotation.CacheBanned;
 
 import java.util.Iterator;
 
@@ -17,7 +16,7 @@ import java.util.Iterator;
  * Use floats to restore the coords of a 2D vector to improve the performance. <p>
  * Used Mainly for {@link mindustry.entities.Effect} that need a cached sequence of vec2s to avoid constructing too much {@link Vec2} instances.
  * <p>
- * Similar implemented in {@link mindustry.graphics.Trail#points};
+ * Similar implemented in {@link mindustry.graphics.Trail};
  *
  * @see FloatSeq
  * @see Vec2
@@ -146,7 +145,6 @@ public class Vec2Seq implements Iterable<Vec2>, Eachable<Vec2> {
         return tmp;
     }
 
-    @CacheBanned
     public Vec2 tmpVec2(int index) {
         return tmp.set(coordinates.items[index * 2], coordinates.items[index * 2 + 1]);
     }

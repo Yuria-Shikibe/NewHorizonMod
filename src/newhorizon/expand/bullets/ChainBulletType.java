@@ -13,7 +13,7 @@ import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 
 public class ChainBulletType extends BulletType {

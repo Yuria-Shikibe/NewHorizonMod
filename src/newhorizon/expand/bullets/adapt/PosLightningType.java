@@ -5,7 +5,7 @@ import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.gen.*;
 import newhorizon.content.NHFx;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 
 public class PosLightningType extends AdaptBulletType {
     public int boltNum = 2;

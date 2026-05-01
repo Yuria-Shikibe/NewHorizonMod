@@ -24,7 +24,7 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.NHSetting;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 

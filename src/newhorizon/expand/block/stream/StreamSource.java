@@ -5,12 +5,11 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Table;
-import arc.util.Eachable;
 import arc.util.Nullable;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.ctype.UnlockableContent;
-import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -19,27 +18,21 @@ import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHLiquids;
+import newhorizon.content.NHStats;
 
 import static mindustry.Vars.*;
 
-public class StreamSource extends Block {
+public class StreamSource extends StreamBlock {
     public TextureRegion rotRegion;
 
     public StreamSource(String name) {
         super(name);
-        update = true;
-        solid = true;
-        rotate = true;
-        hasLiquids = true;
-        liquidCapacity = 6f;
         configurable = true;
-        outputsLiquid = true;
         saveConfig = true;
         noUpdateDisabled = true;
         displayFlow = false;
-        group = BlockGroup.liquids;
-        envEnabled = Env.any;
         clearOnDoubleTap = true;
 
         config(Liquid.class, (StreamSourceBuild tile, Liquid l) -> {
@@ -59,21 +52,11 @@ public class StreamSource extends Block {
         rotRegion = Core.atlas.find(name + "-rot");
     }
 
-
     @Override
-    public void setBars(){
-        super.setBars();
-        removeBar("liquid");
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        Drawf.dashLine(Pal.placing,
-                x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
-                y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
-                x * tilesize + Geometry.d4[rotation].x * 6 * tilesize,
-                y * tilesize + Geometry.d4[rotation].y * 6 * tilesize);
+    public void setStats() {
+        super.setStats();
+        stats.add(NHStats.streamLength, streamLength[0]);
+        stats.add(NHStats.streamCap, streamCap[0] * Time.toSeconds, StatUnit.perSecond);
     }
 
     @Override
@@ -81,21 +64,12 @@ public class StreamSource extends Block {
         return new TextureRegion[]{region};
     }
 
-    public class StreamSourceBuild extends Building implements StreamBeamBuild{
+    public class StreamSourceBuild extends StreamBuild {
         public @Nullable Liquid source;
-        public StreamBeam stream;
-
-        @Override
-        public void created() {
-            super.created();
-            stream = new StreamBeam(this);
-            stream.amountCap = 0.5f;
-        }
-
 
         @Override
         public void updateTile(){
-            stream.update();
+            super.updateTile();
 
             if (source == null) liquids.clear();
             else liquids.set(source, liquidCapacity);
@@ -108,7 +82,9 @@ public class StreamSource extends Block {
             else if (rotation == 2) Draw.rect(rotRegion, x, y, rotdeg());
             else Draw.rect(rotRegion, x, y, tilesize, -tilesize, rotdeg());
 
-            stream.draw();
+            for (StreamBeam stream : streams) {
+                if (stream != null && streams.length > 0) stream.draw();
+            }
         }
 
         public void drawItemSelection(UnlockableContent selection) {

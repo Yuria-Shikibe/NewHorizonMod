@@ -4,6 +4,7 @@ import arc.Core;
 import arc.audio.Sound;
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
@@ -13,6 +14,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Align;
+import arc.util.Log;
 import arc.util.Scaling;
 import arc.util.Time;
 import mindustry.ctype.UnlockableContent;
@@ -116,32 +118,35 @@ public class NHUIFunc {
     public static void showLabel(float duration, Cons<Table> modifier) {
         if (state.isMenu() || headless) return;
 
-        scheduleToast(duration, () -> {
-            if (state.isMenu()) return;
+        Table table = new Table() {{
+            touchable = Touchable.disabled;
+            update(() -> {
+                if (state.isMenu()) remove();
+                setWidth(Core.graphics.getWidth());
+                setPosition(0, (Core.graphics.getHeight() - height) / 2);
+            });
+            color.a(0);
+            actions(
+                    Actions.fadeIn(0.5f, NHInterp.bounce5Out),
+                    Actions.delay(duration - 1f),
+                    Actions.fadeOut(0.5f),
+                    Actions.remove()
+            );
+        }}.margin(4);
 
-            Table table = new Table() {{
-                touchable = Touchable.disabled;
-                update(() -> {
-                    if (state.isMenu()) remove();
-                    setWidth(NHUI.getWidth());
-                    setPosition(0, (NHUI.getHeight() - height) / 2);
-                });
-                color.a(0);
-                actions(Actions.fadeIn(0.45f, NHInterp.bounce5Out), Actions.delay(duration), Actions.fadeOut(0.5f), Actions.remove());
-            }}.margin(4);
+        modifier.get(table);
 
-            modifier.get(table);
+        table.pack();
+        table.act(0f);
 
-            table.pack();
-            table.act(0f);
-
-            cutsceneUI.overlay.addChild(table);
-        });
+        cutsceneUI.overlay.addChild(table);
     }
 
     @HeadlessDisabled
     private static void scheduleToast(float time, Runnable run) {
-        if (waiting > 5) return;
+        if (waiting > 5) {
+            return;
+        }
         long duration = (int) ((time + 1.25f) * 1000);
         long since = Time.timeSinceMillis(lastToast);
         if (since > duration) {
@@ -169,21 +174,21 @@ public class NHUIFunc {
         }
     }
 
-    public static void showToast(Drawable icon, String text, Sound sound) {
+    public static void showToast(TextureRegion icon, String text, Sound sound, Color color) {
         if (state.isMenu()) return;
         if (headless) return;
 
         scheduleToast(() -> {
             sound.play();
 
-            Table table = new Table(Tex.pane2);
+            Table table = new Table(Tex.paneSolid);
             table.update(() -> {
                 if (state.isMenu() || !ui.hudfrag.shown) {
                     table.remove();
                 }
             });
             table.margin(12);
-            table.image(icon).size(48).scaling(Scaling.fit).pad(-4).padLeft(12);
+            table.image(icon).size(48).scaling(Scaling.fit).pad(-4).padLeft(12).color(color);
             table.add(text).wrap().width(280f).get().setAlignment(Align.center, Align.center);
             table.pack();
 
@@ -192,9 +197,8 @@ public class NHUIFunc {
             container.top().add(table);
             container.setTranslation(0, table.getPrefHeight());
             container.actions(
-                    Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
-                    //nesting actions() calls is necessary so the right prefHeight() is used
-                    Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove()))
+                    Actions.translateBy(0, -table.getPrefHeight() + 4f, 1f, Interp.fade), Actions.delay(2.5f),
+                    Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight() - 4f, 1f, Interp.fade), Actions.remove()))
             );
         });
     }

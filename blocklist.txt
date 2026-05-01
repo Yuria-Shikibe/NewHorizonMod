@@ -1,3 +1,4 @@
+new-horizon-air-radiator 1 1 2 0
 new-horizon-air-raider 1 1 3 0
 new-horizon-alloy-smelter 1 1 3 0
 new-horizon-ammonia-water 0 0 1 3092601
@@ -44,6 +45,7 @@ new-horizon-bomb-launcher 1 1 3 0
 new-horizon-bombard 1 1 4 0
 new-horizon-casting-foundry 1 1 3 0
 new-horizon-cathode-fusion-reactor 1 1 4 0
+new-horizon-ccb-factory 1 1 3 0
 new-horizon-character-display 1 0 2 0
 new-horizon-character-display-small 1 0 1 0
 new-horizon-charge-compensator 1 1 1 0
@@ -95,6 +97,7 @@ new-horizon-dark-energy-factory 1 1 2 0
 new-horizon-data-floor-placer 1 0 1 0
 new-horizon-delivery-module 1 1 2 0
 new-horizon-dendrite 1 1 4 0
+new-horizon-dense-factory 1 1 3 0
 new-horizon-device-test 1 1 2 0
 new-horizon-dispose-power-void 1 1 1 0
 new-horizon-echo-canceller 1 1 1 0
@@ -169,6 +172,7 @@ new-horizon-heavy-storage 1 1 3 0
 new-horizon-hive 1 1 4 0
 new-horizon-huge-battery 1 1 5 0
 new-horizon-hydro-fuel-cell 1 1 2 0
+new-horizon-hyper-cooler 1 1 2 0
 new-horizon-hyper-generator 1 1 8 0
 new-horizon-hyper-jump-gate 1 1 8 0
 new-horizon-hyper-space-warper 1 1 4 0
@@ -182,6 +186,7 @@ new-horizon-irayrond-factory 1 1 3 0
 new-horizon-irayrond-panel-factory 1 1 4 0
 new-horizon-irdryon-fluid-factory 1 1 2 0
 new-horizon-irdryon-mixer 1 1 3 0
+new-horizon-irdryon-phase-ascender 1 1 2 0
 new-horizon-irdryon-tank 1 1 3 0
 new-horizon-irdryon-vault 1 1 3 0
 new-horizon-jump-gate 1 1 8 0
@@ -219,6 +224,7 @@ new-horizon-link-entity-liquid-2 1 1 2 0
 new-horizon-link-entity-liquid-3 1 1 3 0
 new-horizon-link-entity-liquid-4 1 1 4 0
 new-horizon-liquid-convertor 1 1 2 0
+new-horizon-liquid-radiator 1 1 2 0
 new-horizon-logistics-bridge 1 1 1 0
 new-horizon-logistics-directional-gate 1 0 1 0
 new-horizon-logistics-directional-merger 1 0 1 0
@@ -260,6 +266,7 @@ new-horizon-metal-tower 0 1 1 10198442
 new-horizon-metal-unit 0 1 1 10198442
 new-horizon-metal-unit-quantum 0 1 1 10198442
 new-horizon-metal-vent 0 0 1 921367
+new-horizon-mixed-rolling-mill 1 1 3 0
 new-horizon-module-deposit 1 0 2 0
 new-horizon-module-rail 1 0 1 0
 new-horizon-module-router 1 0 1 0
@@ -280,8 +287,10 @@ new-horizon-multiple-artillery 1 1 4 0
 new-horizon-multiple-foundry 1 1 4 0
 new-horizon-multiple-launcher 1 1 3 0
 new-horizon-multiple-presstanium-factory 1 1 3 0
+new-horizon-multiple-rolling-mill 1 1 3 0
 new-horizon-multiple-steel-factory 1 1 3 0
 new-horizon-multiple-surge-alloy-factory 1 1 3 0
+new-horizon-negative-phase-decayer 1 1 4 0
 new-horizon-neutralization-generator 1 1 2 0
 new-horizon-neutron-membrane 1 1 1 0
 new-horizon-nexus-core 1 1 5 0
@@ -289,15 +298,25 @@ new-horizon-nitrogen-dissociator 1 1 3 0
 new-horizon-nodex-factory 1 1 3 0
 new-horizon-oil-refiner 1 1 2 0
 new-horizon-optical-medium-drill 1 1 3 0
+new-horizon-ore-beryllium-dense 0 0 1 3837796
 new-horizon-ore-cluster-titanium 0 1 1 6319033
 new-horizon-ore-cluster-zeta 0 1 1 16772835
+new-horizon-ore-coal-dense 0 0 1 2565927
+new-horizon-ore-copper-dense 0 0 1 14261619
+new-horizon-ore-crystal-thorium-dense 0 0 1 16360391
 new-horizon-ore-dense-titanium 0 0 1 9282019
+new-horizon-ore-lead-dense 0 0 1 9207721
 new-horizon-ore-normal-titanium 0 0 1 9282019
 new-horizon-ore-pure-titanium 0 0 1 9282019
 new-horizon-ore-silicar 0 0 1 6192029
+new-horizon-ore-silicar-dense 0 0 1 6192029
 new-horizon-ore-silicon 0 0 1 5461596
 new-horizon-ore-small-titanium 0 0 1 9282019
+new-horizon-ore-thorium-dense 0 0 1 16360391
+new-horizon-ore-titanium-dense 0 0 1 9282019
+new-horizon-ore-tungsten-dense 0 0 1 7768730
 new-horizon-ore-zeta 0 0 1 16757632
+new-horizon-ore-zeta-dense 0 0 1 16757632
 new-horizon-particle-activator 1 1 2 0
 new-horizon-particle-modulator 1 1 1 0
 new-horizon-particle-processor-basic 1 1 2 0
@@ -308,7 +327,9 @@ new-horizon-particle-processor-uncommon 1 1 4 0
 new-horizon-pattern-plate-0 0 0 1 16777215
 new-horizon-pattern-plate-1 0 0 1 16777215
 new-horizon-payload-rail 1 0 2 0
+new-horizon-phase-rectificatior 1 1 3 0
 new-horizon-phase-restructuror 1 1 3 0
+new-horizon-photocatalyst-factory 1 1 3 0
 new-horizon-photocatalyst-factoty 1 1 2 0
 new-horizon-photon-panel 1 1 3 0
 new-horizon-placeholder-entity-1 1 1 1 0
@@ -319,7 +340,7 @@ new-horizon-placeholder-entity-5 1 1 5 0
 new-horizon-placeholder-entity-6 1 1 6 0
 new-horizon-placeholder-entity-7 1 1 7 0
 new-horizon-placeholder-entity-8 1 1 8 0
-new-horizon-plasma-activator 1 1 2 0
+new-horizon-plasma-activator 1 1 3 0
 new-horizon-plastanium-crafter 1 1 3 0
 new-horizon-plasticator 1 1 3 0
 new-horizon-plating-block 0 0 1 16777215
@@ -329,6 +350,7 @@ new-horizon-plating-floor-3 0 0 1 4145225
 new-horizon-plating-floor-4 0 0 1 11898835
 new-horizon-plating-metal-floor 0 0 1 4145225
 new-horizon-plating-pipe 0 0 1 16777215
+new-horizon-positive-phase-decayer 1 1 4 0
 new-horizon-power-basic 1 1 2 0
 new-horizon-power-cell 1 1 1 0
 new-horizon-power-epic 1 1 4 0
@@ -370,6 +392,7 @@ new-horizon-quantum-field-disturbing 0 0 1 11370475
 new-horizon-rail-gun 1 1 4 0
 new-horizon-rapid-unloader 1 1 1 0
 new-horizon-reconstruct-plastanium-factory 1 1 2 0
+new-horizon-rectificatior 1 1 2 0
 new-horizon-refactoring-multi-wall 1 1 1 0
 new-horizon-refine-module 1 1 2 0
 new-horizon-reinforced-item-source 1 1 1 0
@@ -420,11 +443,13 @@ new-horizon-standard-shield-generator 1 1 2 0
 new-horizon-standard-storage 1 1 2 0
 new-horizon-steady-stack-rail 1 0 1 0
 new-horizon-stream-extractor 1 1 1 0
+new-horizon-stream-receiver 1 1 1 0
 new-horizon-stream-redirector 1 1 1 0
 new-horizon-stream-repeater 1 1 1 0
 new-horizon-stream-source 1 1 1 0
 new-horizon-stream-splitter 1 1 1 0
 new-horizon-sub 1 1 1 0
+new-horizon-sub-cooler 1 1 2 0
 new-horizon-subcooler 1 1 2 0
 new-horizon-supra-gel 1 1 1 0
 new-horizon-surge-refactor 1 1 3 0
@@ -443,6 +468,7 @@ new-horizon-thorium-stone 0 0 1 7032694
 new-horizon-thorium-stone-dense 0 0 1 7361404
 new-horizon-thorium-stone-sparse 0 0 1 6704241
 new-horizon-thorium-stone-wall 0 1 1 4075076
+new-horizon-thorium-transmuter 1 1 4 0
 new-horizon-titanium-reconstructor 1 1 2 0
 new-horizon-track-rail 1 0 1 0
 new-horizon-tungsten-reconstructor 1 1 2 0

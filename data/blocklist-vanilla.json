@@ -2639,6 +2639,12 @@
 	"size": 2,
 	"color": 1548899839
 },
+"large-canvas": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1397312767
+},
 "reinforced-message": {
 	"synthetic": true,
 	"solid": true,

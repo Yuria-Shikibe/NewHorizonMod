@@ -6,8 +6,7 @@ import mindustry.Vars;
 import static newhorizon.NHVars.*;
 
 public class NHModCore implements ApplicationListener {
-    public NHModCore() {
-    }
+    public NHModCore() {}
 
     @Override
     public void update() {
@@ -15,7 +14,6 @@ public class NHModCore implements ApplicationListener {
             cutscene.update();
             NHGroups.update();
             if (!Vars.headless) {
-                if (listener != null) listener.update();
                 renderer.statusRenderer.update();
                 NHSetting.update();
             }

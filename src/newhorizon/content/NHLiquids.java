@@ -80,8 +80,8 @@ public class NHLiquids {
             heatCapacity = 2f;
         }};
 
+        photon = new Stream("photon", Color.valueOf("ffb15b"));
         particle = new Stream("particle-stream", Color.valueOf("ff8787"));
-        photon = new Stream("photon-stream", Color.valueOf("ffb15b"));
         neutron = new Stream("neutron-stream", Color.valueOf("fff786"));
         zetaPositive = new Stream("zeta-positive-stream", Color.valueOf("adff93"));
         zetaNegative = new Stream("zeta-negative-stream", Color.valueOf("abf8ff"));

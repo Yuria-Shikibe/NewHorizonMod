@@ -12,7 +12,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;
 import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
-import newhorizon.util.feature.PosLightning;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.struct.Vec2Seq;
 
 public class TrailFadeBulletType extends AccelBulletType {

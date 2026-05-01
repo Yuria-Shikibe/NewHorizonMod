@@ -2,8 +2,8 @@ package newhorizon;
 
 import arc.Core;
 import mindustry.Vars;
-import newhorizon.expand.cutscene.components.CutsceneControl;
-import newhorizon.expand.cutscene.components.CutsceneUI;
+import newhorizon.expand.logic.components.CutsceneControl;
+import newhorizon.expand.logic.components.CutsceneUI;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.util.game.UpdateProxy;
 import newhorizon.util.graphic.ScreenShaderDrawer;
@@ -11,17 +11,14 @@ import newhorizon.util.ui.TableFunc;
 
 public class NHVars {
     public static NHModCore core;
-
     public static NHWorldData worldData;
     public static NHRenderer renderer;
-    public static NHInputListener listener;
 
     public static CutsceneControl cutscene;
     public static CutsceneUI cutsceneUI;
 
     public static void init() {
         worldData = new NHWorldData();
-        listener = new NHInputListener();
 
         UpdateProxy.init();
 
@@ -41,6 +38,5 @@ public class NHVars {
 
         NHSetting.loadUI();
         if (NHSetting.getBool(NHSetting.DEBUG_PANEL)) TableFunc.tableMain();
-
     }
 }

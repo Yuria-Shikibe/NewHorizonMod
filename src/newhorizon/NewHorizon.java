@@ -28,7 +28,6 @@ import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.*;
-import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -48,7 +47,6 @@ public class NewHorizon extends Mod {
     public NewHorizon() {
         DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 
-        registerModBinding();
         Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
         Events.on(EventType.PlayerConnect.class, e -> Call.clientPacketReliable("override_check", NHSetting.overrideStatus()));
         Events.on(ClientLoadEvent.class, e -> {
