@@ -29,6 +29,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.factory.MultiBlockCrafter;
+import newhorizon.expand.draw.DrawSpecialRotation;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
@@ -807,9 +808,7 @@ public class CraftingBlock {
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
                     new DrawRegion(),
-                    new DrawRotator(){{
-                        rotateSpeed = -5;
-                    }}
+                    new DrawSpecialRotation(1f, "-rotator", craftTime/3, 0.15f, 180f)
             );
         }};
 
@@ -1392,12 +1391,7 @@ public class CraftingBlock {
                         glowIntensity = 1.1f;
                         alpha = 1.1f;
                     }},
-                    new DrawRotator(1f, "-top") {
-                        @Override
-                        public void draw(Building build) {
-                            Drawf.spinSprite(rotator, build.x + x, build.y + y, DrawFunc.rotator_90(DrawFunc.cycle(build.totalProgress() * rotateSpeed, 0, craftTime), 0.15f));
-                        }
-                    }
+                    new DrawSpecialRotation(1f, "-top", craftTime, 0.15f, 90f)
             );
 
             craftEffect = NHFx.crossBlast(NHColor.ancient, 45f, 45f);
