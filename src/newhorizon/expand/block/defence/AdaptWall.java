@@ -11,6 +11,7 @@ import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -21,7 +22,9 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.TileBitmask;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.StatUnit;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHLiquids;
 import newhorizon.content.NHStats;
 import newhorizon.util.graphic.SpriteUtil;
 
@@ -34,6 +37,9 @@ public class AdaptWall extends Wall {
     public TextureRegion[] atlasRegion;
     public float damageReduction = 0.1f;
     public float maxShareStep = 2;
+
+    public TextureRegion[] innerAtlasRegions;
+    private boolean innerFound = false;
 
     public static final Point2[] checkPos = {
             new Point2( 0,  1),
@@ -68,6 +74,10 @@ public class AdaptWall extends Wall {
     public void load() {
         super.load();
         atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled"), 32, 32);
+        if (Core.atlas.has(name + "-inner-tiled")) {
+            innerAtlasRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-inner-tiled"), 32, 32, 0, SpriteUtil.ATLAS_INDEX_4_4_VANILLA);
+            innerFound = true;
+        }
     }
 
     @Override
@@ -79,9 +89,11 @@ public class AdaptWall extends Wall {
     public class AdaptWallBuild extends Building {
         public Seq<AdaptWallBuild> connectedWalls = new Seq<>();
         public int drawIndex = 0;
+        public int drawInnerIndex = 0;
 
         public void updateDrawRegion() {
             drawIndex = 0;
+            drawInnerIndex = 0;
             for(int i = 0; i < 8; i++){
                 Tile other = tile.nearby(Geometry.d8[i]);
                 if(checkAutotileSame(other)){
@@ -89,6 +101,14 @@ public class AdaptWall extends Wall {
                 }
             }
             drawIndex = TileBitmask.values[drawIndex];
+            if (drawIndex == 13) {
+                for(int i = 0; i < 4; i++){
+                    Tile other1 = tile.nearby(Geometry.d4[i]);
+                    if(checkAutotileInnerSame(other1)) {
+                        drawInnerIndex |= (1 << i);
+                    }
+                }
+            }
         }
 
         public void findLinkWalls() {
@@ -138,6 +158,8 @@ public class AdaptWall extends Wall {
                 Fill.square(wall.x, wall.y, 2);
             }
             Draw.reset();
+
+            drawPlaceText((drawIndex % 12) + "-" + (drawIndex / 12), tileX(), tileY(), true);
         }
 
         public void updateProximityWall() {
@@ -196,6 +218,7 @@ public class AdaptWall extends Wall {
         public void draw() {
             Draw.z(Layer.block + 1f);
             Draw.rect(atlasRegion[drawIndex], x, y);
+            if (innerFound && drawIndex == 13) Draw.rect(innerAtlasRegions[drawInnerIndex], x, y);
         }
 
         public void updateProximity() {
