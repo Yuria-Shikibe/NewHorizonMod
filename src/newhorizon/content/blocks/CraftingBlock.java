@@ -173,7 +173,7 @@ public class CraftingBlock {
                         strokePlusScl = 2f;
                         scanScl = 12f;
                         strokeRange = 12f;
-                        totalProgressMultiplier = 1.2f;
+                        speedMultiplier = 1.2f;
                         colorFrom = Pal.techBlue;
                     }},
                     new DrawGlowRegion() {{
@@ -806,9 +806,42 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
-                    new DrawRegion(),
-                    new DrawRotator(){{
-                        rotateSpeed = -5;
+                    new DrawCrucibleFlame() {{
+                        flameColor = Pal.techBlue.cpy().lerp(Color.white, 0.2f);
+                        midColor = Pal.techBlue.cpy().lerp(Color.white, 0.4f);
+                    }},
+                    new DrawScanLine() {{
+                        colorFrom = Pal.techBlue.cpy().lerp(Color.white, 0.2f);
+                        scanAngle = 45f;
+                        lineStroke = 0.78f;
+                        scanLength = 12f;
+                        speedMultiplier = 0.8f;
+                    }},
+                    new DrawScanLine() {{
+                        colorFrom = Pal.techBlue.cpy().lerp(Color.white, 0.2f);
+                        scanAngle = 45f;
+                        lineStroke = 0.78f;
+                        scanLength = 12f;
+                        speedMultiplier = 1.21f;
+                    }},
+                    new DrawScanLine() {{
+                        colorFrom = Pal.techBlue.cpy().lerp(Color.white, 0.2f);
+                        scanAngle = 135f;
+                        lineStroke = 0.78f;
+                        scanLength = 12f;
+                        startOffset = colorLerpScl * Mathf.pi;
+                        speedMultiplier = 0.67f;
+                    }},
+                    new DrawScanLine() {{
+                        colorFrom = Pal.techBlue.cpy().lerp(Color.white, 0.2f);
+                        scanAngle = 135f;
+                        lineStroke = 0.78f;
+                        scanLength = 12f;
+                        startOffset = colorLerpScl * Mathf.pi;
+                        speedMultiplier = 1.53f;
+                    }},
+                    new DrawRegion() {{
+                        suffix = "-top";
                     }}
             );
         }};
@@ -908,7 +941,7 @@ public class CraftingBlock {
                         strokePlusScl = 2f;
                         scanScl = 12f;
                         strokeRange = 16f;
-                        totalProgressMultiplier = 1.2f;
+                        speedMultiplier = 1.2f;
                         colorFrom = NHItems.phaseFabric.color;
                     }},
                     new DrawRegionFlip() {{
