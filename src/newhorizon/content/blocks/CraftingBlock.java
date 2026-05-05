@@ -10,8 +10,8 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Building;
@@ -49,7 +49,8 @@ public class CraftingBlock {
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
             castingFoundry, crucibleFoundry, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
-            irdryonFluidFactory, irdryonPhaseAscender, denseFactory, positivePhaseDecayer, negativePhaseDecayer, nodexFactory, ancimembraneConcentrator, ccbFactory;
+            irdryonFluidFactory, irdryonPhaseAscender, denseFactory, tandemFactory, positivePhaseDecayer, negativePhaseDecayer,
+            irayrondFactory, largeIrayrondFactory, nodexFactory, ancimembraneConcentrator, hadronCompositeBuilder, darkEnergyTrap;
 
     public static void load() {
         loadColors();
@@ -82,12 +83,10 @@ public class CraftingBlock {
             updateEffect = new Effect(80f, e -> {
                 Fx.rand.setSeed(e.id);
                 Draw.color(Color.lightGray, Color.gray, e.fin());
-                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> {
-                    Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
-                });
+                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> 
+                    Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
+                );
             }).layer(Layer.blockOver + 1);
-
-            enableRotate();
         }};
 
         processorManuFactory = new GenericCrafter("processor-manufactory") {{
@@ -518,9 +517,9 @@ public class CraftingBlock {
             craftTime = 120f;
 
             consumePower(4f);
-            consumeItem(Items.titanium, 3);
+            consumeItem(NHItems.titanium, 3);
             consumeLiquids(LiquidStack.with(NHLiquids.photon, 6 / 60f, NHLiquids.xenFluid, 9 / 60f));
-            outputItem = new ItemStack(Items.plastanium, 5);
+            outputItem = new ItemStack(NHItems.plastanium, 5);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
@@ -667,7 +666,7 @@ public class CraftingBlock {
         }};
 
         fusionCoreEnergyFactory = new GenericCrafter("fusion-core-energy-factory") {{
-            requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.thorium, 60, Items.graphite, 30));
+            requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, NHItems.thorium, 60, NHItems.graphite, 30));
 
             size = 3;
             itemCapacity = 20;
@@ -891,7 +890,7 @@ public class CraftingBlock {
             itemCapacity = 20;
             craftTime = 60f;
 
-            outputItems = with(Items.phaseFabric, 1);
+            outputItems = with(NHItems.phaseFabric, 1);
             consumePower(60 / 60f);
             consumeItems(with(NHItems.silicon, 3, NHItems.thorium, 1));
         }};
@@ -914,7 +913,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
             consumeItems(with(NHItems.silicon, 2, NHItems.phaseFabric, 5));
             consumeLiquids(LiquidStack.with(NHLiquids.photon, 6 / 60f));
-            outputItems = with(Items.phaseFabric, 6);
+            outputItems = with(NHItems.phaseFabric, 6);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x5"),
@@ -955,7 +954,7 @@ public class CraftingBlock {
         }};
 
         alloySmelter = new GenericCrafter("alloy-smelter") {{
-            requirements(Category.crafting, with(Items.silicon, 80, Items.lead, 80, Items.thorium, 70));
+            requirements(Category.crafting, with(NHItems.silicon, 80, NHItems.lead, 80, NHItems.thorium, 70));
 
             size = 3;
             hasPower = true;
@@ -966,7 +965,7 @@ public class CraftingBlock {
             consumePower(4f);
             consumeItems(with(NHItems.titanium, 2, NHItems.silicon, 2));
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 12 / 60f));
-            outputItem = new ItemStack(Items.surgeAlloy, 1);
+            outputItem = new ItemStack(NHItems.surgeAlloy, 1);
 
             drawer = new DrawMulti(
                     new DrawDefault(),
@@ -992,7 +991,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
             consumeItems(with(NHItems.titanium, 3, NHItems.silicon, 4, NHItems.zeta, 2));
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 12 / 60f));
-            outputItem = new ItemStack(Items.surgeAlloy, 3);
+            outputItem = new ItemStack(NHItems.surgeAlloy, 3);
 
             drawer = new DrawMulti(
                     new DrawRegionFlip() {{
@@ -1024,7 +1023,7 @@ public class CraftingBlock {
 
             consumePower(60 / 60f);
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
-            outputLiquids = LiquidStack.with(NHLiquids.neutron, 3 / 60f, NHLiquids.neutron, 3 / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.neutron, 3 / 60f, NHLiquids.proton, 3 / 60f);
 
         }};
 
@@ -1069,9 +1068,9 @@ public class CraftingBlock {
 
         processorEtchingFacility = new MultiBlockCrafter("processor-etching-facility") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                            Items.surgeAlloy, 90,
-                            Items.phaseFabric, 90,
-                            Items.carbide, 120,
+                            NHItems.surgeAlloy, 90,
+                            NHItems.phaseFabric, 90,
+                            NHItems.carbide, 120,
                             NHItems.zeta, 80
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
@@ -1145,7 +1144,7 @@ public class CraftingBlock {
 
         irdryonFluidFactory = new GenericCrafter("irdryon-fluid-factory") {{
             requirements(Category.crafting, with(
-                        Items.surgeAlloy, 20,
+                        NHItems.surgeAlloy, 20,
                         NHItems.seniorProcessor, 50,
                         NHItems.presstanium, 80,
                         NHItems.irayrondPanel, 65
@@ -1179,7 +1178,7 @@ public class CraftingBlock {
         irdryonPhaseAscender = new GenericCrafter("irdryon-phase-ascender") {{
 
             requirements(Category.crafting, with(
-                        Items.surgeAlloy, 20,
+                        NHItems.surgeAlloy, 20,
                         NHItems.seniorProcessor, 50,
                         NHItems.presstanium, 80,
                         NHItems.irayrondPanel, 65
@@ -1207,6 +1206,53 @@ public class CraftingBlock {
             craftEffect = Fx.smeltsmoke;
         }};
 
+        irayrondFactory = new GenericCrafter("irayrond-factory") {{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+
+            size = 4;
+            health = 600;
+            armor = 4;
+            itemCapacity = 20;
+            craftTime = 60f;
+
+            consumePower(60 / 60f);
+            consumeItems(new ItemStack(NHItems.presstanium, 5), new ItemStack(NHItems.surgeAlloy, 1));
+            outputItems = with(NHItems.irayrondPanel, 2);
+
+            drawer = new DrawMulti(
+                    new DrawDefault()
+            );
+        }};
+
+        largeIrayrondFactory = new MultiBlockCrafter("large-irayrond-factory") {{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            size = 4;
+            health = 600;
+            armor = 4;
+            itemCapacity = 20;
+            craftTime = 120f;
+
+            consumePower(60 / 60f);
+            consumeItems(new ItemStack(NHItems.surgeAlloy, 2), new ItemStack(NHItems.multipleSteel, 5));
+            consumeLiquid(NHLiquids.irdryonFluid, 12 / 60f);
+            outputItems = with(NHItems.irayrondPanel, 6);
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-4x6"),
+                    new DrawRegionFlip("-rot")
+            );
+
+            enableRotate();
+        }};
+
         denseFactory = new GenericCrafter("dense-factory") {{
             requirements(Category.crafting, with(
                     NHItems.irayrondPanel, 80,
@@ -1229,20 +1275,84 @@ public class CraftingBlock {
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
                     new DrawPlasma(),
-                    //new DrawRegion("-mid"),
                     new DrawLiquidRegionRotated(NHLiquids.irdryonFluid) {{
                         suffix = "-liquid-irdryon-fluid";
                     }},
-                    new DrawDefault(),
-                    new DrawGlowRegion() {{
-                        glowIntensity = 2f;
-                    }}
+                    new DrawDefault()
             );
 
             craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 4f + e.finpow() * 14f, (x, y) -> {
                 Draw.color(NHLiquids.irdryonFluid.color);
                 Fill.square(e.x + x, e.y + y, e.fout() * 3f);
             }));
+        }};
+
+        tandemFactory = new MultiBlockCrafter("tandem-factory") {{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.juniorProcessor, 90, NHItems.zeta, 150, NHItems.surgeAlloy, 90, NHItems.metalOxhydrigen, 80, NHItems.multipleSteel, 65));
+
+            size = 3;
+
+            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            craftTime = 120f;
+            itemCapacity = 30;
+            health = 1800;
+            armor = 12;
+            consumePower(480 / 60f);
+
+            consumeItems(with(NHItems.thorium, 5, NHItems.zeta, 2, NHItems.carbide, 4));
+            outputItems = with(NHItems.setonAlloy, 4);
+
+            drawer = new DrawMulti(
+                    new DrawRegionFlip("-base"),
+                    new DrawRegion("-piston-1") {
+                        @Override
+                        public void draw(Building build) {
+                            Tmp.v1.setAngle(90f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
+                        }
+                    },
+                    new DrawRegion("-piston-1") {
+                        @Override
+                        public void draw(Building build) {
+                            Tmp.v1.setAngle(270f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
+                        }
+                    },
+                    new DrawRegion("-piston-2") {
+                        @Override
+                        public void draw(Building build) {
+                            Tmp.v1.setAngle(135f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
+                        }
+                    },
+                    new DrawRegion("-piston-2") {
+                        @Override
+                        public void draw(Building build) {
+                            Tmp.v1.setAngle(45f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, region.height / 4f);
+                        }
+                    },
+                    new DrawRegion("-piston-2") {
+                        @Override
+                        public void draw(Building build) {
+                            Tmp.v1.setAngle(225f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
+                        }
+                    },
+                    new DrawRegion("-piston-2") {
+                        @Override
+                        public void draw(Building build) {
+                            Tmp.v1.setAngle(315f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, -region.height / 4f);
+                        }
+                    },
+                    new DrawRegionFlip("-top")
+            );
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
         }};
 
         positivePhaseDecayer = new MultiBlockCrafter("positive-phase-decayer") {{
@@ -1439,7 +1549,23 @@ public class CraftingBlock {
             lightRadius /= 2f;
         }};
 
-        ccbFactory = new MultiBlockCrafter("ccb-factory") {{
+        darkEnergyTrap = new MultiBlockCrafter("dark-energy-trap"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, NHItems.carbide, 40, NHItems.phaseFabric, 60));
+            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1, -1, -2, 1, 0, -2, 1, 1, -2, 1);
+
+            size = 3;
+            itemCapacity = 15;
+            craftTime = 120f;
+
+            consumePower(600 / 60f);
+            consumeLiquids(LiquidStack.with(NHLiquids.neutron, 6 / 60f, NHLiquids.proton, 6 / 60f, NHLiquids.antiMatter, 3 / 60f));
+            outputItems = with(NHItems.darkEnergy, 2);
+
+            drawer = new DrawDefault();
+        }};
+
+        hadronCompositeBuilder = new MultiBlockCrafter("hadron-composite-builder") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.presstanium, 60,
                     NHItems.juniorProcessor, 45
@@ -2120,74 +2246,6 @@ public class CraftingBlock {
             );
 
             consumePower(480 / 60f);
-        }};
-        setonFactory = new RecipeGenericCrafter("seton-factory") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.juniorProcessor, 90, NHItems.zeta, 150, Items.surgeAlloy, 90, NHItems.metalOxhydrigen, 80, NHItems.multipleSteel, 65));
-
-            size = 3;
-
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
-
-            craftTime = 120f;
-            itemCapacity = 30;
-            health = 1800;
-            armor = 12;
-            consumePower(480 / 60f);
-
-            outputItems = with(NHItems.setonAlloy, 2);
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3f / 60f);
-            ignoreLiquidFullness = true;
-
-            craftEffect = Fx.smeltsmoke;
-            updateEffect = Fx.smeltsmoke;
-
-            drawer = new DrawMulti(
-                    new DrawRegionFlip("-base"),
-                    new DrawRegion("-piston-1") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(90f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-1") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(270f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(135f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(45f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(225f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(315f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, -region.height / 4f);
-                        }
-                    },
-                    new DrawRegionFlip("-top")
-            );
         }};
          */
     }
