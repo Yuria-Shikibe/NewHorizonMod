@@ -1555,6 +1555,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1, -1, -2, 1, 0, -2, 1, 1, -2, 1);
 
             size = 3;
+            health = 600;
             itemCapacity = 15;
             craftTime = 120f;
 
