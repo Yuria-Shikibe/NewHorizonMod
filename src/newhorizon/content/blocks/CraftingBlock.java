@@ -893,6 +893,22 @@ public class CraftingBlock {
             outputItems = with(NHItems.phaseFabric, 1);
             consumePower(60 / 60f);
             consumeItems(with(NHItems.silicon, 3, NHItems.thorium, 1));
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x3"),
+                    new DrawSpikes(){{
+                        color = Color.valueOf("ffd59e");
+                        stroke = 1.5f;
+                        layers = 2;
+                        amount = 12;
+                        rotateSpeed = 0.5f;
+                        layerSpeed = -0.9f;
+                    }},
+                    new DrawMultiWeave(){{
+                        glowColor = new Color(1f, 0.4f, 0.4f, 0.8f);
+                    }},
+                    new DrawDefault()
+            );
         }};
 
         fabricSynthesizer = new MultiBlockCrafter("fabric-synthesizer") {{
