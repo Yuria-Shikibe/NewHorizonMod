@@ -414,8 +414,8 @@ public class CraftingBlock {
             craftTime = 120f;
 
             consumePower(2.5f);
-            consumeLiquid(NHLiquids.ammonia, 0.1f);
-            outputItems = with(NHItems.presstanium, 1);
+            consumeLiquid(NHLiquids.ammonia, 12 / 60f);
+            outputItems = with(NHItems.metalOxhydrigen, 1);
 
             drawer = new DrawMulti(
                     new DrawRotation() {{
@@ -1354,6 +1354,8 @@ public class CraftingBlock {
 
             craftEffect = Fx.smeltsmoke;
             updateEffect = Fx.smeltsmoke;
+
+            enableRotate();
         }};
 
         positivePhaseDecayer = new MultiBlockCrafter("positive-phase-decayer") {{
