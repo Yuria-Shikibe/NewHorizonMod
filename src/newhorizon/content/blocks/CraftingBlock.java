@@ -957,9 +957,7 @@ public class CraftingBlock {
             requirements(Category.crafting, with(NHItems.silicon, 80, NHItems.lead, 80, NHItems.thorium, 70));
 
             size = 3;
-            hasPower = true;
             itemCapacity = 20;
-            craftEffect = Fx.smeltsmoke;
             craftTime = 120f;
 
             consumePower(4f);
@@ -968,9 +966,12 @@ public class CraftingBlock {
             outputItem = new ItemStack(NHItems.surgeAlloy, 1);
 
             drawer = new DrawMulti(
-                    new DrawDefault(),
-                    new DrawFlame()
+                    new DrawBaseRegion("-3x3"),
+                    new DrawLiquidTile(),
+                    new DrawDefault()
             );
+
+            craftEffect = Fx.smeltsmoke;
         }};
 
         surgeSynthesizer = new MultiBlockCrafter("surge-synthesizer") {{
