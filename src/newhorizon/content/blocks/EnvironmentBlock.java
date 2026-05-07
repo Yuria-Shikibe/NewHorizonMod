@@ -103,12 +103,12 @@ public class EnvironmentBlock {
             attributes.set(NHContent.density, 1f);
         }};
 
-        titaniumWall = new StaticWall("titanium-wall"){{
+        titaniumWall = new StaticWall("titanium-wall-ore"){{
             itemDrop = NHItems.titanium;
             variants = 3;
         }};
 
-        zetaWall = new StaticWall("zeta-wall"){{
+        zetaWall = new StaticWall("zeta-wall-ore"){{
             itemDrop = NHItems.zeta;
             variants = 3;
         }};
