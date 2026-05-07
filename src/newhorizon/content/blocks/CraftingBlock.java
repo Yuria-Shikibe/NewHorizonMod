@@ -908,7 +908,15 @@ public class CraftingBlock {
                         glowColor = new Color(1f, 0.4f, 0.4f, 0.8f);
                     }},
                     new DrawScanLine() {{
-                        scanScl = 9f;
+                        scanScl = 10f;
+                        colorFrom = Pal.accent;
+                        colorTo = Color.white;
+                        alpha = 0.67f;
+                        lineStroke = 0.786f;
+                    }},
+                    new DrawScanLine() {{
+                        scanAngle = 180f;
+                        scanScl = 10f;
                         colorFrom = Pal.accent;
                         colorTo = Color.white;
                         alpha = 0.67f;
