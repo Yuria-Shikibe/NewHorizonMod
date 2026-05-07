@@ -61,12 +61,13 @@ public class NewHorizon extends Mod {
                     DebugFunc.generateBlankBundle();
                     DebugFunc.writeVanillaBlockList();
 
-                    DebugFunc.processAutotile("presstanium-wall");
-                    DebugFunc.processAutotile("refactoring-multi-wall");
-                    DebugFunc.processAutotile("seton-phased-wall");
-                    DebugFunc.processAutotile("shaped-wall");
+                    DebugFunc.processAutotile("titanium-wall");
 
-                    DebugFunc.processAutotile("flood-pipe");
+                    //DebugFunc.processAutotile("presstanium-wall");
+                    //DebugFunc.processAutotile("refactoring-multi-wall");
+                    //DebugFunc.processAutotile("seton-phased-wall");
+                    //DebugFunc.processAutotile("shaped-wall");
+                    //DebugFunc.processAutotile("flood-pipe");
 
                     //DebugFunc.outputAtlas();
                     //DebugFunc.processTiles();

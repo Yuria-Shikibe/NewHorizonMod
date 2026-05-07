@@ -470,6 +470,7 @@ new-horizon-thorium-stone-sparse 0 0 1 6704241
 new-horizon-thorium-stone-wall 0 1 1 4075076
 new-horizon-thorium-transmuter 1 1 4 0
 new-horizon-titanium-reconstructor 1 1 2 0
+new-horizon-titanium-wall 1 1 1 0
 new-horizon-track-rail 1 0 1 0
 new-horizon-tungsten-reconstructor 1 1 2 0
 new-horizon-turbo-pump 1 1 2 0
