@@ -1,19 +1,9 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.math.Mathf;
 import arc.struct.Seq;
-import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.content.Liquids;
-import mindustry.gen.Puddle;
-import mindustry.graphics.Drawf;
 import mindustry.type.Liquid;
-import mindustry.world.meta.Attribute;
-
-import static mindustry.entities.Puddles.maxLiquid;
 
 public class NHLiquids {
     public static Seq<Liquid> streams = Seq.with();
