@@ -898,17 +898,30 @@ public class CraftingBlock {
                     new DrawBaseRegion("-3x3"),
                     new DrawSpikes(){{
                         color = Color.valueOf("ffd59e");
-                        stroke = 1.5f;
+                        stroke = 1.3f;
                         layers = 2;
-                        amount = 12;
+                        amount = 10;
                         rotateSpeed = 0.5f;
                         layerSpeed = -0.9f;
                     }},
                     new DrawMultiWeave(){{
                         glowColor = new Color(1f, 0.4f, 0.4f, 0.8f);
                     }},
-                    new DrawDefault()
+                    new DrawScanLine() {{
+                        scanScl = 9f;
+                        colorFrom = Pal.accent;
+                        colorTo = Color.white;
+                        alpha = 0.67f;
+                        lineStroke = 0.786f;
+                    }},
+                    new DrawDefault(),
+                    new DrawGlowRegion("-vents"){{
+                        color = new Color(1f, 0.4f, 0.3f, 1f);
+                    }}
             );
+
+            ambientSound = Sounds.loopTech;
+            ambientSoundVolume = 0.04f;
         }};
 
         fabricSynthesizer = new MultiBlockCrafter("fabric-synthesizer") {{
