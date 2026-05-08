@@ -24,7 +24,8 @@ public class EnvironmentBlock {
             oreZetaDense, oreSilicarDense,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
-            titaniumWall, zetaWall,
+
+            oreWallTitanium, oreWallZeta,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
             platingBlock1,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
@@ -103,12 +104,12 @@ public class EnvironmentBlock {
             attributes.set(NHContent.density, 1f);
         }};
 
-        titaniumWall = new StaticWall("titanium-wall-ore"){{
+        oreWallTitanium = new StaticWall("ore-wall-titanium"){{
             itemDrop = NHItems.titanium;
             variants = 3;
         }};
 
-        zetaWall = new StaticWall("zeta-wall-ore"){{
+        oreWallZeta = new StaticWall("ore-wall-zeta"){{
             itemDrop = NHItems.zeta;
             variants = 3;
         }};
