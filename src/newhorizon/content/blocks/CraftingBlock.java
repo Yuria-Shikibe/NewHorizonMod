@@ -53,7 +53,7 @@ public class CraftingBlock {
             castingFoundry, crucibleFoundry, zetaFactory, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
             irdryonFluidFactory, irdryonPhaseAscender, denseFactory, tandemFactory, processorCompactor,
             positivePhaseDecayer, negativePhaseDecayer,
-            irayrondFactory, largeIrayrondFactory, nodexFactory, ancimembraneConcentrator, hadronCompositeBuilder, darkEnergyTrap;
+            irayrondFactory, largeIrayrondFactory, nodexFactory, darkEnergyTrap, ancimembraneConcentrator, hadronCompositeBuilder, hyperProcessor;
 
     public static void load() {
         loadColors();
@@ -1177,6 +1177,27 @@ public class CraftingBlock {
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
             outputLiquids = LiquidStack.with(NHLiquids.neutron, 3 / 60f, NHLiquids.proton, 3 / 60f);
 
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x3"),
+                    new DrawLiquidTile(NHLiquids.xenFluid, 2f),
+                    new DrawBubbles(Color.valueOf("7693e3")){{
+                        sides = 10;
+                        recurrence = 3f;
+                        spread = 6;
+                        radius = 1.5f;
+                        amount = 20;
+                    }},
+                    new DrawRegion(),
+                    new DrawLiquidOutputs(),
+                    new DrawGlowRegion(){{
+                        alpha = 0.7f;
+                        color = Color.valueOf("c4bdf3");
+                        glowIntensity = 0.3f;
+                        glowScale = 6f;
+                    }}
+            );
+
+
         }};
 
         processorEtchingFacility = new MultiBlockCrafter("processor-etching-facility") {{
@@ -1335,7 +1356,7 @@ public class CraftingBlock {
             craftTime = 60f;
 
             consumePower(60 / 60f);
-            consumeItems(new ItemStack(NHItems.presstanium, 5), new ItemStack(NHItems.surgeAlloy, 1));
+            consumeItems(ItemStack.with(NHItems.presstanium, 5, NHItems.surgeAlloy, 1));
             outputItems = with(NHItems.irayrondPanel, 2);
 
             drawer = new DrawMulti(
@@ -1359,7 +1380,7 @@ public class CraftingBlock {
             craftTime = 120f;
 
             consumePower(60 / 60f);
-            consumeItems(new ItemStack(NHItems.surgeAlloy, 2), new ItemStack(NHItems.multipleSteel, 5));
+            consumeItems(ItemStack.with(NHItems.surgeAlloy, 2, NHItems.multipleSteel, 5));
             consumeLiquid(NHLiquids.irdryonFluid, 12 / 60f);
             outputItems = with(NHItems.irayrondPanel, 6);
 
@@ -1386,7 +1407,7 @@ public class CraftingBlock {
             craftTime = 60;
 
             consumePower(12f);
-            consumeItems(new ItemStack(NHItems.plastanium, 2), new ItemStack(NHItems.tungsten, 5));
+            consumeItems(ItemStack.with(NHItems.plastanium, 2, NHItems.tungsten, 5));
             consumeLiquid(NHLiquids.irdryonFluid, 6 / 60f);
             outputItem = new ItemStack(NHItems.setonAlloy, 2);
 
@@ -1584,7 +1605,7 @@ public class CraftingBlock {
             itemCapacity = 45;
             craftTime = 60;
 
-            consumeItems(new ItemStack(NHItems.fusionEnergy, 2), new ItemStack(NHItems.zeta, 1));
+            consumeItems(ItemStack.with(NHItems.fusionEnergy, 2, NHItems.zeta, 1));
             consumeLiquid(NHLiquids.proton, 3 / 60f);
             outputItems = with(NHItems.thermoCorePositive, 3);
 
@@ -1621,7 +1642,7 @@ public class CraftingBlock {
 
             craftTime = 60;
 
-            consumeItems(new ItemStack(NHItems.fissileMatter, 2), new ItemStack(NHItems.zeta, 1));
+            consumeItems(ItemStack.with(NHItems.fissileMatter, 2, NHItems.zeta, 1));
             consumeLiquid(NHLiquids.neutron, 3 / 60f);
             outputItems = with(NHItems.thermoCoreNegative, 3);
 
@@ -1654,7 +1675,7 @@ public class CraftingBlock {
             craftTime = 60f;
 
             consumePower(1600 / 60f);
-            consumeItems(new ItemStack(NHItems.seniorProcessor, 1), new ItemStack(NHItems.setonAlloy, 2));
+            consumeItems(ItemStack.with(NHItems.seniorProcessor, 1, NHItems.setonAlloy, 2));
             outputItems = with(NHItems.nodexPlate, 2);
 
             drawer = new DrawPrinter(NHItems.nodexPlate) {{
@@ -1690,7 +1711,7 @@ public class CraftingBlock {
             craftTime = 60f;
 
             consumePower(1600 / 60f);
-            consumeItems(new ItemStack(NHItems.multipleSteel, 2), new ItemStack(NHItems.irayrondPanel, 3));
+            consumeItems(ItemStack.with(NHItems.multipleSteel, 2, NHItems.irayrondPanel, 3));
             consumeLiquid(NHLiquids.quantumLiquid, 12 / 60f);
             outputItems = with(NHItems.ancimembrane, 2);
 
@@ -1794,11 +1815,10 @@ public class CraftingBlock {
             size = 3;
             hasLiquids = true;
             itemCapacity = 30;
-            liquidCapacity = 30f;
             craftTime = 120;
 
             consumePower(1600 / 60f);
-            consumeItems(new ItemStack(NHItems.nodexPlate, 3), new ItemStack(NHItems.zeta, 4));
+            consumeItems(ItemStack.with(NHItems.nodexPlate, 3, NHItems.zeta, 4));
             consumeLiquid(NHLiquids.neutron, 12 / 60f);
             outputItems = with(NHItems.hadronicomp, 2);
 
@@ -1807,6 +1827,29 @@ public class CraftingBlock {
                     new DrawLiquidTile(NHLiquids.neutron),
                     new DrawRegion()
             );
+
+            clipSize = size * tilesize * 2f;
+        }};
+
+        hyperProcessor = new MultiBlockCrafter("hyper-processor") {{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.nodexPlate, 150,
+                    NHItems.surgeAlloy, 175,
+                    NHItems.multipleSteel, 175,
+                    NHItems.seniorProcessor, 120,
+                    NHItems.ancimembrane, 75
+            ));
+            addLink( -3, 2, 1, -3, 3, 1, -2, 3, 1, 3, 2, 1, 3, 3, 1, 2, 3, 1, -3, -2, 1, -3, -3, 1, -2, -3, 1, 3, -2, 1, 3, -3, 1, 2, -3, 1);
+
+            size = 5;
+            hasLiquids = true;
+            itemCapacity = 30;
+            craftTime = 120;
+
+            consumePower(1600 / 60f);
+            consumeItems(ItemStack.with(NHItems.ancimembrane, 3));
+            consumeLiquids(LiquidStack.with(NHLiquids.proton, 12 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
+            outputItems = with(NHItems.hyperProcessor, 2);
 
             clipSize = size * tilesize * 2f;
         }};
