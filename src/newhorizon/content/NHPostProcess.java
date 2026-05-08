@@ -1251,6 +1251,11 @@ public class NHPostProcess {
 			Item item = (Item) content;
 			item.hardness = 3;
 		});
+        adjustContent(Items.fissileMatter, content -> {
+            Item item = (Item) content;
+            item.hidden = false;
+//            item.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha);
+        });
     }
 
     private static void overrideUnit() {
