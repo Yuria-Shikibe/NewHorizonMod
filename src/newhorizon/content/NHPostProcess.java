@@ -1251,6 +1251,10 @@ public class NHPostProcess {
 			Item item = (Item) content;
 			item.hardness = 3;
 		});
+        adjustContent(Items.fissileMatter, content -> {
+            Item item = (Item) content;
+            item.hidden = false;
+        });
     }
 
     private static void overrideUnit() {
