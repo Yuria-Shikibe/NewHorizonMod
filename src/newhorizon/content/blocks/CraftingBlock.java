@@ -276,7 +276,6 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
-                    new DrawDefault(),
                     new DrawArcSmelt() {{
                         midColor = flameColor = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f);
                         flameRad = 0.3f;
@@ -284,7 +283,8 @@ public class CraftingBlock {
                         particleStroke = 1f;
                         particleRad = 4.5f;
                         particleLen = 1f;
-                    }}
+                    }},
+                    new DrawDefault()
             );
 
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 2);
