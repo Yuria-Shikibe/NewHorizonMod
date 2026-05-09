@@ -177,6 +177,7 @@ new-horizon-hydro-fuel-cell 1 1 2 0
 new-horizon-hyper-cooler 1 1 2 0
 new-horizon-hyper-generator 1 1 8 0
 new-horizon-hyper-jump-gate 1 1 8 0
+new-horizon-hyper-processor 1 1 5 0
 new-horizon-hyper-space-warper 1 1 4 0
 new-horizon-hyper-zeta-factory 1 1 2 0
 new-horizon-icon-display 1 0 2 0
@@ -406,6 +407,7 @@ new-horizon-remote-storage 1 1 3 0
 new-horizon-remote-vault 1 1 3 0
 new-horizon-resisto-array 1 1 1 0
 new-horizon-resonance-mining-facility 1 1 4 0
+new-horizon-resource-converto 1 1 2 0
 new-horizon-resource-convertor 1 1 2 0
 new-horizon-rift-shield 1 1 5 0
 new-horizon-ruin-large 1 1 2 0
