@@ -1168,6 +1168,8 @@ public class CraftingBlock {
             ));
 
             size = 3;
+            rotate = true;
+            invertFlip = true;
             health = 600;
             armor = 4;
             itemCapacity = 20;
@@ -1180,24 +1182,12 @@ public class CraftingBlock {
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
                     new DrawLiquidTile(NHLiquids.xenFluid, 2f),
-                    new DrawBubbles(Color.valueOf("7693e3")){{
-                        sides = 10;
-                        recurrence = 3f;
-                        spread = 6;
-                        radius = 1.5f;
-                        amount = 20;
-                    }},
                     new DrawRegion(),
-                    new DrawLiquidOutputs(),
-                    new DrawGlowRegion(){{
-                        alpha = 0.7f;
-                        color = Color.valueOf("c4bdf3");
-                        glowIntensity = 0.3f;
-                        glowScale = 6f;
-                    }}
+                    new DrawLiquidOutputs()
             );
 
-
+            regionRotated1 = 3;
+            liquidOutputDirections = new int[]{1, 3};
         }};
 
         processorEtchingFacility = new MultiBlockCrafter("processor-etching-facility") {{
@@ -1850,8 +1840,6 @@ public class CraftingBlock {
             consumeItems(ItemStack.with(NHItems.ancimembrane, 3));
             consumeLiquids(LiquidStack.with(NHLiquids.proton, 12 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
             outputItems = with(NHItems.hyperProcessor, 2);
-
-            clipSize = size * tilesize * 2f;
         }};
 
                 /*
