@@ -318,6 +318,8 @@ new-horizon-ore-small-titanium 0 0 1 9282019
 new-horizon-ore-thorium-dense 0 0 1 16360391
 new-horizon-ore-titanium-dense 0 0 1 9282019
 new-horizon-ore-tungsten-dense 0 0 1 7768730
+new-horizon-ore-wall-titanium 0 1 1 7697864
+new-horizon-ore-wall-zeta 0 1 1 16631975
 new-horizon-ore-zeta 0 0 1 16757632
 new-horizon-ore-zeta-dense 0 0 1 16757632
 new-horizon-particle-activator 1 1 2 0

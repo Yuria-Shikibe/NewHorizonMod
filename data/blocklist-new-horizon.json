@@ -647,13 +647,13 @@
 	"size": 1,
 	"color": -1121281
 },
-"new-horizon-titanium-wall-ore": {
+"new-horizon-ore-wall-titanium": {
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
 	"color": 1970653439
 },
-"new-horizon-zeta-wall-ore": {
+"new-horizon-ore-wall-zeta": {
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
