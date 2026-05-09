@@ -948,7 +948,7 @@ public class CraftingBlock {
             craftTime = 60f;
 
             consumePower(480 / 60f);
-            consumeItems(with(NHItems.silicon, 2, NHItems.phaseFabric, 5));
+            consumeItems(with(NHItems.silicon, 2));
             consumeLiquids(LiquidStack.with(NHLiquids.photon, 6 / 60f));
             outputItems = with(NHItems.phaseFabric, 6);
 
@@ -958,6 +958,61 @@ public class CraftingBlock {
                         rotate = true;
                         suffix = "-glow";
                         color = NHItems.phaseFabric.color;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * -5 * Mathf.pi;
+                        lenOffset = -10f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * -4 * Mathf.pi;
+                        lenOffset = -8f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * -3 * Mathf.pi;
+                        lenOffset = -6f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * -2 * Mathf.pi;
+                        lenOffset = -4f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * -1 * Mathf.pi;
+                        lenOffset = -2f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * 0 * Mathf.pi;
+                        lenOffset = 0f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * 1 * Mathf.pi;
+                        lenOffset = 2f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * 2 * Mathf.pi;
+                        lenOffset = 4f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * 3 * Mathf.pi;
+                        lenOffset = 6f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * 4 * Mathf.pi;
+                        lenOffset = 8f;
+                    }},
+                    new DrawScanRegion() {{
+                        suffix = "-scan-line";
+                        sinOffset = (sinScl / 4) * 5 * Mathf.pi;
+                        lenOffset = 10f;
                     }},
                     new DrawScanLine() {{
                         scanLength = 24f;

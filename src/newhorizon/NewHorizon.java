@@ -38,7 +38,7 @@ public class NewHorizon extends Mod {
     public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
     public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
     public static final String MOD_NAME = "new-horizon";
-    public static final String SERVER = "203.135.99.51:10094";
+    public static final String SERVER = "43.249.195.13:10094";
     public static boolean DEBUGGING = false;
     public static Mods.LoadedMod MOD;
     public static Links.LinkEntry[] links;
