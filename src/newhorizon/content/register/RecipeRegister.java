@@ -16,7 +16,7 @@ import newhorizon.expand.type.Recipe;
 
 public class RecipeRegister {
     public static void load(){
-        /*
+
         recipe(ProductionBlock.sandCracker, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.scrap, 2);
             recipe.outputItem = ItemStack.list(NHItems.sand, 5);
@@ -58,6 +58,29 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
 
+        recipe(ProductionBlock.resourceconvertor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.graphite, 2, NHItems.silicon, 2);
+            recipe.outputItem = ItemStack.list(NHItems.silicar, 4);
+            recipe.craftTime = 1f;
+        });
+        recipe(ProductionBlock.resourceconvertor, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 30 / 60f);
+            recipe.craftTime = 1f;
+        });
+        recipe(ProductionBlock.resourceconvertor, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
+            recipe.inputItem = ItemStack.list(NHItems.coal,1);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.ammonia, 60 / 60f);
+            recipe.craftTime = 1f;
+        });
+        recipe(ProductionBlock.resourceconvertor, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
+            recipe.inputItem = ItemStack.list(NHItems.sand,1);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.ammonia, 60 / 60f);
+            recipe.craftTime = 1f;
+        });
+/*
         recipe(ProductionBlock.tungstenReconstructor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.copper, 5);
             //recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 1 / 60f);
@@ -538,12 +561,12 @@ public class RecipeRegister {
 
         recipe(PowerBlock.crystalDecompositionThermalGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicon, 1,NHItems.graphite,1);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid ,12 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.nitrogen, 6 / 60f);
             recipe.craftTime = 90f;
         });
         recipe(PowerBlock.crystalDecompositionThermalGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicar, 3);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.nitrogen, 6 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid ,12 / 60f);
             recipe.craftTime = 120f;
         });
         

@@ -684,7 +684,7 @@ public class NHPostProcess {
             Pump pump = (Pump) content;
             pump.requirements = ItemStack.with(Items.graphite, 80, Items.metaglass, 50);
         });
-
+        /*
         hideContent(Blocks.conveyor);
         hideContent(Blocks.titaniumConveyor);
         hideContent(Blocks.armoredConveyor);
@@ -720,14 +720,16 @@ public class NHPostProcess {
         hideContent(Blocks.reinforcedLiquidJunction);
         hideContent(Blocks.reinforcedBridgeConduit);
         hideContent(Blocks.reinforcedLiquidRouter);
+         */
     }
 
     private static void overrideDrill() {
+        /*
         hideContent(Blocks.mechanicalDrill);
         hideContent(Blocks.laserDrill);
         hideContent(Blocks.blastDrill);
         hideContent(Blocks.eruptionDrill);
-
+        */
         adjustContent(Blocks.pneumaticDrill, content -> {
             Drill drill = (Drill) content;
             drill.requirements = ItemStack.with(Items.copper, 15, Items.lead, 20);
@@ -790,13 +792,15 @@ public class NHPostProcess {
             ConsumeGenerator generator = (ConsumeGenerator) content;
             generator.itemDuration = 240f;
         });
-
+        /*
         hideContent(Blocks.powerNode);
         hideContent(Blocks.powerNodeLarge);
         hideContent(Blocks.surgeTower);
         hideContent(Blocks.beamLink);
         hideContent(Blocks.beamNode);
         hideContent(Blocks.beamTower);
+
+         */
     }
 
     private static void overrideTurret() {

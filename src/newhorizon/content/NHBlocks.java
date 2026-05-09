@@ -1000,7 +1000,158 @@ public class NHBlocks {
                     shootY = t -> 90 * curve.apply(1 - t.smoothReload);
                 }});
             }};
+            buildType = () -> new ItemTurretBuild(){
 
+                private static final float ORB_LIFE = 48f;      // ticks
+                private static final float CURVE_LIFE = 96f;    // ticks
+                private static final float SPAWN_MIN = 0.01f;
+                private static final float SPAWN_MAX = 0.24f;
+                private static final float CURVE_SHRINK = 2.4f;
+                private static final float BACK_OFFSET = 35f;
+
+                private final float orbMaxDist = size * tilesize * 0.95f;
+                private final Vec2 orbStart = new Vec2();
+                private final Vec2 orbEnd = new Vec2();
+
+                private final Effect curveFx = new Effect(CURVE_LIFE, e -> {
+                    if(!(e.data instanceof CurveFxData data)) return;
+
+                    float lf = Mathf.clamp(e.fin());
+                    float shrink = Mathf.pow(0.08f, lf * CURVE_SHRINK);
+                    float orbFin = Mathf.clamp(lf * (CURVE_LIFE / ORB_LIFE));
+
+                    Vec2 start = Tmp.v1.set(data.s);
+                    Vec2 end = Tmp.v2.set(
+                            Mathf.lerp(data.s.x, data.e.x, orbFin),
+                            Mathf.lerp(data.s.y, data.e.y, orbFin)
+                    );
+
+                    Vec2 off = Tmp.v3.set(data.ctrlSeed).scl(shrink);
+                    float maxOff = start.dst(end) * 1.8f;
+                    if(off.len() > maxOff) off.setLength(maxOff);
+
+                    Vec2 ctrl = Tmp.v4.set(start).lerp(end, 0.5f).add(off);
+
+                    float orbSize = data.orbSize * (1f - orbFin * 0.4f);
+                    Draw.z(Layer.effect - 0.01f);
+                    Draw.color(data.color, 0.45f);
+                    Fill.circle(end.x, end.y, orbSize * 2.2f);
+                    Draw.color(data.color);
+                    Fill.circle(end.x, end.y, orbSize);
+                    Draw.color(Color.white, 0.7f * (1f - orbFin));
+                    Fill.circle(end.x, end.y, orbSize * 0.55f);
+
+                    Draw.z(Layer.effect + 0.01f);
+                    Draw.color(data.color, Mathf.lerp(1f, 0.18f, lf));
+                    Lines.stroke(2f * (1f - lf * 0.5f));
+                    Lines.curve(start.x, start.y, ctrl.x, ctrl.y, ctrl.x, ctrl.y, end.x, end.y, 20);
+                });
+
+                private class CurveFxData{
+                    final Vec2 s = new Vec2();
+                    final Vec2 e = new Vec2();
+                    final Vec2 ctrlSeed = new Vec2();
+                    final Color color;
+                    final float orbSize;
+
+                    CurveFxData(Vec2 start, Vec2 end, Color color){
+                        this.s.set(start);
+                        this.e.set(end);
+                        this.color = color;
+                        this.orbSize = 2.5f + Mathf.random() * 2f;
+
+                        float dist = s.dst(e);
+                        float amp = Math.max(5f, dist * 0.25f + Mathf.random() * 10f) * 8f;
+                        float ang = Mathf.random(360f);
+                        float mag = Mathf.random(5f, amp);
+                        this.ctrlSeed.set(Angles.trnsx(ang, mag), Angles.trnsy(ang, mag));
+                    }
+                }
+
+                @Override
+                public void update(){
+                    super.update();
+                    if(Vars.state.isPaused()) return;
+
+                    updateAnchors();
+
+                    float fin = Mathf.clamp(reloadCounter / reload, 0f, 1f);
+                    float chance = Mathf.lerp(SPAWN_MIN, SPAWN_MAX, fin);
+
+                    if(Mathf.chanceDelta(chance)){
+                        curveFx.at(x, y, 0f, heatColor, new CurveFxData(orbStart, orbEnd, heatColor));
+                    }
+                }
+
+                private void updateAnchors(){
+                    float up = Mathf.mod(rotation, 360f);
+
+                    orbStart.set(
+                            x + Angles.trnsx(up + 180f, BACK_OFFSET),
+                            y + Angles.trnsy(up + 180f, BACK_OFFSET)
+                    );
+
+                    float fin = Mathf.clamp(reloadCounter / reload, 0f, 1f);
+                    float dist = orbMaxDist * fin;
+
+                    orbEnd.set(
+                            orbStart.x + Angles.trnsx(up, dist),
+                            orbStart.y + Angles.trnsy(up, dist)
+                    );
+                }
+
+                @Override
+                public void draw(){
+                    super.draw();
+
+                    if(!Vars.state.isPaused()){
+                        updateAnchors();
+                    }
+
+                    float fin = Mathf.clamp(reloadCounter / reload, 0f, 1f);
+                    if(fin <= 0.01f) return;
+
+                    drawAnchorOrb(orbStart, fin);
+                    drawAnchorOrb(orbEnd, fin);
+
+                    drawRingLightning(fin);
+                }
+                private void drawAnchorOrb(Vec2 p, float fin){
+                    Draw.z(Layer.effect);
+                    float glow = 8f * fin + Mathf.absin(Time.time, 2f, 2f * fin);
+                    float core = 4f * fin;
+
+                    Draw.color(heatColor, 0.3f);
+                    Fill.circle(p.x, p.y, glow);
+
+                    Draw.color(heatColor);
+                    Fill.circle(p.x, p.y, core);
+
+                    Draw.color(Color.white, 0.6f);
+                    Fill.circle(p.x, p.y, core * 0.6f);
+                }
+
+                private void drawRingLightning(float fin){
+                    if(Vars.state.isPaused()) return; // prevent lightning buildup while paused
+
+                    float innerR = size * tilesize * 0.74f * Interp.circleOut.apply(fin);
+                    float outerR = size * tilesize * 0.96f * Interp.circleOut.apply(fin);
+
+                    if(Mathf.chanceDelta(0.12f * fin)){
+                        Vec2 v = Tmp.v1.trns(Mathf.random(360f), innerR).add(x, y);
+                        NHFx.chainLightningFade.at(orbEnd.x, orbEnd.y, 12f, heatColor, new Vec2(v));
+                    }
+                    if(Mathf.chanceDelta(0.08f * fin)){
+                        Vec2 v = Tmp.v1.trns(Mathf.random(360f), outerR).add(x, y);
+                        NHFx.chainLightningFade.at(orbEnd.x, orbEnd.y, 18f, heatColor, new Vec2(v));
+                    }
+                }
+
+                @Override
+                public void onRemoved(){
+                    super.onRemoved();
+                }
+            };
             shoot = new ShootPattern();
             inaccuracy = 0;
 
