@@ -27,7 +27,7 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker,resourceconvertor,
+            sandCracker,resourceConvertor,
             //tungstenReconstructor, titaniumReconstructor,
             //liquidConvertor, xenExtractor, xenIterator,
             scanCollector,
@@ -74,7 +74,7 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
-        resourceconvertor = new RecipeGenericCrafter("resource-converto") {{
+        resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
