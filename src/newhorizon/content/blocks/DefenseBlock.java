@@ -22,10 +22,18 @@ import static mindustry.type.ItemStack.with;
 
 public class DefenseBlock {
     public static Block
+            titaniumWall,
             presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall,
             standardRegenProjector, heavyRegenProjector, standardForceProjector, largeShieldGenerator, riftShield;
 
     public static void load() {
+        titaniumWall = new AdaptWall("titanium-wall") {{
+            health = 750;
+            armor = 2f;
+            maxShareStep = 1;
+            damageReduction = 0.05f;
+            requirements(Category.defense, with(NHItems.titanium, 12));
+        }};
         presstaniumWall = new AdaptWall("presstanium-wall") {{
             health = 1200;
             armor = 2f;

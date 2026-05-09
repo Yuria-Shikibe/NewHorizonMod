@@ -1,7 +1,6 @@
 package newhorizon.content.blocks;
 
 import mindustry.content.Blocks;
-import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.MultiPacker;
@@ -25,6 +24,8 @@ public class EnvironmentBlock {
             oreZetaDense, oreSilicarDense,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
+
+            oreWallTitanium, oreWallZeta,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
             platingBlock1,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
@@ -101,6 +102,16 @@ public class EnvironmentBlock {
             variants = 3;
 
             attributes.set(NHContent.density, 1f);
+        }};
+
+        oreWallTitanium = new StaticWall("ore-wall-titanium"){{
+            itemDrop = NHItems.titanium;
+            variants = 3;
+        }};
+
+        oreWallZeta = new StaticWall("ore-wall-zeta"){{
+            itemDrop = NHItems.zeta;
+            variants = 3;
         }};
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{

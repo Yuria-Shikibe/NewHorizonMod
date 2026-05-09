@@ -52,10 +52,12 @@ public class NHSounds {
     }
 
     private static Sound loadSound(String soundName) {
+        Sound sound = new Sound();
+        if (Vars.headless) return sound;
+
         String path = "sounds/" + soundName;
         String filePath = Vars.tree.get(path + ".ogg").exists() ? path + ".ogg" : path + ".mp3";
 
-        Sound sound = new Sound();
         AssetDescriptor<?> desc = Core.assets.load(filePath, Sound.class, new SoundLoader.SoundParameter(sound));
         desc.errored = Throwable::printStackTrace;
         return sound;

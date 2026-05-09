@@ -479,6 +479,12 @@
 	"size": 5,
 	"color": 255
 },
+"new-horizon-titanium-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
 "new-horizon-presstanium-wall": {
 	"synthetic": true,
 	"solid": true,
@@ -640,6 +646,18 @@
 	"solid": true,
 	"size": 1,
 	"color": -1121281
+},
+"new-horizon-titanium-wall-ore": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1970653439
+},
+"new-horizon-zeta-wall-ore": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -37181441
 },
 "new-horizon-conglomerate-wall": {
 	"synthetic": false,
@@ -1031,7 +1049,25 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-irayrond-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-large-irayrond-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
 "new-horizon-dense-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-tandem-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -1061,7 +1097,13 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-ccb-factory": {
+"new-horizon-dark-energy-trap": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-hadron-composite-builder": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
