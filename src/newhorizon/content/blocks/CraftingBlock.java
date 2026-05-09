@@ -1068,7 +1068,13 @@ public class CraftingBlock {
                         suffix = "-glow";
                         color = NHItems.phaseFabric.color;
                     }},
-                    new DrawWeaverWave(),
+                    //new DrawWeaverWave(),
+                    new DrawWeaverWave() {{
+                        waveAngle = 115f;
+                    }},
+                    new DrawWeaverWave() {{
+                        waveAngle = 65f;
+                    }},
                     new DrawScanLine() {{
                         scanLength = 24f;
                         scanAngle = 90f;
