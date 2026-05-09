@@ -211,7 +211,7 @@ public class ProductionBlock {
             hasPower = true;
 
             drillTime = 240;
-            itemCapacity = 20;
+            itemCapacity = 30;
             warmupSpeed = 0.035f;
 
             drillEffect = Fx.mineHuge;
@@ -250,13 +250,15 @@ public class ProductionBlock {
             requirements(Category.production, with(NHItems.graphite, 114));
 
             size = 4;
-            tier = 3;
+            tier = 4;
 
             drawRim = false;
             hasPower = true;
 
-            drillTime = 240;
-            itemCapacity = 20;
+            maxModules = 2;
+
+            drillTime = 200f;
+            itemCapacity = 40;
             warmupSpeed = 0.035f;
 
             drillEffect = Fx.mineHuge;

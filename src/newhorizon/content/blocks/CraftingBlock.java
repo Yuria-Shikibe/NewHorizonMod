@@ -47,7 +47,7 @@ public class CraftingBlock {
             silicarCrusher, processorManuFactory, stampingFacility, heavyStampingFacility,
             processorPrinter,
             subCooler, hyperCooler, metalOxhydrigenRestructuror, photocatalystFactory, plasticator, crystallizer,
-            phaseRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
+            fabricRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
             castingFoundry, crucibleFoundry, zetaFactory, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
@@ -986,7 +986,7 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        phaseRestructuror = new GenericCrafter("phase-restructuror") {{
+        fabricRestructuror = new GenericCrafter("fabric-restructuror") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.thorium, 70,
                     NHItems.juniorProcessor, 60,
@@ -1068,61 +1068,7 @@ public class CraftingBlock {
                         suffix = "-glow";
                         color = NHItems.phaseFabric.color;
                     }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -5 * Mathf.pi;
-                        lenOffset = -10f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -4 * Mathf.pi;
-                        lenOffset = -8f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -3 * Mathf.pi;
-                        lenOffset = -6f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -2 * Mathf.pi;
-                        lenOffset = -4f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -1 * Mathf.pi;
-                        lenOffset = -2f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 0 * Mathf.pi;
-                        lenOffset = 0f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 1 * Mathf.pi;
-                        lenOffset = 2f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 2 * Mathf.pi;
-                        lenOffset = 4f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 3 * Mathf.pi;
-                        lenOffset = 6f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 4 * Mathf.pi;
-                        lenOffset = 8f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 5 * Mathf.pi;
-                        lenOffset = 10f;
-                    }},
+                    new DrawWeaverWave(),
                     new DrawScanLine() {{
                         scanLength = 24f;
                         scanAngle = 90f;

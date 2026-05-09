@@ -124,6 +124,7 @@ new-horizon-erode-rock-greater 0 0 1 3489625
 new-horizon-erode-rock-lesser 0 0 1 1975608
 new-horizon-eternity 1 1 16 0
 new-horizon-executor 1 1 6 0
+new-horizon-fabric-restructuror 1 1 3 0
 new-horizon-fabric-synthesizer 1 1 3 0
 new-horizon-factory-0 1 1 2 0
 new-horizon-factory-1 1 1 2 0
