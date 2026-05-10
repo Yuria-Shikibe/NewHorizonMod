@@ -52,11 +52,6 @@ public class RecipeRegister {
             recipe.outputItem = ItemStack.list(NHItems.sand, 5);
             recipe.craftTime = 30f;
         });
-        recipe(ProductionBlock.sandCracker, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.silicar, 3);
-            recipe.outputItem = ItemStack.list(NHItems.graphite, 2, NHItems.silicon, 2);
-            recipe.craftTime = 60f;
-        });
 
         recipe(ProductionBlock.resourceConvertor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.graphite, 2, NHItems.silicon, 2);
@@ -65,19 +60,19 @@ public class RecipeRegister {
         });
         recipe(ProductionBlock.resourceConvertor, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 30 / 60f);
-            recipe.craftTime = 1f;
-        });
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
             recipe.inputItem = ItemStack.list(NHItems.coal,1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.ammonia, 60 / 60f);
-            recipe.craftTime = 1f;
+            recipe.craftTime = 60f;
         });
         recipe(ProductionBlock.resourceConvertor, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
             recipe.inputItem = ItemStack.list(NHItems.sand,1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.ammonia, 60 / 60f);
+            recipe.craftTime = 60f;
+        });
+        recipe(ProductionBlock.resourceConvertor, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 30 / 60f);
             recipe.craftTime = 1f;
         });
 /*
