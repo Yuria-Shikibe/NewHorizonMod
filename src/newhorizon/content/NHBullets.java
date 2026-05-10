@@ -1607,7 +1607,7 @@ public class NHBullets {
         }};
 
         synchroZeta = new AdaptBulletType() {{
-            damage = 100f;
+            damage = 120f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.7f;
 
@@ -1987,7 +1987,7 @@ public class NHBullets {
             }
         }};
 
-        missileZeta = new MissileBulletType(4.2f, 18) {{
+        missileZeta = new MissileBulletType(4.2f, 36) {{
             width = 8f;
             height = 8f;
             shrinkY = 0f;

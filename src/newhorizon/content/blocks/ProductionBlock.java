@@ -10,6 +10,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
@@ -29,7 +30,8 @@ public class ProductionBlock {
     public static Block
             sandCracker,tungstenReconstructor, titaniumReconstructor, resourceConvertor,
             //tungstenReconstructor, titaniumReconstructor,
-            //liquidConvertor, xenExtractor, xenIterator,
+            liquidConvertor,
+            //  xenExtractor, xenIterator,
             scanCollector,
             resonanceMiningFacility, beamMiningFacility, implosionMiningFacility,
             airRadiator, liquidRadiator,
@@ -167,6 +169,7 @@ public class ProductionBlock {
 
             drawer = new DrawMulti(new DrawDefault());
         }};
+        */
         liquidConvertor = new RecipeGenericCrafter("liquid-convertor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
@@ -187,6 +190,7 @@ public class ProductionBlock {
             craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 16, 3);
             consumePower(5f);
         }};
+        /*
         xenExtractor = new ThermalGenerator("xen-extractor") {{
             requirements(Category.production, with(NHItems.titanium, 40, NHItems.silicon, 40));
             attribute = NHContent.quantum;

@@ -46,7 +46,7 @@ public class CraftingBlock {
     public static Block
             silicarCrusher, processorManuFactory, stampingFacility, heavyStampingFacility,
             processorPrinter,
-            subCooler, hyperCooler, metalOxhydrigenRestructuror, photocatalystFactory, plasticator, crystallizer,
+            subCooler,quantizer, hyperCooler, metalOxhydrigenRestructuror, photocatalystFactory, plasticator, crystallizer,
             fabricRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
@@ -363,6 +363,42 @@ public class CraftingBlock {
 
             craftEffect = NHFx.square(processorBlue, 60, 6, 16, 3);
             updateEffect = NHFx.square(processorBlue, 60, 2, 12, 3);
+        }};
+
+        quantizer = new MultiBlockCrafter("quantizer") {{
+            requirements(Category.production, with(
+                    NHItems.titanium, 40,
+                    NHItems.silicon, 40,
+                    NHItems.hardLight, 60
+            ));
+
+            size = 2;
+            scaledHealth = 100f;
+            liquidCapacity = 120f;
+            craftTime = 60f;
+
+            consumePower(1f);
+            //consumeItems(with(NHItems.titanium, 2));
+            consumeLiquid(NHLiquids.water, 60 / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.quantumLiquid, 30 / 60f );
+
+            craftEffect = NHFx.square(NHColor.darkEnrColor, 60, 6, 16, 3);
+            updateEffect = NHFx.square(processorBlue, 60, 2, 12, 3);
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawLiquidTile(NHLiquids.water, 2f),
+                    new DrawLiquidTile(NHLiquids.quantumLiquid, 2f),
+                    new DrawArcSmelt() {{
+                        midColor = flameColor = NHColor.darkEnrColor.lerp(Color.lightGray, 0.3f);
+                        flameRad = 0.3f;
+                        circleSpace = 1f;
+                        particleStroke = 0.8f;
+                        particleRad = 4.5f;
+                        particleLen = 1.5f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
         }};
 
         hyperCooler = new MultiBlockCrafter("hyper-cooler") {{

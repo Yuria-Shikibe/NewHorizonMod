@@ -842,7 +842,7 @@ public class NHBlocks {
             shootSound = NHSounds.laser3;
             outlineColor = Pal.darkOutline;
 
-            ammo(NHItems.zeta, new AccelBulletType(2.85f, 40f) {
+            ammo(NHItems.zeta, new AccelBulletType(2.85f, 60f) {
                 {
                     frontColor = NHColor.ancientLight;
                     backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
