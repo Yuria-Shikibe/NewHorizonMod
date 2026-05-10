@@ -6,7 +6,6 @@ import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.Rand;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
@@ -14,6 +13,7 @@ import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
@@ -27,7 +27,7 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker,resourceConvertor,
+            sandCracker,tungstenReconstructor, titaniumReconstructor, resourceConvertor,
             //tungstenReconstructor, titaniumReconstructor,
             //liquidConvertor, xenExtractor, xenIterator,
             scanCollector,
@@ -74,7 +74,44 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
-        resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
+
+        tungstenReconstructor = new GenericCrafter("tungsten-reconstructor") {{
+            requirements(Category.crafting, with(
+                    NHItems.titanium, 30
+            ));
+            size = 2;
+            health = 600;
+            itemCapacity = 20;
+            craftTime = 60f;
+
+            consumePower(90f / 60f);
+            consumeItems(with(NHItems.titanium, 3));
+            outputItems = with(NHItems.tungsten, 2);
+
+            drawer = new DrawMulti(
+                    new DrawDefault()
+            );
+        }};
+
+        titaniumReconstructor = new GenericCrafter("titanium-reconstructor") {{
+                requirements(Category.crafting, with(
+                        NHItems.tungsten, 30
+                ));
+                size = 2;
+                health = 600;
+                itemCapacity = 20;
+                craftTime = 60f;
+
+                consumePower(90f / 60f);
+                consumeItems(with(NHItems.tungsten, 3));
+                outputItems = with(NHItems.titanium, 2);
+
+                drawer = new DrawMulti(
+                        new DrawDefault()
+                );
+            }};
+
+                resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
@@ -202,7 +239,11 @@ public class ProductionBlock {
          */
 
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
-            requirements(Category.production, with(NHItems.graphite, 114));
+            requirements(Category.production, with(
+                    NHItems.silicon, 50,
+                    NHItems.titanium, 50,
+                    NHItems.tungsten, 50
+            ));
 
             size = 4;
             tier = 3;
@@ -211,7 +252,7 @@ public class ProductionBlock {
             hasPower = true;
 
             drillTime = 240;
-            itemCapacity = 20;
+            itemCapacity = 30;
             warmupSpeed = 0.035f;
 
             drillEffect = Fx.mineHuge;
@@ -247,16 +288,22 @@ public class ProductionBlock {
         }};
 
         beamMiningFacility = new AdaptDrill("beam-mining-facility") {{
-            requirements(Category.production, with(NHItems.graphite, 114));
+            requirements(Category.production, with(
+                    NHItems.juniorProcessor, 50,
+                    NHItems.surgeAlloy, 50,
+                    NHItems.multipleSteel, 50
+            ));
 
             size = 4;
-            tier = 3;
+            tier = 8;
 
             drawRim = false;
             hasPower = true;
 
-            drillTime = 240;
-            itemCapacity = 20;
+            maxModules = 2;
+
+            drillTime = 200f;
+            itemCapacity = 40;
             warmupSpeed = 0.035f;
 
             drillEffect = Fx.mineHuge;
@@ -281,7 +328,10 @@ public class ProductionBlock {
         }};
 
         airRadiator = new DrillModule("air-radiator") {{
-            requirements(Category.production, with(NHItems.graphite, 114));
+            requirements(Category.production, with(
+                    NHItems.presstanium, 25,
+                    NHItems.juniorProcessor, 25
+            ));
 
             size = 2;
 
@@ -318,7 +368,10 @@ public class ProductionBlock {
         }};
 
         liquidRadiator = new DrillModule("liquid-radiator") {{
-            requirements(Category.production, with(NHItems.graphite, 114));
+            requirements(Category.production, with(
+                    NHItems.multipleSteel, 25,
+                    NHItems.plastanium, 25
+            ));
 
             size = 2;
             hasLiquids = true;

@@ -47,11 +47,11 @@ public class CraftingBlock {
             silicarCrusher, processorManuFactory, stampingFacility, heavyStampingFacility,
             processorPrinter,
             subCooler, hyperCooler, metalOxhydrigenRestructuror, photocatalystFactory, plasticator, crystallizer,
-            phaseRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
+            fabricRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer,
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
             castingFoundry, crucibleFoundry, zetaFactory, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
-            irdryonFluidFactory, irdryonPhaseAscender, denseFactory, tandemFactory, processorCompactor,
+            reverseCollapseFacility, irdryonFluidFactory, irdryonPhaseAscender, denseFactory, tandemFactory, processorCompactor,
             positivePhaseDecayer, negativePhaseDecayer,
             irayrondFactory, largeIrayrondFactory, nodexFactory, darkEnergyTrap, ancimembraneConcentrator, hadronCompositeBuilder, hyperProcessor;
 
@@ -276,7 +276,6 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
-                    new DrawDefault(),
                     new DrawArcSmelt() {{
                         midColor = flameColor = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f);
                         flameRad = 0.3f;
@@ -284,7 +283,8 @@ public class CraftingBlock {
                         particleStroke = 1f;
                         particleRad = 4.5f;
                         particleLen = 1f;
-                    }}
+                    }},
+                    new DrawDefault()
             );
 
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 2);
@@ -974,7 +974,7 @@ public class CraftingBlock {
             outputItem = new ItemStack(NHItems.multipleSteel, 5);
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated("-rot"),
+                    new DrawRegionRotatedDiagonal("-rot"),
                     new DrawFlameRotated() {{
                         suffix = "-top";
                         flameColor = Pal.techBlue;
@@ -986,7 +986,7 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        phaseRestructuror = new GenericCrafter("phase-restructuror") {{
+        fabricRestructuror = new GenericCrafter("fabric-restructuror") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.thorium, 70,
                     NHItems.juniorProcessor, 60,
@@ -1068,60 +1068,12 @@ public class CraftingBlock {
                         suffix = "-glow";
                         color = NHItems.phaseFabric.color;
                     }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -5 * Mathf.pi;
-                        lenOffset = -10f;
+                    //new DrawWeaverWave(),
+                    new DrawWeaverWave() {{
+                        waveAngle = 115f;
                     }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -4 * Mathf.pi;
-                        lenOffset = -8f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -3 * Mathf.pi;
-                        lenOffset = -6f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -2 * Mathf.pi;
-                        lenOffset = -4f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * -1 * Mathf.pi;
-                        lenOffset = -2f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 0 * Mathf.pi;
-                        lenOffset = 0f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 1 * Mathf.pi;
-                        lenOffset = 2f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 2 * Mathf.pi;
-                        lenOffset = 4f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 3 * Mathf.pi;
-                        lenOffset = 6f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 4 * Mathf.pi;
-                        lenOffset = 8f;
-                    }},
-                    new DrawScanRegion() {{
-                        suffix = "-scan-line";
-                        sinOffset = (sinScl / 4) * 5 * Mathf.pi;
-                        lenOffset = 10f;
+                    new DrawWeaverWave() {{
+                        waveAngle = 65f;
                     }},
                     new DrawScanLine() {{
                         scanLength = 24f;
@@ -1232,14 +1184,17 @@ public class CraftingBlock {
 
             consumePower(60 / 60f);
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
-            outputLiquids = LiquidStack.with(NHLiquids.neutron, 3 / 60f, NHLiquids.proton, 3 / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.neutron, 6 / 60f, NHLiquids.proton, 6 / 60f);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
-                    new DrawLiquidTile(NHLiquids.xenFluid, 2f),
-                    new DrawRegion(),
-                    new DrawLiquidOutputs()
+                    new DrawLiquidTile(NHLiquids.xenFluid),
+                    new DrawRegion("-base"),
+                    new DrawRegionRotated() {{suffix = "-top-rot";}},
+                    new DrawGlowRegion("-glow") {{color = NHLiquids.xenFluid.color;}}
             );
+
+            craftEffect = updateEffect = NHFx.square(NHLiquids.xenFluid.color, 60, 6, 16, 3);
 
             regionRotated1 = 3;
             liquidOutputDirections = new int[]{1, 3};
@@ -1316,6 +1271,34 @@ public class CraftingBlock {
 
             updateEffect = craftEffect = new MultiEffect(
                     NHFx.square(NHItems.seniorProcessor.color, 60, 5, 30, 5)
+            );
+
+            enableRotate();
+        }};
+
+        reverseCollapseFacility = new MultiBlockCrafter("reverse-collapse-facility") {{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.zeta, 150,
+                    NHItems.surgeAlloy, 145,
+                    NHItems.irayrondPanel, 125,
+                    NHItems.tungsten, 225
+            ));
+            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            size = 3;
+            health = 1200;
+            armor = 8;
+            itemCapacity = 30;
+            craftTime = 180f;
+
+            consumePower(1250 / 60f);
+            consumeLiquids(LiquidStack.with(NHLiquids.quantumLiquid, 30 / 60f));
+            outputLiquid = new LiquidStack(NHLiquids.antiMatter, 3f / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawRegionFlip() {{
+                        suffix = "-rot";
+                    }}
             );
 
             enableRotate();

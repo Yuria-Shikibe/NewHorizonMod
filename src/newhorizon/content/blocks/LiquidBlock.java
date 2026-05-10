@@ -18,33 +18,33 @@ public class LiquidBlock {
 
     public static void load() {
         streamSource = new StreamSource("stream-source"){{
-            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+            requirements(Category.liquid, BuildVisibility.shown, with());
         }};
 
         streamExtractor = new StreamExtractor("stream-extractor"){{
-            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+            requirements(Category.liquid, BuildVisibility.shown, with());
 
             rotateDraw = true;
         }};
 
         streamReceiver = new StreamReceiver("stream-receiver"){{
-            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+            requirements(Category.liquid, BuildVisibility.shown, with());
         }};
 
         streamRepeater = new StreamRepeater("stream-repeater"){{
-            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+            requirements(Category.liquid, BuildVisibility.shown, with());
 
             rotateDraw = true;
         }};
 
         streamRedirector = new StreamRedirector("stream-redirector"){{
-            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+            requirements(Category.liquid, BuildVisibility.shown, with());
 
             rotateDraw = true;
         }};
 
         streamSplitter = new StreamSplitter("stream-splitter"){{
-            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+            requirements(Category.liquid, BuildVisibility.shown, with());
 
             rotateDraw = true;
         }};

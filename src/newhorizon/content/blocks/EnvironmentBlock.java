@@ -248,6 +248,7 @@ public class EnvironmentBlock {
             isLiquid = true;
             drownTime = 300f;
             speedMultiplier = 0.6f;
+            liquidMultiplier = 1.5f;
             status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
             liquidDrop = NHLiquids.ammonia;

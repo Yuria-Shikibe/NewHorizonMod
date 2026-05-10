@@ -60,6 +60,11 @@ public class GravityWell extends Block{
             field = new GravityTrapField(this, gravityRange);
         }
 
+        @Override
+        public boolean canPickup() {
+            return false;
+        }
+
         public void update(){
             field.update(this);
         }
