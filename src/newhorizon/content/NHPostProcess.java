@@ -1173,65 +1173,65 @@ public class NHPostProcess {
     }
 
     private static void overrideFactories() {
-        adjustContent(Blocks.graphitePress, content -> {
-            GenericCrafter crafter = (GenericCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-            crafter.consume(new ConsumeItems(with(Items.coal, 2)));
-            crafter.outputItems = with(Items.graphite, 3);
-            crafter.craftTime = 60f;
-        });
-        adjustContent(Blocks.multiPress, content -> {
-            GenericCrafter crafter = (GenericCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-            crafter.consume(new ConsumeItems(with(Items.coal, 2)));
-            crafter.outputItems = with(Items.graphite, 5);
-            crafter.craftTime = 40f;
-        });
-        adjustContent(Blocks.siliconSmelter, content -> {
-            GenericCrafter crafter = (GenericCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-            crafter.consume(new ConsumeItems(with(Items.sand, 3)));
-            crafter.outputItems = with(Items.silicon, 2);
-            crafter.craftTime = 60f;
-        });
-        adjustContent(Blocks.siliconCrucible, content -> {
-            GenericCrafter crafter = (GenericCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-            crafter.requirements = with(Items.titanium, 120, Items.metaglass, 80, Items.silicon, 60);
-            crafter.consumeItems(with(Items.sand, 8, Items.pyratite, 2));
-            crafter.outputItem = new ItemStack(Items.silicon, 15);
-            crafter.craftTime = 120f;
-        });
-        adjustContent(Blocks.pyratiteMixer, content -> {
-            GenericCrafter crafter = (GenericCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-            crafter.consumeItems(with(Items.coal, 1, Items.sand, 2));
-            crafter.outputItem = new ItemStack(Items.pyratite, 2);
-            crafter.craftTime = 60f;
-        });
-        adjustContent(Blocks.siliconArcFurnace, content -> {
-            GenericCrafter crafter = (GenericCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-            crafter.consume(new ConsumeItems(with(Items.sand, 5)));
-            crafter.outputItems = with(Items.silicon, 5);
-            crafter.craftTime = 60f;
-        });
-        adjustContent(Blocks.cultivator, content -> {
-            AttributeCrafter crafter = (AttributeCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeLiquid);
-            crafter.consume(new ConsumeLiquid(Liquids.water, 18f / 60f));
-            crafter.outputItems = with(Items.sporePod, 2);
-            crafter.craftTime = 60f;
-            crafter.consume(new ConsumePower(6f, 0f, false));
-
-        });
-        adjustContent(Blocks.blastMixer, content -> {
-            GenericCrafter crafter = (GenericCrafter) content;
-            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-            crafter.consume(new ConsumeItems(with(Items.sporePod, 3, Items.pyratite, 3)));
-            crafter.outputItems = with(Items.blastCompound, 3);
-            crafter.craftTime = 90f;
-        });
+//        adjustContent(Blocks.graphitePress, content -> {
+//            GenericCrafter crafter = (GenericCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+//            crafter.consume(new ConsumeItems(with(Items.coal, 2)));
+//            crafter.outputItems = with(Items.graphite, 3);
+//            crafter.craftTime = 60f;
+//        });
+//        adjustContent(Blocks.multiPress, content -> {
+//            GenericCrafter crafter = (GenericCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+//            crafter.consume(new ConsumeItems(with(Items.coal, 2)));
+//            crafter.outputItems = with(Items.graphite, 5);
+//            crafter.craftTime = 40f;
+//        });
+//        adjustContent(Blocks.siliconSmelter, content -> {
+//            GenericCrafter crafter = (GenericCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+//            crafter.consume(new ConsumeItems(with(Items.sand, 3)));
+//            crafter.outputItems = with(Items.silicon, 2);
+//            crafter.craftTime = 60f;
+//        });
+//        adjustContent(Blocks.siliconCrucible, content -> {
+//            GenericCrafter crafter = (GenericCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+//            crafter.requirements = with(Items.titanium, 120, Items.metaglass, 80, Items.silicon, 60);
+//            crafter.consumeItems(with(Items.sand, 8, Items.pyratite, 2));
+//            crafter.outputItem = new ItemStack(Items.silicon, 15);
+//            crafter.craftTime = 120f;
+//        });
+//        adjustContent(Blocks.pyratiteMixer, content -> {
+//            GenericCrafter crafter = (GenericCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+//            crafter.consumeItems(with(Items.coal, 1, Items.sand, 2));
+//            crafter.outputItem = new ItemStack(Items.pyratite, 2);
+//            crafter.craftTime = 60f;
+//        });
+//        adjustContent(Blocks.siliconArcFurnace, content -> {
+//            GenericCrafter crafter = (GenericCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+//            crafter.consume(new ConsumeItems(with(Items.sand, 5)));
+//            crafter.outputItems = with(Items.silicon, 5);
+//            crafter.craftTime = 60f;
+//        });
+//        adjustContent(Blocks.cultivator, content -> {
+//            AttributeCrafter crafter = (AttributeCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeLiquid);
+//            crafter.consume(new ConsumeLiquid(Liquids.water, 18f / 60f));
+//            crafter.outputItems = with(Items.sporePod, 2);
+//            crafter.craftTime = 60f;
+//            crafter.consume(new ConsumePower(6f, 0f, false));
+//
+//        });
+//        adjustContent(Blocks.blastMixer, content -> {
+//            GenericCrafter crafter = (GenericCrafter) content;
+//            crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+//            crafter.consume(new ConsumeItems(with(Items.sporePod, 3, Items.pyratite, 3)));
+//            crafter.outputItems = with(Items.blastCompound, 3);
+//            crafter.craftTime = 90f;
+//        });
     }
 
     private static void overrideItem() {

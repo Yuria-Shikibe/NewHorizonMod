@@ -51,7 +51,7 @@ public class CraftingBlock {
             particleActivator, plasmaActivator, fusionCoreEnergyFactory, thoriumTransmuter,
             rectificatior, phaseRectificatior,
             castingFoundry, crucibleFoundry, zetaFactory, multipleRollingMill, mixedRollingMill, heavyRollingMill, xenSeparator, processorEtchingFacility,
-            irdryonFluidFactory, irdryonPhaseAscender, denseFactory, tandemFactory, processorCompactor,
+            reverseCollapseFacility, irdryonFluidFactory, irdryonPhaseAscender, denseFactory, tandemFactory, processorCompactor,
             positivePhaseDecayer, negativePhaseDecayer,
             irayrondFactory, largeIrayrondFactory, nodexFactory, darkEnergyTrap, ancimembraneConcentrator, hadronCompositeBuilder, hyperProcessor;
 
@@ -974,7 +974,7 @@ public class CraftingBlock {
             outputItem = new ItemStack(NHItems.multipleSteel, 5);
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated("-rot"),
+                    new DrawRegionRotatedDiagonal("-rot"),
                     new DrawFlameRotated() {{
                         suffix = "-top";
                         flameColor = Pal.techBlue;
@@ -1184,14 +1184,17 @@ public class CraftingBlock {
 
             consumePower(60 / 60f);
             consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
-            outputLiquids = LiquidStack.with(NHLiquids.neutron, 3 / 60f, NHLiquids.proton, 3 / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.neutron, 6 / 60f, NHLiquids.proton, 6 / 60f);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
-                    new DrawLiquidTile(NHLiquids.xenFluid, 2f),
-                    new DrawRegion(),
-                    new DrawLiquidOutputs()
+                    new DrawLiquidTile(NHLiquids.xenFluid),
+                    new DrawRegion("-base"),
+                    new DrawRegionRotated() {{suffix = "-top-rot";}},
+                    new DrawGlowRegion("-glow") {{color = NHLiquids.xenFluid.color;}}
             );
+
+            craftEffect = updateEffect = NHFx.square(NHLiquids.xenFluid.color, 60, 6, 16, 3);
 
             regionRotated1 = 3;
             liquidOutputDirections = new int[]{1, 3};
@@ -1268,6 +1271,34 @@ public class CraftingBlock {
 
             updateEffect = craftEffect = new MultiEffect(
                     NHFx.square(NHItems.seniorProcessor.color, 60, 5, 30, 5)
+            );
+
+            enableRotate();
+        }};
+
+        reverseCollapseFacility = new MultiBlockCrafter("reverse-collapse-facility") {{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.zeta, 150,
+                    NHItems.surgeAlloy, 145,
+                    NHItems.irayrondPanel, 125,
+                    NHItems.tungsten, 225
+            ));
+            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            size = 3;
+            health = 1200;
+            armor = 8;
+            itemCapacity = 30;
+            craftTime = 180f;
+
+            consumePower(1250 / 60f);
+            consumeLiquids(LiquidStack.with(NHLiquids.quantumLiquid, 30 / 60f));
+            outputLiquid = new LiquidStack(NHLiquids.antiMatter, 3f / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawRegionFlip() {{
+                        suffix = "-rot";
+                    }}
             );
 
             enableRotate();
