@@ -204,6 +204,23 @@ public class NHStatValues {
         return t;
     }
 
+    public static StatValue itemsWithSolarMultiplier(float timePeriod, ItemStack... stacks){
+        return table -> {
+            for(ItemStack stack : stacks){
+                table.add(displayItemWithSolarMultiplier(stack.item, stack.amount, timePeriod, true)).padRight(5);
+            }
+        };
+    }
+
+    public static Table displayItemWithSolarMultiplier(Item item, int amount, float timePeriod, boolean showName){
+        Table t = new Table();
+        t.add(stack(item, amount, !showName));
+        t.add((showName ? item.localizedName + "\n" : "") +
+                "[lightgray]" + Strings.autoFixed(amount / (timePeriod / 60f), 3) + " " + Core.bundle.get("nh.building-solar-multiplier") + StatUnit.perSecond.localized()
+        ).padLeft(2).padRight(5).style(Styles.outlineLabel);
+        return t;
+    }
+
     public static StatValue boosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter, boolean noReloadBoost) {
         return table -> {
             table.row();

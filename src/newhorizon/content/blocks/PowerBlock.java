@@ -161,7 +161,7 @@ public class PowerBlock {
             @Override
             public void setStats() {
                 super.setStats();
-                stats.add(Stat.output, StatValues.items(produceTime, ItemStack.with(NHItems.hardLight, 1)));
+                stats.add(Stat.output, NHStatValues.itemsWithSolarMultiplier(produceTime, ItemStack.with(NHItems.hardLight, 1)));
             }
         };
 
