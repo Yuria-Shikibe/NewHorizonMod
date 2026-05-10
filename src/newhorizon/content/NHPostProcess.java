@@ -788,11 +788,12 @@ public class NHPostProcess {
             ThermalGenerator generator = (ThermalGenerator) content;
             generator.powerProduction = 30 / 60f;
         });
+        /*
         adjustContent(Blocks.differentialGenerator, content -> {
             ConsumeGenerator generator = (ConsumeGenerator) content;
             generator.itemDuration = 240f;
         });
-        /*
+
         hideContent(Blocks.powerNode);
         hideContent(Blocks.powerNodeLarge);
         hideContent(Blocks.surgeTower);
@@ -807,7 +808,7 @@ public class NHPostProcess {
 		adjustContent(Blocks.duo, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
-				damage = 30;
+				damage = 40;
                 rangeChange = 40;
 				lightningDamage = 8;
 				lightning = 2;
@@ -841,9 +842,9 @@ public class NHPostProcess {
         adjustContent(Blocks.swarmer, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new MissileBulletType() {{
-                damage = 40;
+                damage = 50;
                 rangeChange = 40;
-                lightningDamage = 10;
+                lightningDamage = 12;
                 lightning = 3;
                 lightningLength = 1;
                 lightningLengthRand = 4;
@@ -859,7 +860,7 @@ public class NHPostProcess {
                 hitEffect = Fx.blastExplosion;
                 shootEffect = Fx.shootSmallFlame;
                 splashDamageRadius = 4;
-                splashDamage = 15;
+                splashDamage = 18;
                 reloadMultiplier = 0.85f;
             }});
         });
@@ -869,7 +870,7 @@ public class NHPostProcess {
                 lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
                 frontColor = Color.white;
                 speed = 7f;
-                damage = 20;
+                damage = 30;
                 rangeChange = 40;
                 lightningDamage = 10;
                 lightning = 1;
@@ -918,7 +919,7 @@ public class NHPostProcess {
                 reloadMultiplier = 1.5f;
                 rangeChange = 40;
                 length = 140;
-                damage = 150;
+                damage = 180;
                 width = 20;
                 lightningColor = trailColor = hitColor = lightColor = fromColor = NHItems.zeta.color;
                 toColor = Color.valueOf("ffafaf");
@@ -940,7 +941,7 @@ public class NHPostProcess {
                 fragRandomSpread = 90;
                 fragBullets = 2;
                 fragBullet = new AdaptedLightningBulletType() {{
-                    damage = 30;
+                    damage = 40;
                     lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
                     lightningLength = 10;
                     lightningLengthRand = 15;
@@ -953,9 +954,9 @@ public class NHPostProcess {
         adjustContent(Blocks.ripple, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new ArtilleryBulletType() {{
-                damage = 40;
+                damage = 50;
                 rangeChange = 60;
-                lightningDamage = 10;
+                lightningDamage = 12;
                 lightning = 3;
                 lightningLength = 10;
                 speed = 3;
@@ -975,17 +976,17 @@ public class NHPostProcess {
         adjustContent(Blocks.cyclone, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
-				damage = 5;
+				damage = 8;
                 ammoMultiplier = 2f;
                 speed = 6f;
-                splashDamage = 40f * 1.5f;
+                splashDamage = 50f * 1.5f;
                 splashDamageRadius = 38f;
                 width = 20;
                 height = 20;
                 backSprite = "large-bomb-back";
                 sprite = "mine-bullet";
                 rangeChange = 24;
-				lightningDamage = 8;
+				lightningDamage = 10;
                 lightning = 2;
                 lightningLength = 10;
                 shootEffect = Fx.shootBig;
@@ -1006,14 +1007,14 @@ public class NHPostProcess {
                 knockback = 1.8f;
                 width = 18;
                 height = 20;
-                damage = 100;
+                damage = 125;
                 splashDamageRadius = 20;
                 reloadMultiplier = 1.2f;
                 splashDamage = 35;
                 shootEffect = Fx.shootBig;
                 hitEffect = NHFx.hitSpark;
                 ammoMultiplier = 2;
-                lightningDamage = 30;
+                lightningDamage = 35;
                 lightning = 1;
                 lightningLengthRand = 3;
                 lightningLength = 4;
@@ -1035,7 +1036,7 @@ public class NHPostProcess {
                 width = 13f;
                 height = 19f;
                 hitSize = 7f;
-                damage = 100;
+                damage = 120;
                 lifetime = 32;
                 speed = 8;
                 shootEffect = Fx.shootSmallFlame;
@@ -1052,7 +1053,7 @@ public class NHPostProcess {
                 hitEffect = despawnEffect = Fx.hitBulletColor;
                 rangeChange = 56f;
                 buildingDamageMultiplier = 0.3f;
-                lightningDamage = 30;
+                lightningDamage = 40;
                 lightning = 1;
                 lightningLengthRand = 3;
                 lightningLength = 4;
@@ -1070,7 +1071,7 @@ public class NHPostProcess {
                 reloadMultiplier = 0.65f;
                 splashDamageRadius = 110f;
                 rangeChange = 8f;
-                splashDamage = 300f;
+                splashDamage = 360f;
                 scaledSplashDamage = true;
                 hitColor = backColor = trailColor = lightningColor = NHItems.zeta.color;
                 frontColor = NHItems.zeta.color;
@@ -1095,7 +1096,7 @@ public class NHPostProcess {
                 shrinkY = 0.1f;
                 buildingDamageMultiplier = 0.25f;
 
-                lightningDamage = 30;
+                lightningDamage = 40;
                 lightning = 4;
                 lightningLengthRand = 3;
                 lightningLength = 15;
@@ -1115,7 +1116,7 @@ public class NHPostProcess {
                         instantDisappear = true;
                         splashDamageRadius = 90f;
                         buildingDamageMultiplier = 0.2f;
-                        lightningDamage = 10;
+                        lightningDamage = 20;
                         lightning = 2;
                         lightningLengthRand = 3;
                         lightningLength = 5;
@@ -1127,11 +1128,11 @@ public class NHPostProcess {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
                 reloadMultiplier = 0.59f;
-                damage = 80;
+                damage = 100;
                 rangeChange = 8f * 3f;
                 lightning = 4;
                 lightningLength = 6;
-                lightningDamage = 24f;
+                lightningDamage = 30f;
                 lightningLengthRand = 3;
                 speed = 10f;
                 width = height = 16;
@@ -1162,7 +1163,7 @@ public class NHPostProcess {
                     lightningLengthRand = 2;
                     lightningLength = 2;
                     lightningCone = 30f;
-                    lightningDamage = 10f;
+                    lightningDamage = 15f;
                     lightning = 1;
                     hittable = collides = false;
                     instantDisappear = true;
