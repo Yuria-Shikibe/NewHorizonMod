@@ -19,6 +19,7 @@ public class LiquidBlock {
     public static void load() {
         streamSource = new StreamSource("stream-source"){{
             requirements(Category.liquid, BuildVisibility.shown, with());
+            buildVisibility = BuildVisibility.sandboxOnly;
         }};
 
         streamExtractor = new StreamExtractor("stream-extractor"){{
