@@ -1878,6 +1878,11 @@ public class CraftingBlock {
             consumeItems(ItemStack.with(NHItems.ancimembrane, 3));
             consumeLiquids(LiquidStack.with(NHLiquids.proton, 12 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
             outputItems = with(NHItems.hyperProcessor, 2);
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion()
+            );
         }};
 
                 /*
