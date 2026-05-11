@@ -389,7 +389,25 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-tungsten-reconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-titanium-reconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-resource-convertor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-liquid-convertor": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
@@ -923,6 +941,12 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-quantizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-hyper-cooler": {
 	"synthetic": true,
 	"solid": true,
@@ -1049,6 +1073,12 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-reverse-collapse-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-irdryon-fluid-factory": {
 	"synthetic": true,
 	"solid": true,
@@ -1131,6 +1161,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 5,
+	"color": 255
+},
+"new-horizon-photothermal-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
 	"color": 255
 },
 "new-horizon-photon-panel": {

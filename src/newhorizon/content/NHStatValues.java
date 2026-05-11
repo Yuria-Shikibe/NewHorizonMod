@@ -16,9 +16,7 @@ import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
-import mindustry.type.Liquid;
-import mindustry.type.UnitType;
-import mindustry.type.Weapon;
+import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.Stat;
@@ -29,6 +27,7 @@ import newhorizon.expand.bullets.TypeDamageBulletType;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
+import static mindustry.world.meta.StatValues.stack;
 
 public class NHStatValues {
     public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map, int indent, boolean showUnit) {
@@ -186,6 +185,40 @@ public class NHStatValues {
         if (!type.targetBlocks) {
             sep(bt, "@bullet.notargetsbuildings");
         }
+    }
+
+    public static StatValue itemsWithEfficiency(float timePeriod, ItemStack... stacks){
+        return table -> {
+            for(ItemStack stack : stacks){
+                table.add(displayItemWithEfficiency(stack.item, stack.amount, timePeriod, true)).padRight(5);
+            }
+        };
+    }
+
+    public static Table displayItemWithEfficiency(Item item, int amount, float timePeriod, boolean showName){
+        Table t = new Table();
+        t.add(stack(item, amount, !showName));
+        t.add((showName ? item.localizedName + "\n" : "") +
+                "[lightgray]" + Strings.autoFixed(amount / (timePeriod / 60f), 3) + " " + Core.bundle.get("nh.building-efficiency-multiplier") + StatUnit.perSecond.localized()
+        ).padLeft(2).padRight(5).style(Styles.outlineLabel);
+        return t;
+    }
+
+    public static StatValue itemsWithSolarMultiplier(float timePeriod, ItemStack... stacks){
+        return table -> {
+            for(ItemStack stack : stacks){
+                table.add(displayItemWithSolarMultiplier(stack.item, stack.amount, timePeriod, true)).padRight(5);
+            }
+        };
+    }
+
+    public static Table displayItemWithSolarMultiplier(Item item, int amount, float timePeriod, boolean showName){
+        Table t = new Table();
+        t.add(stack(item, amount, !showName));
+        t.add((showName ? item.localizedName + "\n" : "") +
+                "[lightgray]" + Strings.autoFixed(amount / (timePeriod / 60f), 3) + " " + Core.bundle.get("nh.building-solar-multiplier") + StatUnit.perSecond.localized()
+        ).padLeft(2).padRight(5).style(Styles.outlineLabel);
+        return t;
     }
 
     public static StatValue boosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter, boolean noReloadBoost) {

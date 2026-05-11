@@ -376,7 +376,7 @@ public class TurretBlock {
                         trailLength = 5;
                     }},
                     NHItems.zeta, new AdaptBulletType() {{
-                        setDamage(this, 32, 80, 60);
+                        setDamage(this, 32, 100, 80);
                         bundleName = "pulse-bullet-zeta";
 
                         speed = 5f;
@@ -593,8 +593,8 @@ public class TurretBlock {
 
             ammo(
                     NHItems.zeta, new AdaptBulletType() {{
-                        damage = 10;
-                        splashDamage = 60f;
+                        damage = 15;
+                        splashDamage = 80f;
                         splashDamageRadius = 16f;
                         shieldDamageMultiplier = 0.6f;
 
