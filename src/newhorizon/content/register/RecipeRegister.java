@@ -71,11 +71,6 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
 
-        recipe(ProductionBlock.liquidConvertor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.sand,3);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.oil, 15 / 60f);
-            recipe.craftTime = 60f;
-        });
 /*
         recipe(ProductionBlock.tungstenReconstructor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.copper, 5);

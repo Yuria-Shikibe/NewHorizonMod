@@ -1853,25 +1853,7 @@ public class NHBlocks {
     }
 
     private static void loadPowers() {
-        hyperGenerator = new HyperGenerator("hyper-generator") {{
-            size = 8;
-            health = 40000;
-            armor = 50f;
-            powerProduction = 4000f;
-            updateLightning = updateLightningRand = 3;
-            effectColor = NHColor.thermoPst;
-            itemCapacity = 40;
-            itemDuration = 180f;
-            //ambientSound = Sounds.pulse;
-            ambientSoundVolume = 0.1F;
 
-            consumePower(100.0F);
-            consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 6, Items.phaseFabric, 6)).optional(true, true);
-            consumeItems(new ItemStack(NHItems.thermoCorePositive, 6), new ItemStack(NHItems.metalOxhydrigen, 6));
-            consumeLiquid(NHLiquids.zetaFluidNegative, 8/60f);
-            consumeLiquids(new LiquidStack(NHLiquids.zetaFluidPositive, 8/60f)).optional(true, true);
-            requirements(Category.power, BuildVisibility.shown, with(NHItems.nodexPlate, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250));
-        }};
     }
 
     public static void load() {

@@ -13,6 +13,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
+import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
@@ -30,7 +31,7 @@ public class ProductionBlock {
     public static Block
             sandCracker,tungstenReconstructor, titaniumReconstructor, resourceConvertor,
             //tungstenReconstructor, titaniumReconstructor,
-            liquidConvertor,
+            oilRefiner,
             //  xenExtractor, xenIterator,
             scanCollector,
             resonanceMiningFacility, beamMiningFacility, implosionMiningFacility,
@@ -64,8 +65,14 @@ public class ProductionBlock {
             itemCapacity = 30;
             rotate = false;
 
-            drawer = new DrawMulti(new DrawRegion("-base"), new DrawRotator(), new DrawRegion("-top"));
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawRotator(),
+                    new DrawRegion("-top")
+            );
+
             craftEffect = NHFx.hugeSmokeGray;
+
             updateEffect = new Effect(80f, e -> {
                 Fx.rand.setSeed(e.id);
                 Draw.color(Color.lightGray, Color.gray, e.fin());
@@ -78,17 +85,18 @@ public class ProductionBlock {
         }};
 
         tungstenReconstructor = new GenericCrafter("tungsten-reconstructor") {{
-            requirements(Category.crafting, with(
+            requirements(Category.production, with(
                     NHItems.titanium, 30
             ));
+
             size = 2;
             health = 600;
-            itemCapacity = 20;
+            itemCapacity = 30;
             craftTime = 60f;
 
             consumePower(90f / 60f);
-            consumeItems(with(NHItems.titanium, 3));
-            outputItems = with(NHItems.tungsten, 2);
+            consumeItems(with(NHItems.titanium, 5));
+            outputItems = with(NHItems.tungsten, 4);
 
             drawer = new DrawMulti(
                     new DrawDefault()
@@ -96,28 +104,30 @@ public class ProductionBlock {
         }};
 
         titaniumReconstructor = new GenericCrafter("titanium-reconstructor") {{
-                requirements(Category.crafting, with(
+                requirements(Category.production, with(
                         NHItems.tungsten, 30
                 ));
+
                 size = 2;
                 health = 600;
-                itemCapacity = 20;
+                itemCapacity = 30;
                 craftTime = 60f;
 
                 consumePower(90f / 60f);
-                consumeItems(with(NHItems.tungsten, 3));
-                outputItems = with(NHItems.titanium, 2);
+                consumeItems(with(NHItems.tungsten, 5));
+                outputItems = with(NHItems.titanium, 4);
 
                 drawer = new DrawMulti(
                         new DrawDefault()
                 );
             }};
 
-                resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
+        resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
             ));
+
             size = 2;
             craftTime = 1f;
             itemCapacity = 120;
@@ -131,46 +141,8 @@ public class ProductionBlock {
 
             drawer = new DrawMulti(new DrawDefault());
         }};
-        /*
-        tungstenReconstructor = new RecipeGenericCrafter("tungsten-reconstructor") {{
-            requirements(Category.production, ItemStack.with(
-                    NHItems.silicon, 40,
-                    NHItems.graphite, 40
-            ));     
-            size = 2;
-            craftTime = 60f;
-            itemCapacity = 30;
-            liquidCapacity = 30f;
 
-            rotate = false;
-
-            craftEffect = updateEffect = NHFx.square(NHColor.thurmixRed, 60, 6, 16, 3);
-
-            consumePower(300f / 60f);
-
-            drawer = new DrawMulti(new DrawDefault());
-        }};
-        titaniumReconstructor = new RecipeGenericCrafter("titanium-reconstructor") {{
-            requirements(Category.production, ItemStack.with(
-                    NHItems.silicon, 40,
-                    NHItems.graphite, 40
-            ));
-            
-            size = 2;
-            craftTime = 60f;
-            itemCapacity = 30;
-            liquidCapacity = 30f;
-
-            rotate = false;
-
-            craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
-
-            consumePower(300f / 60f);
-
-            drawer = new DrawMulti(new DrawDefault());
-        }};
-        */
-        liquidConvertor = new RecipeGenericCrafter("liquid-convertor") {{
+        oilRefiner = new GenericCrafter("oil-refiner") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
@@ -178,17 +150,26 @@ public class ProductionBlock {
             size = 2;
             health = 300;
             armor = 2;
-            itemCapacity = 30;
-            liquidCapacity = 90f;
-            rotate = false;
+            itemCapacity = 20;
+            liquidCapacity = 30;
+            craftTime = 60f;
 
-            drawer = new DrawMulti(new DrawRegion("-base"), new DrawCrucibleFlame() {{
-                midColor = flameColor = Pal.accent;
-                flameRad /= 1.585f;
-                particleRad /= 1.5f;
-            }}, new DrawRegion("-top"));
-            craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 16, 3);
-            consumePower(5f);
+            consumePower(300f / 60f);
+            consumeItems(with(NHItems.sand, 3));
+            outputLiquids = LiquidStack.with(NHLiquids.oil, 15 / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawLiquidTile(NHLiquids.oil),
+                    new DrawCrucibleFlame() {{
+                        midColor = flameColor = Pal.accent;
+                        flameRad /= 1.585f;
+                        particleRad /= 1.5f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 12, 2);
         }};
         /*
         xenExtractor = new ThermalGenerator("xen-extractor") {{
