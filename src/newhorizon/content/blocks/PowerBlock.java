@@ -82,7 +82,7 @@ public class PowerBlock {
 
                     produceTime += warmup * edelta() * efficiencyMultiplier;
                     if (produceTime > hlTime) {
-                        core().handleItem(this, NHItems.hardLight);
+                        if (core() != null) core().handleItem(this, NHItems.hardLight);
                         produceTime %= hlTime;
                     }
                 }
