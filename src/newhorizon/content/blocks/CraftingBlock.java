@@ -787,7 +787,8 @@ public class CraftingBlock {
                     new DrawLiquidRegionRotated(NHLiquids.hydrazine) {{
                         suffix = "-liquid-hydrazine";
                     }},
-                    new DrawRegion()
+                    new DrawRegion(),
+                    new DrawRegion("-glass")
             );
 
             craftEffect = updateEffect = NHFx.square(NHLiquids.photon.color, 60, 6, 16, 3);
