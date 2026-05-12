@@ -176,8 +176,7 @@ public class PowerBlock {
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
                     new DrawPlasma(),
-                    new DrawRegion("-top"),
-                    new DrawGlowRegion()
+                    new DrawRegion("-top")
             );
 
             consumeEffect = generateEffect = NHFx.square(Pal.power, 60, 6, 16, 3);

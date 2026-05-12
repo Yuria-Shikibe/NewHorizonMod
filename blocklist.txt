@@ -96,6 +96,7 @@ new-horizon-dark-conglomerate-wall 0 1 1 2434364
 new-horizon-dark-energy-factory 1 1 2 0
 new-horizon-dark-energy-trap 1 1 3 0
 new-horizon-data-floor-placer 1 0 1 0
+new-horizon-decoherence-reverser 1 1 2 0
 new-horizon-delivery-module 1 1 2 0
 new-horizon-dendrite 1 1 4 0
 new-horizon-dense-factory 1 1 3 0
@@ -143,6 +144,7 @@ new-horizon-foundry-epic 1 1 4 0
 new-horizon-foundry-legendary 1 1 4 0
 new-horizon-foundry-rare 1 1 4 0
 new-horizon-foundry-uncommon 1 1 4 0
+new-horizon-fusion-collapser-generator 1 1 5 0
 new-horizon-fusion-core-energy-factory 1 1 3 0
 new-horizon-fusion-energy-sealing-factory 1 1 3 0
 new-horizon-fusion-reactor 1 1 1 0
@@ -153,9 +155,9 @@ new-horizon-gravity-gully 1 1 3 0
 new-horizon-gravity-node-erekir 1 1 1 0
 new-horizon-gravity-node-midantha 1 1 1 0
 new-horizon-gravity-node-serpulo 1 1 1 0
-new-horizon-gravity-trap 1 0 2 0
+new-horizon-gravity-trap 1 0 3 0
 new-horizon-gravity-trap-heavy 1 0 3 0
-new-horizon-gravity-trap-small 1 1 2 0
+new-horizon-gravity-trap-small 1 0 2 0
 new-horizon-hadr-buffers 1 1 1 0
 new-horizon-hadron-buffers 1 1 1 0
 new-horizon-hadron-composite-builder 1 1 3 0
