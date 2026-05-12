@@ -55,7 +55,7 @@ public class PowerBlock {
             crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap,
-            hyperGenerator;
+            fusionCollapserGenerator, hyperGenerator;
 
     public static void load() {
         photothermalGenerator = new ConsumeGenerator("photothermal-generator") {{
@@ -215,7 +215,7 @@ public class PowerBlock {
             enableRotate();
         }};
 
-        gravityTrapSmall = new GravityWell("gravity-trap") {{
+        gravityTrapSmall = new GravityWell("gravity-trap-small") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 
             size = 2;
@@ -223,7 +223,7 @@ public class PowerBlock {
             gravityRange = 8 * tilesize;
         }};
 
-        gravityTrap = new GravityWell("gravity-trap-heavy") {{
+        gravityTrap = new GravityWell("gravity-trap") {{
             requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
 
             size = 3;
@@ -265,6 +265,30 @@ public class PowerBlock {
             armor = 50;
             consumePowerBuffered(1000000f);
         }};
+
+        fusionCollapserGenerator = new MultiBlockConsumeGenerator("fusion-collapser-generator") {{
+            requirements(Category.power, ItemStack.with(
+                    NHItems.metalOxhydrigen, 200,
+                    NHItems.carbide, 200,
+                    NHItems.multipleSteel, 400,
+                    NHItems.seniorProcessor, 200
+            ));
+            addLink(-3, 2, 1, -3, 1, 1, -3, 0, 1, -3, -1, 1, -3, -2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, 3, 1, 2, 3, 1, 3, 2, 1, 3, 1, 1, 3, 0, 1, 3, -1, 1, 3, -2, 1, -2, -3, 1, -1, -3, 1, 0, -3, 1, 1, -3, 1, 2, -3, 1);
+
+            size = 5;
+            itemCapacity = 30;
+            liquidCapacity = 120;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion()
+            );
+
+            consumeItems(ItemStack.with(NHItems.fusionEnergy, 4));
+            consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 24 / 60f));
+            powerProduction = 18000f / 60f;
+        }};
+
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
             requirements(Category.power, BuildVisibility.shown, with(
