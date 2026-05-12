@@ -50,6 +50,7 @@ public class StatusRenderer {
     protected IntMap<Runnable> drawTask = new IntMap<>();
 
     public StatusRenderer() {
+
         lastSeq = new LastSeq();
         drawers = new StatusDrawer[statusSize()];
 

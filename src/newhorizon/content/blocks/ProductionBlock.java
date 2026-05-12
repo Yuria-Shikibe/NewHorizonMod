@@ -236,6 +236,8 @@ public class ProductionBlock {
             drawRim = false;
             hasPower = true;
 
+            maxModules = 2;
+
             drillTime = 240;
             itemCapacity = 30;
             warmupSpeed = 0.035f;
@@ -285,9 +287,9 @@ public class ProductionBlock {
             drawRim = false;
             hasPower = true;
 
-            maxModules = 2;
+            maxModules = 3;
 
-            drillTime = 200f;
+            drillTime = 160f;
             itemCapacity = 40;
             warmupSpeed = 0.035f;
 
@@ -345,7 +347,7 @@ public class ProductionBlock {
             buildType = () -> new DrillModuleBuild() {
                 @Override
                 public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
-                    drill.moduleBoost += 0.5f * efficiency;
+                    drill.moduleBoost += 0.6f * efficiency;
                 }
             };
 
@@ -383,7 +385,7 @@ public class ProductionBlock {
             buildType = () -> new DrillModuleBuild() {
                 @Override
                 public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
-                    drill.moduleBoost += 0.75f * efficiency;
+                    drill.moduleBoost += efficiency;
                 }
             };
 

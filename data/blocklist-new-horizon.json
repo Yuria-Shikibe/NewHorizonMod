@@ -209,12 +209,6 @@
 	"size": 1,
 	"color": 1061177855
 },
-"new-horizon-hyper-generator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 8,
-	"color": 255
-},
 "new-horizon-link-entity-1": {
 	"synthetic": true,
 	"solid": true,
@@ -287,96 +281,6 @@
 	"size": 4,
 	"color": 255
 },
-"new-horizon-armor-cast": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-power-unit": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-supra-gel": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-power-cell": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-crystal-diode": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-cooling-unit": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-signal-circulator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-pulse-mutator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-bionics-processor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-resisto-array": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-fusion-reactor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-particle-modulator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-quantum-conductor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-tachyon-emitter": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-gauss-receptor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
 "new-horizon-scan-collector": {
 	"synthetic": true,
 	"solid": true,
@@ -407,7 +311,7 @@
 	"size": 2,
 	"color": 255
 },
-"new-horizon-liquid-convertor": {
+"new-horizon-oil-refiner": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
@@ -1175,6 +1079,12 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-hydrazine-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-neutralization-generator": {
 	"synthetic": true,
 	"solid": true,
@@ -1209,6 +1119,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 5,
+	"color": 255
+},
+"new-horizon-hyper-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 8,
 	"color": 255
 },
 "new-horizon-icon-display": {

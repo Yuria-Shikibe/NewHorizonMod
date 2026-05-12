@@ -83,10 +83,10 @@ public class AdaptConveyor extends Conveyor {
         public void onProximityUpdate() {
             super.onProximityUpdate();
             drawIndex = 0;
-            if (check(tile.x, tile.y + 1)) drawIndex += 1;
-            if (check(tile.x + 1, tile.y)) drawIndex += 2;
-            if (check(tile.x, tile.y - 1)) drawIndex += 4;
-            if (check(tile.x - 1, tile.y)) drawIndex += 8;
+            if (check(tile.x, tile.y + 1) || rotation == 1) drawIndex += 1;
+            if (check(tile.x + 1, tile.y) || rotation == 0) drawIndex += 2;
+            if (check(tile.x, tile.y - 1) || rotation == 3) drawIndex += 4;
+            if (check(tile.x - 1, tile.y) || rotation == 2) drawIndex += 8;
         }
 
         public boolean check(int x, int y) {

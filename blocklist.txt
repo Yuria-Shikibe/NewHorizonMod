@@ -174,6 +174,7 @@ new-horizon-heavy-stamping-facility 1 1 2 0
 new-horizon-heavy-storage 1 1 3 0
 new-horizon-hive 1 1 4 0
 new-horizon-huge-battery 1 1 5 0
+new-horizon-hydrazine-generator 1 1 3 0
 new-horizon-hydro-fuel-cell 1 1 2 0
 new-horizon-hyper-cooler 1 1 2 0
 new-horizon-hyper-generator 1 1 8 0

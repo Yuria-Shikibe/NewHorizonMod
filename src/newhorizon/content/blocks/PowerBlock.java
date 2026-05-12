@@ -29,10 +29,7 @@ import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 import newhorizon.content.*;
-import newhorizon.expand.block.drawer.DrawRegionFlip;
-import newhorizon.expand.block.drawer.DrawRegionRotated;
-import newhorizon.expand.block.drawer.DrawRotation;
-import newhorizon.expand.block.drawer.DrawScanLine;
+import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.power.GravityWell;
 import newhorizon.expand.block.power.MultiBlockConsumeGenerator;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
@@ -51,7 +48,7 @@ public class PowerBlock {
             //serpulo generators
             photothermalGenerator,
             photonPanel, nitrogenDissociator,
-            neutralizationGenerator,
+            hydrazineGenerator, neutralizationGenerator,
             crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap,
@@ -163,7 +160,27 @@ public class PowerBlock {
                 stats.add(Stat.output, NHStatValues.itemsWithSolarMultiplier(produceTime, ItemStack.with(NHItems.hardLight, 1)));
             }
         };
+        hydrazineGenerator = new ConsumeGenerator("hydrazine-generator") {{
+            requirements(Category.power, ItemStack.with(
+                    NHItems.titanium, 30,
+                    NHItems.silicon, 45,
+                    NHItems.tungsten, 30
+            ));
 
+            size = 3;
+            scaledHealth = 100f;
+
+            consumeLiquids(LiquidStack.with(NHLiquids.hydrazine, 9 / 60f));
+            powerProduction = 20f;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x3"),
+                    new DrawPlasma(),
+                    new DrawRegion("-top")
+            );
+
+            consumeEffect = generateEffect = NHFx.square(Pal.power, 60, 6, 16, 3);
+        }};
         neutralizationGenerator = new MultiBlockConsumeGenerator("neutralization-generator") {{
             requirements(Category.power, ItemStack.with(
                     NHItems.titanium, 30,
