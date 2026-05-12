@@ -30,7 +30,9 @@ public class NHColor {
             xenEmpty = Color.valueOf("a3a9ad"),
             xenAlpha = Color.valueOf("abc8dc"),
             xenBeta = Color.valueOf("94caed"),
-            xenGamma = Color.valueOf("78c9ff");
+            xenGamma = Color.valueOf("78c9ff"),
+            stampingArc = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f),
+            processorBlue = Color.valueOf("cee5ed");
 
     static {
         Colors.put("heal", Pal.heal);

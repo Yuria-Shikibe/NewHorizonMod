@@ -29,7 +29,7 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker,tungstenReconstructor, titaniumReconstructor, resourceConvertor,
+            sandCracker,quantizer, tungstenReconstructor, titaniumReconstructor, resourceConvertor,
             //tungstenReconstructor, titaniumReconstructor,
             oilRefiner,
             //  xenExtractor, xenIterator,
@@ -83,6 +83,42 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
+
+        quantizer = new GenericCrafter("quantizer") {{
+            requirements(Category.production, with(
+                    NHItems.titanium, 40,
+                    NHItems.silicon, 40,
+                    NHItems.hardLight, 60
+            ));
+
+            size = 2;
+            scaledHealth = 100f;
+            liquidCapacity = 120f;
+            craftTime = 60f;
+
+            consumePower(1f);
+            consumeLiquid(NHLiquids.water, 30 / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.quantumLiquid, 18 / 60f );
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawLiquidTile(NHLiquids.water, 2f),
+                    new DrawLiquidTile(NHLiquids.quantumLiquid, 2f),
+                    new DrawArcSmelt() {{
+                        midColor = flameColor = NHColor.darkEnrColor.lerp(Color.lightGray, 0.3f);
+                        flameRad = 0.3f;
+                        circleSpace = 1f;
+                        particleStroke = 0.8f;
+                        particleRad = 4.5f;
+                        particleLen = 1.5f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            craftEffect = NHFx.square(NHColor.darkEnrColor, 60, 6, 16, 2);
+            updateEffect = NHFx.square(NHColor.processorBlue, 60, 2, 12, 2);
+        }};
+
 
         tungstenReconstructor = new GenericCrafter("tungsten-reconstructor") {{
             requirements(Category.production, with(
