@@ -29,7 +29,7 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker,quantizer, tungstenReconstructor, titaniumReconstructor, resourceConvertor,
+            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, resourceConvertor,
             //tungstenReconstructor, titaniumReconstructor,
             oilRefiner,
             //  xenExtractor, xenIterator,
@@ -84,7 +84,7 @@ public class ProductionBlock {
             consumePower(5f);
         }};
 
-        quantizer = new GenericCrafter("quantizer") {{
+        decoherenceReverser = new GenericCrafter("decoherence-reverser") {{
             requirements(Category.production, with(
                     NHItems.titanium, 40,
                     NHItems.silicon, 40,
@@ -112,7 +112,7 @@ public class ProductionBlock {
                         particleRad = 4.5f;
                         particleLen = 1.5f;
                     }},
-                    new DrawRegion("-top")
+                    new DrawRegion()
             );
 
             craftEffect = NHFx.square(NHColor.darkEnrColor, 60, 6, 16, 2);
@@ -356,6 +356,8 @@ public class ProductionBlock {
 
             size = 2;
 
+            consumePower(1.5f);
+
             drawer = new DrawMulti(
                     new DrawRegion("-base"),
                     new DrawRotator() {{
@@ -384,8 +386,6 @@ public class ProductionBlock {
                     drill.moduleBoost += 0.5f * efficiency;
                 }
             };
-
-            consumePower(1.5f);
         }};
 
         liquidRadiator = new DrillModule("liquid-radiator") {{
@@ -396,6 +396,8 @@ public class ProductionBlock {
 
             size = 2;
             hasLiquids = true;
+
+            consumeLiquid(NHLiquids.water, 0.05f);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
@@ -422,9 +424,6 @@ public class ProductionBlock {
                     drill.moduleBoost += 0.75f * efficiency;
                 }
             };
-
-            consumePower(1.5f);
-            consumeLiquid(NHLiquids.water, 0.05f);
         }};
 
         /*
