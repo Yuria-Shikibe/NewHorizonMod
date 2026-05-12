@@ -609,7 +609,7 @@ public class CraftingBlock {
 
             consumePower(300f / 60f);
             consumeItems(with(NHItems.fissileMatter, 1, NHItems.fusionEnergy, 1));
-            outputItems = with(NHItems.zeta, 4);
+            outputItems = with(NHItems.zeta, 3);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x4"),
