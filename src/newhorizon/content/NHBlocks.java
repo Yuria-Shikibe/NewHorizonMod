@@ -71,7 +71,6 @@ import newhorizon.expand.block.defence.FireExtinguisher;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShockwaveGenerator;
 import newhorizon.expand.block.drawer.ArcCharge;
-import newhorizon.expand.block.special.HyperGenerator;
 import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
@@ -96,7 +95,6 @@ import static mindustry.type.ItemStack.with;
 public class NHBlocks {
     public static Block reinForcedItemSource;
     public static Block reinForcedLiquidSource;
-    public static Block hyperGenerator;
 
 
     public static Block ancientArtillery, dendrite, interferon, prism, hive, bloodStar, blaster, endOfEra,

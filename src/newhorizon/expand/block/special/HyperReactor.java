@@ -49,7 +49,7 @@ import newhorizon.util.graphic.DrawFunc;
 import static mindustry.Vars.tilesize;
 
 
-public class HyperGenerator extends PowerGenerator {
+public class HyperReactor extends PowerGenerator {
     private static final float minWarmup = 0.075f;
 
     public TextureRegion bottomRegion, armorRegion, gateRegion;
@@ -103,7 +103,7 @@ public class HyperGenerator extends PowerGenerator {
     public float attract = 8f;
     protected BulletType destroyed;
 
-    public HyperGenerator(String name) {
+    public HyperReactor(String name) {
         super(name);
         this.hasPower = true;
         this.hasLiquids = true;
@@ -155,7 +155,7 @@ public class HyperGenerator extends PowerGenerator {
                 absorbable = hittable = false;
                 speed = 0;
                 lightningLen = lightningLenRand = 4;
-                lightningDamage = HyperGenerator.this.lightningDamage / 2;
+                lightningDamage = HyperReactor.this.lightningDamage / 2;
                 lightning = 3;
                 damage = splashDamage = lightningDamage / 1.5f;
                 splashDamageRadius = 38f;

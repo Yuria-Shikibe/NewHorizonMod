@@ -92,7 +92,7 @@ public class NHItems {
             frameTime = 3f;
         }};
         darkEnergy = new Item("dark-energy", Color.valueOf("cba3ff")) {{
-            radioactivity = 10f;
+            radioactivity = 7.5f;
             explosiveness = 10f;
             charge = 25f;
             frames = 10;
