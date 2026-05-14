@@ -29,14 +29,9 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, resourceConvertor,
-            //tungstenReconstructor, titaniumReconstructor,
-            oilRefiner,
-            //  xenExtractor, xenIterator,
-            scanCollector,
-            resonanceMiningFacility, beamMiningFacility, implosionMiningFacility,
-            airRadiator, liquidRadiator,
-            speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
+            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, resourceConvertor, oilRefiner, scanCollector,
+            resonanceMiningFacility, beamMiningFacility,
+            airRadiator, liquidRadiator;
 
     public static void load() {
 
