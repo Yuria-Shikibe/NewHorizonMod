@@ -22,12 +22,12 @@ public class EnvironmentBlock {
             oreBerylliumDense, oreTungstenDense, oreCrystalThoriumDense,
             oreZeta, oreSilicar,
             oreZetaDense, oreSilicarDense,
-            oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
-
             oreWallTitanium, oreWallZeta,
+
+            armorFloor0, armorFloor1, armorFloor2, armorFloor3, armorFloor4, armorFloor5, armorFloor6, armorFloor7,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
-            platingBlock1,
+
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
             conglomerateBoulder, darkConglomerateBoulder,
 
@@ -84,10 +84,6 @@ public class EnvironmentBlock {
             attributes.set(NHContent.density, 1f);
         }};
 
-        oreSmallTitanium = new OreVein("ore-small-titanium", NHItems.titanium, 0.5f);
-        oreNormalTitanium = new OreVein("ore-normal-titanium", NHItems.titanium, 1f);
-        oreDenseTitanium = new OreVein("ore-dense-titanium", NHItems.titanium, 2f);
-        orePureTitanium = new OreVein("ore-pure-titanium", NHItems.titanium, 4f);
         oreClusterTitanium = new TallBlock("ore-cluster-titanium") {{
             itemDrop = NHItems.titanium;
             shadowOffset = -1f;
@@ -272,6 +268,30 @@ public class EnvironmentBlock {
 
          */
 
+        armorFloor0 = new Floor("armor-floor-0", 0) {{
+            drawEdgeOut = false;
+        }};
+        armorFloor1 = new Floor("armor-floor-1", 0) {{
+            drawEdgeOut = false;
+        }};
+        armorFloor2 = new Floor("armor-floor-2", 0) {{
+            drawEdgeOut = false;
+        }};
+        armorFloor3 = new Floor("armor-floor-3", 0) {{
+            drawEdgeOut = false;
+        }};
+        armorFloor4 = new Floor("armor-floor-4", 0) {{
+            drawEdgeOut = false;
+        }};
+        armorFloor5 = new Floor("armor-floor-5", 0) {{
+            drawEdgeOut = false;
+        }};
+        armorFloor6 = new Floor("armor-floor-6", 0) {{
+            drawEdgeOut = false;
+        }};
+        armorFloor7 = new Floor("armor-floor-7", 0) {{
+            drawEdgeOut = false;
+        }};
 
         platingFloor1 = new TiledFloor("plating-floor-1") {{
             //useTiles = false;

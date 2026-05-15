@@ -21,6 +21,14 @@ new-horizon-armor-battery-huge 1 1 5 0
 new-horizon-armor-battery-large 1 1 3 0
 new-horizon-armor-cast 1 1 1 0
 new-horizon-armor-clear 0 0 1 4145225
+new-horizon-armor-floor-0 0 0 1 4145225
+new-horizon-armor-floor-1 0 0 1 4145225
+new-horizon-armor-floor-2 0 0 1 4145225
+new-horizon-armor-floor-3 0 0 1 4145225
+new-horizon-armor-floor-4 0 0 1 6843259
+new-horizon-armor-floor-5 0 0 1 6843259
+new-horizon-armor-floor-6 0 0 1 4145225
+new-horizon-armor-floor-7 0 0 1 4145225
 new-horizon-armor-light 0 0 1 16763541
 new-horizon-armor-power-node 1 1 2 0
 new-horizon-armor-quantum 0 0 1 4145225
@@ -136,6 +144,7 @@ new-horizon-factory-5 1 1 4 0
 new-horizon-factory-6 1 1 4 0
 new-horizon-fire-extinguisher 1 1 3 0
 new-horizon-fission-cell 1 1 1 0
+new-horizon-fission-reactor 1 1 3 0
 new-horizon-flood-pipe 1 1 1 0
 new-horizon-floodPipe 1 1 1 0
 new-horizon-flux-phaser 1 1 3 0
@@ -147,7 +156,7 @@ new-horizon-foundry-uncommon 1 1 4 0
 new-horizon-fusion-collapser-generator 1 1 5 0
 new-horizon-fusion-core-energy-factory 1 1 3 0
 new-horizon-fusion-energy-sealing-factory 1 1 3 0
-new-horizon-fusion-reactor 1 1 1 0
+new-horizon-fusion-reactor 1 1 5 0
 new-horizon-gauss-receptor 1 1 1 0
 new-horizon-glass-quantifier 1 1 2 0
 new-horizon-gravity 1 1 3 0
@@ -182,6 +191,7 @@ new-horizon-hyper-cooler 1 1 2 0
 new-horizon-hyper-generator 1 1 8 0
 new-horizon-hyper-jump-gate 1 1 8 0
 new-horizon-hyper-processor 1 1 5 0
+new-horizon-hyper-reactor 1 1 8 0
 new-horizon-hyper-space-warper 1 1 4 0
 new-horizon-hyper-zeta-factory 1 1 2 0
 new-horizon-icon-display 1 0 2 0
