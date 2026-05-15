@@ -1,6 +1,7 @@
 package newhorizon.content.blocks;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -37,7 +38,7 @@ public class PowerBlock {
             photothermalGenerator,
             photonPanel, nitrogenDissociator,
             hydrazineGenerator, neutralizationGenerator, fissionReactor, fusionReactor, hyperReactor,
-            crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapSmall, gravityTrap;
 
@@ -147,6 +148,7 @@ public class PowerBlock {
                 stats.add(Stat.output, NHStatValues.itemsWithSolarMultiplier(produceTime, ItemStack.with(NHItems.hardLight, 1)));
             }
         };
+
         hydrazineGenerator = new ConsumeGenerator("hydrazine-generator") {{
             requirements(Category.power, ItemStack.with(
                     NHItems.titanium, 30,
@@ -155,6 +157,7 @@ public class PowerBlock {
             ));
 
             size = 3;
+            hasLiquids = true;
             scaledHealth = 100f;
 
             consumeLiquids(LiquidStack.with(NHLiquids.hydrazine, 9 / 60f));
@@ -162,11 +165,16 @@ public class PowerBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
+                    new DrawGlowRegion(){{
+                        alpha = 0.6f;
+                        glowScale = 5f;
+                        color = Color.valueOf("f3b9ca");
+                    }},
                     new DrawPlasma(),
-                    new DrawRegion("-top")
-            );
+                    new DrawLiquidRegion(NHLiquids.hydrazine),
+                    new DrawDefault()
 
-            consumeEffect = generateEffect = NHFx.square(Pal.power, 60, 6, 16, 3);
+            );
         }};
 
         neutralizationGenerator = new MultiBlockConsumeGenerator("neutralization-generator") {{
@@ -223,7 +231,7 @@ public class PowerBlock {
         fissionReactor = new NuclearReactor("fission-reactor"){{
             requirements(Category.power, with(
                     NHItems.titanium, 200,
-                    NHItems.juniorProcessor, 150,
+                    NHItems.juniorProcessor, 100,
                     NHItems.carbide, 50,
                     NHItems.metalOxhydrigen, 50,
                     NHItems.fissileMatter, 25
@@ -237,13 +245,13 @@ public class PowerBlock {
             fuelItem = NHItems.fissileMatter;
 
             consumeItem(NHItems.fissileMatter, 1);
-            consumeLiquid(NHLiquids.cryofluid, 6 / 60f).update(false);
-            powerProduction = 1600f / 60f;
+            consumeLiquid(NHLiquids.cryofluid, (float) (3.5 / 60f)).update(false);
+            powerProduction = 1800f / 60f;
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
                     new DrawLiquidTile(NHLiquids.cryofluid),
-                    new DrawRegion()
+                    new DrawDefault()
             );
 
             ambientSound = Sounds.loopThoriumReactor;
@@ -261,18 +269,19 @@ public class PowerBlock {
             addLink(-3, 2, 1, -3, 1, 1, -3, 0, 1, -3, -1, 1, -3, -2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, 3, 1, 2, 3, 1, 3, 2, 1, 3, 1, 1, 3, 0, 1, 3, -1, 1, 3, -2, 1, -2, -3, 1, -1, -3, 1, 0, -3, 1, 1, -3, 1, 2, -3, 1);
 
             size = 5;
-            itemCapacity = 30;
+            itemCapacity = 60;
             liquidCapacity = 120;
+            itemDuration = 240f;
 
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
                     new DrawLiquidTile(NHLiquids.irdryonFluid),
-                    new DrawRegion()
+                    new DrawDefault()
             );
 
-            consumeItems(ItemStack.with( NHItems.fusionEnergy, 4));
+            consumeItems(ItemStack.with( NHItems.fusionEnergy, 12));
             consumeLiquids(LiquidStack.with(NHLiquids.irdryonFluid, 12 / 60f));
-            powerProduction = 28000f / 60f;
+            powerProduction = 22000f / 60f;
         }};
 
 

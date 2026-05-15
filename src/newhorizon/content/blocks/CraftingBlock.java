@@ -518,10 +518,10 @@ public class CraftingBlock {
             itemCapacity = 20;
             craftTime = 60f;
 
-            consumePower(2.5f);
-            consumeItems(with(NHItems.graphite, 3, NHItems.tungsten, 2));
+            consumePower(180 / 60f);
+            consumeItems(with(NHItems.graphite, 5, NHItems.tungsten, 3));
             consumeLiquid(NHLiquids.hydrazine, 0.2f);
-            outputItems = with(NHItems.carbide, 2);
+            outputItems = with(NHItems.carbide, 4);
 
             drawer = new DrawMulti(
                     new DrawRotation() {{
@@ -732,21 +732,21 @@ public class CraftingBlock {
             scaledHealth = 100f;
             itemCapacity = 20;
             liquidCapacity = 30f;
-            craftTime = 60f;
+            craftTime = 120f;
 
-            consumePower(60 / 60f);
-            consumeLiquids(LiquidStack.with(NHLiquids.ammonia, 12 / 60f, NHLiquids.photon, 3 / 60f));
-            outputLiquids = LiquidStack.with(NHLiquids.hydrazine, 6 / 60f);
+            consumePower(120 / 60f);
+            consumeLiquids(LiquidStack.with(NHLiquids.ammonia, 18 / 60f, NHLiquids.photon, 6 / 60f));
+            outputLiquids = LiquidStack.with(NHLiquids.hydrazine, 12 / 60f);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
-                    new DrawLiquidRegionRotated(NHLiquids.ammonia) {{
+                    new DrawLiquidRegion(NHLiquids.ammonia) {{
                         suffix = "-liquid-ammonia";
                     }},
-                    new DrawLiquidRegionRotated(NHLiquids.photon) {{
+                    new DrawLiquidRegion(NHLiquids.photon) {{
                         suffix = "-liquid-photon";
                     }},
-                    new DrawLiquidRegionRotated(NHLiquids.hydrazine) {{
+                    new DrawLiquidRegion(NHLiquids.hydrazine) {{
                         suffix = "-liquid-hydrazine";
                     }},
                     new DrawRegion(),
@@ -1357,9 +1357,10 @@ public class CraftingBlock {
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
                     new DrawLiquidTile(NHLiquids.irdryonFluid),
-                    new DrawRegion("-top"),
-                    new DrawRotator(){{
+                    new DrawDefault(),
+                    new DrawRegion("-rotator"){{
                         rotateSpeed = -4;
+                        spinSprite = true;
                     }}
             );
 
