@@ -284,7 +284,6 @@ public class PowerBlock {
             powerProduction = 22000f / 60f;
         }};
 
-
         hyperReactor = new HyperReactor("hyper-reactor") {{
             requirements(Category.power, BuildVisibility.shown, with(
                     NHItems.nodexPlate, 800,
