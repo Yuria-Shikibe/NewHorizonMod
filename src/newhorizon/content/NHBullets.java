@@ -2559,7 +2559,7 @@ public class NHBullets {
                 fragVelocityMax = 0.6f;
                 fragLifeMin = 0.5f;
                 fragLifeMax = 0.7f;
-
+                /*
                 intervalBullet =new AccelBulletType(4f, 2000) {
                 {
                     width = 44f;
@@ -2699,11 +2699,12 @@ public class NHBullets {
                     Draw.reset();
                 }
             };
-                bulletInterval = 3f;
-                intervalRandomSpread = 20f;
-                intervalBullets = 2;
-                intervalAngle = 360f;
-                intervalSpread = 360f;
+                */
+                //bulletInterval = 3f;
+                //intervalRandomSpread = 20f;
+                //intervalBullets = 2;
+                //intervalAngle = 360f;
+                //intervalSpread = 360f;
 
                 trailWidth = 12F;
                 trailLength = 120;
