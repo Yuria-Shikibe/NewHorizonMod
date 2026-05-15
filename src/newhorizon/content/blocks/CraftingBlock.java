@@ -518,10 +518,10 @@ public class CraftingBlock {
             itemCapacity = 20;
             craftTime = 60f;
 
-            consumePower(2.5f);
-            consumeItems(with(NHItems.graphite, 3, NHItems.tungsten, 2));
+            consumePower(180 / 60f);
+            consumeItems(with(NHItems.graphite, 5, NHItems.tungsten, 3));
             consumeLiquid(NHLiquids.hydrazine, 0.2f);
-            outputItems = with(NHItems.carbide, 2);
+            outputItems = with(NHItems.carbide, 4);
 
             drawer = new DrawMulti(
                     new DrawRotation() {{
