@@ -260,10 +260,10 @@ public class ProbeEntity extends UnitEntity {
         Draw.z(z);
     }
 
-    @Override
-    public boolean isCommandable() {
-        return false;
-    }
+    //@Override
+    //public boolean isCommandable() {
+    //    return false;
+    //}
 
     @Override
     public void readSync(Reads read) {

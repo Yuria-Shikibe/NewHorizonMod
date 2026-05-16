@@ -1011,6 +1011,11 @@ public class NHBlocks {
                 private final Vec2 orbStart = new Vec2();
                 private final Vec2 orbEnd = new Vec2();
 
+                private boolean orbActive(){
+                    boolean powered = power != null && power.status > 0.0001f;
+                    return powered && hasAmmo();
+                }
+
                 private final Effect curveFx = new Effect(CURVE_LIFE, e -> {
                     if(!(e.data instanceof CurveFxData data)) return;
 
@@ -1070,6 +1075,7 @@ public class NHBlocks {
                 public void update(){
                     super.update();
                     if(Vars.state.isPaused()) return;
+                    if(!orbActive()) return;
 
                     updateAnchors();
 
@@ -1101,6 +1107,7 @@ public class NHBlocks {
                 @Override
                 public void draw(){
                     super.draw();
+                    if(!orbActive()) return;
 
                     if(!Vars.state.isPaused()){
                         updateAnchors();
@@ -1114,6 +1121,7 @@ public class NHBlocks {
 
                     drawRingLightning(fin);
                 }
+
                 private void drawAnchorOrb(Vec2 p, float fin){
                     Draw.z(Layer.effect);
                     float glow = 8f * fin + Mathf.absin(Time.time, 2f, 2f * fin);
@@ -1130,7 +1138,7 @@ public class NHBlocks {
                 }
 
                 private void drawRingLightning(float fin){
-                    if(Vars.state.isPaused()) return; // prevent lightning buildup while paused
+                    if(Vars.state.isPaused()) return;
 
                     float innerR = size * tilesize * 0.74f * Interp.circleOut.apply(fin);
                     float outerR = size * tilesize * 0.96f * Interp.circleOut.apply(fin);
@@ -1202,7 +1210,7 @@ public class NHBlocks {
 
             ammo(NHItems.darkEnergy, NHBullets.eternity);
 
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.nodexPlate, 5000, NHItems.darkEnergy, 2000));
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.hadronicomp, 2500,NHItems.hyperProcessor, 2500, NHItems.darkEnergy, 2000));
         }};
 
         antiBulletTurret = new PointDefenseTurret("anti-bullet-turret") {{
