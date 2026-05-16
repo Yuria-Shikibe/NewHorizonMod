@@ -14,10 +14,7 @@ import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.power.Battery;
-import mindustry.world.blocks.power.ConsumeGenerator;
-import mindustry.world.blocks.power.NuclearReactor;
-import mindustry.world.blocks.power.SolarGenerator;
+import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.ConsumeItemExplode;
 import mindustry.world.consumers.ConsumeItemFlammable;
 import mindustry.world.draw.*;
@@ -36,9 +33,8 @@ public class PowerBlock {
     public static Block
             //serpulo generators
             photothermalGenerator,
-            photonPanel, nitrogenDissociator,
-            hydrazineGenerator, neutralizationGenerator, fissionReactor, fusionReactor, hyperReactor,
-            crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor,
+            photonPanel,
+            neutralizationGenerator, hydrazineGenerator, fissionReactor, fusionReactor, hyperReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapSmall, gravityTrap;
 
@@ -93,6 +89,7 @@ public class PowerBlock {
                 stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 1)));
             }
         };
+
         photonPanel = new SolarGenerator("photon-panel") {{
             requirements(Category.power, with(
                     NHItems.silicar, 20
@@ -149,34 +146,6 @@ public class PowerBlock {
             }
         };
 
-        hydrazineGenerator = new ConsumeGenerator("hydrazine-generator") {{
-            requirements(Category.power, ItemStack.with(
-                    NHItems.titanium, 30,
-                    NHItems.silicon, 45,
-                    NHItems.tungsten, 30
-            ));
-
-            size = 3;
-            hasLiquids = true;
-            scaledHealth = 100f;
-
-            consumeLiquids(LiquidStack.with(NHLiquids.hydrazine, 9 / 60f));
-            powerProduction = 20f;
-
-            drawer = new DrawMulti(
-                    new DrawBaseRegion("-3x3"),
-                    new DrawGlowRegion(){{
-                        alpha = 0.6f;
-                        glowScale = 5f;
-                        color = Color.valueOf("f3b9ca");
-                    }},
-                    new DrawPlasma(),
-                    new DrawLiquidRegion(NHLiquids.hydrazine),
-                    new DrawDefault()
-
-            );
-        }};
-
         neutralizationGenerator = new MultiBlockConsumeGenerator("neutralization-generator") {{
             requirements(Category.power, ItemStack.with(
                     NHItems.titanium, 30,
@@ -226,6 +195,34 @@ public class PowerBlock {
             consumeEffect = generateEffect = NHFx.square(Pal.power, 60, 6, 16, 3);
 
             enableRotate();
+        }};
+
+        hydrazineGenerator = new ConsumeGenerator("hydrazine-generator") {{
+            requirements(Category.power, ItemStack.with(
+                    NHItems.titanium, 30,
+                    NHItems.silicon, 45,
+                    NHItems.tungsten, 30
+            ));
+
+            size = 3;
+            hasLiquids = true;
+            scaledHealth = 100f;
+
+            consumeLiquids(LiquidStack.with(NHLiquids.hydrazine, 9 / 60f));
+            powerProduction = 20f;
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x3"),
+                    new DrawGlowRegion(){{
+                        alpha = 0.6f;
+                        glowScale = 5f;
+                        color = Color.valueOf("f3b9ca");
+                    }},
+                    new DrawPlasma(),
+                    new DrawLiquidRegion(NHLiquids.hydrazine),
+                    new DrawDefault()
+
+            );
         }};
 
         fissionReactor = new NuclearReactor("fission-reactor"){{

@@ -1087,9 +1087,9 @@ public class CraftingBlock {
             craftTime = 60f;
 
             consumePower(480 / 60f);
-            consumeItems(with(NHItems.silicon, 2));
+            consumeItems(with(NHItems.zeta, 2));
             consumeLiquids(LiquidStack.with(NHLiquids.photon, 6 / 60f));
-            outputItems = with(NHItems.phaseFabric, 6);
+            outputItems = with(NHItems.phaseFabric, 5);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x5"),
