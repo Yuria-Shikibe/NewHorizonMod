@@ -18,6 +18,7 @@ import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.ConsumeItemExplode;
 import mindustry.world.consumers.ConsumeItemFlammable;
 import mindustry.world.draw.*;
+import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import newhorizon.content.*;
@@ -33,6 +34,8 @@ public class PowerBlock {
     public static Block
             //serpulo generators
             photothermalGenerator,
+            //erekir generators
+            test,
             photonPanel,
             neutralizationGenerator, hydrazineGenerator, fissionReactor, fusionReactor, hyperReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
@@ -89,6 +92,75 @@ public class PowerBlock {
                 stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 1)));
             }
         };
+
+        test = new ThermalGenerator("test"){{
+            requirements(Category.power, with(
+                    NHItems.beryllium, 60,
+                    NHItems.graphite, 40
+            ));
+
+            size = 3;
+//            hasLiquids = true;
+            displayEfficiency = false;
+            fogRadius = 3;
+            liquidCapacity = 30f;
+
+            attribute = Attribute.steam;
+//            group = BlockGroup.liquids;
+            displayEfficiencyScale = 1f / 9f;
+            minEfficiency = 9f - 0.0001f;
+            powerProduction = 7.5f / 9f;
+//            outputLiquid = new LiquidStack(NHLiquids.water, 10f / 60f / 9f);
+
+
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawBlurSpin("-rotator", 0.8f * 9f){{
+                        blurThresh = 0.01f;
+                    }}
+            );
+
+            generateEffect = Fx.turbinegenerate;
+            effectChance = 0.04f;
+
+            ambientSound = Sounds.loopHum;
+            ambientSoundVolume = 0.06f;
+
+            buildType = () -> new ThermalGeneratorBuild(){
+                public float produceTime = 0f;
+                @Override
+                public void updateTile() {
+                    super.updateTile();
+
+                    produceTime += delta();
+                    if (produceTime > hlTime) {
+                        if (core() != null) core().handleItem(this, NHItems.hardLight);
+                        produceTime %= hlTime;
+                    }
+                }
+
+                @Override
+                public void write(Writes write) {
+                    super.write(write);
+                    write.f(produceTime);
+                }
+
+                @Override
+                public void read(Reads read, byte revision) {
+                    super.read(read, revision);
+                    produceTime = read.f();
+                }
+            };
+        }
+            final float hlTime = 120f;
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 2)));
+            }
+        };
+
 
         photonPanel = new SolarGenerator("photon-panel") {{
             requirements(Category.power, with(
