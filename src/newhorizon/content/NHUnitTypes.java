@@ -21,6 +21,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
+import mindustry.ai.types.CommandAI;
 import mindustry.ai.types.FlyingAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.audio.SoundLoop;
@@ -1259,7 +1260,6 @@ public class NHUnitTypes {
             {
                 aiController = ProbeAI::new;
                 controller = u -> new ProbeAI();
-                fogRadius = 60f;
 
                 bounded = false;
                 drawMinimap = false;
@@ -1273,6 +1273,9 @@ public class NHUnitTypes {
                 armor = 10;
                 hitSize = 16f;
                 drag /= 3f;
+
+                buildSpeed = 10F;
+                fogRadius = 80;
 
                 targetAir = false;
                 targetGround = true;

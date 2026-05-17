@@ -235,6 +235,8 @@ public class PowerBlock {
 
             size = 2;
             scaledHealth = 100f;
+            hasItems = true;
+            hasLiquids = true;
 
             consumeLiquids(LiquidStack.with(NHLiquids.ammonia, 6 / 60f));
             outputLiquid = new LiquidStack(NHLiquids.water, 12f / 60f);
@@ -338,6 +340,8 @@ public class PowerBlock {
             addLink(-3, 2, 1, -3, 1, 1, -3, 0, 1, -3, -1, 1, -3, -2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, 3, 1, 2, 3, 1, 3, 2, 1, 3, 1, 1, 3, 0, 1, 3, -1, 1, 3, -2, 1, -2, -3, 1, -1, -3, 1, 0, -3, 1, 1, -3, 1, 2, -3, 1);
 
             size = 5;
+            hasItems = true;
+            hasLiquids = true;
             itemCapacity = 60;
             liquidCapacity = 120;
             itemDuration = 240f;
