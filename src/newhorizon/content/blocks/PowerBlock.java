@@ -282,7 +282,7 @@ public class PowerBlock {
             hasLiquids = true;
             scaledHealth = 100f;
 
-            consumeLiquids(LiquidStack.with(NHLiquids.hydrazine, 9 / 60f));
+            consumeLiquids(LiquidStack.with(NHLiquids.hydrazine, 4 / 60f));
             powerProduction = 20f;
 
             drawer = new DrawMulti(
