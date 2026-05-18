@@ -10,9 +10,28 @@ import newhorizon.expand.block.special.JumpGate;
 import static mindustry.type.ItemStack.with;
 
 public class UnitBlock {
-    public static Block jumpGatePrimary, jumpGateStandard, jumpGateHyper;
+    public static Block jumpGateBasic,jumpGatePrimary, jumpGateStandard, jumpGateHyper;
 
     public static void load() {
+        jumpGateBasic = new JumpGate("Basic-jump-gate") {{
+            requirements(Category.units, BuildVisibility.shown, with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40,
+                    NHItems.titanium, 40
+            ));
+
+            health = 900;
+            armor = 5f;
+            size = 2;
+
+            warmupPerSpawn = 0.2f;
+            maxWarmupSpeed = 8f;
+
+            maxRadius = 120f;
+
+            consumePowerCond(4, JumpGateBuild::canConsume);
+        }};
+
         jumpGatePrimary = new JumpGate("primary-jump-gate") {{
             requirements(Category.units, BuildVisibility.shown, with(
                     NHItems.presstanium, 80,

@@ -586,8 +586,8 @@ public class TurretBlock {
 
             ammo(
                     NHItems.zeta, new AdaptBulletType() {{
-                        damage = 15;
-                        splashDamage = 80f;
+                        damage = 30;
+                        splashDamage = 160f;
                         splashDamageRadius = 16f;
                         shieldDamageMultiplier = 0.6f;
 
