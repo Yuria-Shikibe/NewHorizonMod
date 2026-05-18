@@ -32,16 +32,69 @@ import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
     public static Block
+            fluxNodeMK1, fluxNodeMK2, fluxNodeLargeMK1,fluxNodeLargeMK2,
             //serpulo generators
-            photothermalGenerator,
+            photothermalGenerator, test,
             //erekir generators
-            test,
+            vectorCondenser,
             photonPanel,
             neutralizationGenerator, hydrazineGenerator, fissionReactor, fusionReactor, hyperReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapSmall, gravityTrap;
 
     public static void load() {
+
+        fluxNodeMK1 = new PowerNode("flux-node-mk1"){{
+            requirements(Category.power, with(
+                    NHItems.hardLight, 6,
+                    NHItems.silicar, 6
+            ));
+
+            maxNodes = 12;
+            laserRange = 8;
+            underBullets = true;
+            crushFragile = true;
+            drawTeamOverlay = false;
+        }};
+
+        fluxNodeMK2 = new PowerNode("flux-node-mk2"){{
+            requirements(Category.power, with(
+                    NHItems.hardLight, 6,
+                    NHItems.silicar, 6
+            ));
+
+            maxNodes = 16;
+            laserRange = 12;
+            underBullets = true;
+            drawTeamOverlay = false;
+        }};
+
+        fluxNodeLargeMK1 = new PowerNode("flux-node-large-mk1"){{
+            requirements(Category.power, with(
+                    NHItems.titanium, 5,
+                    NHItems.lead, 10,
+                    NHItems.silicon, 3
+            ));
+
+            size = 2;
+            maxNodes = 18;
+            laserRange = 18f;
+            drawTeamOverlay = false;
+        }};
+
+        fluxNodeLargeMK2 = new PowerNode("flux-node-large-mk2"){{
+            requirements(Category.power, with(
+                    NHItems.titanium, 5,
+                    NHItems.lead, 10,
+                    NHItems.silicon, 3
+            ));
+
+            size = 2;
+            maxNodes = 24;
+            laserRange = 24f;
+            drawTeamOverlay = false;
+        }};
+
         photothermalGenerator = new ConsumeGenerator("photothermal-generator") {{
             requirements(Category.power, with(NHItems.copper, 35, NHItems.lead, 25));
             powerProduction = 0.8f;
@@ -95,23 +148,74 @@ public class PowerBlock {
 
         test = new ThermalGenerator("test"){{
             requirements(Category.power, with(
+                    NHItems.copper, 40,
+                    NHItems.graphite, 35,
+                    NHItems.lead, 50,
+                    NHItems.silicon, 35,
+                    NHItems.metaglass, 40
+            ));
+
+            size = 3;
+            floating = true;
+
+            powerProduction = 172f / 60f;
+
+            generateEffect = Fx.redgeneratespark;
+            effectChance = 0.011f;
+
+            ambientSound = Sounds.loopHum;
+            ambientSoundVolume = 0.06f;
+
+            buildType = () -> new ThermalGeneratorBuild(){
+                public float produceTime = 0f;
+                @Override
+                public void updateTile() {
+                    super.updateTile();
+
+                    produceTime += delta();
+                    if (produceTime > hlTime) {
+                        if (core() != null) core().handleItem(this, NHItems.hardLight);
+                        produceTime %= hlTime;
+                    }
+                }
+
+                @Override
+                public void write(Writes write) {
+                    super.write(write);
+                    write.f(produceTime);
+                }
+
+                @Override
+                public void read(Reads read, byte revision) {
+                    super.read(read, revision);
+                    produceTime = read.f();
+                }
+            };
+        }
+            final float hlTime = 120f;
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 1)));
+            }
+        };
+
+        vectorCondenser = new ThermalGenerator("vector-condenser"){{
+            requirements(Category.power, with(
                     NHItems.beryllium, 60,
                     NHItems.graphite, 40
             ));
 
             size = 3;
-//            hasLiquids = true;
             displayEfficiency = false;
             fogRadius = 3;
             liquidCapacity = 30f;
 
             attribute = Attribute.steam;
-//            group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
             minEfficiency = 9f - 0.0001f;
             powerProduction = 7.5f / 9f;
-//            outputLiquid = new LiquidStack(NHLiquids.water, 10f / 60f / 9f);
-
 
             drawer = new DrawMulti(
                     new DrawDefault(),
@@ -160,7 +264,6 @@ public class PowerBlock {
                 stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 2)));
             }
         };
-
 
         photonPanel = new SolarGenerator("photon-panel") {{
             requirements(Category.power, with(

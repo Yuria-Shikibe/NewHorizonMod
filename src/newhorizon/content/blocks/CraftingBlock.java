@@ -132,7 +132,6 @@ public class CraftingBlock {
 
             size = 2;
             hasLiquids = true;
-            canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
             scaledHealth = 100f;
             itemCapacity = 20;
@@ -699,6 +698,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
+            hasLiquids = true;
             health = 900;
             armor = 6;
             itemCapacity = 20;
