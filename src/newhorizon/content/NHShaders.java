@@ -9,7 +9,6 @@ import arc.util.Time;
 import mindustry.graphics.Shaders;
 import mindustry.mod.Mods;
 import newhorizon.NHSetting;
-import newhorizon.NHVars;
 import newhorizon.NewHorizon;
 
 import static mindustry.Vars.renderer;
@@ -40,7 +39,7 @@ public class NHShaders {
             }
         };
 
-        statusXWave = new ModShader("VFX_obliqueWave"){
+        statusXWave = new ModShader("VFX_obliqueWave") {
             @Override
             public void apply() {
                 setUniformf("u_texsize", Core.camera.width * renderer.getDisplayScale(), Core.camera.height * renderer.getDisplayScale());
@@ -49,7 +48,7 @@ public class NHShaders {
             }
         };
 
-        hexShield = new ModShader("VFX_hexShield"){
+        hexShield = new ModShader("VFX_hexShield") {
             @Override
             public void apply() {
                 setUniformf("u_scale", Scl.scl(1f));
@@ -70,7 +69,8 @@ public class NHShaders {
                 setUniformf("u_intensity", intensity);
 
                 if (hasUniform("u_noise")) {
-                    if (noiseTex1 == null) noiseTex1 = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
+                    if (noiseTex1 == null)
+                        noiseTex1 = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
 
                     noiseTex1.bind(1);
                     texture.bind(0);

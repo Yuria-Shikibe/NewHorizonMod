@@ -3,10 +3,12 @@ package newhorizon;
 import arc.ApplicationListener;
 import mindustry.Vars;
 
-import static newhorizon.NHVars.*;
+import static newhorizon.NHVars.cutscene;
+import static newhorizon.NHVars.renderer;
 
 public class NHModCore implements ApplicationListener {
-    public NHModCore() {}
+    public NHModCore() {
+    }
 
     @Override
     public void update() {

@@ -2,10 +2,8 @@ package newhorizon.expand.logic.components.ui;
 
 import arc.Core;
 import arc.func.Prov;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
@@ -18,43 +16,34 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.game.Team;
 import mindustry.gen.Icon;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
-import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.CameraControlAction;
 import newhorizon.expand.logic.components.action.InputLockAction;
 import newhorizon.expand.logic.components.action.InputUnlockAction;
-import newhorizon.expand.logic.cutscene.types.RaidPreset;
 import newhorizon.util.func.NHInterp;
-import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.DelaySlideBar;
 
-import static mindustry.Vars.tilesize;
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class HudMarker extends Table {
     protected static final Vec2 screenVec = new Vec2(), originVec = new Vec2();
-    protected float lifeTimer = 0;
-    protected float displayAlpha = 30f;
-
     protected static final float padding = 0.05f;
     protected static final float strokeInner = 3f, strokeOuter = 9f;
     protected static final float iconSize = 80f;
-
     public Color markColor = Pal.accent;
     public Vec2 markPoint = new Vec2();
     public TextureRegion icon = NHContent.icon2;
-
     public float delay = 3;
     public float duration = 5;
     public float radius = 24f;
     public float angle = 0f;
+    protected float lifeTimer = 0;
+    protected float displayAlpha = 30f;
 
     public HudMarker() {
         touchable = Touchable.childrenOnly;
@@ -144,7 +133,7 @@ public class HudMarker extends Table {
                         ActionBus bus = new ActionBus();
                         bus.addAll(
                                 new InputLockAction(),
-                                new CameraControlAction(){{
+                                new CameraControlAction() {{
                                     duration = 90f;
                                     worldX = markPoint.x;
                                     worldY = markPoint.y;
@@ -171,9 +160,9 @@ public class HudMarker extends Table {
         );
 
         boolean outer = originVec.x < width * padding ||
-                        originVec.y < height * padding ||
-                        originVec.x > width * (1 - padding) ||
-                        originVec.y > height * (1 - padding);
+                originVec.y < height * padding ||
+                originVec.x > width * (1 - padding) ||
+                originVec.y > height * (1 - padding);
 
         drawOnWorld();
         if (outer) drawOnHud();
@@ -192,8 +181,8 @@ public class HudMarker extends Table {
     }
 
     public void drawLineStroke(boolean outer, boolean center) {
-        Lines.stroke((outer? strokeOuter: strokeInner) * getScale(), (outer? Pal.gray: markColor));
-        Draw.alpha(color.a * Mathf.clamp(displayAlpha, center? 0.5f: 0.1f, 1f));
+        Lines.stroke((outer ? strokeOuter : strokeInner) * getScale(), (outer ? Pal.gray : markColor));
+        Draw.alpha(color.a * Mathf.clamp(displayAlpha, center ? 0.5f : 0.1f, 1f));
     }
 
     public float getScale() {
@@ -204,7 +193,8 @@ public class HudMarker extends Table {
         return radius * Vars.renderer.getDisplayScale();
     }
 
-    public void drawArrow(){}
+    public void drawArrow() {
+    }
 
     public void drawCrossHair() {
         drawLineStroke(true, false);
@@ -220,5 +210,6 @@ public class HudMarker extends Table {
         }
     }
 
-    public void drawProcessBar() {}
+    public void drawProcessBar() {
+    }
 }

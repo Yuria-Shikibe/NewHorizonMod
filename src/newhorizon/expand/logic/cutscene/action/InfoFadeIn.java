@@ -17,7 +17,8 @@ public class InfoFadeIn extends ActionLStatement {
         duration = ParseUtil.getNextToken(token);
     }
 
-    public InfoFadeIn() {}
+    public InfoFadeIn() {
+    }
 
     @Override
     public String getLStatementName() {

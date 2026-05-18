@@ -18,7 +18,8 @@ public class CameraZoom extends ActionLStatement {
         zoom = ParseUtil.getNextToken(token);
     }
 
-    public CameraZoom() {}
+    public CameraZoom() {
+    }
 
     @Override
     public String getLStatementName() {

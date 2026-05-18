@@ -20,7 +20,8 @@ public class DrawRegionOffset extends DrawBlock {
     public float blinkSpeed = 1f;        // 闪烁速度，数值越大闪烁越快
     public float layer = Layer.block + 0.05f; // 新增：可控制绘制层
 
-    public DrawRegionOffset() {}
+    public DrawRegionOffset() {
+    }
 
     public DrawRegionOffset(String suffix, float offsetX, float offsetY, boolean blink, float blinkSpeed) {
         this.suffix = suffix;

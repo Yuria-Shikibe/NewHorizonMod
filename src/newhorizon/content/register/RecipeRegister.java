@@ -3,19 +3,15 @@ package newhorizon.content.register;
 import arc.func.Cons;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
-import mindustry.type.PayloadStack;
 import mindustry.world.Block;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.content.blocks.CraftingBlock;
-import newhorizon.content.blocks.ModuleBlock;
-import newhorizon.content.blocks.PowerBlock;
 import newhorizon.content.blocks.ProductionBlock;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.type.Recipe;
 
 public class RecipeRegister {
-    public static void load(){
+    public static void load() {
 
         recipe(ProductionBlock.sandCracker, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.scrap, 2);
@@ -60,13 +56,13 @@ public class RecipeRegister {
         });
         recipe(ProductionBlock.resourceConvertor, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
-            recipe.inputItem = ItemStack.list(NHItems.coal,1);
+            recipe.inputItem = ItemStack.list(NHItems.coal, 1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.ammonia, 60 / 60f);
             recipe.craftTime = 60f;
         });
         recipe(ProductionBlock.resourceConvertor, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
-            recipe.inputItem = ItemStack.list(NHItems.sand,1);
+            recipe.inputItem = ItemStack.list(NHItems.sand, 1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.ammonia, 60 / 60f);
             recipe.craftTime = 60f;
         });

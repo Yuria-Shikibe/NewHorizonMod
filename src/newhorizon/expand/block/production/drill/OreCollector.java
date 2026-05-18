@@ -87,7 +87,7 @@ public class OreCollector extends BasicMultiBlock {
 
         baseRegion = Core.atlas.find(name + "-base");
 
-        for (int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             innerRegions[i] = Core.atlas.find(name + "-inner-" + i);
             outerRegions[i] = Core.atlas.find(name + "-outer-" + i);
         }
@@ -104,7 +104,7 @@ public class OreCollector extends BasicMultiBlock {
     }
 
     @Override
-    public boolean outputsItems(){
+    public boolean outputsItems() {
         return true;
     }
 
@@ -115,7 +115,7 @@ public class OreCollector extends BasicMultiBlock {
         getOreOutput(tmpClusters, x, y, rotation);
 
         int i = 0;
-        for (var entry: returnCount.entries()){
+        for (var entry : returnCount.entries()) {
             Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
             if (rotation == 3) Tmp.v1.set(x, y);
             drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
@@ -139,30 +139,30 @@ public class OreCollector extends BasicMultiBlock {
         Draw.reset();
     }
 
-    public float getDrillTime(Item item){
+    public float getDrillTime(Item item) {
         return (drillTime + hardnessDrillMultiplier * item.hardness) / drillMultipliers.get(item, 1f);
     }
 
     @Override
-    public boolean canPlaceOn(Tile tile, Team team, int rotation){
+    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
         //overlapping construction areas not allowed; grow by a tiny amount so edges can't overlap either.
         Rect rect = getRect(Tmp.r1, tile.worldx() + offset, tile.worldy() + offset, rotation).grow(-0.1f);
         getOreClusters(tmpClusters, tile.x, tile.y, rotation);
         boolean hasOre = !tmpClusters.isEmpty();
         boolean overlap = indexer.getFlagged(team, BlockFlag.drill).contains(b -> checkOverlap(rect, Tmp.r2, b.block, b));
-        boolean planOverlap = team.data().getBuildings(ConstructBlock.get(size)).contains(b -> checkOverlap(rect, Tmp.r2, ((ConstructBlock.ConstructBuild)b).current, b));
+        boolean planOverlap = team.data().getBuildings(ConstructBlock.get(size)).contains(b -> checkOverlap(rect, Tmp.r2, ((ConstructBlock.ConstructBuild) b).current, b));
         return super.canPlaceOn(tile, team, rotation) && hasOre && !overlap && !planOverlap;
     }
 
     public boolean checkOverlap(Rect rect1, Rect rect2, Block block, Building building) {
         if (building == null) return false;
         if (!(block instanceof OreCollector)) return false;
-        return ((OreCollector)block).getRect(rect2, building.x, building.y, building.rotation).overlaps(rect1);
+        return ((OreCollector) block).getRect(rect2, building.x, building.y, building.rotation).overlaps(rect1);
     }
 
-    public Rect getRect(Rect rect, float x, float y, int rotation){
+    public Rect getRect(Rect rect, float x, float y, int rotation) {
         rect.setCentered(x, y, collectSize * tilesize);
-        float len = tilesize * (collectSize + size)/2f;
+        float len = tilesize * (collectSize + size) / 2f;
 
         rect.x += Geometry.d4x(rotation) * len;
         rect.y += Geometry.d4y(rotation) * len;
@@ -175,7 +175,7 @@ public class OreCollector extends BasicMultiBlock {
 
         int cx = x + Geometry.d4x(rotation) * collectOffset;
         int cy = y + Geometry.d4y(rotation) * collectOffset;
-        int offset = collectSize/2;
+        int offset = collectSize / 2;
         for (int tx = cx - offset; tx <= cx + offset; tx++) {
             for (int ty = cy - offset; ty <= cy + offset; ty++) {
                 Tile tile = Vars.world.tile(tx, ty);
@@ -184,19 +184,19 @@ public class OreCollector extends BasicMultiBlock {
         }
     }
 
-    public void getOreOutput(Seq<Tile> out, int x, int y, int rotation){
+    public void getOreOutput(Seq<Tile> out, int x, int y, int rotation) {
         getOreClusters(out, x, y, rotation);
         returnCount.clear();
         out.each(tile -> {
             if (tile.block().itemDrop == null) return;
             Item drops = tile.block().itemDrop;
-            if (drops != null && drops.hardness <= tier && (blockedItems == null || !blockedItems.contains(drops))){
+            if (drops != null && drops.hardness <= tier && (blockedItems == null || !blockedItems.contains(drops))) {
                 returnCount.increment(drops, 0, 60 / getDrillTime(drops) * tile.block().attributes.get(NHContent.density));
             }
         });
     }
 
-    public void drawBlockBase(float x, float y, int rotation){
+    public void drawBlockBase(float x, float y, int rotation) {
         Draw.rect(innerRegions[rotation], x, y);
         Tmp.v1.set(4, 20).rotate(rotation * 90);
         Tmp.v2.set(4, -20).rotate(rotation * 90);
@@ -217,7 +217,7 @@ public class OreCollector extends BasicMultiBlock {
 
         @Override
         public void draw() {
-            drawBlockBase(x, y, rotation) ;
+            drawBlockBase(x, y, rotation);
             if (warmup > 0.01f) drawScanner();
         }
 
@@ -334,7 +334,7 @@ public class OreCollector extends BasicMultiBlock {
                     Fill.rect(tile.worldx(), tile.worldy(), tilesize * scl, tilesize * scl, ang);
                     Draw.z(Layer.effect);
 
-                    for (int i = 0; i < 4; i++){
+                    for (int i = 0; i < 4; i++) {
                         Tmp.v1.set(2 * scl, 6 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
                         Tmp.v2.set(6 * scl, 6 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
                         Tmp.v3.set(6 * scl, 2 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
@@ -377,7 +377,7 @@ public class OreCollector extends BasicMultiBlock {
         }
 
         @Override
-        public boolean shouldConsume(){
+        public boolean shouldConsume() {
             return items.total() < itemCapacity && enabled && !oreClusters.isEmpty();
         }
 
@@ -387,11 +387,11 @@ public class OreCollector extends BasicMultiBlock {
 
             if (timer(timerDump, dumpTime / timeScale)) dump();
 
-            if(items.total() < itemCapacity && efficiency > 0){
+            if (items.total() < itemCapacity && efficiency > 0) {
                 float multiplier = Mathf.lerp(1f, optionalBoostIntensity, optionalEfficiency);
                 warmup = Mathf.approachDelta(warmup, 1, warmupSpeed);
                 progress += edelta() * warmup * multiplier;
-            }else{
+            } else {
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
                 return;
             }
@@ -411,9 +411,9 @@ public class OreCollector extends BasicMultiBlock {
             }
         }
 
-        public void addItem(Item item, float value){
+        public void addItem(Item item, float value) {
             float chance = value % 1f;
-            items.add(item, Math.min(getMaximumAccepted(item) - items.get(item), (int)value));
+            items.add(item, Math.min(getMaximumAccepted(item) - items.get(item), (int) value));
             if (getMaximumAccepted(item) > items.get(item) && Mathf.chance(chance)) items.add(item, 1);
         }
 

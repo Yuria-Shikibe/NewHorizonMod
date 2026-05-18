@@ -1,17 +1,12 @@
 package newhorizon.expand.block.stream;
 
 import arc.graphics.g2d.TextureRegion;
-import arc.math.geom.Geometry;
 import arc.util.Time;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHLiquids;
 import newhorizon.content.NHStats;
-
-import static mindustry.Vars.tilesize;
 
 public class StreamExtractor extends StreamRepeater {
 
@@ -29,11 +24,11 @@ public class StreamExtractor extends StreamRepeater {
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
-    public class StreamExtractorBuild extends StreamRepeaterBuild{
+    public class StreamExtractorBuild extends StreamRepeaterBuild {
 
         @Override
         public boolean acceptStream(StreamBeam stream) {

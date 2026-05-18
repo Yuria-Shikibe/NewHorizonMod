@@ -52,13 +52,13 @@ public class DebugFunc {
     public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
 
     public static final int[][] AUTO_TILE_INDEX = {
-            { 1,  2,  3,  4,  5,  6,  1,  6,  1,  2,  5,  6, 40, 39, 40, 39,  3,  4, 17, 18, 15, 16, 40, 16},
-            { 7, 37, 38, 37, 38, 12,  7, 12,  7,  8, 11, 12, 38,  8, 11, 37,  9, 37, 38, 24, 21, 22, 11, 22},
+            {1, 2, 3, 4, 5, 6, 1, 6, 1, 2, 5, 6, 40, 39, 40, 39, 3, 4, 17, 18, 15, 16, 40, 16},
+            {7, 37, 38, 37, 38, 12, 7, 12, 7, 8, 11, 12, 38, 8, 11, 37, 9, 37, 38, 24, 21, 22, 11, 22},
             {13, 39, 40, 39, 40, 18, 13, 18, 25, 26, 29, 30, 40, 26, 29, 39, 13, 39, 40, 28, 15, 39, 29, 39},
             {19, 37, 38, 37, 38, 24, 19, 24, 31, 32, 35, 36, 38, 37, 38, 37, 19, 20, 33, 34, 38, 22, 21, 22},
-            {25, 39, 40, 39, 40, 30, 25, 30,  3,  4, 15, 18,  3,  4, 40, 18, 40, 39, 17, 39, 40, 16, 15, 16},
-            {31, 32, 33, 34, 35, 36, 31, 36, 21 , 8, 11, 24, 38,  8, 11, 24,  9, 10, 23, 37, 21, 37, 21, 37},
-            { 1,  2,  3,  4,  5,  6,  1,  6, 13, 26, 29, 16, 13, 26, 29, 39, 40, 14, 27, 28, 15, 16},
+            {25, 39, 40, 39, 40, 30, 25, 30, 3, 4, 15, 18, 3, 4, 40, 18, 40, 39, 17, 39, 40, 16, 15, 16},
+            {31, 32, 33, 34, 35, 36, 31, 36, 21, 8, 11, 24, 38, 8, 11, 24, 9, 10, 23, 37, 21, 37, 21, 37},
+            {1, 2, 3, 4, 5, 6, 1, 6, 13, 26, 29, 16, 13, 26, 29, 39, 40, 14, 27, 28, 15, 16},
             {31, 32, 33, 34, 35, 36, 31, 36, 19, 22, 33, 34, 19, 37, 33, 34, 38, 20, 38, 37, 38, 22}
     };
 
@@ -176,19 +176,19 @@ public class DebugFunc {
         return new Fi(NH_DEBUG_JSON_DATA_FOLDER + fileName + ".json");
     }
 
-    public static void processTiles(){
+    public static void processTiles() {
         Fi folder = new Fi(NH_ROOT_PATH + "/debug");
-        for (Fi image: folder.list()){
-            if (image.name().endsWith(".png")){
+        for (Fi image : folder.list()) {
+            if (image.name().endsWith(".png")) {
                 Pixmap pixmap = PixmapIO.readPNG(image);
-                if ((pixmap.width == 128 && pixmap.height == 128) || (pixmap.width == 136 && pixmap.height == 136)){
+                if ((pixmap.width == 128 && pixmap.height == 128) || (pixmap.width == 136 && pixmap.height == 136)) {
                     ProcessBuilder pb = new ProcessBuilder("tile-gen.exe", "proc", image.name());
                     pb.directory(new File(NH_ROOT_PATH + "/debug"));
                     pb.inheritIO();
                     try {
                         Process p = pb.start();
                         p.waitFor();
-                    } catch (InterruptedException | IOException e){
+                    } catch (InterruptedException | IOException e) {
                         Log.err(e);
                     }
                 }
@@ -197,7 +197,7 @@ public class DebugFunc {
         }
     }
 
-    public static void processAutotile(String name){
+    public static void processAutotile(String name) {
         Fi inner = new Fi(NH_DEBUG_GRAPHIC_AUTOTILE_INPUT + name + "-inner.png");
         Fi outer = new Fi(NH_DEBUG_GRAPHIC_AUTOTILE_INPUT + name + "-outer.png");
 
@@ -433,8 +433,8 @@ public class DebugFunc {
         pixmap.dispose();
     }
 
-    public static void replaceAtlas(Color[] palette){
-        for (TextureAtlas.AtlasRegion region: Core.atlas.getRegions()){
+    public static void replaceAtlas(Color[] palette) {
+        for (TextureAtlas.AtlasRegion region : Core.atlas.getRegions()) {
             Pixmap pixmap = region.pixmapRegion.pixmap;
             pixmap.each((x, y) -> {
                 if (pixmap.get(x, y) == palette[0].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[0]);
@@ -442,7 +442,8 @@ public class DebugFunc {
                 if (pixmap.get(x, y) == palette[2].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[2]);
                 if (pixmap.get(x, y) == palette[3].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[3]);
             });
-        };
+        }
+        ;
     }
 
     public static void outputSettings() {
@@ -551,9 +552,9 @@ public class DebugFunc {
                 "\n";
     }
 
-    public static void writeTeamList(){
+    public static void writeTeamList() {
         JsonValue json = new JsonValue(JsonValue.ValueType.object);
-        for (Team team: Team.all){
+        for (Team team : Team.all) {
             json.addChild(String.valueOf(team.id), new JsonValue(team.color.rgba8888()));
         }
         createJsonFile("teamlist").writeString(json.prettyPrint(JsonWriter.OutputType.json, 2));

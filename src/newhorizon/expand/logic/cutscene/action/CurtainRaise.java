@@ -17,7 +17,8 @@ public class CurtainRaise extends ActionLStatement {
         duration = ParseUtil.getNextToken(token);
     }
 
-    public CurtainRaise() {}
+    public CurtainRaise() {
+    }
 
     @Override
     public String getLStatementName() {

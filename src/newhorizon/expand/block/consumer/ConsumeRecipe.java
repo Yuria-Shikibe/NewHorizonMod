@@ -53,7 +53,7 @@ public class ConsumeRecipe extends Consume {
         for (ItemStack stack : recipe.get(build).inputItem) {
             build.items.remove(stack.item, Math.round(stack.amount * multiplier.get(build)));
         }
-        for(PayloadStack stack : recipe.get(build).inputPayload) {
+        for (PayloadStack stack : recipe.get(build).inputPayload) {
             build.getPayloads().remove(stack.item, Math.round(stack.amount * multiplier.get(build)));
         }
     }
@@ -64,14 +64,14 @@ public class ConsumeRecipe extends Consume {
         if (ed <= 0.00000001f) return 0f;
         if (recipe.get(build) == null) return 0f;
         float min = 1f;
-        for (PayloadStack stack : recipe.get(build).inputPayload){
-            if(!build.getPayloads().contains(stack.item, Math.round(stack.amount * multiplier.get(build)))){
+        for (PayloadStack stack : recipe.get(build).inputPayload) {
+            if (!build.getPayloads().contains(stack.item, Math.round(stack.amount * multiplier.get(build)))) {
                 min = 0f;
                 break;
             }
         }
-        for (ItemStack stack : recipe.get(build).inputItem){
-            if(!build.items.has(stack.item, Math.round(stack.amount * multiplier.get(build)))){
+        for (ItemStack stack : recipe.get(build).inputItem) {
+            if (!build.items.has(stack.item, Math.round(stack.amount * multiplier.get(build)))) {
                 min = 0f;
                 break;
             }

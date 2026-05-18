@@ -20,7 +20,9 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.expand.block.BasicMultiBlock;
 
 public class MultiBlockGenerator extends BasicMultiBlock {
-    /** The amount of power produced per tick in case of an efficiency of 1.0, which represents 100%. */
+    /**
+     * The amount of power produced per tick in case of an efficiency of 1.0, which represents 100%.
+     */
     public float powerProduction;
     public Stat generationType = Stat.basePowerGeneration;
     public DrawBlock drawer = new DrawDefault();
@@ -42,12 +44,12 @@ public class MultiBlockGenerator extends BasicMultiBlock {
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return drawer.finalIcons(this);
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         drawer.load(this);
     }
@@ -59,16 +61,16 @@ public class MultiBlockGenerator extends BasicMultiBlock {
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
         stats.add(Stat.basePowerGeneration, powerProduction * 60.0f, StatUnit.powerSecond);
     }
 
     @Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
 
-        if(hasPower && outputsPower){
+        if (hasPower && outputsPower) {
             addBar("power", (MultiBlockGeneratorBuild entity) -> new Bar(
                     () -> Core.bundle.format("bar.poweroutput", Strings.fixed(entity.getPowerProduction() * 60 * entity.timeScale(), 1)),
                     () -> Pal.powerBar,
@@ -78,63 +80,65 @@ public class MultiBlockGenerator extends BasicMultiBlock {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         drawer.drawPlan(this, plan, list);
     }
 
     @Override
-    public boolean outputsItems(){
+    public boolean outputsItems() {
         return false;
     }
 
     public class MultiBlockGeneratorBuild extends BasicMultiBuilding {
         public float generateTime;
-        /** The efficiency of the producer. An efficiency of 1.0 means 100% */
+        /**
+         * The efficiency of the producer. An efficiency of 1.0 means 100%
+         */
         public float productionEfficiency = 0.0f;
 
         @Override
-        public void draw(){
+        public void draw() {
             drawer.draw(this);
         }
 
         @Override
-        public float warmup(){
+        public float warmup() {
             return enabled ? productionEfficiency : 0f;
         }
 
         @Override
-        public void drawLight(){
+        public void drawLight() {
             super.drawLight();
             drawer.drawLight(this);
         }
 
         @Override
-        public float ambientVolume(){
+        public float ambientVolume() {
             return Mathf.clamp(productionEfficiency);
         }
 
         @Override
-        public float getPowerProduction(){
+        public float getPowerProduction() {
             return enabled ? powerProduction * productionEfficiency : 0f;
         }
 
         @Override
-        public byte version(){
+        public byte version() {
             return 1;
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.f(productionEfficiency);
             write.f(generateTime);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             productionEfficiency = read.f();
-            if(revision >= 1){
+            if (revision >= 1) {
                 generateTime = read.f();
             }
         }

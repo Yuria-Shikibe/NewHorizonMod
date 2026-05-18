@@ -1,7 +1,6 @@
 package newhorizon.expand.block.drawer;
 
 import arc.graphics.Color;
-import arc.math.Angles;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.RadialEffect;

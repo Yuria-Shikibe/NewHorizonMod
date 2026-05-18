@@ -17,14 +17,6 @@ import static mindustry.Vars.world;
 
 public interface MultiBlock {
 
-    Seq<Point2> linkPos();
-
-    IntSeq linkSize();
-
-    Block mirrorBlock();
-
-    boolean isMirror();
-
     static void calculateRotatedOffsetPosition(Point2 out, int px, int py, int blockSize, int otherSize, int rotation) {
         int shift = (blockSize + 1) % 2;
         int offset = (otherSize + 1) % 2;
@@ -37,6 +29,13 @@ public interface MultiBlock {
         }
     }
 
+    Seq<Point2> linkPos();
+
+    IntSeq linkSize();
+
+    Block mirrorBlock();
+
+    boolean isMirror();
 
     default Point2 calculateRotatedPosition(Point2 pos, int blockSize, int otherSize, int rotation) {
         int shift = (blockSize + 1) % 2;

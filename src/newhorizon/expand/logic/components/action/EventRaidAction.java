@@ -12,12 +12,12 @@ import mindustry.gen.Call;
 import mindustry.ui.Styles;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
-import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
 import newhorizon.util.ui.NHUIFunc;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.headless;
+import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class EventRaidAction extends Action {
@@ -90,10 +90,10 @@ public class EventRaidAction extends Action {
             t.table(t2 -> {
                 var icon = Core.atlas.find(raidType.warningIcon);
                 if (icon.width == 192) {
-                    t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0,-9).color(team.color).row()).pad(0).growX();
+                    t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0, -9).color(team.color).row()).pad(0).growX();
                     t2.image(icon).fill().color(team.color);
                     t2.table(right -> right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, -9, 0, 0).color(team.color).row()).pad(0).growX();
-                }else if (icon.width == 288) {
+                } else if (icon.width == 288) {
                     t2.table(left -> {
                         left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(-42, 0, 0, -17).color(team.color).row();
                         left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, -42, -17).color(team.color).row();
@@ -103,7 +103,7 @@ public class EventRaidAction extends Action {
                         right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(-42, -17, 0, 0).color(team.color).row();
                         right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, -17, -42, 0).color(team.color).row();
                     }).pad(0).growX();
-                }else if (icon.width == 384) {
+                } else if (icon.width == 384) {
                     t2.table(left -> {
                         left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padBottom(25f).padRight(-14).color(team.color).row();
                         left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-52).color(team.color).row();
@@ -115,7 +115,7 @@ public class EventRaidAction extends Action {
                         right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-52).color(team.color).row();
                         right.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padTop(25f).padLeft(-14).color(team.color).row();
                     }).pad(0).growX();
-                }else {
+                } else {
                     t2.image(icon).fill().color(team.color);
                 }
             }).growX().pad(OFFSET / 2).fillY().row();

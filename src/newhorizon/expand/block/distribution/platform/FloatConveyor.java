@@ -20,20 +20,20 @@ public class FloatConveyor extends Conveyor {
         public boolean[] edge, corner;
 
         @Override
-        public void draw(){
+        public void draw() {
             super.draw();
-            if (tile.floor().isLiquid){
+            if (tile.floor().isLiquid) {
                 FloatPlatformDrawer.drawPlatform(this, ab, edge, corner);
             }
         }
 
-        public void updateDrawRegion(){
+        public void updateDrawRegion() {
             ab = FloatPlatformDrawer.getEdgeAB(this);
             edge = FloatPlatformDrawer.getEdge(this);
             corner = FloatPlatformDrawer.getCorner(this);
         }
 
-        public void updateProximityBuild(){
+        public void updateProximityBuild() {
             tmpTiles.clear();
             proximityBuild.clear();
 
@@ -64,7 +64,7 @@ public class FloatConveyor extends Conveyor {
         }
 
         @Override
-        public void onRemoved(){
+        public void onRemoved() {
             for (Building other : proximityBuild) {
                 if (other instanceof FloatConveyorBuild) {
                     FloatConveyorBuild build = (FloatConveyorBuild) other;

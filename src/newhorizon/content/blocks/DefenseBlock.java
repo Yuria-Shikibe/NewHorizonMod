@@ -110,9 +110,9 @@ public class DefenseBlock {
 
         Effect forceShrink = new Effect(20, e -> {
             color(e.color, e.fout());
-            if(renderer.animateShields){
+            if (renderer.animateShields) {
                 Fill.poly(e.x, e.y, 4, e.rotation * e.fout(), 45f);
-            }else{
+            } else {
                 stroke(1.5f);
                 Draw.alpha(0.09f);
                 Fill.poly(e.x, e.y, 4, e.rotation * e.fout(), 45f);
@@ -146,11 +146,11 @@ public class DefenseBlock {
                 Lines.poly(e.x, e.y, 4, e.rotation + e.fin(), 45f);
             }).followParent(true);
 
-            buildType = () -> new ForceBuild(){
+            buildType = () -> new ForceBuild() {
                 @Override
-                public void onRemoved(){
+                public void onRemoved() {
                     float radius = realRadius();
-                    if(!broken && radius > 1f) forceShrink.at(x, y, radius, team.color);
+                    if (!broken && radius > 1f) forceShrink.at(x, y, radius, team.color);
                 }
             };
         }};
@@ -180,11 +180,11 @@ public class DefenseBlock {
                 Lines.poly(e.x, e.y, 4, e.rotation + e.fin(), 45f);
             }).followParent(true);
 
-            buildType = () -> new ForceBuild(){
+            buildType = () -> new ForceBuild() {
                 @Override
-                public void onRemoved(){
+                public void onRemoved() {
                     float radius = realRadius();
-                    if(!broken && radius > 1f) forceShrink.at(x, y, radius, team.color);
+                    if (!broken && radius > 1f) forceShrink.at(x, y, radius, team.color);
                 }
             };
         }};

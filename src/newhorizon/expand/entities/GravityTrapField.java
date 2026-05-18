@@ -39,7 +39,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject {
         return scale > 0.1f;
     }
 
-    public float getGravityTrap(){
+    public float getGravityTrap() {
         return scale * rect.area();
     }
 

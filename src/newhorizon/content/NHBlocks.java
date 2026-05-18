@@ -11,7 +11,6 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec2;
-import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -42,7 +41,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
-import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
@@ -998,7 +996,7 @@ public class NHBlocks {
                     shootY = t -> 90 * curve.apply(1 - t.smoothReload);
                 }});
             }};
-            buildType = () -> new ItemTurretBuild(){
+            buildType = () -> new ItemTurretBuild() {
 
                 private static final float ORB_LIFE = 48f;      // ticks
                 private static final float CURVE_LIFE = 96f;    // ticks
@@ -1011,13 +1009,13 @@ public class NHBlocks {
                 private final Vec2 orbStart = new Vec2();
                 private final Vec2 orbEnd = new Vec2();
 
-                private boolean orbActive(){
+                private boolean orbActive() {
                     boolean powered = power != null && power.status > 0.0001f;
                     return powered && hasAmmo();
                 }
 
                 private final Effect curveFx = new Effect(CURVE_LIFE, e -> {
-                    if(!(e.data instanceof CurveFxData data)) return;
+                    if (!(e.data instanceof CurveFxData data)) return;
 
                     float lf = Mathf.clamp(e.fin());
                     float shrink = Mathf.pow(0.08f, lf * CURVE_SHRINK);
@@ -1031,7 +1029,7 @@ public class NHBlocks {
 
                     Vec2 off = Tmp.v3.set(data.ctrlSeed).scl(shrink);
                     float maxOff = start.dst(end) * 1.8f;
-                    if(off.len() > maxOff) off.setLength(maxOff);
+                    if (off.len() > maxOff) off.setLength(maxOff);
 
                     Vec2 ctrl = Tmp.v4.set(start).lerp(end, 0.5f).add(off);
 
@@ -1050,14 +1048,14 @@ public class NHBlocks {
                     Lines.curve(start.x, start.y, ctrl.x, ctrl.y, ctrl.x, ctrl.y, end.x, end.y, 20);
                 });
 
-                private class CurveFxData{
+                private class CurveFxData {
                     final Vec2 s = new Vec2();
                     final Vec2 e = new Vec2();
                     final Vec2 ctrlSeed = new Vec2();
                     final Color color;
                     final float orbSize;
 
-                    CurveFxData(Vec2 start, Vec2 end, Color color){
+                    CurveFxData(Vec2 start, Vec2 end, Color color) {
                         this.s.set(start);
                         this.e.set(end);
                         this.color = color;
@@ -1072,22 +1070,22 @@ public class NHBlocks {
                 }
 
                 @Override
-                public void update(){
+                public void update() {
                     super.update();
-                    if(Vars.state.isPaused()) return;
-                    if(!orbActive()) return;
+                    if (Vars.state.isPaused()) return;
+                    if (!orbActive()) return;
 
                     updateAnchors();
 
                     float fin = Mathf.clamp(reloadCounter / reload, 0f, 1f);
                     float chance = Mathf.lerp(SPAWN_MIN, SPAWN_MAX, fin);
 
-                    if(Mathf.chanceDelta(chance)){
+                    if (Mathf.chanceDelta(chance)) {
                         curveFx.at(x, y, 0f, heatColor, new CurveFxData(orbStart, orbEnd, heatColor));
                     }
                 }
 
-                private void updateAnchors(){
+                private void updateAnchors() {
                     float up = Mathf.mod(rotation, 360f);
 
                     orbStart.set(
@@ -1105,16 +1103,16 @@ public class NHBlocks {
                 }
 
                 @Override
-                public void draw(){
+                public void draw() {
                     super.draw();
-                    if(!orbActive()) return;
+                    if (!orbActive()) return;
 
-                    if(!Vars.state.isPaused()){
+                    if (!Vars.state.isPaused()) {
                         updateAnchors();
                     }
 
                     float fin = Mathf.clamp(reloadCounter / reload, 0f, 1f);
-                    if(fin <= 0.01f) return;
+                    if (fin <= 0.01f) return;
 
                     drawAnchorOrb(orbStart, fin);
                     drawAnchorOrb(orbEnd, fin);
@@ -1122,7 +1120,7 @@ public class NHBlocks {
                     drawRingLightning(fin);
                 }
 
-                private void drawAnchorOrb(Vec2 p, float fin){
+                private void drawAnchorOrb(Vec2 p, float fin) {
                     Draw.z(Layer.effect);
                     float glow = 8f * fin + Mathf.absin(Time.time, 2f, 2f * fin);
                     float core = 4f * fin;
@@ -1137,24 +1135,24 @@ public class NHBlocks {
                     Fill.circle(p.x, p.y, core * 0.6f);
                 }
 
-                private void drawRingLightning(float fin){
-                    if(Vars.state.isPaused()) return;
+                private void drawRingLightning(float fin) {
+                    if (Vars.state.isPaused()) return;
 
                     float innerR = size * tilesize * 0.74f * Interp.circleOut.apply(fin);
                     float outerR = size * tilesize * 0.96f * Interp.circleOut.apply(fin);
 
-                    if(Mathf.chanceDelta(0.12f * fin)){
+                    if (Mathf.chanceDelta(0.12f * fin)) {
                         Vec2 v = Tmp.v1.trns(Mathf.random(360f), innerR).add(x, y);
                         NHFx.chainLightningFade.at(orbEnd.x, orbEnd.y, 12f, heatColor, new Vec2(v));
                     }
-                    if(Mathf.chanceDelta(0.08f * fin)){
+                    if (Mathf.chanceDelta(0.08f * fin)) {
                         Vec2 v = Tmp.v1.trns(Mathf.random(360f), outerR).add(x, y);
                         NHFx.chainLightningFade.at(orbEnd.x, orbEnd.y, 18f, heatColor, new Vec2(v));
                     }
                 }
 
                 @Override
-                public void onRemoved(){
+                public void onRemoved() {
                     super.onRemoved();
                 }
             };
@@ -1210,7 +1208,7 @@ public class NHBlocks {
 
             ammo(NHItems.darkEnergy, NHBullets.eternity);
 
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.hadronicomp, 2500,NHItems.hyperProcessor, 2500, NHItems.darkEnergy, 2000));
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.hadronicomp, 2500, NHItems.hyperProcessor, 2500, NHItems.darkEnergy, 2000));
         }};
 
         antiBulletTurret = new PointDefenseTurret("anti-bullet-turret") {{

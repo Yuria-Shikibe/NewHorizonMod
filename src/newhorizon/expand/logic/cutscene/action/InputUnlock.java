@@ -8,9 +8,11 @@ import newhorizon.expand.logic.ActionLStatement;
 
 public class InputUnlock extends ActionLStatement {
 
-    public InputUnlock(String[] token) {}
+    public InputUnlock(String[] token) {
+    }
 
-    public InputUnlock() {}
+    public InputUnlock() {
+    }
 
     @Override
     public String getLStatementName() {

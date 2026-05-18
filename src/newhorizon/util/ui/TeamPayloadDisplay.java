@@ -25,16 +25,17 @@ public class TeamPayloadDisplay extends CoreItemsDisplay {
 
     public void rebuild() {
         clear();
-        update(() -> {});
+        update(() -> {
+        });
         Team team = player == null ? Team.derelict : player.team();
 
         table(itemDisplay -> {
             int i = 0;
-            for(Item item : content.items()){
-                if(team.items().has(item)){
+            for (Item item : content.items()) {
+                if (team.items().has(item)) {
                     itemDisplay.image(item.uiIcon).size(iconSmall).padRight(3).tooltip(t -> t.background(Styles.black6).margin(4f).add(item.localizedName).style(Styles.outlineLabel));
                     itemDisplay.label(() -> UI.formatAmount(team.items().get(item))).padRight(3).minWidth(52f).left().tooltip(t -> t.background(Styles.black6).margin(4f).label(() -> team.items().get(item) + "").style(Styles.outlineLabel));
-                    if(++i % 4 == 0) row();
+                    if (++i % 4 == 0) row();
                 }
             }
         }).width(82 * 4);

@@ -19,7 +19,6 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
-import mindustry.type.PayloadStack;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.StatUnit;
@@ -35,6 +34,7 @@ import static mindustry.Vars.world;
 
 public class AssignedBeacon extends AdaptOverdriveProjector {
     public int maxLink = 4;
+
     public AssignedBeacon(String name) {
         super(name);
         solid = true;
@@ -69,10 +69,10 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
         drawPotentialLinks(x, y);
         drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
-        Drawf.dashRect(baseColor, x * tilesize + offset - range/2f, y * tilesize + offset - range/2f, range, range);
+        Drawf.dashRect(baseColor, x * tilesize + offset - range / 2f, y * tilesize + offset - range / 2f, range, range);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class AssignedBeaconBuild extends AdaptOverdriveProjectorBuild{
+    public class AssignedBeaconBuild extends AdaptOverdriveProjectorBuild {
         public ObjectFloatMap<Building> linkBuilds = new ObjectFloatMap<>();
         public float[] buffer;
 
@@ -97,9 +97,9 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
             }
             smoothEfficiency = Mathf.lerpDelta(smoothEfficiency, efficiency, 0.08f);
             heat = Mathf.lerpDelta(heat, efficiency > 0 ? 1f : 0f, 0.08f);
-            if(hasBoost) phaseHeat = Mathf.lerpDelta(phaseHeat, optionalEfficiency, 0.1f);
-            if(efficiency > 0) useProgress += delta();
-            if(useProgress >= useTime){
+            if (hasBoost) phaseHeat = Mathf.lerpDelta(phaseHeat, optionalEfficiency, 0.1f);
+            if (efficiency > 0) useProgress += delta();
+            if (useProgress >= useTime) {
                 consume();
                 useProgress %= useTime;
             }
@@ -111,22 +111,22 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
             return linkBuilds.keys().toArray();
         }
 
-        public void updateLink(){
+        public void updateLink() {
             linkBuilds().each(b -> {
                 float progress = linkBuilds.get(b, 0f);
-                if (b.block instanceof GenericCrafter crafter && b instanceof GenericCrafter.GenericCrafterBuild build){
+                if (b.block instanceof GenericCrafter crafter && b instanceof GenericCrafter.GenericCrafterBuild build) {
                     progress += getProgressIncrease(crafter.craftTime / realBoost() / efficiency) * build.efficiency * build.timeScale();
-                    if (progress >= 1f){
-                        if (b.block instanceof RecipeGenericCrafter crafter1 && b instanceof RecipeGenericCrafter.RecipeGenericCrafterBuild build1){
-                            if (build1.getRecipe() != null){
-                                if (crafter1.outputItems != null){
+                    if (progress >= 1f) {
+                        if (b.block instanceof RecipeGenericCrafter crafter1 && b instanceof RecipeGenericCrafter.RecipeGenericCrafterBuild build1) {
+                            if (build1.getRecipe() != null) {
+                                if (crafter1.outputItems != null) {
                                     for (ItemStack stack : crafter1.outputItems) {
                                         build.items.add(stack.item, stack.amount);
                                     }
                                 }
                             }
-                        }else {
-                            if (crafter.outputItems != null){
+                        } else {
+                            if (crafter.outputItems != null) {
                                 for (ItemStack stack : crafter.outputItems) {
                                     build.items.add(stack.item, stack.amount);
                                 }
@@ -142,7 +142,7 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
         @Override
         public Point2[] config() {
             Point2[] out = new Point2[linkBuilds.size];
-            for (int i = 0; i < linkBuilds.size; i++){
+            for (int i = 0; i < linkBuilds.size; i++) {
                 out[i] = new Point2(linkBuilds().get(i).tileX() - tileX(), linkBuilds().get(i).tileY() - tileY());
             }
             return out;
@@ -158,7 +158,7 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
         }
 
         public boolean linkValid(Building b) {
-            return b != null && b.isValid() && Math.abs(b.x - x) <= range()/2f && Math.abs(b.y - y) <= range()/2f && b.team == team && b.block.canOverdrive;
+            return b != null && b.isValid() && Math.abs(b.x - x) <= range() / 2f && Math.abs(b.y - y) <= range() / 2f && b.team == team && b.block.canOverdrive;
         }
 
         @SuppressWarnings("all")
@@ -177,7 +177,7 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
             if (other != null && linkValid(other) && !containBuild(other)) {
                 if (linkBuilds().contains(other)) {
                     linkBuilds.remove(other, 0f);
-                }else {
+                } else {
                     if (linkBuilds.size >= maxLink) return;
                     linkBuilds.put(other, 0f);
                 }
@@ -195,7 +195,7 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
             });
         }
 
-        public void drawConnect(){
+        public void drawConnect() {
             Draw.z(Layer.blockOver);
             Draw.color(baseColor);
             Draw.alpha(0.3f);
@@ -223,7 +223,7 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
                 Lines.line(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y);
 
                 float progress = linkBuilds.get(b, 0f);
-                if (progress > 0.001f){
+                if (progress > 0.001f) {
                     DrawFunc.circlePercent(b.x, b.y, b.block.size * tilesize * 0.375f, linkBuilds.get(b, 0f), 0);
                 }
             }
@@ -266,7 +266,7 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            if (revision == 2){
+            if (revision == 2) {
                 int size = read.i();
                 buffer = new float[size * 2];
                 for (int i = 0; i < size; i++) {

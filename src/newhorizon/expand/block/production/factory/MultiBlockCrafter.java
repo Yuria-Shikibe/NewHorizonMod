@@ -18,7 +18,10 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.logic.LAccess;
-import mindustry.type.*;
+import mindustry.type.Item;
+import mindustry.type.ItemStack;
+import mindustry.type.Liquid;
+import mindustry.type.LiquidStack;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
@@ -58,7 +61,7 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         solid = true;
         hasItems = true;
         sync = true;
-        
+
         ambientSound = Sounds.loopMachine;
         ambientSoundVolume = 0.03f;
 
@@ -78,32 +81,33 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         stats.timePeriod = craftTime;
         super.setStats();
 
-        if((hasItems && itemCapacity > 0) || outputItems != null) stats.add(Stat.productionTime, craftTime / 60f, StatUnit.seconds);
-        if(outputItems != null) stats.add(Stat.output, StatValues.items(craftTime, outputItems));
-        if(outputLiquids != null) stats.add(Stat.output, StatValues.liquids(1f, outputLiquids));
+        if ((hasItems && itemCapacity > 0) || outputItems != null)
+            stats.add(Stat.productionTime, craftTime / 60f, StatUnit.seconds);
+        if (outputItems != null) stats.add(Stat.output, StatValues.items(craftTime, outputItems));
+        if (outputLiquids != null) stats.add(Stat.output, StatValues.liquids(1f, outputLiquids));
 
         stats.remove(Stat.size);
         stats.add(Stat.size, "@x@", getMaxSize(size, 0).x, getMaxSize(size, 0).y);
     }
 
     @Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
 
         //set up liquid bars for liquid outputs
-        if(outputLiquids != null && outputLiquids.length > 0){
+        if (outputLiquids != null && outputLiquids.length > 0) {
             //no need for dynamic liquid bar
             removeBar("liquid");
 
             //then display output buffer
-            for(var stack : outputLiquids){
+            for (var stack : outputLiquids) {
                 addLiquidBar(stack.liquid);
             }
         }
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         drawer.load(this);
     }
@@ -115,15 +119,15 @@ public class MultiBlockCrafter extends BasicMultiBlock {
     }
 
     @Override
-    public void init(){
-        if(outputItems == null && outputItem != null) outputItems = new ItemStack[]{outputItem};
-        if(outputLiquids == null && outputLiquid != null) outputLiquids = new LiquidStack[]{outputLiquid};
-        if(outputLiquid == null && outputLiquids != null && outputLiquids.length > 0) outputLiquid = outputLiquids[0];
+    public void init() {
+        if (outputItems == null && outputItem != null) outputItems = new ItemStack[]{outputItem};
+        if (outputLiquids == null && outputLiquid != null) outputLiquids = new LiquidStack[]{outputLiquid};
+        if (outputLiquid == null && outputLiquids != null && outputLiquids.length > 0) outputLiquid = outputLiquids[0];
 
         outputsLiquid = outputLiquids != null;
 
-        if(outputItems != null) hasItems = true;
-        if(outputLiquids != null) hasLiquids = true;
+        if (outputItems != null) hasItems = true;
+        if (outputLiquids != null) hasLiquids = true;
 
         super.init();
     }
@@ -131,7 +135,7 @@ public class MultiBlockCrafter extends BasicMultiBlock {
     @Override
     public void drawOverlay(float x, float y, int rotation) {
         super.drawOverlay(x, y, rotation);
-        for (int[] packed: outputItemDirection){
+        for (int[] packed : outputItemDirection) {
             MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], size, 1, rotation);
             Item item = content.item(packed[2]);
             Draw.rect(item.fullIcon,
@@ -141,7 +145,7 @@ public class MultiBlockCrafter extends BasicMultiBlock {
             );
         }
 
-        for (int[] packed: outputLiquidDirection){
+        for (int[] packed : outputLiquidDirection) {
             MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], size, 1, rotation);
             Liquid liquid = content.liquid(packed[2]);
             Draw.rect(liquid.fullIcon,
@@ -153,27 +157,27 @@ public class MultiBlockCrafter extends BasicMultiBlock {
     }
 
     @Override
-    public boolean rotatedOutput(int x, int y){
+    public boolean rotatedOutput(int x, int y) {
         return false;
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         drawer.drawPlan(this, plan, list);
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return drawer.finalIcons(this);
     }
 
     @Override
-    public boolean outputsItems(){
+    public boolean outputsItems() {
         return outputItems != null;
     }
 
     @Override
-    public void getRegionsToOutline(Seq<TextureRegion> out){
+    public void getRegionsToOutline(Seq<TextureRegion> out) {
         drawer.getRegionsToOutline(this, out);
     }
 
@@ -182,10 +186,10 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         public float totalProgress;
         public float warmup;
 
-        public boolean isValidOutputItemBuilding(Building other, Item item){
+        public boolean isValidOutputItemBuilding(Building other, Item item) {
             if (outputItemDirection.isEmpty()) return true;
-            for (int[] packed: outputItemDirection){
-                if (item.id == packed[2]){
+            for (int[] packed : outputItemDirection) {
+                if (item.id == packed[2]) {
                     MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], block.size, 1, rotation);
                     Building b = world.build(Tmp.p1.x + tileX(), Tmp.p1.y + tileY());
                     if (b == other || b instanceof LinkBlock.LinkBuild lb && lb.linkBuild == other) {
@@ -196,10 +200,10 @@ public class MultiBlockCrafter extends BasicMultiBlock {
             return false;
         }
 
-        public boolean isValidLiquidOutputBuilding(Building other, Liquid liquid){
+        public boolean isValidLiquidOutputBuilding(Building other, Liquid liquid) {
             if (outputLiquidDirection.isEmpty()) return true;
-            for (int[] packed: outputLiquidDirection){
-                if (liquid.id == packed[2]){
+            for (int[] packed : outputLiquidDirection) {
+                if (liquid.id == packed[2]) {
                     MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], block.size, 1, rotation);
                     Building b = world.build(Tmp.p1.x, Tmp.p1.y);
                     if (b == other || b instanceof LinkBlock.LinkBuild lb && lb.linkBuild == other) {
@@ -221,40 +225,40 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             drawer.draw(this);
         }
 
         @Override
-        public void drawLight(){
+        public void drawLight() {
             super.drawLight();
             drawer.drawLight(this);
         }
 
         @Override
-        public boolean shouldConsume(){
-            if(outputItems != null){
-                for(var output : outputItems){
-                    if(items.get(output.item) + output.amount > itemCapacity){
+        public boolean shouldConsume() {
+            if (outputItems != null) {
+                for (var output : outputItems) {
+                    if (items.get(output.item) + output.amount > itemCapacity) {
                         return false;
                     }
                 }
             }
-            if(outputLiquids != null && !ignoreLiquidFullness){
+            if (outputLiquids != null && !ignoreLiquidFullness) {
                 boolean allFull = true;
-                for(var output : outputLiquids){
-                    if(liquids.get(output.liquid) >= liquidCapacity - 0.001f){
-                        if(!dumpExtraLiquid){
+                for (var output : outputLiquids) {
+                    if (liquids.get(output.liquid) >= liquidCapacity - 0.001f) {
+                        if (!dumpExtraLiquid) {
                             return false;
                         }
-                    }else{
+                    } else {
                         //if there's still space left, it's not full for all liquids
                         allFull = false;
                     }
                 }
 
                 //if there is no space left for any liquid, it can't reproduce
-                if(allFull){
+                if (allFull) {
                     return false;
                 }
             }
@@ -263,39 +267,39 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             super.updateTile();
-            if(efficiency > 0){
+            if (efficiency > 0) {
                 progress += getProgressIncrease(craftTime);
                 warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
-                if(outputLiquids != null){
+                if (outputLiquids != null) {
                     float inc = getProgressIncrease(1f);
-                    for(var output : outputLiquids){
+                    for (var output : outputLiquids) {
                         handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
                     }
                 }
-                if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
+                if (wasVisible && Mathf.chanceDelta(updateEffectChance)) {
                     updateEffect.at(x + Mathf.range(size * updateEffectSpread), y + Mathf.range(size * updateEffectSpread));
                 }
             } else {
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
             }
             totalProgress += warmup * Time.delta;
-            if(progress >= 1f) craft();
+            if (progress >= 1f) craft();
             dumpOutputs();
         }
 
         @Override
-        public float getProgressIncrease(float baseTime){
-            if(ignoreLiquidFullness){
+        public float getProgressIncrease(float baseTime) {
+            if (ignoreLiquidFullness) {
                 return super.getProgressIncrease(baseTime);
             }
 
             //limit progress increase by maximum amount of liquid it can produce
             float scaling = 1f, max = 1f;
-            if(outputLiquids != null){
+            if (outputLiquids != null) {
                 max = 0f;
-                for(var s : outputLiquids){
+                for (var s : outputLiquids) {
                     float value = (liquidCapacity - liquids.get(s.liquid)) / (s.amount * edelta());
                     scaling = Math.min(scaling, value);
                     max = Math.max(max, value);
@@ -306,32 +310,32 @@ public class MultiBlockCrafter extends BasicMultiBlock {
             return super.getProgressIncrease(baseTime) * (dumpExtraLiquid ? Math.min(max, 1f) : scaling);
         }
 
-        public float warmupTarget(){
+        public float warmupTarget() {
             return 1f;
         }
 
         @Override
-        public float warmup(){
+        public float warmup() {
             return warmup;
         }
 
         @Override
-        public float totalProgress(){
+        public float totalProgress() {
             return totalProgress;
         }
 
-        public void craft(){
+        public void craft() {
             consume();
 
-            if(outputItems != null){
-                for(var output : outputItems){
-                    for(int i = 0; i < output.amount; i++){
+            if (outputItems != null) {
+                for (var output : outputItems) {
+                    for (int i = 0; i < output.amount; i++) {
                         offload(output.item);
                     }
                 }
             }
 
-            if(wasVisible){
+            if (wasVisible) {
                 craftEffect.at(x, y);
             }
             progress %= 1f;
@@ -339,13 +343,13 @@ public class MultiBlockCrafter extends BasicMultiBlock {
 
         public void dumpOutputs() {
             boolean timer = timer(timerDump, dumpTime / timeScale);
-            if(outputItems != null && timer) {
-                for(ItemStack output : outputItems){
+            if (outputItems != null && timer) {
+                for (ItemStack output : outputItems) {
                     dump(output.item);
                 }
             }
 
-            if(outputLiquids != null){
+            if (outputLiquids != null) {
                 for (LiquidStack liquid : outputLiquids) {
                     dumpLiquid(liquid.liquid, 2f);
                 }
@@ -353,37 +357,37 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         }
 
         @Override
-        public double sense(LAccess sensor){
-            if(sensor == LAccess.progress) return progress();
+        public double sense(LAccess sensor) {
+            if (sensor == LAccess.progress) return progress();
             //attempt to prevent wild total liquid fluctuation, at least for crafters
-            if(sensor == LAccess.totalLiquids && outputLiquid != null) return liquids.get(outputLiquid.liquid);
+            if (sensor == LAccess.totalLiquids && outputLiquid != null) return liquids.get(outputLiquid.liquid);
             return super.sense(sensor);
         }
 
         @Override
-        public float progress(){
+        public float progress() {
             return Mathf.clamp(progress);
         }
 
         @Override
-        public int getMaximumAccepted(Item item){
+        public int getMaximumAccepted(Item item) {
             return itemCapacity;
         }
 
         @Override
-        public boolean shouldAmbientSound(){
+        public boolean shouldAmbientSound() {
             return efficiency > 0;
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.f(progress);
             write.f(warmup);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             progress = read.f();
             warmup = read.f();

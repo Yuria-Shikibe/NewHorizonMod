@@ -45,7 +45,7 @@ public class CraftingBlock {
     public static Block
             silicarCrusher,
             stampingFacility, heavyStampingFacility, processorManuFactory, processorPrinter, subCooler, hyperCooler,
-            rectificatior, phaseRectificatior, plasticator, photocatalystFactory, metalOxhydrigenRestructuror,  crystallizer, particleActivator, plasmaActivator,
+            rectificatior, phaseRectificatior, plasticator, photocatalystFactory, metalOxhydrigenRestructuror, crystallizer, particleActivator, plasmaActivator,
             crucibleFoundry, castingFoundry, xenSeparator, multipleRollingMill, mixedRollingMill, heavyRollingMill,
             thoriumTransmuter, fusionCoreEnergyFactory,
             zetaFactory, fabricRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer, irdryonFluidFactory, irdryonPhaseAscender,
@@ -83,8 +83,8 @@ public class CraftingBlock {
             updateEffect = new Effect(80f, e -> {
                 Fx.rand.setSeed(e.id);
                 Draw.color(Color.lightGray, Color.gray, e.fin());
-                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> 
-                    Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
+                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) ->
+                        Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
                 );
             }).layer(Layer.blockOver + 1);
         }};
@@ -803,8 +803,12 @@ public class CraftingBlock {
                     new DrawBaseRegion("-3x3"),
                     new DrawLiquidTile(NHLiquids.xenFluid),
                     new DrawRegion("-base"),
-                    new DrawRegionRotated() {{suffix = "-top-rot";}},
-                    new DrawGlowRegion("-glow") {{color = NHLiquids.xenFluid.color;}}
+                    new DrawRegionRotated() {{
+                        suffix = "-top-rot";
+                    }},
+                    new DrawGlowRegion("-glow") {{
+                        color = NHLiquids.xenFluid.color;
+                    }}
             );
 
             craftEffect = updateEffect = NHFx.square(NHLiquids.xenFluid.color, 60, 6, 16, 3);
@@ -1035,7 +1039,7 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
-                    new DrawSpikes(){{
+                    new DrawSpikes() {{
                         color = Color.valueOf("ffd59e");
                         stroke = 1.3f;
                         layers = 2;
@@ -1043,7 +1047,7 @@ public class CraftingBlock {
                         rotateSpeed = 0.5f;
                         layerSpeed = -0.9f;
                     }},
-                    new DrawMultiWeave(){{
+                    new DrawMultiWeave() {{
                         glowColor = new Color(1f, 0.4f, 0.4f, 0.8f);
                     }},
                     new DrawScanLine() {{
@@ -1062,7 +1066,7 @@ public class CraftingBlock {
                         lineStroke = 0.786f;
                     }},
                     new DrawDefault(),
-                    new DrawGlowRegion("-vents"){{
+                    new DrawGlowRegion("-vents") {{
                         color = new Color(1f, 0.4f, 0.3f, 1f);
                     }}
             );
@@ -1252,7 +1256,7 @@ public class CraftingBlock {
                     new DrawBaseRegion("-2x2"),
                     new DrawLiquidTile(NHLiquids.irdryonFluid),
                     new DrawDefault(),
-                    new DrawRegion("-rotator"){{
+                    new DrawRegion("-rotator") {{
                         rotateSpeed = -4;
                         spinSprite = true;
                     }}
@@ -1263,11 +1267,11 @@ public class CraftingBlock {
 
         processorEtchingFacility = new MultiBlockCrafter("processor-etching-facility") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                            NHItems.surgeAlloy, 125,
-                            NHItems.phaseFabric, 110,
-                            NHItems.juniorProcessor, 250,
-                            NHItems.zeta, 125,
-                            NHItems.carbide, 90
+                    NHItems.surgeAlloy, 125,
+                    NHItems.phaseFabric, 110,
+                    NHItems.juniorProcessor, 250,
+                    NHItems.zeta, 125,
+                    NHItems.carbide, 90
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
 
@@ -1337,7 +1341,7 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        processorCompactor = new GenericCrafter("processor-compactor"){{
+        processorCompactor = new GenericCrafter("processor-compactor") {{
             requirements(Category.crafting, with(
                     NHItems.setonAlloy, 150,
                     NHItems.irayrondPanel, 100,
@@ -1354,14 +1358,14 @@ public class CraftingBlock {
             consumePower(25);
             consumeItems(with(NHItems.silicon, 8, NHItems.surgeAlloy, 4));
             consumeLiquid(NHLiquids.irdryonFluid, 12 / 60f);
-            outputItems = ItemStack.with(NHItems.juniorProcessor,16, NHItems.seniorProcessor, 8);
+            outputItems = ItemStack.with(NHItems.juniorProcessor, 16, NHItems.seniorProcessor, 8);
 
             Color senior = Pal.ammo.cpy().lerp(Color.red, 0.63f).lerp(Color.white, 0.2f);
             Color junior = Pal.bulletYellowBack;
 
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
-                    new DrawScanLine(){{
+                    new DrawScanLine() {{
                         colorFrom = junior;
                         scanLength = 73 / 4f;
                         scanScl = 15f;
@@ -1370,7 +1374,7 @@ public class CraftingBlock {
                         speedMultiplier = 1.25f;
                         startOffset = Mathf.random() * 5f;
                     }},
-                    new DrawScanLine(){{
+                    new DrawScanLine() {{
                         colorFrom = junior;
                         scanLength = 73 / 4f;
                         scanScl = 15f;
@@ -1378,7 +1382,7 @@ public class CraftingBlock {
                         speedMultiplier = 1.55f;
                         startOffset = Mathf.random() * 5f;
                     }},
-                    new DrawScanLine(){{
+                    new DrawScanLine() {{
                         colorFrom = senior;
                         scanLength = 73 / 4f;
                         scanScl = 15f;
@@ -1386,7 +1390,7 @@ public class CraftingBlock {
                         speedMultiplier = 1.35f;
                         startOffset = Mathf.random() * 5f;
                     }},
-                    new DrawScanLine(){{
+                    new DrawScanLine() {{
                         colorFrom = senior;
                         scanLength = 73 / 4f;
                         scanScl = 8f;
@@ -1398,13 +1402,13 @@ public class CraftingBlock {
                     new DrawRegion("-mid"),
                     new DrawLiquidTile(NHLiquids.irdryonFluid, 54 / 4f),
                     new DrawDefault(),
-                    new DrawGlowRegion("-glow1"){{
+                    new DrawGlowRegion("-glow1") {{
                         color = junior;
                     }},
-                    new DrawGlowRegion("-glow2"){{
+                    new DrawGlowRegion("-glow2") {{
                         color = junior;
                     }},
-                    new DrawGlowRegion("-glow3"){{
+                    new DrawGlowRegion("-glow3") {{
                         color = junior;
                     }}
             );
@@ -1806,7 +1810,7 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        darkEnergyTrap = new MultiBlockCrafter("dark-energy-trap"){{
+        darkEnergyTrap = new MultiBlockCrafter("dark-energy-trap") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.nodexPlate, 90,
                     NHItems.presstanium, 150,
@@ -1863,7 +1867,7 @@ public class CraftingBlock {
                     NHItems.seniorProcessor, 120,
                     NHItems.ancimembrane, 75
             ));
-            addLink( -3, 2, 1, -3, 3, 1, -2, 3, 1, 3, 2, 1, 3, 3, 1, 2, 3, 1, -3, -2, 1, -3, -3, 1, -2, -3, 1, 3, -2, 1, 3, -3, 1, 2, -3, 1);
+            addLink(-3, 2, 1, -3, 3, 1, -2, 3, 1, 3, 2, 1, 3, 3, 1, 2, 3, 1, -3, -2, 1, -3, -3, 1, -2, -3, 1, 3, -2, 1, 3, -3, 1, 2, -3, 1);
 
             size = 5;
             hasLiquids = true;

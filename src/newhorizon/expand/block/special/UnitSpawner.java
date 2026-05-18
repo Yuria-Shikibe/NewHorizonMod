@@ -129,7 +129,8 @@ public class UnitSpawner extends Block {
         }
 
         @Override
-        public void drawConfigure() {}
+        public void drawConfigure() {
+        }
 
         @Override
         public void draw() {

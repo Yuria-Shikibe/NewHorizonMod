@@ -32,9 +32,9 @@ import mindustry.ui.Bar;
  * Copy From {@link ShieldArcAbility}
  */
 public class TurretShield extends Ability {
+    private static final Vec2 paramPos = new Vec2();
     private static Unit paramUnit;
     private static TurretShield paramField;
-    private static final Vec2 paramPos = new Vec2();
     private static float paramRot;
     private static final Cons<Bullet> shieldConsumer = b -> {
         if (b.team != paramUnit.team && b.type.absorbable && paramField.data > 0 &&
@@ -42,7 +42,7 @@ public class TurretShield extends Ability {
                         Tmp.v1.set(b).add(b.vel).within(paramPos, paramField.radius + paramField.width / 2f)) &&
                 Angles.within(paramPos.angleTo(b), paramRot + paramField.angleOffset, paramField.angle / 2f)) {
 
-            if(paramField.chanceDeflect > 0f && b.vel.len() >= 0.1f && b.type.reflectable && Mathf.chance(paramField.chanceDeflect)){
+            if (paramField.chanceDeflect > 0f && b.vel.len() >= 0.1f && b.type.reflectable && Mathf.chance(paramField.chanceDeflect)) {
 
                 //make sound
                 paramField.deflectSound.at(paramPos, Mathf.random(0.9f, 1.1f));
@@ -52,9 +52,9 @@ public class TurretShield extends Ability {
 
                 float penX = Math.abs(paramPos.x - b.x), penY = Math.abs(paramPos.y - b.y);
 
-                if(penX > penY){
+                if (penX > penY) {
                     b.vel.x *= -1;
-                }else{
+                } else {
                     b.vel.y *= -1;
                 }
 
@@ -62,13 +62,13 @@ public class TurretShield extends Ability {
                 b.team = paramUnit.team;
                 b.time += 1f;
 
-            }else{
+            } else {
                 b.absorb();
                 Fx.absorb.at(b);
             }
-            
+
             //break shield
-            if(paramField.data <= b.damage()){
+            if (paramField.data <= b.damage()) {
                 paramField.data -= paramField.cooldown * paramField.regen;
 
                 Fx.arcShieldBreak.at(paramPos.x, paramPos.y, 0, paramField.color == null ? paramUnit.type.shieldColor(paramUnit) : paramField.color, paramUnit);
@@ -82,36 +82,36 @@ public class TurretShield extends Ability {
 
     protected static final Cons<Unit> unitConsumer = unit -> {
         // ignore core units
-        if(paramField.data > 0 && unit.targetable(paramUnit.team) &&
-            !(unit.within(paramPos, paramField.radius - paramField.width) && paramPos.within(unit.x - unit.deltaX, unit.y - unit.deltaY, paramField.radius - paramField.width)) &&
-            (Tmp.v1.set(unit).add(unit.deltaX, unit.deltaY).within(paramPos, paramField.radius + paramField.width) || unit.within(paramPos, paramField.radius + paramField.width)) &&
-            (Angles.within(paramPos.angleTo(unit), paramRot + paramField.angleOffset, paramField.angle / 2f) || Angles.within(paramPos.angleTo(unit.x + unit.deltaX, unit.y + unit.deltaY), paramRot + paramField.angleOffset, paramField.angle / 2f))){
-                
-            if(unit.isMissile() && unit.killable() && paramField.missileUnitMultiplier >= 0f){
+        if (paramField.data > 0 && unit.targetable(paramUnit.team) &&
+                !(unit.within(paramPos, paramField.radius - paramField.width) && paramPos.within(unit.x - unit.deltaX, unit.y - unit.deltaY, paramField.radius - paramField.width)) &&
+                (Tmp.v1.set(unit).add(unit.deltaX, unit.deltaY).within(paramPos, paramField.radius + paramField.width) || unit.within(paramPos, paramField.radius + paramField.width)) &&
+                (Angles.within(paramPos.angleTo(unit), paramRot + paramField.angleOffset, paramField.angle / 2f) || Angles.within(paramPos.angleTo(unit.x + unit.deltaX, unit.y + unit.deltaY), paramRot + paramField.angleOffset, paramField.angle / 2f))) {
+
+            if (unit.isMissile() && unit.killable() && paramField.missileUnitMultiplier >= 0f) {
 
                 unit.remove();
                 unit.type.deathSound.at(unit);
                 unit.type.deathExplosionEffect.at(unit);
                 Fx.absorb.at(unit);
-                Fx.circleColorSpark.at(unit.x, unit.y,paramUnit.team.color);
-                
+                Fx.circleColorSpark.at(unit.x, unit.y, paramUnit.team.color);
+
                 // consider missile hp and gamerule to damage the shield
                 paramField.data -= unit.health() * paramField.missileUnitMultiplier * Vars.state.rules.unitDamage(unit.team);
                 paramField.alpha = 1f;
 
-            }else{
+            } else {
 
                 float reach = paramField.radius + paramField.width;
-                float overlapDst = reach - unit.dst(paramPos.x,paramPos.y);
+                float overlapDst = reach - unit.dst(paramPos.x, paramPos.y);
 
-                if(overlapDst>0){
+                if (overlapDst > 0) {
                     //stop
                     unit.vel.setZero();
                     // get out
                     unit.move(Tmp.v1.set(unit).sub(paramUnit).setLength(overlapDst + 0.01f));
 
-                    if(Mathf.chanceDelta(0.5f*Time.delta)){
-                        Fx.circleColorSpark.at(unit.x,unit.y,paramUnit.team.color);
+                    if (Mathf.chanceDelta(0.5f * Time.delta)) {
+                        Fx.circleColorSpark.at(unit.x, unit.y, paramUnit.team.color);
                     }
                 }
             }
@@ -190,7 +190,7 @@ public class TurretShield extends Ability {
     protected WeaponMount turret;
 
     @Override
-    public void addStats(Table t){
+    public void addStats(Table t) {
         super.addStats(t);
         t.add(abilityStat("shield", Strings.autoFixed(max, 2)));
         t.row();
@@ -198,7 +198,7 @@ public class TurretShield extends Ability {
         t.row();
         t.add(abilityStat("cooldown", Strings.autoFixed(cooldown / 60f, 2)));
         t.row();
-        t.add(abilityStat("deflectchance", Strings.autoFixed(chanceDeflect *100f, 2)));
+        t.add(abilityStat("deflectchance", Strings.autoFixed(chanceDeflect * 100f, 2)));
     }
 
     @Override

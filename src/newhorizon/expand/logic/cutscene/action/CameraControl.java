@@ -19,7 +19,8 @@ public class CameraControl extends ActionLStatement {
         cameraY = ParseUtil.getNextToken(token);
     }
 
-    public CameraControl() {}
+    public CameraControl() {
+    }
 
     @Override
     public String getLStatementName() {

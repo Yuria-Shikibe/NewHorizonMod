@@ -2,22 +2,16 @@ package newhorizon.expand.block.stream;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import arc.math.Rand;
 import arc.math.geom.Geometry;
-import arc.math.geom.Point2;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.core.Renderer;
-import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
-import mindustry.world.blocks.liquid.LiquidBlock;
 import newhorizon.content.NHContent;
 import newhorizon.util.func.MathUtil;
 
@@ -42,14 +36,14 @@ public class StreamBeam {
         this.source = source;
     }
 
-    public void update(){
+    public void update() {
         if (source == null) return;
 
         clog = false;
         target = null;
         distance = beamLength;
 
-        for (int i = 0; i <= beamLength; i++){
+        for (int i = 0; i <= beamLength; i++) {
             Building building = world.build(
                     source.tileX() + Geometry.d4x(getRotation()) * (i + 1),
                     source.tileY() + Geometry.d4y(getRotation()) * (i + 1)
@@ -67,30 +61,30 @@ public class StreamBeam {
         transportLiquid();
     }
 
-    public void getCurrentLiquid(){
+    public void getCurrentLiquid() {
         currentLiquid = null;
-        if (source.liquids != null){
-            if (filter != null){
+        if (source.liquids != null) {
+            if (filter != null) {
                 currentLiquid = filter;
-            }else if (source.liquids.currentAmount() > 0.01f){
+            } else if (source.liquids.currentAmount() > 0.01f) {
                 currentLiquid = source.liquids.current();
             }
         }
-        if (currentLiquid != null){
+        if (currentLiquid != null) {
             lastColor.lerp(currentLiquid.color, 0.1f * Time.delta);
-        }else {
+        } else {
             lastColor.lerp(Color.white, 0.05f * Time.delta);
         }
     }
 
-    public void transportLiquid(){
+    public void transportLiquid() {
         if (currentLiquid == null) return;
 
-        if (source.liquids != null && source.liquids.get(currentLiquid) > 0.01f){
-            float cap = amountCap > 0? amountCap * source.edelta(): 5;
+        if (source.liquids != null && source.liquids.get(currentLiquid) > 0.01f) {
+            float cap = amountCap > 0 ? amountCap * source.edelta() : 5;
             float maxAmount = Math.min(cap, source.liquids.get(currentLiquid));
 
-            if (target != null && target.liquids != null && target instanceof StreamBlock.StreamBuild sbb && sbb.acceptStream(this)){
+            if (target != null && target.liquids != null && target instanceof StreamBlock.StreamBuild sbb && sbb.acceptStream(this)) {
                 float maxAccept = Math.min(target.block.liquidCapacity - target.liquids.get(currentLiquid), maxAmount);
                 target.handleLiquid(source, currentLiquid, maxAccept);
                 sbb.handleStream(this);
@@ -100,11 +94,11 @@ public class StreamBeam {
         }
     }
 
-    public int getRotation(){
-        return source == null? 0: (source.rotation + rotationOffset) % 4;
+    public int getRotation() {
+        return source == null ? 0 : (source.rotation + rotationOffset) % 4;
     }
 
-    public void draw(){
+    public void draw() {
         if (source == null) return;
 
         Draw.z(Layer.blockOver);
@@ -161,9 +155,9 @@ public class StreamBeam {
         Drawf.laser(NHContent.beamLaserInner, NHContent.beamLaserInnerEnd, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, scale);
     }
 
-    public float beamStrokeScale(){
+    public float beamStrokeScale() {
         if (source == null || source.liquids == null || currentLiquid == null) return 0f;
         float value = Mathf.clamp(lastOutput / (0.5f * Time.delta));
-        return value < 0.01f ? 0: Mathf.sqrt(value);
+        return value < 0.01f ? 0 : Mathf.sqrt(value);
     }
 }

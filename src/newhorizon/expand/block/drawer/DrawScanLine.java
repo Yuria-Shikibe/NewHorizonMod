@@ -10,7 +10,7 @@ import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.world.draw.DrawBlock;
 
-public class DrawScanLine extends DrawBlock{
+public class DrawScanLine extends DrawBlock {
     public float lineStroke = 0.786f;
     public float scanLength = 16f;
     public float scanAngle = 0;

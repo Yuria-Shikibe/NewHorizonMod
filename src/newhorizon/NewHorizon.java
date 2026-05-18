@@ -84,7 +84,7 @@ public class NewHorizon extends Mod {
                 //DebugFunc.outputAtlas();
             });
         });
-        if (!headless){
+        if (!headless) {
             netClient.addPacketHandler("override_check", string -> {
                 try {
                     String[] status = string.split("\\|");

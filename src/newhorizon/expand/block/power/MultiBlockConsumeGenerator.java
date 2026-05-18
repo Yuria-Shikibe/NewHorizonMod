@@ -1,6 +1,5 @@
 package newhorizon.expand.block.power;
 
-import arc.Events;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.struct.ObjectFloatMap;
@@ -8,7 +7,6 @@ import arc.util.Nullable;
 import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.game.EventType;
 import mindustry.graphics.Drawf;
 import mindustry.type.Item;
 import mindustry.type.LiquidStack;
@@ -19,8 +17,10 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 
-public class MultiBlockConsumeGenerator extends MultiBlockGenerator{
-    /** The time in number of ticks during which a single item will produce power. */
+public class MultiBlockConsumeGenerator extends MultiBlockGenerator {
+    /**
+     * The time in number of ticks during which a single item will produce power.
+     */
     public float itemDuration = 120f;
 
     public float warmupSpeed = 0.05f;
@@ -33,7 +33,9 @@ public class MultiBlockConsumeGenerator extends MultiBlockGenerator{
 
     public @Nullable ConsumeItemFilter filterItem;
     public @Nullable ConsumeLiquidFilter filterLiquid;
-    /** Multiplies the itemDuration for a given item. */
+    /**
+     * Multiplies the itemDuration for a given item.
+     */
     public ObjectFloatMap<Item> itemDurationMultipliers = new ObjectFloatMap<>();
 
     public MultiBlockConsumeGenerator(String name) {
@@ -41,22 +43,22 @@ public class MultiBlockConsumeGenerator extends MultiBlockGenerator{
     }
 
     @Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
-        if(outputLiquid != null) addLiquidBar(outputLiquid.liquid);
+        if (outputLiquid != null) addLiquidBar(outputLiquid.liquid);
     }
 
     @Override
-    public void init(){
+    public void init() {
         filterItem = findConsumer(c -> c instanceof ConsumeItemFilter);
         filterLiquid = findConsumer(c -> c instanceof ConsumeLiquidFilter);
 
         //pass along the duration multipliers to the consumer, so it can display them properly
-        if(filterItem instanceof ConsumeItemEfficiency eff){
+        if (filterItem instanceof ConsumeItemEfficiency eff) {
             eff.itemDurationMultipliers = itemDurationMultipliers;
         }
 
-        if(outputLiquid != null){
+        if (outputLiquid != null) {
             outputsLiquid = true;
             hasLiquids = true;
         }
@@ -67,39 +69,40 @@ public class MultiBlockConsumeGenerator extends MultiBlockGenerator{
     }
 
     @Override
-    public void afterPatch(){
+    public void afterPatch() {
         super.afterPatch();
 
         filterItem = findConsumer(c -> c instanceof ConsumeItemFilter);
         filterLiquid = findConsumer(c -> c instanceof ConsumeLiquidFilter);
-        if(filterItem instanceof ConsumeItemEfficiency eff) eff.itemDurationMultipliers = itemDurationMultipliers;
+        if (filterItem instanceof ConsumeItemEfficiency eff) eff.itemDurationMultipliers = itemDurationMultipliers;
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         stats.timePeriod = itemDuration;
         super.setStats();
 
-        if(hasItems) stats.add(Stat.productionTime, itemDuration / 60f, StatUnit.seconds);
-        if(outputLiquid != null) stats.add(Stat.output, StatValues.liquid(outputLiquid.liquid, outputLiquid.amount * 60f, true));
+        if (hasItems) stats.add(Stat.productionTime, itemDuration / 60f, StatUnit.seconds);
+        if (outputLiquid != null)
+            stats.add(Stat.output, StatValues.liquid(outputLiquid.liquid, outputLiquid.amount * 60f, true));
     }
 
     public class MultiBlockConsumeGeneratorBuild extends MultiBlockGeneratorBuild {
         public float warmup, totalTime, efficiencyMultiplier = 1f, itemDurationMultiplier = 1;
 
         @Override
-        public void updateEfficiencyMultiplier(){
-            if(filterItem != null){
+        public void updateEfficiencyMultiplier() {
+            if (filterItem != null) {
                 float m = filterItem.efficiencyMultiplier(this);
-                if(m > 0) efficiencyMultiplier = m;
-            }else if(filterLiquid != null){
+                if (m > 0) efficiencyMultiplier = m;
+            } else if (filterLiquid != null) {
                 float m = filterLiquid.efficiencyMultiplier(this);
-                if(m > 0) efficiencyMultiplier = m;
+                if (m > 0) efficiencyMultiplier = m;
             }
         }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             updateLinkBlock();
 
             boolean valid = efficiency > 0;
@@ -110,23 +113,23 @@ public class MultiBlockConsumeGenerator extends MultiBlockGenerator{
             totalTime += warmup * Time.delta;
 
             //randomly produce the effect
-            if(valid && Mathf.chanceDelta(effectChance)){
+            if (valid && Mathf.chanceDelta(effectChance)) {
                 generateEffect.at(x + Mathf.range(generateEffectRange), y + Mathf.range(generateEffectRange));
             }
 
             //make sure the multiplier doesn't change when there is nothing to consume while it's still running
-            if(filterItem != null && valid && itemDurationMultipliers.size > 0 && filterItem.getConsumed(this) != null){
+            if (filterItem != null && valid && itemDurationMultipliers.size > 0 && filterItem.getConsumed(this) != null) {
                 itemDurationMultiplier = itemDurationMultipliers.get(filterItem.getConsumed(this), 1);
             }
 
             //take in items periodically
-            if(hasItems && valid && generateTime <= 0f){
+            if (hasItems && valid && generateTime <= 0f) {
                 consume();
                 consumeEffect.at(x + Mathf.range(generateEffectRange), y + Mathf.range(generateEffectRange));
                 generateTime = 1f;
             }
 
-            if(outputLiquid != null){
+            if (outputLiquid != null) {
                 float added = Math.min(productionEfficiency * delta() * outputLiquid.amount, liquidCapacity - liquids.get(outputLiquid.liquid));
                 liquids.add(outputLiquid.liquid, added);
                 dumpLiquid(outputLiquid.liquid);
@@ -137,22 +140,22 @@ public class MultiBlockConsumeGenerator extends MultiBlockGenerator{
         }
 
         @Override
-        public boolean consumeTriggerValid(){
+        public boolean consumeTriggerValid() {
             return generateTime > 0;
         }
 
         @Override
-        public float warmup(){
+        public float warmup() {
             return warmup;
         }
 
         @Override
-        public float totalProgress(){
+        public float totalProgress() {
             return totalTime;
         }
 
         @Override
-        public void drawLight(){
+        public void drawLight() {
             //???
             drawer.drawLight(this);
             //TODO hard coded

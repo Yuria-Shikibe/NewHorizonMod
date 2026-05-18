@@ -39,7 +39,8 @@ public class NHStatusEffects {
             shieldFlag, accumulateFlag, executionFlag, immunityFlag;
 
     public static void load() {
-        entangled = new NHStatusEffect("entangled") {{
+        entangled = new NHStatusEffect("entangled") {
+            {
                 color = Color.lightGray;
                 speedMultiplier = 0.95f;
                 reloadMultiplier = 0.95f;
@@ -47,6 +48,7 @@ public class NHStatusEffects {
                 effectChance = 0.085f;
                 effect = EffectWrapper.wrap(NHFx.hitSparkLarge, NHColor.ancientLightMid);
             }
+
             @Override
             public void update(Unit unit, StatusEntry entry) {
                 super.update(unit, entry);
@@ -60,8 +62,9 @@ public class NHStatusEffects {
             }
         };
 
-        overphased = new NHStatusEffect("overphased") {{
-                
+        overphased = new NHStatusEffect("overphased") {
+            {
+
                 color = NHColor.deeperBlue;
                 speedMultiplier = 1.75f;
                 healthMultiplier = 3f;
@@ -126,13 +129,13 @@ public class NHStatusEffects {
         }};
 
         scannerDown = new NHStatusEffect("scanner-down") {{
-                damageMultiplier = 0.95f;
-                speedMultiplier = 0.9f;
-                reloadMultiplier = 0.6f;
+            damageMultiplier = 0.95f;
+            speedMultiplier = 0.9f;
+            reloadMultiplier = 0.6f;
 
-                effectChance = 0.2f;
-                color = Pal.heal.cpy().lerp(Pal.lancerLaser, 0.5f);
-                effect = new MultiEffect(NHFx.squareRand(Pal.heal, 8f, 16f), NHFx.squareRand(Pal.lancerLaser, 8f, 16f));
+            effectChance = 0.2f;
+            color = Pal.heal.cpy().lerp(Pal.lancerLaser, 0.5f);
+            effect = new MultiEffect(NHFx.squareRand(Pal.heal, 8f, 16f), NHFx.squareRand(Pal.lancerLaser, 8f, 16f));
         }};
 
         weak = new NHStatusEffect("weak") {{
@@ -215,7 +218,8 @@ public class NHStatusEffects {
             healthMultiplier = 0.75f;
         }};
 
-        invincible = new NHStatusEffect("invincible") {{
+        invincible = new NHStatusEffect("invincible") {
+            {
                 healthMultiplier = 3;
             }
 
@@ -233,7 +237,8 @@ public class NHStatusEffects {
             }
         };
 
-        staticVel = new NHStatusEffect("static-vel") {{
+        staticVel = new NHStatusEffect("static-vel") {
+            {
                 permanent = true;
                 this.color = Pal.gray;
                 this.speedMultiplier = 0.00001F;
@@ -279,9 +284,11 @@ public class NHStatusEffects {
 
         immunityFlag = new StatusEffect("immunity-flag");
 
-        executionFlag = new NHStatusEffect("execution-flag") {{
-            speedMultiplier = 0f;
-        }
+        executionFlag = new NHStatusEffect("execution-flag") {
+            {
+                speedMultiplier = 0f;
+            }
+
             @Override
             public void onRemoved(Unit unit) {
                 super.onRemoved(unit);
@@ -289,21 +296,21 @@ public class NHStatusEffects {
                 float killThreshold = 0.5f;
 
                 boolean shouldKill = unit.health() < unit.maxHealth() * killThreshold;
-                float size = unit.type.hitSize * (shouldKill? 9f: 3f);
+                float size = unit.type.hitSize * (shouldKill ? 9f : 3f);
                 Effect eff = new Effect(120f, size * 2, e -> {
                     color(NHColor.darkEnrFront, Color.white, e.fout() * 0.55f);
                     for (int i = 0; i < 4; i++) {
                         DrawFunc.tri(e.x, e.y, size / 20 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, size * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + 45);
                     }
                 });
-                for (int i = 0; i < 4; i++){
+                for (int i = 0; i < 4; i++) {
                     eff.at(unit.x + Geometry.d4x(i) * unit.type.hitSize / 2f, unit.y + Geometry.d4y(i) * unit.type.hitSize / 2f);
                 }
                 eff.at(unit.x, unit.y);
 
                 if (shouldKill) {
                     unit.kill();
-                }else {
+                } else {
                     unit.damagePierce(unit.maxHealth() * damagePercent);
                 }
             }
@@ -386,36 +393,12 @@ public class NHStatusEffects {
             @Override
             public void applied(Unit unit, float time, boolean extend) {
                 super.applied(unit, time, extend);
-                if (!unit.hasEffect(immunityFlag)){
+                if (!unit.hasEffect(immunityFlag)) {
                     unit.apply(accumulateFlag, unit.getDuration(accumulateFlag) + unit.getDuration(blackWall));
                 }
                 unit.unapply(blackWall);
             }
         };
-    }
-
-    public static class NHStatusEffect extends StatusEffect {
-        public Seq<StatusEffect> override = new Seq<>();
-        public NHStatusEffect(String name) {
-            super(name);
-            outline = false;
-        }
-
-        @Override
-        public void update(Unit unit, StatusEntry entry) {
-            super.update(unit, entry);
-            override.each(unit::unapply);
-        }
-
-        @Override
-        public void setStats() {
-            super.setStats();
-            if(!override.isEmpty()) {
-                for(var e : override){
-                    stats.add(NHStats.overrides, e.emoji() + e);
-                }
-            }
-        }
     }
 
     public static Effect execution(float scale) {
@@ -427,7 +410,7 @@ public class NHStatusEffects {
             Draw.color(NHColor.darkEnrFront);
             rand.setSeed(e.id);
             Lines.stroke(step / 1.5f);
-            for (float i = 0; i < xDst; i += step){
+            for (float i = 0; i < xDst; i += step) {
                 float x = NHInterp.upThenFastDown.apply(rand.random(1f)) * xDst;
                 float y = rand.random(-yDst, yDst);
                 float xScl = Interp.reverse.apply(x / xDst);
@@ -460,5 +443,30 @@ public class NHStatusEffects {
         //Effect spark = NHFx.spreadOutSpark(120f, xDst + 40f, (int) (xDst / 2f), 4, 72f, 13f, 4f, Interp.pow3Out).startDelay(60);
 
         return new MultiEffect(rect, rectOut);
+    }
+
+    public static class NHStatusEffect extends StatusEffect {
+        public Seq<StatusEffect> override = new Seq<>();
+
+        public NHStatusEffect(String name) {
+            super(name);
+            outline = false;
+        }
+
+        @Override
+        public void update(Unit unit, StatusEntry entry) {
+            super.update(unit, entry);
+            override.each(unit::unapply);
+        }
+
+        @Override
+        public void setStats() {
+            super.setStats();
+            if (!override.isEmpty()) {
+                for (var e : override) {
+                    stats.add(NHStats.overrides, e.emoji() + e);
+                }
+            }
+        }
     }
 }

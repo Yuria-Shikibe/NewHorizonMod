@@ -17,11 +17,10 @@ import newhorizon.expand.entities.GravityTrapField;
 import static mindustry.Vars.player;
 import static mindustry.Vars.tilesize;
 
-public class GravityWell extends Block{
-    public float gravityRange = 80f;
-    public final int effect = timers++;
-
+public class GravityWell extends Block {
     public static Rand rand = new Rand();
+    public final int effect = timers++;
+    public float gravityRange = 80f;
 
     public GravityWell(String name) {
         super(name);
@@ -51,7 +50,7 @@ public class GravityWell extends Block{
         stats.add(NHStats.gravityRange, gravityRange / tilesize, StatUnit.blocks);
     }
 
-    public class GravityWellBuild extends Building{
+    public class GravityWellBuild extends Building {
         public transient GravityTrapField field;
 
         @Override
@@ -65,7 +64,7 @@ public class GravityWell extends Block{
             return false;
         }
 
-        public void update(){
+        public void update() {
             field.update(this);
         }
 

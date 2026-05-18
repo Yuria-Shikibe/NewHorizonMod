@@ -1,13 +1,11 @@
 package newhorizon.expand.logic.components.action;
 
-import arc.Core;
 import arc.util.Time;
 import arc.util.Tmp;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.tilesize;
 
 public class CameraControlAction extends Action {
     public float worldX, worldY;

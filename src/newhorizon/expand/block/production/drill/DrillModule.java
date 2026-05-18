@@ -1,37 +1,24 @@
 package newhorizon.expand.block.production.drill;
 
 import arc.Core;
-import arc.func.Cons;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.EnumSet;
-import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
-import arc.util.Log;
 import arc.util.Nullable;
-import arc.util.Strings;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Layer;
-import mindustry.type.Item;
-import mindustry.ui.Fonts;
 import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
-import newhorizon.content.NHStats;
-import newhorizon.util.graphic.SpriteUtil;
 
-import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 public class DrillModule extends Block {
@@ -51,7 +38,7 @@ public class DrillModule extends Block {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         drawer.load(this);
     }
@@ -63,17 +50,17 @@ public class DrillModule extends Block {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         drawer.drawPlan(this, plan, list);
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return drawer.finalIcons(this);
     }
 
     @Override
-    public void getRegionsToOutline(Seq<TextureRegion> out){
+    public void getRegionsToOutline(Seq<TextureRegion> out) {
         drawer.getRegionsToOutline(this, out);
     }
 
@@ -83,12 +70,12 @@ public class DrillModule extends Block {
         public float warmup;
 
         @Override
-        public void draw(){
+        public void draw() {
             drawer.draw(this);
         }
 
         @Override
-        public void drawLight(){
+        public void drawLight() {
             super.drawLight();
             drawer.drawLight(this);
         }

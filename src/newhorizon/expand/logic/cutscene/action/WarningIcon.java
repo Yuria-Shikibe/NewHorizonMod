@@ -20,7 +20,8 @@ public class WarningIcon extends ActionLStatement {
         text = ParseUtil.getNextToken(token);
     }
 
-    public WarningIcon() {}
+    public WarningIcon() {
+    }
 
     @Override
     public String getLStatementName() {

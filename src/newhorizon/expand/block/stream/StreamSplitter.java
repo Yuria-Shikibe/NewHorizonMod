@@ -1,15 +1,10 @@
 package newhorizon.expand.block.stream;
 
-import arc.math.geom.Geometry;
 import arc.util.Time;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHStats;
 
-import static mindustry.Vars.tilesize;
-
-public class StreamSplitter extends StreamRepeater{
+public class StreamSplitter extends StreamRepeater {
     public StreamSplitter(String name) {
         super(name);
 
@@ -23,7 +18,7 @@ public class StreamSplitter extends StreamRepeater{
         stats.add(NHStats.streamCap, streamCap[0] * Time.toSeconds, StatUnit.perSecond);
     }
 
-    public class StreamSplitterBuild extends StreamRepeaterBuild{
+    public class StreamSplitterBuild extends StreamRepeaterBuild {
         public StreamBeam streamForward;
         public int lastDirection;
 

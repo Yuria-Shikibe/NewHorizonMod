@@ -28,18 +28,17 @@ import newhorizon.expand.block.production.factory.MultiBlockEntity;
 import static mindustry.Vars.*;
 
 public abstract class BasicMultiBlock extends Block implements MultiBlock {
+    public final int checkTimer = timers++;
     public Seq<Point2> linkPos = new Seq<>();
     public IntSeq linkSize = new IntSeq();
     public boolean canMirror = true;
     public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
 
-    public final int checkTimer = timers++;
-
     public BasicMultiBlock(String name) {
         super(name);
     }
 
-    public void enableRotate(){
+    public void enableRotate() {
         rotate = true;
         rotateDraw = true;
         drawArrow = false;

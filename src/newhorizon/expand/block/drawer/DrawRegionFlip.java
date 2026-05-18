@@ -22,7 +22,8 @@ public class DrawRegionFlip extends DrawBlock {
         this.suffix = suffix;
     }
 
-    public DrawRegionFlip() {}
+    public DrawRegionFlip() {
+    }
 
     @Override
     public void draw(Building build) {
@@ -39,9 +40,9 @@ public class DrawRegionFlip extends DrawBlock {
     }
 
     public void drawRegion(float x, float y, int rotation) {
-        if (rotation % 2 == 0){
+        if (rotation % 2 == 0) {
             Draw.rect(region, x, y);
-        }else {
+        } else {
             Draw.rect(region, x, y, (float) region.width / tilesize * 2f, (float) -region.height / tilesize * 2f, 90);
         }
     }

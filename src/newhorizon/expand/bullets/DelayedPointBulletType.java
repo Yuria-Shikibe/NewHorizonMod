@@ -199,5 +199,6 @@ public class DelayedPointBulletType extends BulletType {
     }
 
     @Override
-    public void handlePierce(Bullet b, float initialHealth, float x, float y) {}
+    public void handlePierce(Bullet b, float initialHealth, float x, float y) {
+    }
 }

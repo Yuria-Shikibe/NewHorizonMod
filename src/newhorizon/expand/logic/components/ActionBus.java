@@ -10,7 +10,9 @@ import static newhorizon.NHVars.cutsceneUI;
  * Extends TimeQueue with skip functionality for cutscenes.
  */
 public class ActionBus extends TimeQueue<Action> {
-    /** Whether the bus is currently skipping */
+    /**
+     * Whether the bus is currently skipping
+     */
     public boolean skipping = false;
 
     /**

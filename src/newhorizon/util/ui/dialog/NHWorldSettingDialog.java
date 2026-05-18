@@ -5,8 +5,8 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHLogic;
 
 
-public class NHWorldSettingDialog extends BaseDialog{
-    public NHWorldSettingDialog(){
+public class NHWorldSettingDialog extends BaseDialog {
+    public NHWorldSettingDialog() {
         super("New Horizon World Settings");
 
         cont.button("Create Default Raid", Icon.logic, () -> {

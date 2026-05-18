@@ -8,9 +8,11 @@ import newhorizon.expand.logic.ActionLStatement;
 
 public class UIShow extends ActionLStatement {
 
-    public UIShow(String[] token) {}
+    public UIShow(String[] token) {
+    }
 
-    public UIShow() {}
+    public UIShow() {
+    }
 
     @Override
     public String getLStatementName() {

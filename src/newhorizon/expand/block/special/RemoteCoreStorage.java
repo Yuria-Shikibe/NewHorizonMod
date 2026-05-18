@@ -50,7 +50,7 @@ public class RemoteCoreStorage extends StorageBlock {
         }
     }
 
-    public boolean shouldLimit(Team team){
+    public boolean shouldLimit(Team team) {
         return !((team == state.rules.waveTeam && !state.rules.pvp) || team.rules().cheat || state.rules.infiniteResources);
     }
 
@@ -68,9 +68,9 @@ public class RemoteCoreStorage extends StorageBlock {
         super.setBars();
         removeBar("items");
         addBar("maxPlace", (RemoteCoreStorageBuild entity) -> new Bar(
-                        () -> Core.bundle.format("nh.bar.max-place", NHGroups.placedRemoteCore[entity.team.id].size, shouldLimit(entity.team)? maxPlaceNum(entity.team): "∞"),
-                        () -> NHGroups.placedRemoteCore[entity.team.id].size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
-                        () -> shouldLimit(entity.team)? (float) NHGroups.placedRemoteCore[entity.team.id].size / maxPlaceNum(entity.team): 1f
+                () -> Core.bundle.format("nh.bar.max-place", NHGroups.placedRemoteCore[entity.team.id].size, shouldLimit(entity.team) ? maxPlaceNum(entity.team) : "∞"),
+                () -> NHGroups.placedRemoteCore[entity.team.id].size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
+                () -> shouldLimit(entity.team) ? (float) NHGroups.placedRemoteCore[entity.team.id].size / maxPlaceNum(entity.team) : 1f
         ));
         addBar("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
         addBar("items", (RemoteCoreStorageBuild entity) -> new Bar(
@@ -145,11 +145,13 @@ public class RemoteCoreStorage extends StorageBlock {
         }
 
         @Override
-        public void drawSelect() {}
+        public void drawSelect() {
+        }
 
         @Override
         public void drawConfigure() {
-            if (core() != null) DrawFunc.posSquareLink(Mathf.equal(warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, 1, 4, true, tile, core());
+            if (core() != null)
+                DrawFunc.posSquareLink(Mathf.equal(warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, 1, 4, true, tile, core());
         }
 
         @Override

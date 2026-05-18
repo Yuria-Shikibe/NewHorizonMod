@@ -9,6 +9,7 @@ import mindustry.world.modules.ItemModule;
 
 public class RemoteStorage extends StorageBlock {
     public float unloaderEfficiency = 0.25f;
+
     public RemoteStorage(String name) {
         super(name);
 
@@ -31,14 +32,15 @@ public class RemoteStorage extends StorageBlock {
 
     public class EnderChestStorageBuild extends StorageBuild {
         public ItemModule tmpItem = new ItemModule();
+
         @Override
         public void updateTile() {
-            if ((Time.time + id) % 60f < unloaderEfficiency * 60){
+            if ((Time.time + id) % 60f < unloaderEfficiency * 60) {
                 if (closestCore() != null) {
                     linkedCore = closestCore();
                     items = closestCore().items;
                 }
-            }else {
+            } else {
                 linkedCore = null;
                 items = tmpItem;
             }
@@ -55,11 +57,12 @@ public class RemoteStorage extends StorageBlock {
         }
 
         @Override
-        public void drawSelect() {}
+        public void drawSelect() {
+        }
 
         @Override
         public boolean canPickup() {
-             return false;
+            return false;
         }
     }
 }

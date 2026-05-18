@@ -26,19 +26,19 @@ public interface TypeDamageBulletType {
 
     String bundleName();
 
-    default void setDamage(BulletType type, float kinetic, float energy){
+    default void setDamage(BulletType type, float kinetic, float energy) {
         type.damage = kinetic;
         type.shieldDamageMultiplier = energy / kinetic;
     }
 
-    default void setDamage(BulletType type, float range, float splash, float kinetic, float energy){
+    default void setDamage(BulletType type, float range, float splash, float kinetic, float energy) {
         type.damage = kinetic;
         type.splashDamage = splash;
         type.splashDamageRadius = range;
         type.shieldDamageMultiplier = energy / kinetic;
     }
 
-    default void setDamage(BulletType type, float range, float kinetic, float energy){
+    default void setDamage(BulletType type, float range, float kinetic, float energy) {
         type.damage = kinetic;
         type.splashDamage = kinetic;
         type.splashDamageRadius = range;

@@ -17,7 +17,10 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
-import newhorizon.content.*;
+import newhorizon.content.NHColor;
+import newhorizon.content.NHFx;
+import newhorizon.content.NHItems;
+import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
@@ -93,7 +96,7 @@ public class ProductionBlock {
 
             consumePower(1f);
             consumeLiquid(NHLiquids.water, 30 / 60f);
-            outputLiquid = new LiquidStack(NHLiquids.quantumLiquid, 18 / 60f );
+            outputLiquid = new LiquidStack(NHLiquids.quantumLiquid, 18 / 60f);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
@@ -135,23 +138,23 @@ public class ProductionBlock {
         }};
 
         titaniumReconstructor = new GenericCrafter("titanium-reconstructor") {{
-                requirements(Category.production, with(
-                        NHItems.tungsten, 30
-                ));
+            requirements(Category.production, with(
+                    NHItems.tungsten, 30
+            ));
 
-                size = 2;
-                health = 600;
-                itemCapacity = 30;
-                craftTime = 60f;
+            size = 2;
+            health = 600;
+            itemCapacity = 30;
+            craftTime = 60f;
 
-                consumePower(90f / 60f);
-                consumeItems(with(NHItems.tungsten, 5));
-                outputItems = with(NHItems.titanium, 4);
+            consumePower(90f / 60f);
+            consumeItems(with(NHItems.tungsten, 5));
+            outputItems = with(NHItems.titanium, 4);
 
-                drawer = new DrawMulti(
-                        new DrawDefault()
-                );
-            }};
+            drawer = new DrawMulti(
+                    new DrawDefault()
+            );
+        }};
 
         resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
             requirements(Category.production, ItemStack.with(
@@ -363,11 +366,13 @@ public class ProductionBlock {
                     }},
                     new DrawRegion("-top"),
                     new DrawTeamTop(),
-                    new DrawRotation() {{
-                        suffix = "-rot";
-                        layer = Layer.blockOver;
-                        drawType = DrawRotation.DRAW_Y_MIRROR;
-                    }
+                    new DrawRotation() {
+                        {
+                            suffix = "-rot";
+                            layer = Layer.blockOver;
+                            drawType = DrawRotation.DRAW_Y_MIRROR;
+                        }
+
                         @Override
                         public void draw(Building build) {
                             if (build instanceof DrillModule.DrillModuleBuild b && b.drillBuild != null) {
@@ -401,11 +406,13 @@ public class ProductionBlock {
                     new DrawLiquidTile(NHLiquids.water),
                     new DrawRegion("-top"),
                     new DrawTeamTop(),
-                    new DrawRotation() {{
-                        suffix = "-rot";
-                        layer = Layer.blockOver;
-                        drawType = DrawRotation.DRAW_Y_MIRROR;
-                    }
+                    new DrawRotation() {
+                        {
+                            suffix = "-rot";
+                            layer = Layer.blockOver;
+                            drawType = DrawRotation.DRAW_Y_MIRROR;
+                        }
+
                         @Override
                         public void draw(Building build) {
                             if (build instanceof DrillModule.DrillModuleBuild b && b.drillBuild != null) {

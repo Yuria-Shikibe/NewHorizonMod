@@ -7,7 +7,6 @@ import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ui.MarkStyle;
 
 import static mindustry.Vars.headless;
-import static newhorizon.NHVars.cutsceneUI;
 
 public class MarkWorldAction extends Action {
     public int style;

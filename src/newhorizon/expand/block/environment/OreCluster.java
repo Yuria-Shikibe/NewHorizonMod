@@ -22,7 +22,7 @@ public class OreCluster extends Block {
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return variants == 0 ? super.icons() : new TextureRegion[]{Core.atlas.find(name + "1")};
     }
 

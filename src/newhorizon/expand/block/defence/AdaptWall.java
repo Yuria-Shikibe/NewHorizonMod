@@ -9,54 +9,43 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.Vars;
-import mindustry.game.Team;
 import mindustry.gen.Building;
-import mindustry.gen.Bullet;
 import mindustry.gen.Call;
 import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 import mindustry.world.blocks.TileBitmask;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.StatUnit;
-import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
-import newhorizon.content.NHLiquids;
 import newhorizon.content.NHStats;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.*;
-import static newhorizon.util.graphic.SpriteUtil.*;
 
 public class AdaptWall extends Wall {
+    public static final Point2[] checkPos = {
+            new Point2(0, 1),
+            new Point2(1, 0),
+            new Point2(0, -1),
+            new Point2(-1, 0),
+
+            new Point2(1, 1),
+            new Point2(1, -1),
+            new Point2(-1, -1),
+            new Point2(-1, 1),
+
+            new Point2(0, 2),
+            new Point2(2, 0),
+            new Point2(0, -2),
+            new Point2(-2, 0),
+    };
     private final Seq<Building> toDamage = new Seq<>();
     private final Queue<Building> queue = new Queue<>();
     public TextureRegion[] atlasRegion;
     public float damageReduction = 0.1f;
     public float maxShareStep = 2;
-
     public TextureRegion[] innerAtlasRegions;
     private boolean innerFound = false;
-
-    public static final Point2[] checkPos = {
-            new Point2( 0,  1),
-            new Point2( 1,  0),
-            new Point2( 0, -1),
-            new Point2(-1,  0),
-
-            new Point2( 1,  1),
-            new Point2( 1, -1),
-            new Point2(-1, -1),
-            new Point2(-1,  1),
-
-            new Point2( 0,  2),
-            new Point2( 2,  0),
-            new Point2( 0, -2),
-            new Point2(-2,  0),
-    };
 
 
     public AdaptWall(String name) {
@@ -94,17 +83,17 @@ public class AdaptWall extends Wall {
         public void updateDrawRegion() {
             drawIndex = 0;
             drawInnerIndex = 0;
-            for(int i = 0; i < 8; i++){
+            for (int i = 0; i < 8; i++) {
                 Tile other = tile.nearby(Geometry.d8[i]);
-                if(checkAutotileSame(other)){
+                if (checkAutotileSame(other)) {
                     drawIndex |= (1 << i);
                 }
             }
             drawIndex = TileBitmask.values[drawIndex];
             if (drawIndex == 13) {
-                for(int i = 0; i < 4; i++){
+                for (int i = 0; i < 4; i++) {
                     Tile other1 = tile.nearby(Geometry.d4[i]);
-                    if(checkAutotileInnerSame(other1)) {
+                    if (checkAutotileInnerSame(other1)) {
                         drawInnerIndex |= (1 << i);
                     }
                 }
@@ -132,11 +121,11 @@ public class AdaptWall extends Wall {
             return checkAutotileSame(build) && Mathf.dstm(tileX(), tileY(), build.tileX(), build.tileY()) <= maxShareStep;
         }
 
-        public boolean checkAutotileSame(Tile other){
+        public boolean checkAutotileSame(Tile other) {
             return other != null && checkAutotileSame(other.build);
         }
 
-        public boolean checkAutotileInnerSame(Tile other){
+        public boolean checkAutotileInnerSame(Tile other) {
             return other != null && checkAutotileInnerSame(other.build);
         }
 
@@ -144,7 +133,7 @@ public class AdaptWall extends Wall {
             return build != null && build.block == this.block;
         }
 
-        public boolean checkAutotileInnerSame(Building build){
+        public boolean checkAutotileInnerSame(Building build) {
             return build instanceof AdaptWallBuild wall && build.block == this.block && wall.drawIndex == 13;
         }
 
@@ -205,7 +194,7 @@ public class AdaptWall extends Wall {
         public void damageShared(Building building, float damage) {
             if (!building.dead()) {
                 float dm = state.rules.blockHealth(team);
-                damage = Mathf.zero(dm)? building.health + 1: damage / dm;
+                damage = Mathf.zero(dm) ? building.health + 1 : damage / dm;
                 if (!net.client()) building.health -= damage;
                 building.healthChanged();
                 if (building.health <= 0) Call.buildDestroyed(building);

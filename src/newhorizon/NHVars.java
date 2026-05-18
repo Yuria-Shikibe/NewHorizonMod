@@ -2,9 +2,9 @@ package newhorizon;
 
 import arc.Core;
 import mindustry.Vars;
+import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.logic.components.CutsceneControl;
 import newhorizon.expand.logic.components.CutsceneUI;
-import newhorizon.expand.game.NHWorldData;
 import newhorizon.util.game.UpdateProxy;
 import newhorizon.util.graphic.ScreenShaderDrawer;
 import newhorizon.util.ui.TableFunc;

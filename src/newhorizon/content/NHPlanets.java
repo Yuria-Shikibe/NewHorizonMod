@@ -17,7 +17,7 @@ public class NHPlanets {
     public static Planet midantha;
 
     public static void load() {
-        midantha = new Planet("midantha", Planets.sun, 1f, 2){{
+        midantha = new Planet("midantha", Planets.sun, 1f, 2) {{
             visible = true;
             accessible = true;
             alwaysUnlocked = true;

@@ -46,7 +46,7 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
         super.init(b);
         applyExtraMultiplier(b);
 
-        if (velocityDecay){
+        if (velocityDecay) {
             b.lifetime = b.lifetime * 2;
             b.fdata = b.lifetime;
             b.lifetime += velocityStaticTime;
@@ -87,29 +87,31 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
     }
 
     @Override
-    public void update(Bullet b){
-        if (velocityDecay) b.vel.setLength(Interp.reverse.apply((b.time / b.lifetime)) * b.fdata / b.lifetime * speed * (b.data instanceof Float scl? scl: 1f));
-        if (hasAccel) b.vel.setLength(velocityBegin + (accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
+    public void update(Bullet b) {
+        if (velocityDecay)
+            b.vel.setLength(Interp.reverse.apply((b.time / b.lifetime)) * b.fdata / b.lifetime * speed * (b.data instanceof Float scl ? scl : 1f));
+        if (hasAccel)
+            b.vel.setLength(velocityBegin + (accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
 
         super.update(b);
 
-        if(artilleryTrail && b.timer(0, (3 + b.fslope() * 2f) * trailMult)){
+        if (artilleryTrail && b.timer(0, (3 + b.fslope() * 2f) * trailMult)) {
             trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : b.fslope() * trailSize, backColor);
         }
     }
 
     @Override
     public void updateTrail(Bullet b) {
-        if(!headless && trailLength > 0){
-            if(b.trail == null){
+        if (!headless && trailLength > 0) {
+            if (b.trail == null) {
                 b.trail = new Trail(trailLength);
             }
             b.trail.length = trailLength;
-            if (hasTracer){
-                if (b.timer(1, tracerUpdateInterval)){
+            if (hasTracer) {
+                if (b.timer(1, tracerUpdateInterval)) {
                     b.trail.update(b.x + Mathf.random(-tracerRandRange, tracerRandRange), b.y + Mathf.random(-tracerRandRange, tracerRandRange), trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)));
                 }
-            }else {
+            } else {
                 b.trail.update(b.x, b.y, trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)));
             }
         }

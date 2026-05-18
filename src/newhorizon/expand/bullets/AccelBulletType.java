@@ -61,7 +61,8 @@ public class AccelBulletType extends BasicBulletType {
 
     @Override
     public void update(Bullet b) {
-        if (accelerateBegin < 1) b.vel.setLength((velocityBegin + accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
+        if (accelerateBegin < 1)
+            b.vel.setLength((velocityBegin + accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
         super.update(b);
     }
 }

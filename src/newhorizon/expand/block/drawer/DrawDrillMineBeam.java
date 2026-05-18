@@ -10,7 +10,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
@@ -35,7 +34,7 @@ public class DrawDrillMineBeam extends DrawBlock {
 
     @Override
     public void draw(Building build) {
-        if (build instanceof Drill.DrillBuild drill){
+        if (build instanceof Drill.DrillBuild drill) {
             float timeDrilled = drill.timeDrilled / 2.5f;
             float xOffset = Mathf.randomSeed(build.id, -moveScaleRand, moveScaleRand);
             float yOffset = Mathf.randomSeed(build.id >> 2, -moveScaleRand, moveScaleRand);

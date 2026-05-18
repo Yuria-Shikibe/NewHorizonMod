@@ -1,8 +1,6 @@
 package newhorizon.expand.block.defence;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
@@ -23,9 +21,6 @@ import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.*;
-import newhorizon.content.NHColor;
-import newhorizon.content.NHContent;
-import newhorizon.content.NHLiquids;
 import newhorizon.content.NHStats;
 
 import static mindustry.Vars.*;
@@ -48,7 +43,7 @@ public class AdaptRegenProjector extends Block {
     public Color baseColor = Pal.heal;
     public Effect effect = Fx.regenParticle;
 
-    public AdaptRegenProjector(String name){
+    public AdaptRegenProjector(String name) {
         super(name);
         solid = true;
         update = true;
@@ -63,7 +58,7 @@ public class AdaptRegenProjector extends Block {
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
 
         x *= tilesize;
@@ -76,36 +71,36 @@ public class AdaptRegenProjector extends Block {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         drawer.drawPlan(this, plan, list);
     }
 
     @Override
-    public boolean outputsItems(){
+    public boolean outputsItems() {
         return false;
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return drawer.finalIcons(this);
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         drawer.load(this);
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         stats.timePeriod = optionalUseTime;
         super.setStats();
 
-        stats.add(Stat.repairTime, (int)(1f / (healPercent / 100f) / 60f), StatUnit.seconds);
-        stats.add(NHStats.baseRepairAmount, (int)(baseHeal * 60f), StatUnit.perSecond);
+        stats.add(Stat.repairTime, (int) (1f / (healPercent / 100f) / 60f), StatUnit.seconds);
+        stats.add(NHStats.baseRepairAmount, (int) (baseHeal * 60f), StatUnit.perSecond);
         stats.add(Stat.range, range, StatUnit.blocks);
 
-        if(findConsumer(c -> c instanceof ConsumeItems) instanceof ConsumeItems cons){
+        if (findConsumer(c -> c instanceof ConsumeItems) instanceof ConsumeItems cons) {
             stats.remove(Stat.booster);
             stats.add(Stat.booster, StatValues.itemBoosters(
                     "{0}" + StatUnit.timesSpeed.localized(),
@@ -122,15 +117,15 @@ public class AdaptRegenProjector extends Block {
         public boolean anyTargets = false;
         public boolean didRegen = false;
 
-        public void updateTargets(){
+        public void updateTargets() {
             targets.clear();
             taken.clear();
             indexer.eachBlock(team, Tmp.r1.setCentered(x, y, range * tilesize), b -> true, targets::add);
         }
 
         @Override
-        public void updateTile(){
-            if(lastChange != world.tileChanges){
+        public void updateTile() {
+            if (lastChange != world.tileChanges) {
                 lastChange = world.tileChanges;
                 updateTargets();
             }
@@ -142,14 +137,14 @@ public class AdaptRegenProjector extends Block {
             anyTargets = false;
 
             //no healing when suppressed
-            if(checkSuppression()){
+            if (checkSuppression()) {
                 return;
             }
 
             anyTargets = targets.contains(Building::damaged);
 
-            if(efficiency > 0){
-                if((optionalTimer += Time.delta * optionalEfficiency) >= optionalUseTime){
+            if (efficiency > 0) {
+                if ((optionalTimer += Time.delta * optionalEfficiency) >= optionalUseTime) {
                     consume();
                     optionalTimer = 0f;
                 }
@@ -157,8 +152,8 @@ public class AdaptRegenProjector extends Block {
                 float healAmount = Mathf.lerp(1f, optionalMultiplier, optionalEfficiency) * healPercent;
 
                 //use Math.max to prevent stacking
-                for(var build : targets){
-                    if(!build.damaged() || build.isHealSuppressed()) continue;
+                for (var build : targets) {
+                    if (!build.damaged() || build.isHealSuppressed()) continue;
 
                     didRegen = true;
 
@@ -167,18 +162,18 @@ public class AdaptRegenProjector extends Block {
                     float value = mendMap.get(pos);
                     mendMap.put(pos, Math.min(Math.max(value, healAmount * edelta() * build.block.health / 100f), build.block.health - build.health));
 
-                    if(value <= 0 && Mathf.chanceDelta(effectChance * build.block.size * build.block.size)){
-                        effect.at(build.x + Mathf.range(build.block.size * tilesize/2f - 1f), build.y + Mathf.range(build.block.size * tilesize/2f - 1f));
+                    if (value <= 0 && Mathf.chanceDelta(effectChance * build.block.size * build.block.size)) {
+                        effect.at(build.x + Mathf.range(build.block.size * tilesize / 2f - 1f), build.y + Mathf.range(build.block.size * tilesize / 2f - 1f));
                     }
                 }
             }
 
-            if(lastUpdateFrame != state.updateId){
+            if (lastUpdateFrame != state.updateId) {
                 lastUpdateFrame = state.updateId;
 
-                for(var entry : mendMap.entries()){
+                for (var entry : mendMap.entries()) {
                     var build = world.build(entry.key);
-                    if(build != null){
+                    if (build != null) {
                         build.heal(Math.max(entry.value, baseHeal * edelta()));
                         build.recentlyHealed();
                     }
@@ -188,37 +183,37 @@ public class AdaptRegenProjector extends Block {
         }
 
         @Override
-        public boolean shouldConsume(){
+        public boolean shouldConsume() {
             return anyTargets;
         }
 
         @Override
-        public void drawSelect(){
+        public void drawSelect() {
             super.drawSelect();
 
             Drawf.dashSquare(baseColor, x, y, range * tilesize);
-            for(var target : targets){
+            for (var target : targets) {
                 Drawf.selected(target, Tmp.c1.set(baseColor).a(Mathf.absin(4f, 1f)));
             }
         }
 
         @Override
-        public float warmup(){
+        public float warmup() {
             return warmup;
         }
 
         @Override
-        public float totalProgress(){
+        public float totalProgress() {
             return totalTime;
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             drawer.draw(this);
         }
 
         @Override
-        public void drawLight(){
+        public void drawLight() {
             super.drawLight();
             drawer.drawLight(this);
         }

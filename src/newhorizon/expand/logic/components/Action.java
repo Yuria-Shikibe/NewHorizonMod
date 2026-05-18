@@ -8,7 +8,8 @@ public abstract class Action implements TimeQueue.Timed {
     public float lifeTimer = 0f;
     public float duration = 0f;
 
-    public Action() {}
+    public Action() {
+    }
 
     public boolean skippable() {
         return true;
@@ -18,9 +19,11 @@ public abstract class Action implements TimeQueue.Timed {
         return "Action";
     }
 
-    public void parseTokens(String[] tokens) {}
+    public void parseTokens(String[] tokens) {
+    }
 
-    public void postInit() {}
+    public void postInit() {
+    }
 
     @Override
     public void update() {
@@ -31,15 +34,20 @@ public abstract class Action implements TimeQueue.Timed {
     }
 
     @Override
-    public boolean complete() {return lifeTimer >= duration;}
+    public boolean complete() {
+        return lifeTimer >= duration;
+    }
 
     @Override
-    public void begin(){}
+    public void begin() {
+    }
 
     @Override
-    public void end(){}
+    public void end() {
+    }
 
-    public void act(){}
+    public void act() {
+    }
 
     public float progress() {
         if (duration <= 0f) return 0f;

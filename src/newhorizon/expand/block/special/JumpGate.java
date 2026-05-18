@@ -184,11 +184,11 @@ public class JumpGate extends Block {
                         t.table(req -> {
                             req.right();
                             int i = 0;
-                            for (ItemStack stack: recipe.inputItem) {
+                            for (ItemStack stack : recipe.inputItem) {
                                 if (++i % 6 == 0) req.row();
                                 req.add(StatValues.stack(stack.item, stack.amount, true)).pad(5);
                             }
-                            for (PayloadStack stack: recipe.inputPayload) {
+                            for (PayloadStack stack : recipe.inputPayload) {
                                 if (++i % 6 == 0) req.row();
                                 req.add(StatValues.stack(stack.item, stack.amount, true)).pad(5);
                             }
@@ -202,21 +202,21 @@ public class JumpGate extends Block {
         });
     }
 
-    public static class UnitRecipe{
-        public UnitType unitType = UnitTypes.alpha;
-        public float craftTime = 10 * 60f;
-        public Recipe recipe = Recipe.empty;
-    }
-
-    public Stack getReqStack(UnlockableContent content, Prov<CharSequence> display, Boolp valid){
+    public Stack getReqStack(UnlockableContent content, Prov<CharSequence> display, Boolp valid) {
         return new Stack(
                 new Table(o -> o.left().add(new Image(content.fullIcon)).size(32f).scaling(Scaling.fit)),
                 new Table(t -> {
                     t.left().bottom();
-                    t.label(() -> (valid.get()? "[accent]": "[negstat]") + display.get()).style(Styles.outlineLabel);
+                    t.label(() -> (valid.get() ? "[accent]" : "[negstat]") + display.get()).style(Styles.outlineLabel);
                     t.pack();
                 })
         );
+    }
+
+    public static class UnitRecipe {
+        public UnitType unitType = UnitTypes.alpha;
+        public float craftTime = 10 * 60f;
+        public Recipe recipe = Recipe.empty;
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
@@ -305,7 +305,7 @@ public class JumpGate extends Block {
 
         @Override
         public void drawConfigure() {
-            drawPlaceText(unitType() == null? "@empty": unitType().localizedName + " x" + spawnCount, tileX(), tileY(), true);
+            drawPlaceText(unitType() == null ? "@empty" : unitType().localizedName + " x" + spawnCount, tileX(), tileY(), true);
         }
 
         public void changePlan(int idx) {
@@ -323,7 +323,7 @@ public class JumpGate extends Block {
             speedMultiplier = 1f;
         }
 
-        public void findTiles(){
+        public void findTiles() {
             tiles = NHFunc.ableToSpawn(unitType(), x, y, maxRadius);
         }
 
@@ -349,7 +349,7 @@ public class JumpGate extends Block {
             super.updateTile();
             warmup = Mathf.lerp(warmup, efficiency, 0.01f);
             spawnWarmup = Mathf.lerp(spawnWarmup, efficiency, 0.01f);
-            items = closestCore() == null? tmpItem: closestCore().items;
+            items = closestCore() == null ? tmpItem : closestCore().items;
             if (unitRecipe() == null || unitType() == null) {
                 progress = 0f;
                 return;
@@ -359,7 +359,7 @@ public class JumpGate extends Block {
             }
             if (progress >= 1) {
                 findTiles();
-                for (int i = 0; i < spawnCount; i++){
+                for (int i = 0; i < spawnCount; i++) {
                     spawnUnit();
                 }
                 consume();
@@ -400,12 +400,12 @@ public class JumpGate extends Block {
                                     new Table(req -> {
                                         req.right();
                                         int j = 0;
-                                        for (ItemStack stack: unitRecipe.recipe.inputItem) {
+                                        for (ItemStack stack : unitRecipe.recipe.inputItem) {
                                             req.left().add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(items.get(stack.item))),
                                                     () -> items.has(stack.item, stack.amount * spawnCount))).pad(5);
                                             if (++j % 2 == 0) req.row();
                                         }
-                                        for (PayloadStack stack: unitRecipe.recipe.inputPayload) {
+                                        for (PayloadStack stack : unitRecipe.recipe.inputPayload) {
                                             req.left().add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(getPayloads().get(stack.item))),
                                                     () -> getPayloads().get(stack.item) >= stack.amount * spawnCount)).pad(5);
                                             if (++j % 2 == 0) req.row();
@@ -415,7 +415,7 @@ public class JumpGate extends Block {
                             button.update(() -> {
                                 if (unitRecipe() == null) {
                                     button.setChecked(false);
-                                }else {
+                                } else {
                                     button.setChecked(unitRecipe == unitRecipe());
                                 }
                             });
@@ -464,7 +464,7 @@ public class JumpGate extends Block {
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            if (revision == 2){
+            if (revision == 2) {
                 speedMultiplier = read.f();
                 progress = read.f();
                 recipeIndex = read.i();

@@ -1,17 +1,19 @@
 package newhorizon.util.struct;
 
 import arc.struct.Queue;
-import arc.util.Log;
-import newhorizon.expand.logic.components.Action;
 
 /**
  * A queue of timed elements that run sequentially.
  * Supports pause/resume, insertion, and state query.
  */
 public class TimeQueue<T extends TimeQueue.Timed> {
-    /** Pending items queue */
+    /**
+     * Pending items queue
+     */
     public Queue<T> queue = new Queue<>();
-    /** Currently executing item */
+    /**
+     * Currently executing item
+     */
     public T current;
 
     public TimeQueue() {
@@ -115,19 +117,29 @@ public class TimeQueue<T extends TimeQueue.Timed> {
      * Supports pause/resume and skip functionality.
      */
     public interface Timed {
-        /** Called when the element starts execution */
+        /**
+         * Called when the element starts execution
+         */
         void begin();
 
-        /** Called every frame while executing */
+        /**
+         * Called every frame while executing
+         */
         void update();
 
-        /** Called when the element finishes execution */
+        /**
+         * Called when the element finishes execution
+         */
         void end();
 
-        /** Check if the element has completed */
+        /**
+         * Check if the element has completed
+         */
         boolean complete();
 
-        /** Skip the element execution */
+        /**
+         * Skip the element execution
+         */
         default void skip() {
         }
     }

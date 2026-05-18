@@ -8,7 +8,7 @@ import mindustry.ui.Bar;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.NHLiquids;
 
-public class FloodCore extends CoreBlock implements FloodBlock{
+public class FloodCore extends CoreBlock implements FloodBlock {
     public float[] packedData = {
             10f / 60f, // use 10 every second
             5f / 60f, // 100 seconds to heal, scale by stat multiplier
@@ -51,15 +51,15 @@ public class FloodCore extends CoreBlock implements FloodBlock{
         ));
     }
 
-    public class FloodCoreBuild extends CoreBuild implements FloodBuilding{
+    public class FloodCoreBuild extends CoreBuild implements FloodBuilding {
         @Override
-        public void updateTile(){
+        public void updateTile() {
             dumpLiquid(this);
             applyHealing(this);
         }
 
         @Override
-        public boolean acceptLiquid(Building source, Liquid liquid){
+        public boolean acceptLiquid(Building source, Liquid liquid) {
             return NHLiquids.floodLiquid.contains(liquid);
         }
 

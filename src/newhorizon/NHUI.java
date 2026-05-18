@@ -76,12 +76,11 @@ public class NHUI {
         });
 
 
-
-        try{
+        try {
             BaseDialog menu = Reflect.get(MapEditorDialog.class, ui.editor, "menu");
             menu.cont.row().button("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), 30,
                     () -> nhWorldSettingDialog.show()).padTop(1f).size(180f * 2 + 10f, 60f);
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.err(e);
         }
     }
@@ -160,7 +159,9 @@ public class NHUI {
                 }
             });
 
-            b.update(() -> {if (state.isMenu()) b.setChecked(false);});
+            b.update(() -> {
+                if (state.isMenu()) b.setChecked(false);
+            });
 
             t.table(bl -> {
                 bl.table(table -> {
@@ -177,7 +178,7 @@ public class NHUI {
     public static void rebuildEventList() {
         eventList.clear();
         eventList.align(Align.topLeft).defaults().growX().fillY().row();
-        for (var eventHudMarker: cutsceneUI.markers) {
+        for (var eventHudMarker : cutsceneUI.markers) {
             Boolp shown = eventHudMarker::completed;
             DelayCollapser col = new DelayCollapser(eventHudMarker.getDisplayStack(), shown.get());
             col.setCollapsed(true, shown);
@@ -187,9 +188,9 @@ public class NHUI {
 
     public static String getDisplayObjectiveCount() {
         int activeCount = 0;
-        for (var mapObjective: state.rules.objectives) {
+        for (var mapObjective : state.rules.objectives) {
             if (mapObjective.qualified() && !mapObjective.hidden) {
-                activeCount ++;
+                activeCount++;
             }
         }
         return activeCount == 0 ? "[lightgray]No Objective[]" : activeCount + " Objective(s)";

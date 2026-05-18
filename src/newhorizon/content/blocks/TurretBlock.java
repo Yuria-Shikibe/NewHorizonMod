@@ -3,7 +3,6 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -14,11 +13,9 @@ import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.ArtilleryBulletType;
-import mindustry.entities.bullet.PointBulletType;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
-import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -27,12 +24,10 @@ import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
-import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
-import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.drawer.DrawArrowSequence;
 import newhorizon.expand.block.drawer.FlipRegionPart;
@@ -45,11 +40,9 @@ import newhorizon.expand.bullets.UpgradePointLaserBulletType;
 import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
-import newhorizon.expand.bullets.adapt.TrajectoryBulletType;
 import newhorizon.expand.game.NHUnitSorts;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
-import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {
@@ -470,9 +463,9 @@ public class TurretBlock {
             coolant = consumeCoolant(0.2F);
             coolantMultiplier = 2.5f;
 
-            buildType = () -> new ItemTurretBuild(){
+            buildType = () -> new ItemTurretBuild() {
                 @Override
-                protected void turnToTarget(float targetRot){
+                protected void turnToTarget(float targetRot) {
                     rotation = Angles.moveToward(rotation, targetRot, rotateSpeed * delta() * potentialEfficiency * Interp.pow3Out.apply(Interp.reverse.apply(curRecoil)));
                 }
             };
@@ -897,9 +890,9 @@ public class TurretBlock {
                         collidesAir = false;
                         collidesTiles = false;
                         scaledSplashDamage = true;
-                        
+
                         rangeChange = 30f;
-                        
+
                         speed = 6f;
                         hitShake = 1f;
                         inaccuracy = 4;
@@ -968,21 +961,21 @@ public class TurretBlock {
                     }}
             );
             shooter(
-                    NHItems.metalOxhydrigen, new ShootMulti(new ShootBarrel(){{
+                    NHItems.metalOxhydrigen, new ShootMulti(new ShootBarrel() {{
                         barrels = new float[]{5f, -3f, 0, -5f, -3f, 0, 11f, -2f, 0, -11f, -2f, 0,};
                         shots = 4;
-                    }}, new ShootPattern(){{
+                    }}, new ShootPattern() {{
                         shots = 3;
                         shotDelay = 12f;
                     }}),
-                    NHItems.carbide, new ShootMulti(new ShootBarrel(){{
+                    NHItems.carbide, new ShootMulti(new ShootBarrel() {{
                         barrels = new float[]{5.5f, -3f, 0, -5.5f, -3f, 0, 0, -3, 0, 11f, -2f, 0, -11f, -2f, 0,};
                         shots = 5;
-                    }}, new ShootPattern(){{
+                    }}, new ShootPattern() {{
                         shots = 2;
                         shotDelay = 20f;
                     }}),
-                    NHItems.fusionEnergy, new ShootBarrel(){{
+                    NHItems.fusionEnergy, new ShootBarrel() {{
                         barrels = new float[]{
                                 -5f, -2f, 0,
                                 11f, -3f, 0,
@@ -992,7 +985,7 @@ public class TurretBlock {
                         shots = 8;
                         shotDelay = 5f;
                     }},
-                    NHItems.thermoCoreNegative, new ShootBarrel(){{
+                    NHItems.thermoCoreNegative, new ShootBarrel() {{
                         barrels = new float[]{
                                 -5f, -2f, 0,
                                 11f, -3f, 0,
@@ -1003,14 +996,14 @@ public class TurretBlock {
                         shotDelay = 9f;
                     }}
             );
-            shoot = new ShootBarrel(){{
+            shoot = new ShootBarrel() {{
                 barrels = new float[]{5f, -3f, 0, -5f, -3f, 0, 11f, -2f, 0, -11f, -2f, 0,};
                 shots = 4;
             }};
 
             coolant = new ConsumeCoolant(0.6f);
         }};
-        vortex = new ShootMatchTurret("vortex"){{
+        vortex = new ShootMatchTurret("vortex") {{
             requirements(Category.turret, with(
                     NHItems.multipleSteel, 120,
                     NHItems.seniorProcessor, 80,
@@ -1135,30 +1128,34 @@ public class TurretBlock {
                 smokeEffect = Fx.shootSmokeDisperse;
                 backColor = hitColor = lightColor = trailColor = NHItems.irayrondPanel.color;
             }});
-            shooter(NHItems.multipleSteel, new ShootHelix(){{
-                mag = 2f;
-                scl = 3f;
-                offset = Mathf.PI / 2f;
-            }
+            shooter(NHItems.multipleSteel, new ShootHelix() {
+                {
+                    mag = 2f;
+                    scl = 3f;
+                    offset = Mathf.PI / 2f;
+                }
+
                 @Override
-                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer){
-                    for(int i = 0; i < shots; i++){
-                        for(int sign : Mathf.signs){
+                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer) {
+                    for (int i = 0; i < shots; i++) {
+                        for (int sign : Mathf.signs) {
                             handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i);
                             handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
                                     b -> b.moveRelative(0f, Mathf.sin(b.time + offset, scl, mag * sign)));
                         }
                     }
                 }
-            }, NHItems.phaseFabric, new ShootHelix(){{
-                mag = 2f;
-                scl = 3f;
-                offset = Mathf.PI / 2f;
-            }
+            }, NHItems.phaseFabric, new ShootHelix() {
+                {
+                    mag = 2f;
+                    scl = 3f;
+                    offset = Mathf.PI / 2f;
+                }
+
                 @Override
-                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer){
-                    for(int i = 0; i < shots; i++){
-                        for(int sign : Mathf.signs){
+                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer) {
+                    for (int i = 0; i < shots; i++) {
+                        for (int sign : Mathf.signs) {
                             handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
                                     b -> b.moveRelative(0f, Mathf.sin(b.time + offset, scl, mag * sign)));
                             handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
@@ -1166,15 +1163,17 @@ public class TurretBlock {
                         }
                     }
                 }
-            }, NHItems.irayrondPanel, new ShootHelix(){{
-                mag = 2f;
-                scl = 2f;
-                offset = Mathf.PI * 0.75f;
-            }
+            }, NHItems.irayrondPanel, new ShootHelix() {
+                {
+                    mag = 2f;
+                    scl = 2f;
+                    offset = Mathf.PI * 0.75f;
+                }
+
                 @Override
-                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer){
-                    for(int i = 0; i < shots; i++){
-                        for(int sign : Mathf.signs){
+                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer) {
+                    for (int i = 0; i < shots; i++) {
+                        for (int sign : Mathf.signs) {
                             handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i);
                             handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
                                     b -> b.moveRelative(0f, Mathf.sin(b.time + offset, scl, mag * sign)));

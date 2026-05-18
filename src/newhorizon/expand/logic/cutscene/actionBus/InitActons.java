@@ -12,7 +12,8 @@ public class InitActons extends ActionLStatement {
     public InitActons(String[] token) {
     }
 
-    public InitActons() {}
+    public InitActons() {
+    }
 
     @Override
     public String getLStatementName() {

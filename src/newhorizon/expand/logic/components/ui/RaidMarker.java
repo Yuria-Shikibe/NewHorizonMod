@@ -1,6 +1,5 @@
 package newhorizon.expand.logic.components.ui;
 
-import arc.Core;
 import arc.func.Prov;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -10,7 +9,7 @@ import arc.util.Tmp;
 import mindustry.core.UI;
 import newhorizon.util.graphic.DrawFunc;
 
-public class RaidMarker extends HudMarker{
+public class RaidMarker extends HudMarker {
 
     @Override
     public void drawOnWorld() {
@@ -24,7 +23,7 @@ public class RaidMarker extends HudMarker{
     }
 
     @Override
-    public void drawArrow(){
+    public void drawArrow() {
         float space = 6f;
         Tmp.v1.trns(angle + 180, getCenterSize() * 2f + 18 * getScale()).add(originVec);
 

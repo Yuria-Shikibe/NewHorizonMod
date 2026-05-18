@@ -8,7 +8,7 @@ import mindustry.graphics.Trail;
 
 import static mindustry.Vars.headless;
 
-public class RailRaidBulletType extends BasicRaidBulletType{
+public class RailRaidBulletType extends BasicRaidBulletType {
     public int railCount = 2;
     public int railLength = 15;
     public float railWidth = 4f;
@@ -25,7 +25,7 @@ public class RailRaidBulletType extends BasicRaidBulletType{
     }
 
     @Override
-    public void removed(Bullet b){
+    public void removed(Bullet b) {
         super.removed(b);
         if (!(b.data() instanceof Trail[])) return;
         Trail[] sideTrails = (Trail[]) b.data;
@@ -68,7 +68,7 @@ public class RailRaidBulletType extends BasicRaidBulletType{
                 if (sideTrails[i] != null) {
                     Tmp.v1.trns(90, ((railCount - 1) * railSpacing) / 2f - railSpacing * i).rotate(b.rotation()).add(b);
                     sideTrails[i].update(Tmp.v1.x, Tmp.v1.y, trailInterp.apply(b.fin()));
-                }else {
+                } else {
                     sideTrails[i] = new Trail(railLength);
                 }
             }

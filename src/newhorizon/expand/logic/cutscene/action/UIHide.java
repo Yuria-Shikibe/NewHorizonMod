@@ -8,9 +8,11 @@ import newhorizon.expand.logic.ActionLStatement;
 
 public class UIHide extends ActionLStatement {
 
-    public UIHide(String[] token) {}
+    public UIHide(String[] token) {
+    }
 
-    public UIHide() {}
+    public UIHide() {
+    }
 
     @Override
     public String getLStatementName() {

@@ -25,8 +25,8 @@ import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
 import newhorizon.NHSetting;
-import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.struct.Vec2Seq;
 
@@ -1373,7 +1373,7 @@ public class NHFx {
         }));
     }
 
-    public static Effect shootCircle(float size){
+    public static Effect shootCircle(float size) {
         return new Effect(45f, e -> {
             color(e.color, Color.white, e.fout() * 0.75f);
             rand.setSeed(e.id);

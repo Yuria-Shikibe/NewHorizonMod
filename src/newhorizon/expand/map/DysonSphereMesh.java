@@ -14,11 +14,10 @@ import mindustry.type.Planet;
 import newhorizon.content.NHColor;
 
 public class DysonSphereMesh extends PlanetMesh {
-    static Mat3D mat = new Mat3D();
-
     public static final PlanetGrid grid = PlanetGrid.create(0);
     public static final Vec3[] corners = new Vec3[grid.tiles.length];
     public static final int[][] edges = new int[grid.edges.length][2];
+    static Mat3D mat = new Mat3D();
 
     static {
         for (PlanetGrid.Ptile tile : grid.tiles) {
@@ -32,28 +31,28 @@ public class DysonSphereMesh extends PlanetMesh {
 
     public float speed = 0.32f;
 
-    public DysonSphereMesh(Planet planet, float radius){
-        super(planet, MeshBuilder.buildHex(new HexMesher(){
+    public DysonSphereMesh(Planet planet, float radius) {
+        super(planet, MeshBuilder.buildHex(new HexMesher() {
             @Override
-            public float getHeight(Vec3 position){
+            public float getHeight(Vec3 position) {
                 return 1f;
             }
 
             @Override
-            public void getColor(Vec3 position, Color out){
+            public void getColor(Vec3 position, Color out) {
                 if (cornerRange(position, 3)) {
                     out.set(NHColor.darkEnrFront);
-                }else if (cornerRange(position, 5, 9)) {
+                } else if (cornerRange(position, 5, 9)) {
                     out.set(Pal.darkerMetal);
-                }else if (!cornerRange(position, 9)){
+                } else if (!cornerRange(position, 9)) {
                     if (edgeRange(position, 3f)) {
                         out.set(NHColor.darkEnrFront);
-                    }else if (edgeRange(position, 5f)) {
+                    } else if (edgeRange(position, 5f)) {
                         out.set(Pal.darkerMetal);
-                    }else {
+                    } else {
                         out.a(0);
                     }
-                }else {
+                } else {
                     out.a(0);
                 }
             }
@@ -78,7 +77,7 @@ public class DysonSphereMesh extends PlanetMesh {
              */
 
             @Override
-            public boolean skip(Vec3 position){
+            public boolean skip(Vec3 position) {
                 getColor(position, Tmp.c1);
                 return Tmp.c1.a == 0;
             }
@@ -89,13 +88,13 @@ public class DysonSphereMesh extends PlanetMesh {
 
             public boolean cornerRange(Vec3 vec, float min, float max) {
                 Tmp.v31.set(vec);
-                for (Vec3 v: corners) {
+                for (Vec3 v : corners) {
                     if (Tmp.v31.angle(v) > min && Tmp.v31.angle(v) < max) return true;
                 }
                 return false;
             }
 
-            public boolean edgeRange(Vec3 vec, float max){
+            public boolean edgeRange(Vec3 vec, float max) {
                 return edgeRange(vec, 0, max);
             }
 
@@ -113,37 +112,38 @@ public class DysonSphereMesh extends PlanetMesh {
                 return false;
             }
 
-            public float arcDistance(Vec3 p, Vec3 a, Vec3 b){
+            public float arcDistance(Vec3 p, Vec3 a, Vec3 b) {
                 Vec3 n = a.cpy().crs(b);
-                if(n.isZero()) return a.angleRad(p);
+                if (n.isZero()) return a.angleRad(p);
 
                 boolean between = (a.cpy().crs(p).dot(n) >= 0) && (p.cpy().crs(b).dot(n) >= 0);
 
-                if(between){
+                if (between) {
                     Vec3 pProj = p.cpy().sub(n.cpy().scl(p.dot(n))).nor();
-                    return (float)Math.acos(Math.min(Math.max(p.dot(pProj), -1f), 1f));
+                    return (float) Math.acos(Math.min(Math.max(p.dot(pProj), -1f), 1f));
                 } else {
                     return Math.min(a.angleRad(p), b.angleRad(p));
                 }
             }
 
-            public boolean isOnArcNear(Vec3 p, Vec3 a, Vec3 b, float min, float max){
+            public boolean isOnArcNear(Vec3 p, Vec3 a, Vec3 b, float min, float max) {
                 return arcDistance(p, a, b) <= max && arcDistance(p, b, a) >= min;
             }
 
         }, 6, planet.radius, radius), Shaders.clouds);
     }
 
-    public DysonSphereMesh(){}
+    public DysonSphereMesh() {
+    }
 
-    public float relRot(){
+    public float relRot() {
         return Time.globalTime * speed / 40f;
     }
 
     @Override
-    public void render(PlanetParams params, Mat3D projection, Mat3D transform){
+    public void render(PlanetParams params, Mat3D projection, Mat3D transform) {
         //don't waste performance rendering 0-alpha clouds
-        if(params.planet == planet && Mathf.zero(1f - params.uiAlpha, 0.01f)) return;
+        if (params.planet == planet && Mathf.zero(1f - params.uiAlpha, 0.01f)) return;
 
         preRender(params);
         shader.bind();
@@ -154,7 +154,7 @@ public class DysonSphereMesh extends PlanetMesh {
     }
 
     @Override
-    public void preRender(PlanetParams params){
+    public void preRender(PlanetParams params) {
         Shaders.clouds.planet = planet;
         Shaders.clouds.lightDir.set(planet.solarSystem.position).sub(planet.position).rotate(Vec3.Y, planet.getRotation() + relRot()).nor();
         Shaders.clouds.ambientColor.set(planet.solarSystem.lightColor);

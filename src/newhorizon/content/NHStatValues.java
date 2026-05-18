@@ -187,15 +187,15 @@ public class NHStatValues {
         }
     }
 
-    public static StatValue itemsWithEfficiency(float timePeriod, ItemStack... stacks){
+    public static StatValue itemsWithEfficiency(float timePeriod, ItemStack... stacks) {
         return table -> {
-            for(ItemStack stack : stacks){
+            for (ItemStack stack : stacks) {
                 table.add(displayItemWithEfficiency(stack.item, stack.amount, timePeriod, true)).padRight(5);
             }
         };
     }
 
-    public static Table displayItemWithEfficiency(Item item, int amount, float timePeriod, boolean showName){
+    public static Table displayItemWithEfficiency(Item item, int amount, float timePeriod, boolean showName) {
         Table t = new Table();
         t.add(stack(item, amount, !showName));
         t.add((showName ? item.localizedName + "\n" : "") +
@@ -204,15 +204,15 @@ public class NHStatValues {
         return t;
     }
 
-    public static StatValue itemsWithSolarMultiplier(float timePeriod, ItemStack... stacks){
+    public static StatValue itemsWithSolarMultiplier(float timePeriod, ItemStack... stacks) {
         return table -> {
-            for(ItemStack stack : stacks){
+            for (ItemStack stack : stacks) {
                 table.add(displayItemWithSolarMultiplier(stack.item, stack.amount, timePeriod, true)).padRight(5);
             }
         };
     }
 
-    public static Table displayItemWithSolarMultiplier(Item item, int amount, float timePeriod, boolean showName){
+    public static Table displayItemWithSolarMultiplier(Item item, int amount, float timePeriod, boolean showName) {
         Table t = new Table();
         t.add(stack(item, amount, !showName));
         t.add((showName ? item.localizedName + "\n" : "") +

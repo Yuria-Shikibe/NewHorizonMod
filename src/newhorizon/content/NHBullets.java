@@ -36,9 +36,9 @@ import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;
 import newhorizon.expand.units.unitEntity.PesterEntity;
-import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -63,11 +63,10 @@ public class NHBullets {
             warperBullet, airRaidBomb,
             hyperBlastLinker, hyperBlast,
             arc_9000, eternity, arc_9000_frag,
-            synchroZeta, synchroThermoPst, synchroFusionEnergy, synchroTitanium,synchroTungsten,
+            synchroZeta, synchroThermoPst, synchroFusionEnergy, synchroTitanium, synchroTungsten,
             missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
             ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid,
-            raidBulletType
-    ;
+            raidBulletType;
 
     private static void loadPriority() {
         arc_9000_frag = new FlakBulletType(3.75f, 200) {
@@ -1047,7 +1046,7 @@ public class NHBullets {
             velocityIncrease = 10f;
 
             lightningColor = hitColor = frontColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color;
-            chargeEffect = NHFx.railShoot(NHItems.irayrondPanel.color, 620+rangeChange+20, 10, 90,25);
+            chargeEffect = NHFx.railShoot(NHItems.irayrondPanel.color, 620 + rangeChange + 20, 10, 90, 25);
             lightning = 4;
             lightningLength = 6;
             lightningLengthRand = 10;
@@ -1091,7 +1090,7 @@ public class NHBullets {
 
             frontColor = NHItems.irayrondPanel.color;
             lightningColor = hitColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color.cpy().lerp(NHColor.deeperBlue, 0.4f);
-            chargeEffect = NHFx.railShoot(NHItems.irayrondPanel.color, 620+rangeChange+20, 10, 90,25);
+            chargeEffect = NHFx.railShoot(NHItems.irayrondPanel.color, 620 + rangeChange + 20, 10, 90, 25);
             lightning = 4;
             lightningLength = 6;
             lightningLengthRand = 10;
@@ -1133,7 +1132,7 @@ public class NHBullets {
 
             frontColor = NHItems.irayrondPanel.color;
             lightningColor = hitColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color.cpy().lerp(NHColor.darkEnrColor, 0.6f);
-            chargeEffect = NHFx.railShoot(NHItems.darkEnergy.color, 620+rangeChange+20, 10, 90,25);
+            chargeEffect = NHFx.railShoot(NHItems.darkEnergy.color, 620 + rangeChange + 20, 10, 90, 25);
             lightning = 6;
             lightningLength = 12;
             lightningLengthRand = 20;
@@ -1334,6 +1333,7 @@ public class NHBullets {
                 fragVelocityMax = 0.72f;
                 fragVelocityMin = 0.075f;
             }
+
             @Override
             public void removed(Bullet b) {
                 if (trailLength > 0 && b.trail != null && b.trail.size() > 0) {

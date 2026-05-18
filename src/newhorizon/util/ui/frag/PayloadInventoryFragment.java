@@ -24,14 +24,14 @@ import static mindustry.Vars.control;
 public class PayloadInventoryFragment {
     public Table table = new Table();
 
-    public void build(Group parent){
+    public void build(Group parent) {
         table.name = "inventoryPayload";
         table.setTransform(true);
         parent.setTransform(true);
         parent.addChild(table);
     }
 
-    public void rebuild(){
+    public void rebuild() {
         if (!table.visible) return;
         table.clear();
         table.background(Tex.inventory);
@@ -41,47 +41,47 @@ public class PayloadInventoryFragment {
         int row = 0;
         int cols = 3;
         Building b = getBuild();
-        if(b != null && b.getPayloads() != null && !b.getPayloads().isEmpty()){
+        if (b != null && b.getPayloads() != null && !b.getPayloads().isEmpty()) {
             PayloadSeq inv = b.getPayloads();
-            for (UnlockableContent content: ModuleBlock.modules){
+            for (UnlockableContent content : ModuleBlock.modules) {
                 if (!inv.contains(content)) continue;
-                Element image = itemImage(content.uiIcon, () -> !b.isValid() ? "": round(inv.get(content)));
+                Element image = itemImage(content.uiIcon, () -> !b.isValid() ? "" : round(inv.get(content)));
                 table.add(image);
-                if(row++ % cols == cols - 1) table.row();
+                if (row++ % cols == cols - 1) table.row();
             }
-        }else {
+        } else {
             table.visible = false;
         }
         updateTablePosition();
     }
 
-    private Building getBuild(){
-        try{
+    private Building getBuild() {
+        try {
             return Reflect.get(control.input.inv, "build");
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.err(e);
             return null;
         }
     }
 
-    private String round(float f){
-        f = (int)f;
-        if(f >= 1000000){
-            return (int)(f / 1000000f) + "[gray]" + UI.millions;
-        }else if(f >= 1000){
-            return (int)(f / 1000) + UI.thousands;
-        }else{
-            return (int)f + "";
+    private String round(float f) {
+        f = (int) f;
+        if (f >= 1000000) {
+            return (int) (f / 1000000f) + "[gray]" + UI.millions;
+        } else if (f >= 1000) {
+            return (int) (f / 1000) + UI.thousands;
+        } else {
+            return (int) f + "";
         }
     }
 
-    private void updateTablePosition(){
+    private void updateTablePosition() {
         table.pack();
         Table t = NHUI.itemInv;
         table.setPosition(t.x, t.y + t.getPrefHeight() - 4, Align.bottomLeft);
     }
 
-    private Element itemImage(TextureRegion region, Prov<CharSequence> text){
+    private Element itemImage(TextureRegion region, Prov<CharSequence> text) {
         Stack stack = new Stack();
 
         Table t = new Table().left().bottom();

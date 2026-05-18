@@ -23,13 +23,11 @@ import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
  */
 public class DrawLiquidSmelt extends DrawArcSmelt {
 
-    // 平滑颜色变化速度
-    public float colorLerp = 0.1f;
-
     // 当前颜色缓存
     private final Color currentFlame = new Color();
     private final Color currentMid = new Color();
-
+    // 平滑颜色变化速度
+    public float colorLerp = 0.1f;
     // 固定透明度（外部可配置）
     public float fixedAlpha = 0.68f;
 

@@ -17,7 +17,8 @@ public class CameraReset extends ActionLStatement {
         duration = ParseUtil.getNextToken(token);
     }
 
-    public CameraReset() {}
+    public CameraReset() {
+    }
 
     @Override
     public String getLStatementName() {

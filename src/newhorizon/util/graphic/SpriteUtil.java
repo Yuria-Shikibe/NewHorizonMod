@@ -135,7 +135,9 @@ public class SpriteUtil {
             regions[i] = Core.atlas.find(name + "-" + i);
         }
         return regions;
-    };
+    }
+
+    ;
 
     public static TextureRegion[] splitRegionArray(String name, int tileWidth, int tileHeight) {
         return splitRegionArray(Core.atlas.find(name), tileWidth, tileHeight, 0);

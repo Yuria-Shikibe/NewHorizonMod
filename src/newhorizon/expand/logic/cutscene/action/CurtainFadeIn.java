@@ -17,7 +17,8 @@ public class CurtainFadeIn extends ActionLStatement {
         duration = ParseUtil.getNextToken(token);
     }
 
-    public CurtainFadeIn() {}
+    public CurtainFadeIn() {
+    }
 
     @Override
     public String getLStatementName() {

@@ -61,7 +61,7 @@ public class AdaptLaserBulletType extends LaserBulletType implements TypeDamageB
             Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Lines.getStroke(), cwidth * 2f + width / 2f, b.rotation());
 
             Fill.circle(b.x, b.y, 1f * cwidth * b.fout());
-            for(int i : Mathf.signs){
+            for (int i : Mathf.signs) {
                 Drawf.tri(b.x, b.y, sideWidth * b.fout() * cwidth, sideLength * compound, b.rotation() + sideAngle * i);
             }
 

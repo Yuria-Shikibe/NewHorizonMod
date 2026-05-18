@@ -15,7 +15,7 @@ public class DrawWeaverWave extends DrawBlock {
     public float sinMag = 4f, sinScl = 6f, sinOffset = 50f, sideOffset = -2f, angleOffset = 90f;
 
     @Override
-    public void draw(Building build){
+    public void draw(Building build) {
         for (int i = 0; i < waveAmount; i++) {
             float offset = -(waveSpacing * (waveAmount - 1)) / 2 + i * waveSpacing;
             float waveOffset = sideOffset + Mathf.absin(build.totalProgress() / 2f + sinOffset + waveMagOffset * i, sinScl, sinMag);

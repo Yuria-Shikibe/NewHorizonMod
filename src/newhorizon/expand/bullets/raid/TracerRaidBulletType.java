@@ -1,21 +1,10 @@
 package newhorizon.expand.bullets.raid;
 
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import arc.math.Rand;
-import arc.math.geom.Vec2;
-import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.gen.Bullet;
-import mindustry.gen.Hitboxc;
 import mindustry.graphics.Trail;
-import newhorizon.NHSetting;
-import newhorizon.content.NHFx;
-import newhorizon.util.struct.Vec2Seq;
 
 import static mindustry.Vars.headless;
 
@@ -36,7 +25,7 @@ public class TracerRaidBulletType extends BasicRaidBulletType {
     }
 
     @Override
-    public void removed(Bullet b){
+    public void removed(Bullet b) {
         super.removed(b);
         if (!(b.data() instanceof Trail[])) return;
         Trail[] sideTrails = (Trail[]) b.data;

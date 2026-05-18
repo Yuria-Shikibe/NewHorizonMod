@@ -4,13 +4,9 @@ import arc.Core;
 import arc.assets.AssetDescriptor;
 import arc.assets.loaders.SoundLoader;
 import arc.audio.Sound;
-import arc.files.Fi;
 import arc.struct.ObjectMap;
 import arc.util.Log;
 import mindustry.Vars;
-import mindustry.gen.Sounds;
-import mindustry.mod.Mods;
-import newhorizon.NewHorizon;
 
 import java.lang.reflect.Field;
 
@@ -24,7 +20,7 @@ public class NHSounds {
             thermoShoot, jumpIn, metalWalk, hugeShoot, hugeBlast,
             signal, synchro, railGunBlast, largeBeam, coil1, coil2,
 
-            blastHuge, blastShockwave, blastSmoke, blastZap, hyperspace,
+    blastHuge, blastShockwave, blastSmoke, blastZap, hyperspace,
             loopLaser1, loopLaser2, loopLaser3,
             shootBlaster1, shootBlaster2, shootBlaster3,
             shootCoil1, shootCoil2, shootCoil3,
@@ -36,8 +32,7 @@ public class NHSounds {
             shootRailgun1, shootRailgun2, shootRailgun3,
             shootScatter1, shootScatter2, shootScatter3,
             shootThermo1, shootThermo2, shootThermo3, shootThermo4,
-            uiAlert1, uiAlert2, uiSignal, unitJumpIn
-    ;
+            uiAlert1, uiAlert2, uiSignal, unitJumpIn;
 
     public static void load() {
         try {

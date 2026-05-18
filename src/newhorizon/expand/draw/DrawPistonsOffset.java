@@ -12,11 +12,15 @@ import mindustry.world.draw.DrawPistons;
  */
 public class DrawPistonsOffset extends DrawPistons {
 
-    /** 整体偏移，单位 world units（会随方块旋转） */
+    /**
+     * 整体偏移，单位 world units（会随方块旋转）
+     */
     public float offsetX = 0f;
     public float offsetY = 0f;
 
-    /** 活塞初相位 */
+    /**
+     * 活塞初相位
+     */
     public float phaseOffset = 0f;
 
     @Override

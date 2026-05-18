@@ -12,17 +12,15 @@ import mindustry.world.draw.DrawBlock;
 import newhorizon.util.graphic.DrawFunc;
 
 public class DrawSpecialRotation extends DrawBlock {
+    private final IntMap<Float> baseAngles = new IntMap<>();
+    private final IntMap<Float> lastCycles = new IntMap<>();
     public String suffix = "";
     public float x = 0f, y = 0f;
     public float rotateSpeed = 1f;
     public float spinTime = 60f;
     public float smooth = 0.15f;
     public float rotateAngle = 90f;
-
     public TextureRegion rotator;
-
-    private final IntMap<Float> baseAngles = new IntMap<>();
-    private final IntMap<Float> lastCycles = new IntMap<>();
 
     public DrawSpecialRotation(float rotateSpeed, String suffix) {
         this.rotateSpeed = rotateSpeed;
@@ -51,7 +49,7 @@ public class DrawSpecialRotation extends DrawBlock {
 
     private float rotation(Building build) {
         float total = build.totalProgress() * rotateSpeed;
-        float cycle = (float)Math.floor(total / spinTime);
+        float cycle = (float) Math.floor(total / spinTime);
         float progress = DrawFunc.cycle(total, 0f, spinTime);
 
         if (!lastCycles.containsKey(build.id)) {

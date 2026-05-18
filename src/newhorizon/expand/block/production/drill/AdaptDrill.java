@@ -8,9 +8,7 @@ import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import mindustry.logic.LAccess;
 import mindustry.ui.Bar;
-import mindustry.world.blocks.defense.OverdriveProjector;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
@@ -34,7 +32,7 @@ public class AdaptDrill extends Drill {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         drawer.load(this);
     }
@@ -56,17 +54,17 @@ public class AdaptDrill extends Drill {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         drawer.drawPlan(this, plan, list);
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return drawer.finalIcons(this);
     }
 
     @Override
-    public void getRegionsToOutline(Seq<TextureRegion> out){
+    public void getRegionsToOutline(Seq<TextureRegion> out) {
         drawer.getRegionsToOutline(this, out);
     }
 
@@ -84,14 +82,14 @@ public class AdaptDrill extends Drill {
         }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             updateModule();
 
-            if(timer(timerDump, dumpTime / timeScale)){
+            if (timer(timerDump, dumpTime / timeScale)) {
                 dump(dominantItem != null && items.has(dominantItem) ? dominantItem : null);
             }
 
-            if(dominantItem == null){
+            if (dominantItem == null) {
                 return;
             }
 
@@ -99,40 +97,41 @@ public class AdaptDrill extends Drill {
 
             float delay = getDrillTime(dominantItem);
 
-            if(items.total() < itemCapacity && dominantItems > 0 && efficiency > 0){
+            if (items.total() < itemCapacity && dominantItems > 0 && efficiency > 0) {
                 float speed = (1 + moduleBoost) * efficiency;
 
                 lastDrillSpeed = (speed * dominantItems * warmup) / delay;
                 warmup = Mathf.approachDelta(warmup, efficiency, warmupSpeed);
                 progress += delta() * dominantItems * speed * warmup;
 
-                if(Mathf.chanceDelta(updateEffectChance * warmup))
+                if (Mathf.chanceDelta(updateEffectChance * warmup))
                     updateEffect.at(x + Mathf.range(size * 2f), y + Mathf.range(size * 2f));
-            }else{
+            } else {
                 lastDrillSpeed = 0f;
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
                 return;
             }
 
-            if(dominantItems > 0 && progress >= delay && items.total() < itemCapacity){
-                int amount = (int)(progress / delay);
-                for(int i = 0; i < amount; i++){
+            if (dominantItems > 0 && progress >= delay && items.total() < itemCapacity) {
+                int amount = (int) (progress / delay);
+                for (int i = 0; i < amount; i++) {
                     offload(dominantItem);
                 }
 
                 progress %= delay;
 
-                if(wasVisible && Mathf.chanceDelta(drillEffectChance * warmup)) drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
+                if (wasVisible && Mathf.chanceDelta(drillEffectChance * warmup))
+                    drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
             }
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             drawer.draw(this);
         }
 
         @Override
-        public void drawLight(){
+        public void drawLight() {
             super.drawLight();
             drawer.drawLight(this);
         }

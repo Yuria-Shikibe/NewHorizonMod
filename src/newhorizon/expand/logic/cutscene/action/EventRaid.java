@@ -43,7 +43,8 @@ public class EventRaid extends ActionLStatement {
         }
     }
 
-    public EventRaid() {}
+    public EventRaid() {
+    }
 
     @Override
     public String getLStatementName() {
@@ -68,7 +69,8 @@ public class EventRaid extends ActionLStatement {
             t.button(b -> {
                 b.label(() -> raidType.name());
                 b.clicked(() -> showSelect(b, RaidPreset.all, raidType, cType -> raidType = cType, 2, cell -> cell.size(240, 50)));
-            }, Styles.logict, () -> {}).size(240, 40).color(table.color).left().padLeft(2);
+            }, Styles.logict, () -> {
+            }).size(240, 40).color(table.color).left().padLeft(2);
         });
 
         buildRowTable(table, t -> {
@@ -83,7 +85,8 @@ public class EventRaid extends ActionLStatement {
                 b.setChecked(overrideRaidStats);
                 rebuild(table);
             });
-        }, Styles.grayt, () -> {}).size(0, 40));
+        }, Styles.grayt, () -> {
+        }).size(0, 40));
 
         if (overrideRaidStats) {
             buildRowTable(table, t -> {
@@ -112,7 +115,8 @@ public class EventRaid extends ActionLStatement {
                 b.setChecked(overrideDefaultCoordinate);
                 rebuild(table);
             });
-        }, Styles.grayt, () -> {}).size(0, 40));
+        }, Styles.grayt, () -> {
+        }).size(0, 40));
 
         if (overrideDefaultCoordinate) {
             buildRowTable(table, t -> {
@@ -159,7 +163,7 @@ public class EventRaid extends ActionLStatement {
         public boolean overrideRaidStats, overrideDefaultCoordinate;
 
         public LVar team;
-        public LVar alertTime, raidTime, raidScale, inaccuracy ;
+        public LVar alertTime, raidTime, raidScale, inaccuracy;
         public LVar sourceX, sourceY, targetX, targetY;
 
         public EventRaidI(

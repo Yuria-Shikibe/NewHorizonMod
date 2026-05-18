@@ -19,13 +19,13 @@ public class NHLiquids {
     public static Liquid water, slag, oil, cryofluid, arkycite, gallium, neoplasm, ozone, hydrogen, nitrogen, cyanogen;
 
     public static void load() {
-        ammonia = new Liquid("ammonia", Color.valueOf("919ff0")){{
+        ammonia = new Liquid("ammonia", Color.valueOf("919ff0")) {{
             viscosity = 0.8f;
             temperature = 0.5f;
             heatCapacity = 0.5f;
         }};
 
-        hydrazine = new Liquid("hydrazine", Color.valueOf("f3b9ca")){{
+        hydrazine = new Liquid("hydrazine", Color.valueOf("f3b9ca")) {{
             heatCapacity = 0.3f;
             explosiveness = 0.25f;
             viscosity = 0.8f;
@@ -79,15 +79,15 @@ public class NHLiquids {
         antiMatter = new Stream("anti-matter-stream", Color.valueOf("b479ff"));
 
         //Promethium + Naquium (Factorio SE item)
-        ploNaq = new Liquid("plo-naq", Color.valueOf("cba3ff")){{
+        ploNaq = new Liquid("plo-naq", Color.valueOf("cba3ff")) {{
             coolant = false;
         }};
         //Chromium + Watt
-        choVat = new Liquid("cho-vat", Color.valueOf("aeebdc")){{
+        choVat = new Liquid("cho-vat", Color.valueOf("aeebdc")) {{
             coolant = false;
         }};
         //Kar Ion, Kaion in Everspace2
-        karIon = new Liquid("kar-ion", Color.valueOf("f1e69f")){{
+        karIon = new Liquid("kar-ion", Color.valueOf("f1e69f")) {{
             coolant = false;
         }};
         floodLiquid.add(ploNaq, choVat, karIon);
@@ -114,11 +114,11 @@ public class NHLiquids {
             streams.add(this);
         }
 
-        public boolean willBoil(){
+        public boolean willBoil() {
             return false;
         }
 
-        public boolean canExtinguish(){
+        public boolean canExtinguish() {
             return false;
         }
     }

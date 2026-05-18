@@ -82,7 +82,7 @@ public class RaidBullets {
                 stroke(0.6f + e.fout() * 1.7f);
                 rand.setSeed(e.id);
 
-                for(int i = 0; i < 2; i++){
+                for (int i = 0; i < 2; i++) {
                     float rot = e.rotation + rand.range(15f) + 180f;
                     v.trns(rot, rand.random(e.fin() * 27f));
                     lineAngle(e.x + v.x, e.y + v.y, rot, e.fout() * rand.random(15f, 27f) + 1.5f);
@@ -133,7 +133,7 @@ public class RaidBullets {
                 stroke(0.6f + e.fout() * 1.7f);
                 rand.setSeed(e.id);
 
-                for(int i = 0; i < 2; i++){
+                for (int i = 0; i < 2; i++) {
                     float rot = e.rotation + rand.range(18f) + 180f;
                     v.trns(rot, rand.random(e.fin() * 27f));
                     lineAngle(e.x + v.x, e.y + v.y, rot, e.fout() * rand.random(15f, 27f) + 1.5f);
@@ -188,7 +188,7 @@ public class RaidBullets {
                 color(e.color, Color.white, e.fin());
                 rand.setSeed(e.id);
 
-                for(int i = 0; i < 2; i++){
+                for (int i = 0; i < 2; i++) {
                     float rot = e.rotation + rand.range(18f) + 180f;
                     v.trns(rot, rand.random(e.fin() * 27f));
                     lineAngle(e.x + v.x, e.y + v.y, rot, e.fout() * rand.random(15f, 27f) + 1.5f);
@@ -253,7 +253,7 @@ public class RaidBullets {
                 color(e.color);
                 rand.setSeed(e.id);
                 float fin = e.fin() / rand.random(0.5f, 1f), fout = 1f - fin, angle = rand.random(360f), len = rand.random(0.5f, 1f);
-                if(fin <= 1f){
+                if (fin <= 1f) {
                     Tmp.v1.trns(angle, fin * 24f * len);
 
                     alpha((0.5f - Math.abs(fin - 0.5f)) * 2f);

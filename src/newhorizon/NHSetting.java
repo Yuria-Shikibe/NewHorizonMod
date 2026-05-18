@@ -2,7 +2,6 @@ package newhorizon;
 
 import arc.Core;
 import arc.func.Cons;
-import arc.func.Prov;
 import arc.scene.actions.RunnableAction;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.CheckBox;
@@ -26,10 +25,10 @@ public class NHSetting {
             START_LOG = "nh-hide-starting-log",
             EFFECT_DETAIL = "nh-effect-detail",
 
-            GRAPHIC_GRAVITY_TRAP_ALPHA = "nh-gravity-trap-alpha",
+    GRAPHIC_GRAVITY_TRAP_ALPHA = "nh-gravity-trap-alpha",
             GRAPHIC_GRAVITY_TRAP_OUTLINE_ALPHA = "nh-gravity-trap-outline-alpha",
 
-            OVERRIDE_UNIT_SHIELD = "nh-override-unit-shield",
+    OVERRIDE_UNIT_SHIELD = "nh-override-unit-shield",
             OVERRIDE_CORE_UNIT = "nh-override-core-unit",
             OVERRIDE_LOGISTIC = "nh-override-logistic",
             OVERRIDE_DRILL = "nh-override-drill",
@@ -40,9 +39,9 @@ public class NHSetting {
             OVERRIDE_ITEM = "nh-override-item",
             OVERRIDE_TURRET = "nh-override-turret",
 
-            EVENT_RAID = "nh-event-raid",
+    EVENT_RAID = "nh-event-raid",
 
-            DEBUGGING = "nh-debugging",
+    DEBUGGING = "nh-debugging",
             DEBUG_PANEL = "nh-debug-panel";
 
     public static boolean enableEffectDetail = true;
@@ -51,7 +50,7 @@ public class NHSetting {
 
     public static OrderedMap<String, Seq<SettingKey<?>>> allSettings = new OrderedMap<>();
 
-    public static String overrideStatus(){
+    public static String overrideStatus() {
         StringBuilder overrideStatus = new StringBuilder();
         allSettings.get("override").each(setting -> overrideStatus.append(setting.key).append(":").append(getBool(setting.key)).append("|"));
         return overrideStatus.toString();
@@ -94,7 +93,7 @@ public class NHSetting {
 
         allSettings.each((name, seq) -> seq.each(SettingKey::setDefault));
 
-        if (Vars.headless){
+        if (Vars.headless) {
             NHSetting.allSettings.get("override").each(setting -> settings.put(setting.key, true));
             NHSetting.allSettings.get("event").each(setting -> settings.put(setting.key, true));
         }
@@ -119,7 +118,7 @@ public class NHSetting {
     }
 
     public static void showDialog() {
-        BaseDialog dialog = new BaseDialog("@nh.setting"){
+        BaseDialog dialog = new BaseDialog("@nh.setting") {
             @Override
             public void hide() {
                 super.hide();
@@ -155,7 +154,8 @@ public class NHSetting {
         public final String key;
 
         public boolean restart = false;
-        public Cons<T> onChange = (T value) -> {};
+        public Cons<T> onChange = (T value) -> {
+        };
         public T def;
 
         public SettingKey(String key) {
@@ -191,7 +191,7 @@ public class NHSetting {
         @Override
         public void buildTable(Table table) {
             table.table(t -> {
-                t.add(new CheckBox(Core.bundle.get("nh.setting." + key + ".name")){{
+                t.add(new CheckBox(Core.bundle.get("nh.setting." + key + ".name")) {{
                     changed(() -> {
                         settings.put(key, isChecked());
                         onChange.get(isChecked());
@@ -245,8 +245,8 @@ public class NHSetting {
             table.table(t -> {
                 t.add(new Label(() -> Core.bundle.format("nh.setting." + key + ".name", getValue()))).padRight(6f).left();
                 t.row().slider(min, max, step, def, f -> {
-                   settings.put(key, f);
-                   onChange.get(f);
+                    settings.put(key, f);
+                    onChange.get(f);
                 }).growX();
                 t.row().table(i -> {
                     i.left();

@@ -11,9 +11,11 @@ import static newhorizon.NHVars.cutscene;
 
 public class RunSubBus extends ActionLStatement {
 
-    public RunSubBus(String[] token) {}
+    public RunSubBus(String[] token) {
+    }
 
-    public RunSubBus() {}
+    public RunSubBus() {
+    }
 
     @Override
     public String getLStatementName() {

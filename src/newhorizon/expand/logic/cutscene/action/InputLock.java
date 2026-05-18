@@ -7,9 +7,11 @@ import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.ActionLStatement;
 
 public class InputLock extends ActionLStatement {
-    public InputLock(String[] token) {}
+    public InputLock(String[] token) {
+    }
 
-    public InputLock() {}
+    public InputLock() {
+    }
 
     @Override
     public String getLStatementName() {

@@ -17,7 +17,8 @@ public class SaveActions extends ActionLStatement {
         actionBusName = ParseUtil.getFirstToken(token);
     }
 
-    public SaveActions() {}
+    public SaveActions() {
+    }
 
     @Override
     public String getLStatementName() {

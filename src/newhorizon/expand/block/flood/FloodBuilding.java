@@ -8,7 +8,7 @@ import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import newhorizon.content.NHLiquids;
 
-public interface FloodBuilding{
+public interface FloodBuilding {
     FloodBlock getFloodBlock();
 
     default void drawDebug(Building building) {

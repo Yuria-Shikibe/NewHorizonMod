@@ -3,17 +3,14 @@ package newhorizon.expand.block.flood;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
 import arc.util.Strings;
 import arc.util.Tmp;
 import mindustry.gen.Building;
-import mindustry.graphics.Layer;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
-import mindustry.world.blocks.TileBitmask;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import newhorizon.content.NHContent;
@@ -23,7 +20,7 @@ import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.tilesize;
 
-public class FloodFluidBlock extends AdaptWall implements FloodBlock{
+public class FloodFluidBlock extends AdaptWall implements FloodBlock {
     //[0] - healConsumption  - Plo-Naq - liquid unit consumed every tick for healing
     //[1] - healSpeed        - Plo-Naq - healing amount every tick, in percent
     //[2] - damageReduction  - Cho-Var - scaled damage reduction. damageReduction ^ 2 linear to fullness
@@ -90,16 +87,16 @@ public class FloodFluidBlock extends AdaptWall implements FloodBlock{
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class FloodFluidBuilding extends AdaptWallBuild implements FloodBuilding{
+    public class FloodFluidBuilding extends AdaptWallBuild implements FloodBuilding {
         public int drawInnerIndex = 0;
 
         public void updateDrawRegion() {
             super.updateDrawRegion();
             drawInnerIndex = 0;
-            for(int i = 0; i < 4; i++){
+            for (int i = 0; i < 4; i++) {
                 Tile other1 = tile.nearby(Geometry.d4[i]);
                 Tile other2 = tile.nearby(Tmp.p1.set(Geometry.d4[i]).add(Geometry.d4[i]));
-                if(checkAutotileSame(other1) && checkAutotileSame(other2)) {
+                if (checkAutotileSame(other1) && checkAutotileSame(other2)) {
                     drawInnerIndex |= (1 << i);
                 }
             }
@@ -119,16 +116,17 @@ public class FloodFluidBlock extends AdaptWall implements FloodBlock{
         }
 
         @Override
-        public void drawSelect() {}
+        public void drawSelect() {
+        }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             dumpLiquid(this);
             applyHealing(this);
         }
 
         @Override
-        public boolean acceptLiquid(Building source, Liquid liquid){
+        public boolean acceptLiquid(Building source, Liquid liquid) {
             return NHLiquids.floodLiquid.contains(liquid);
         }
 

@@ -16,25 +16,23 @@ import mindustry.world.draw.DrawLiquidTile;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
 public class DrawLiquidAnimatedOffset extends DrawLiquidTile {
-    public float bubbleChance = 0.05f;      // 每帧生成气泡概率
-    public float bubbleLifetime = 40f;      // 气泡生存时间
-    public float bubbleRadius = 1.5f;       // 气泡初始半径
-    public float bubbleRise = 6f;           // 气泡上升高度
-    public Color bubbleColor = Color.white; // 气泡颜色（默认自动取液体颜色）
-
-    // --- 新增部分 ---
-    public float offsetX = 0f;       // 固定偏移X（相对建筑中心）
-    public float offsetY = 0f;       // 固定偏移Y
-    public boolean glow = false;     // 是否发光
-    public float glowRadius = 20f;   // 发光半径
-    public float glowAlpha = 0.4f;   // 发光强度
-    // ----------------
-
     public static final Effect liquidBubble = new Effect(40f, e -> {
         Draw.color(e.color, Color.white, e.fin());
         Fill.circle(e.x, e.y + e.fin() * 6f, 1.5f - e.fin() * 1.2f);
         Draw.color();
     });
+    public float bubbleChance = 0.05f;      // 每帧生成气泡概率
+    public float bubbleLifetime = 40f;      // 气泡生存时间
+    public float bubbleRadius = 1.5f;       // 气泡初始半径
+    public float bubbleRise = 6f;           // 气泡上升高度
+    public Color bubbleColor = Color.white; // 气泡颜色（默认自动取液体颜色）
+    // --- 新增部分 ---
+    public float offsetX = 0f;       // 固定偏移X（相对建筑中心）
+    public float offsetY = 0f;       // 固定偏移Y
+    public boolean glow = false;     // 是否发光
+    public float glowRadius = 20f;   // 发光半径
+    // ----------------
+    public float glowAlpha = 0.4f;   // 发光强度
 
     public DrawLiquidAnimatedOffset() {
         super();

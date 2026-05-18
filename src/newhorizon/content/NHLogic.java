@@ -32,12 +32,12 @@ public class NHLogic {
     public static LCategory nhwproc, nhcutscene, nhaction;
     public static LCategory actionCameraControl, actionInputControl, actionCurtainControl, actionFlowControl;
 
-    public static void load(){
+    public static void load() {
         loadLCategory();
         loadLStatements();
         loadActions();
 
-        if (NHSetting.getBool(NHSetting.EVENT_RAID)){
+        if (NHSetting.getBool(NHSetting.EVENT_RAID)) {
             /*
             Events.on(EventType.PlayEvent.class, event -> {
                 if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
@@ -95,7 +95,7 @@ public class NHLogic {
         CutsceneControl.registerAction(actionClass);
     }
 
-    public static void registerStatement(Class<? extends ActionLStatement> lstatement){
+    public static void registerStatement(Class<? extends ActionLStatement> lstatement) {
         try {
             Constructor<? extends ActionLStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
             Constructor<? extends ActionLStatement> defaultCons = lstatement.getDeclaredConstructor();
@@ -124,27 +124,27 @@ public class NHLogic {
                     throw new RuntimeException("Failed to create default instance of " + lstatement.getSimpleName(), e);
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.err(e);
         }
     }
 
-    public static void registerDefaultRaid(){
+    public static void registerDefaultRaid() {
         registerWproc("wait 300\n" + "setflag \"raid-trigger\" true", "raid protection period");
         registerWproc("defaultraid raid-executor raid-timer 30 5 200 1 5 20", "raid event");
     }
 
-    public static void registerWproc(String code, String tag){
+    public static void registerWproc(String code, String tag) {
         AtomicBoolean contains = new AtomicBoolean(false);
 
         processors.each(logicBlock -> {
-            if (Objects.equals(logicBlock.tag, tag)){
+            if (Objects.equals(logicBlock.tag, tag)) {
                 contains.set(true);
             }
         });
 
-        if (contains.get()){
-            if (Log.level == Log.LogLevel.debug){
+        if (contains.get()) {
+            if (Log.level == Log.LogLevel.debug) {
                 Log.info("Already registered wproc: " + tag + ", Skip.");
             }
             return;
@@ -153,13 +153,13 @@ public class NHLogic {
         boolean foundAny = false;
 
         outer:
-        for(int y = 0; y < Vars.world.height(); y++){
-            for(int x = 0; x < Vars.world.width(); x++){
+        for (int y = 0; y < Vars.world.height(); y++) {
+            for (int x = 0; x < Vars.world.width(); x++) {
                 Tile tile = Vars.world.rawTile(x, y);
-                if(!tile.synthetic()){
+                if (!tile.synthetic()) {
                     foundAny = true;
                     tile.setNet(Blocks.worldProcessor, Team.sharded, 0);
-                    if (tile.build instanceof LogicBlock.LogicBuild wproc){
+                    if (tile.build instanceof LogicBlock.LogicBuild wproc) {
                         wproc.updateCode(code);
                         wproc.tag = tag;
                     }
@@ -171,22 +171,22 @@ public class NHLogic {
             }
         }
 
-        if(!foundAny){
+        if (!foundAny) {
             Log.info("Failed to registered wproc: " + tag + ", no space available.");
         }
     }
 
-    public static void updateStatic(int x, int y){
+    public static void updateStatic(int x, int y) {
         renderer.blocks.floor.recacheTile(x, y);
-        if(x > 0) renderer.blocks.floor.recacheTile(x - 1, y);
-        if(y > 0) renderer.blocks.floor.recacheTile(x, y - 1);
-        if(x < world.width() - 1) renderer.blocks.floor.recacheTile(x + 1, y);
-        if(y < world.height() - 1) renderer.blocks.floor.recacheTile(x, y + 1);
+        if (x > 0) renderer.blocks.floor.recacheTile(x - 1, y);
+        if (y > 0) renderer.blocks.floor.recacheTile(x, y - 1);
+        if (x < world.width() - 1) renderer.blocks.floor.recacheTile(x + 1, y);
+        if (y < world.height() - 1) renderer.blocks.floor.recacheTile(x, y + 1);
     }
 
-    public static void updateWprocList(){
+    public static void updateWprocList() {
         Vars.world.tiles.eachTile(t -> {
-            if(t.isCenter() && t.block() == Blocks.worldProcessor){
+            if (t.isCenter() && t.block() == Blocks.worldProcessor) {
                 processors.add((LogicBlock.LogicBuild) t.build);
             }
         });

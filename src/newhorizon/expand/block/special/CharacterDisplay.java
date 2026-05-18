@@ -57,7 +57,7 @@ public class CharacterDisplay extends Block {
                 Log.err(e);
             }
         });
-        config(String.class, (SpriteDisplayBuild build, String packed) ->{
+        config(String.class, (SpriteDisplayBuild build, String packed) -> {
             String[] split = packed.split("@");
             try {
                 build.displayColor = Strings.parseInt(split[0]);
@@ -74,14 +74,14 @@ public class CharacterDisplay extends Block {
 
     @Override
     public void placeEnded(Tile tile, Unit builder, int rotation, Object config) {
-        if (tile.build != null){
+        if (tile.build != null) {
             if (queueText.isEmpty()) return;
-            if (config instanceof String conf){
+            if (config instanceof String conf) {
                 try {
                     String[] split = conf.split("@");
                     split[1] = CharacterOverlay.charToData(queueText.charAt(0)) + "";
                     tile.build.configure(split[0] + "@" + split[1]);
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.err(e);
                 }
             }
@@ -130,7 +130,7 @@ public class CharacterDisplay extends Block {
 
             int i = 0;
 
-            for(int region = 0; region < letterRegions.length; region++){
+            for (int region = 0; region < letterRegions.length; region++) {
                 int finalRegion = region;
                 TextureRegion character = letterRegions[region];
                 ImageButton button = cont.button(Tex.whiteui, Styles.clearNoneTogglei, (character.width + character.height) / 2f, () -> control.input.config.hideConfig()).group(group).get();
@@ -138,7 +138,7 @@ public class CharacterDisplay extends Block {
                 button.getStyle().imageUp = new TextureRegionDrawable(character);
                 button.update(() -> button.setChecked(displayCharacter == finalRegion));
 
-                if(i++ % 8 == 7) cont.row();
+                if (i++ % 8 == 7) cont.row();
             }
 
             Table main = new Table(Styles.black6);

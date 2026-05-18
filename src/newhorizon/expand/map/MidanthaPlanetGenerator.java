@@ -26,20 +26,29 @@ import newhorizon.content.blocks.EnvironmentBlock;
 public class MidanthaPlanetGenerator extends PlanetGenerator {
     public static Interp interp = new Interp.Exp(2, 3);
     public static IntSet altitudes = new IntSet();
+    public static float waterOffset = 0.81f;
 
     static {
         PlanetDialog.debugSelect = true;
     }
-    
-    Block 
+
+    public Color ammonia = Color.valueOf("262762");
+    public Color cryonite = Color.valueOf("c5d7f0");
+    public Color conglomerate = Color.valueOf("303044");
+    public Color zetaFloor = Color.valueOf("e2bcb3");
+    public Color thoriumFloor = Color.valueOf("403649");
+    public Color silicarColor = Color.valueOf("4a4b53");
+    public float seaLevel = 0.42f;
+    public float iceSheetLevel = 0.50f;
+    public float snowLevel = 0.535f;
+    Block
             qd = NHBlocks.quantumFieldDeep, qn = NHBlocks.quantumField,
             cb = EnvironmentBlock.conglomerateSparse, dc = EnvironmentBlock.darkConglomerateSparse,
             th = EnvironmentBlock.thoriumStoneSparse, ze = EnvironmentBlock.zetaCrystalFloor;
-
     Block[][] terrains = {
-            {qd, qd, qd ,qd, qd},
-            {qd, qd, qn ,qn, qn},
-            {qn, qn, qn ,qn, qn},
+            {qd, qd, qd, qd, qd},
+            {qd, qd, qn, qn, qn},
+            {qn, qn, qn, qn, qn},
 
             {cb, cb, qn, qn, qn, qn, cb, qn, cb},
             {cb, cb, qn, cb, cb, dc, dc, qn, cb},
@@ -60,25 +69,11 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
             {cb, cb, cb, dc, cb, cb, cb, cb, cb},
             {cb, cb, qn, qn, cb, cb, qn, qn, cb},
 
-            {qn, qn, qn ,qn, qn},
-            {qd, qd, qn ,qn, qd},
-            {qd, qd, qd ,qd, qd},
+            {qn, qn, qn, qn, qn},
+            {qd, qd, qn, qn, qd},
+            {qd, qd, qd, qd, qd},
 
     };
-
-    public Color ammonia = Color.valueOf("262762");
-    public Color cryonite = Color.valueOf("c5d7f0");
-    public Color conglomerate = Color.valueOf("303044");
-
-    public Color zetaFloor = Color.valueOf("e2bcb3");
-    public Color thoriumFloor = Color.valueOf("403649");
-    public Color silicarColor = Color.valueOf("4a4b53");
-
-    public static float waterOffset = 0.81f;
-
-    public float seaLevel = 0.42f;
-    public float iceSheetLevel = 0.50f;
-    public float snowLevel = 0.535f;
 
     public MidanthaPlanetGenerator() {
 
@@ -102,7 +97,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
 
         float land = Simplex.noise3d(seed + 1465, 4, 0.32f, 0.45f, position.x, position.y, position.z) * scl + base;
         if (land > seaLevel) {
-            
+
             float mountain = Interp.exp5Out.apply(Ridged.noise3d(seed + 4142, position.x, position.y, position.z, 4, 2.21f)) * 0.75f;
             float height = Math.max(mountain, land) * scl + base;
             float river = Ridged.noise3d(seed + 525, position.x + 12, position.y + 42, position.z + 92, 6, 1.22f) * 0.3f;
@@ -135,39 +130,39 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
         tile.block = tile.floor.asFloor().wall;
 
         int density = getDensity(position);
-        if (tile.floor == EnvironmentBlock.conglomerateSparse){
+        if (tile.floor == EnvironmentBlock.conglomerateSparse) {
             if (density == 1) tile.floor = EnvironmentBlock.conglomerate;
             if (density == 2) tile.floor = EnvironmentBlock.conglomerateDense;
         }
-        if (tile.floor == EnvironmentBlock.darkConglomerateSparse){
+        if (tile.floor == EnvironmentBlock.darkConglomerateSparse) {
             if (density == 1) tile.floor = EnvironmentBlock.darkConglomerate;
             if (density == 2) tile.floor = EnvironmentBlock.darkConglomerateDense;
         }
-        if (tile.floor == EnvironmentBlock.thoriumStoneSparse){
+        if (tile.floor == EnvironmentBlock.thoriumStoneSparse) {
             if (density == 1) tile.floor = EnvironmentBlock.thoriumStone;
             if (density == 2) tile.floor = EnvironmentBlock.thoriumStoneDense;
         }
 
-        if(Ridged.noise3d(seed + 124, position.x, position.y, position.z, 4, 12.92f) > -0.45) tile.block = Blocks.air;
+        if (Ridged.noise3d(seed + 124, position.x, position.y, position.z, 4, 12.92f) > -0.45) tile.block = Blocks.air;
     }
 
-    public float getRawHeight(Vec3 position){
+    public float getRawHeight(Vec3 position) {
         return (float) Math.pow(Interp.reverse.apply(Mathf.clamp(Math.abs(getRawNoise(position) - 0.645f) * 1.2f)) * 0.895f, 1.2f) + 0.15f;
     }
 
-    public float getRawNoise(Vec3 position){
+    public float getRawNoise(Vec3 position) {
         return Simplex.noise3d(321, 12, 0.42f, 1.7f, position.x, position.y, position.z) * 1.4f;
     }
 
-    public float getTerrainNoise(Vec3 position){
+    public float getTerrainNoise(Vec3 position) {
         return Simplex.noise3d(192, 4, 0.85f, 2.8f, position.x, position.y, position.z) * 1.1f;
     }
 
-    public float getColorNoise(Vec3 position){
+    public float getColorNoise(Vec3 position) {
         return 1 + (Simplex.noise3d(1, 6, 0.72f, 0.2f, position.x, position.y, position.z) * 0.3f - 0.15f);
     }
 
-    public void generate(Tiles tiles, Sector sec, WorldParams params){
+    public void generate(Tiles tiles, Sector sec, WorldParams params) {
         this.tiles = tiles;
         this.seed = params.seedOffset + baseSeed;
         this.sector = sec;
@@ -185,10 +180,10 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
 
         Vec3 pos = new Vec3();
 
-        for(int y = 0; y < height; y++){
-            for(int x = 0; x < width; x++){
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 gen.reset();
-                pos.set(sector.rect.project(x / (float)tiles.width, y / (float)tiles.height));
+                pos.set(sector.rect.project(x / (float) tiles.width, y / (float) tiles.height));
                 genTile(pos, gen);
                 Tile tile = new Tile(x, y, gen.floor, gen.overlay, gen.block);
                 tiles.set(x, y, tile);
@@ -219,7 +214,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
     //public Block getScaledSea(){}
 
     @Override
-    public float getHeight(Vec3 position){
+    public float getHeight(Vec3 position) {
         //6, 5, 0.3, 1.7, 1.2, 1.4, 1.1f
         //position = Tmp.v33.set(position).scl(4f);
         float height = getRawHeight(position);
@@ -227,7 +222,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
     }
 
     @Override
-    public void getColor(Vec3 position, Color out){
+    public void getColor(Vec3 position, Color out) {
         out.set(getFloor(position).mapColor).mul(getColorNoise(position));
     }
 
@@ -245,7 +240,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
         if (sector == null) return true;
         int land = 0;
         if (getHeight(sector.tile.v) > seaLevel) land++;
-        for (PlanetGrid.Corner corner: sector.tile.corners){
+        for (PlanetGrid.Corner corner : sector.tile.corners) {
             if (getHeight(corner.v) > seaLevel) land += 5;
         }
         return land > 5;
@@ -272,25 +267,25 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
         each((x, y) -> {
             Tile t = tiles.get(x, y);
 
-            if (!t.solid() && !tiles.get(x, y).floor().asFloor().isLiquid){
+            if (!t.solid() && !tiles.get(x, y).floor().asFloor().isLiquid) {
                 boolean baseChance = Ridged.noise2d(baseSeed + sector.id, x, y, 3, 0.012f) > 0.158f;
 
                 boolean chanceBlock = (noise(x, y, 5, 0.7f, 15f, 3f) > 1.55f || Mathf.chance(0.125)) && baseChance;
                 boolean chanceFloor = (noise(x, y, 5, 0.7f, 15f, 3f) > 1.17f || Mathf.chance(0.175)) && baseChance;
                 boolean chanceLiquid = noise(x, y, 5, 0.7f, 15f, 3f) > 1.52f && baseChance;
 
-                if (isOnLine(x, y, shift, 5)){
+                if (isOnLine(x, y, shift, 5)) {
                     if (chanceFloor) t.setFloor(Blocks.metalTiles11.asFloor());
                 }
-                if (isOnLine(x, y, shift, 4) || isOnLine(x, y, shift, 3)){
+                if (isOnLine(x, y, shift, 4) || isOnLine(x, y, shift, 3)) {
                     //if (chanceBlock) t.setBlock(Blocks.metalWall3);
                     if (chanceFloor) t.setFloor(Blocks.metalTiles9.asFloor());
                 }
-                if (isOnLine(x, y, shift, 2)){
+                if (isOnLine(x, y, shift, 2)) {
                     t.setBlock(Blocks.air);
                     if (chanceFloor) t.setFloor(Blocks.metalTiles11.asFloor());
                 }
-                if (isOnLine(x, y, shift, 0) || isOnLine(x, y, shift, 1)){
+                if (isOnLine(x, y, shift, 0) || isOnLine(x, y, shift, 1)) {
                     t.setBlock(Blocks.air);
                     if (chanceLiquid) t.setFloor(NHBlocks.quantumFieldDisturbing.asFloor());
                 }
@@ -456,14 +451,14 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
 
      */
 
-    public boolean isOnLine(int x, int y, int s, int o){
+    public boolean isOnLine(int x, int y, int s, int o) {
         int spacing = 102;
         int n1 = (spacing + s + o) % spacing;
         int n2 = (spacing + s - o) % spacing;
         return x % spacing == n1 || x % spacing == n2 || y % spacing == n1 || y % spacing == n2;
     }
 
-    public void drawPoint(int cx, int cy, int rad, Block block){
+    public void drawPoint(int cx, int cy, int rad, Block block) {
         drawPoint(cx, cy, rad, tile -> {
             if (block == Blocks.air) tile.setBlock(Blocks.air);
             else if (block instanceof Floor) tile.setFloor((Floor) block);

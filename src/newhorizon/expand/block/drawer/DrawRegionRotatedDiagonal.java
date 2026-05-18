@@ -21,7 +21,8 @@ public class DrawRegionRotatedDiagonal extends DrawBlock {
         this.suffix = suffix;
     }
 
-    public DrawRegionRotatedDiagonal() {}
+    public DrawRegionRotatedDiagonal() {
+    }
 
     @Override
     public void draw(Building build) {

@@ -5,7 +5,6 @@ import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.content.UnitTypes;
 import mindustry.game.Team;
-import mindustry.logic.GlobalVars;
 import mindustry.type.UnitType;
 
 import static mindustry.Vars.state;
@@ -25,13 +24,20 @@ public class ParseUtil {
         String token = getToken(tokens);
 
         switch (token) {
-            case "@waveteam": return state.rules.waveTeam;
-            case "@derelict": return Team.derelict;
-            case "@sharded": return Team.sharded;
-            case "@crux": return Team.crux;
-            case "@malis": return Team.malis;
-            case "@green": return Team.green;
-            case "@blue": return Team.blue;
+            case "@waveteam":
+                return state.rules.waveTeam;
+            case "@derelict":
+                return Team.derelict;
+            case "@sharded":
+                return Team.sharded;
+            case "@crux":
+                return Team.crux;
+            case "@malis":
+                return Team.malis;
+            case "@green":
+                return Team.green;
+            case "@blue":
+                return Team.blue;
         }
 
         try {

@@ -1,7 +1,6 @@
 package newhorizon.expand.block.stream;
 
 import arc.math.geom.Geometry;
-import arc.util.Time;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -9,9 +8,7 @@ import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHLiquids;
-import newhorizon.content.NHStats;
 
 import static mindustry.Vars.tilesize;
 
@@ -48,7 +45,7 @@ public class StreamBlock extends Block {
     }
 
     @Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
         removeBar("liquid");
     }
@@ -66,7 +63,8 @@ public class StreamBlock extends Block {
             return true;
         }
 
-        public void handleStream(StreamBeam stream) {}
+        public void handleStream(StreamBeam stream) {
+        }
 
         @Override
         public void created() {

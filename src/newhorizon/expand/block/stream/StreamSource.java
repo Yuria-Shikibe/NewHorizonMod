@@ -3,26 +3,20 @@ package newhorizon.expand.block.stream;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Table;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.ctype.UnlockableContent;
-import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
-import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
-import mindustry.world.meta.BlockGroup;
-import mindustry.world.meta.Env;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHLiquids;
 import newhorizon.content.NHStats;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.content;
+import static mindustry.Vars.tilesize;
 
 public class StreamSource extends StreamBlock {
     public TextureRegion rotRegion;
@@ -36,9 +30,9 @@ public class StreamSource extends StreamBlock {
         clearOnDoubleTap = true;
 
         config(Liquid.class, (StreamSourceBuild tile, Liquid l) -> {
-            if (l instanceof NHLiquids.Stream){
+            if (l instanceof NHLiquids.Stream) {
                 tile.source = l;
-            }else {
+            } else {
                 tile.liquids.clear();
                 tile.source = null;
             }
@@ -60,7 +54,7 @@ public class StreamSource extends StreamBlock {
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
@@ -68,7 +62,7 @@ public class StreamSource extends StreamBlock {
         public @Nullable Liquid source;
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             super.updateTile();
 
             if (source == null) liquids.clear();
@@ -102,25 +96,25 @@ public class StreamSource extends StreamBlock {
         }
 
         @Override
-        public void buildConfiguration(Table table){
+        public void buildConfiguration(Table table) {
             ItemSelection.buildTable(StreamSource.this, table,
                     content.liquids().select(liquid -> liquid instanceof NHLiquids.Stream),
                     () -> source, this::configure, selectionRows, selectionColumns);
         }
 
         @Override
-        public Liquid config(){
+        public Liquid config() {
             return source;
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.s(source == null ? -1 : source.id);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             int id = read.s();
             source = id == -1 ? null : content.liquid(id);

@@ -9,7 +9,6 @@ import mindustry.world.blocks.environment.*;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.expand.block.environment.OreVein;
 import newhorizon.expand.block.environment.TiledFloor;
 
 public class EnvironmentBlock {
@@ -25,13 +24,13 @@ public class EnvironmentBlock {
             oreClusterTitanium, oreClusterZeta,
             oreWallTitanium, oreWallZeta,
 
-            armorFloor0, armorFloor1, armorFloor2, armorFloor3, armorFloor4, armorFloor5, armorFloor6, armorFloor7,
+    armorFloor0, armorFloor1, armorFloor2, armorFloor3, armorFloor4, armorFloor5, armorFloor6, armorFloor7,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
 
-            conglomerateWall, darkConglomerateWall, thoriumStoneWall,
+    conglomerateWall, darkConglomerateWall, thoriumStoneWall,
             conglomerateBoulder, darkConglomerateBoulder,
 
-            conglomerateSparse, conglomerate, conglomerateDense,
+    conglomerateSparse, conglomerate, conglomerateDense,
             darkConglomerateSparse, darkConglomerate, darkConglomerateDense,
             cryoniteSparse, cryonite,
             erodeRock, erodeRockDense,
@@ -100,12 +99,12 @@ public class EnvironmentBlock {
             attributes.set(NHContent.density, 1f);
         }};
 
-        oreWallTitanium = new StaticWall("ore-wall-titanium"){{
+        oreWallTitanium = new StaticWall("ore-wall-titanium") {{
             itemDrop = NHItems.titanium;
             variants = 3;
         }};
 
-        oreWallZeta = new StaticWall("ore-wall-zeta"){{
+        oreWallZeta = new StaticWall("ore-wall-zeta") {{
             itemDrop = NHItems.zeta;
             variants = 3;
         }};
@@ -132,22 +131,26 @@ public class EnvironmentBlock {
             wall = conglomerateWall;
             decoration = conglomerateBoulder;
         }};
-        conglomerate = new Floor("conglomerate") {{
-            variants = 6;
-            wall = conglomerateWall;
-            decoration = conglomerateBoulder;
-        }
+        conglomerate = new Floor("conglomerate") {
+            {
+                variants = 6;
+                wall = conglomerateWall;
+                decoration = conglomerateBoulder;
+            }
+
             @Override
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
                 mapColor.set(conglomerateSparse.mapColor).mul(1.05f);
             }
         };
-        conglomerateDense = new Floor("conglomerate-dense") {{
-            variants = 6;
-            wall = conglomerateWall;
-            decoration = conglomerateBoulder;
-        }
+        conglomerateDense = new Floor("conglomerate-dense") {
+            {
+                variants = 6;
+                wall = conglomerateWall;
+                decoration = conglomerateBoulder;
+            }
+
             @Override
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
@@ -159,22 +162,26 @@ public class EnvironmentBlock {
             wall = darkConglomerateWall;
             decoration = darkConglomerateBoulder;
         }};
-        darkConglomerate = new Floor("dark-conglomerate") {{
-            variants = 6;
-            wall = darkConglomerateWall;
-            decoration = darkConglomerateBoulder;
-        }
+        darkConglomerate = new Floor("dark-conglomerate") {
+            {
+                variants = 6;
+                wall = darkConglomerateWall;
+                decoration = darkConglomerateBoulder;
+            }
+
             @Override
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
                 mapColor.set(darkConglomerateSparse.mapColor).mul(1.05f);
             }
         };
-        darkConglomerateDense = new Floor("dark-conglomerate-dense") {{
-            variants = 6;
-            wall = darkConglomerateWall;
-            decoration = darkConglomerateBoulder;
-        }
+        darkConglomerateDense = new Floor("dark-conglomerate-dense") {
+            {
+                variants = 6;
+                wall = darkConglomerateWall;
+                decoration = darkConglomerateBoulder;
+            }
+
             @Override
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
@@ -204,20 +211,24 @@ public class EnvironmentBlock {
             variants = 4;
             wall = thoriumStoneWall;
         }};
-        thoriumStone = new Floor("thorium-stone") {{
-            variants = 4;
-            wall = thoriumStoneWall;
-        }
+        thoriumStone = new Floor("thorium-stone") {
+            {
+                variants = 4;
+                wall = thoriumStoneWall;
+            }
+
             @Override
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
                 mapColor.set(thoriumStoneSparse.mapColor).mul(1.05f);
             }
         };
-        thoriumStoneDense = new Floor("thorium-stone-dense") {{
-            variants = 4;
-            wall = thoriumStoneWall;
-        }
+        thoriumStoneDense = new Floor("thorium-stone-dense") {
+            {
+                variants = 4;
+                wall = thoriumStoneWall;
+            }
+
             @Override
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
@@ -310,15 +321,16 @@ public class EnvironmentBlock {
             drawEdgeIn = false;
         }};
 
-        platingFloor3 = new TiledFloor("plating-floor-3") {{
-            useTiles = false;
-            autotileVariants = 2;
-            cacheLayer = NHContent.quantumLayer;
+        platingFloor3 = new TiledFloor("plating-floor-3") {
+            {
+                useTiles = false;
+                autotileVariants = 2;
+                cacheLayer = NHContent.quantumLayer;
 
-            autotile = true;
-            drawEdgeOut = false;
-            drawEdgeIn = false;
-        }
+                autotile = true;
+                drawEdgeOut = false;
+                drawEdgeIn = false;
+            }
 
             @Override
             public int variant(int x, int y, int max) {
@@ -335,7 +347,7 @@ public class EnvironmentBlock {
             drawEdgeIn = false;
         }};
 
-        metalFloorPlain = new TiledFloor("plating-metal-floor"){{
+        metalFloorPlain = new TiledFloor("plating-metal-floor") {{
             tileName = "plating-floor";
 
             autotile = true;

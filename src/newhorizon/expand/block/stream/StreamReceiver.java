@@ -1,9 +1,5 @@
 package newhorizon.expand.block.stream;
 
-import mindustry.gen.Building;
-import mindustry.type.Liquid;
-import newhorizon.content.NHLiquids;
-
 public class StreamReceiver extends StreamBlock {
     public StreamReceiver(String name) {
         super(name);
@@ -20,7 +16,7 @@ public class StreamReceiver extends StreamBlock {
         public void updateTile() {
             dumpLiquid(liquids.current(), 2f, rotation);
         }
-        
+
         @Override
         public boolean acceptStream(StreamBeam stream) {
             return (stream.getRotation() + 2) % 4 != rotation;

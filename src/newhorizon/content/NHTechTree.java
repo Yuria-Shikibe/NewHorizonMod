@@ -29,6 +29,7 @@ public class NHTechTree {
     @SuppressWarnings("all")
     public class TechTreeNodeContent extends StatusEffect {
         public Seq<UnlockableContent> unlockables;
+
         public TechTreeNodeContent(String name) {
             super(name);
         }

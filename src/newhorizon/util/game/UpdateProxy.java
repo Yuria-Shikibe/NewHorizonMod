@@ -20,7 +20,6 @@ import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.Drill;
 import newhorizon.content.NHContent;
-import newhorizon.expand.block.environment.OreVein;
 
 import static mindustry.Vars.world;
 
@@ -31,29 +30,28 @@ public class UpdateProxy {
     private static final ObjectFloatMap<Item> oreCount = new ObjectFloatMap<>();
     private static final Seq<Item> itemArray = new Seq<>();
     private static final Seq<Tile> tempTiles = new Seq<>();
+    private static final Seq<Drill> registerDrills = new Seq<>();
     private static @Nullable Item returnItem;
     private static float returnCount, returnRawCount;
 
-    private static final Seq<Drill> registerDrills = new Seq<>();
-
-    public static void init(){
+    public static void init() {
         Vars.content.blocks().each(block -> {
-            if (block instanceof Drill){
+            if (block instanceof Drill) {
                 registerDrills.add((Drill) block);
             }
         });
 
         Events.run(EventType.Trigger.draw, () -> {
             var input = Vars.control.input;
-            if (input.block instanceof Drill drill){
+            if (input.block instanceof Drill drill) {
                 Tile tile = null;
-                if (Vars.mobile){
-                    for(BuildPlan plan : input.selectPlans) {
-                        if(!plan.breaking && plan == ((MobileInput)input).lastPlaced && plan.block != null){
+                if (Vars.mobile) {
+                    for (BuildPlan plan : input.selectPlans) {
+                        if (!plan.breaking && plan == ((MobileInput) input).lastPlaced && plan.block != null) {
                             tile = plan.tile();
                         }
                     }
-                }else {
+                } else {
                     Vec2 vec = Core.input.mouseWorld(Core.input.mouseX(), Core.input.mouseY());
                     if (input.selectedBlock()) vec.sub(input.block.offset, input.block.offset);
                     int worldX = World.toTile(vec.x), worldY = World.toTile(vec.y);
@@ -82,7 +80,8 @@ public class UpdateProxy {
                             }
                         });
                     });
-                };
+                }
+                ;
             });
         });
 
@@ -91,7 +90,7 @@ public class UpdateProxy {
         thread.start();
     }
 
-    public static void countOreForDrill(Drill drill, Tile tile){
+    public static void countOreForDrill(Drill drill, Tile tile) {
         returnItem = null;
         returnCount = 0;
 
@@ -99,27 +98,27 @@ public class UpdateProxy {
         oreRawCount.clear();
         itemArray.clear();
 
-        for(Tile other : tile.getLinkedTilesAs(drill, tempTiles)){
-            if(drill.canMine(other)){
+        for (Tile other : tile.getLinkedTilesAs(drill, tempTiles)) {
+            if (drill.canMine(other)) {
                 float density = other.overlay().attributes.get(NHContent.density);
                 oreCount.increment(drill.getDrop(other), 0, density + 1f);
                 oreRawCount.increment(drill.getDrop(other), 0, 1f);
             }
         }
 
-        for(Item item : oreCount.keys()){
+        for (Item item : oreCount.keys()) {
             itemArray.add(item);
         }
 
         itemArray.sort((item1, item2) -> {
             int type = Boolean.compare(!item1.lowPriority, !item2.lowPriority);
-            if(type != 0) return type;
+            if (type != 0) return type;
             int amounts = Integer.compare(Mathf.round(oreCount.get(item1, 0)), Mathf.round(oreCount.get(item2, 0)));
-            if(amounts != 0) return amounts;
+            if (amounts != 0) return amounts;
             return Integer.compare(item1.id, item2.id);
         });
 
-        if(itemArray.size == 0){
+        if (itemArray.size == 0) {
             return;
         }
 
@@ -128,18 +127,18 @@ public class UpdateProxy {
         returnRawCount = Mathf.round(oreRawCount.get(itemArray.peek(), 0));
     }
 
-    public static void updateDrillStat(Drill drill){
+    public static void updateDrillStat(Drill drill) {
         Reflect.set(Drill.class, drill, "returnItem", returnItem);
-        Reflect.set(Drill.class, drill, "returnCount", (int)returnCount);
+        Reflect.set(Drill.class, drill, "returnCount", (int) returnCount);
     }
 
-    private static void drawDrillStat(Drill drill, Tile tile){
+    private static void drawDrillStat(Drill drill, Tile tile) {
         if (returnCount > 0) {
             drill.drawPlaceText(Core.bundle.format("nh.ore-density-multiplier", Strings.fixed(returnCount / returnRawCount * 100, 0)), tile.x, tile.y + 1, true);
         }
     }
 
-    public static void updateDrill(Drill.DrillBuild building){
+    public static void updateDrill(Drill.DrillBuild building) {
         building.dominantItems = (int) returnCount;
         building.dominantItem = returnItem;
     }

@@ -27,13 +27,10 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
-import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.consumers.ConsumeLiquid;
-import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
 import newhorizon.expand.ability.passive.PassiveShield;
@@ -44,7 +41,6 @@ import java.util.Objects;
 
 import static mindustry.Vars.content;
 import static mindustry.content.UnitTypes.*;
-import static mindustry.type.ItemStack.with;
 
 
 public class NHPostProcess {
@@ -338,7 +334,8 @@ public class NHPostProcess {
         if (NHSetting.getBool(NHSetting.OVERRIDE_TURRET)) overrideTurret();
     }
 
-    public static void contentOverride() {}
+    public static void contentOverride() {
+    }
 
     public static void postProcessOverride() {
         overrideStats();
@@ -633,50 +630,50 @@ public class NHPostProcess {
             logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
         });
         adjustContent(Blocks.reinforcedMessage, content -> {
-			MessageBlock logicBlock = (MessageBlock) content;
-			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.switchBlock, content -> {
-			SwitchBlock logicBlock = (SwitchBlock) content;
-			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.microProcessor, content -> {
-			LogicBlock logicBlock = (LogicBlock) content;
-			logicBlock.requirements = ItemStack.with(Items.silicon, 50, Items.titanium, 50);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.logicProcessor, content -> {
-			LogicBlock logicBlock = (LogicBlock) content;
-			logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 50, NHItems.presstanium, 50);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.hyperProcessor, content -> {
-			LogicBlock logicBlock = (LogicBlock) content;
-			logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 100, NHItems.zeta, 200, Items.surgeAlloy, 150);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.memoryCell, content -> {
-			MemoryBlock logicBlock = (MemoryBlock) content;
-			logicBlock.requirements = ItemStack.with(Items.silicon, 30);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.memoryBank, content -> {
-			MemoryBlock logicBlock = (MemoryBlock) content;
-			logicBlock.requirements = ItemStack.with(Items.silicon, 80, Items.phaseFabric, 40);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.logicDisplay, content -> {
-			LogicDisplay logicBlock = (LogicDisplay) content;
-			logicBlock.requirements = ItemStack.with(Items.silicon, 50);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
-		adjustContent(Blocks.largeLogicDisplay, content -> {
-			LogicDisplay logicBlock = (LogicDisplay) content;
-			logicBlock.requirements = ItemStack.with(Items.silicon, 150, Items.phaseFabric, 75);
-			logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
-		});
+            MessageBlock logicBlock = (MessageBlock) content;
+            logicBlock.requirements = ItemStack.with(Items.silicon, 5);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.switchBlock, content -> {
+            SwitchBlock logicBlock = (SwitchBlock) content;
+            logicBlock.requirements = ItemStack.with(Items.silicon, 5);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.microProcessor, content -> {
+            LogicBlock logicBlock = (LogicBlock) content;
+            logicBlock.requirements = ItemStack.with(Items.silicon, 50, Items.titanium, 50);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.logicProcessor, content -> {
+            LogicBlock logicBlock = (LogicBlock) content;
+            logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 50, NHItems.presstanium, 50);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.hyperProcessor, content -> {
+            LogicBlock logicBlock = (LogicBlock) content;
+            logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 100, NHItems.zeta, 200, Items.surgeAlloy, 150);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.memoryCell, content -> {
+            MemoryBlock logicBlock = (MemoryBlock) content;
+            logicBlock.requirements = ItemStack.with(Items.silicon, 30);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.memoryBank, content -> {
+            MemoryBlock logicBlock = (MemoryBlock) content;
+            logicBlock.requirements = ItemStack.with(Items.silicon, 80, Items.phaseFabric, 40);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.logicDisplay, content -> {
+            LogicDisplay logicBlock = (LogicDisplay) content;
+            logicBlock.requirements = ItemStack.with(Items.silicon, 50);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
+        adjustContent(Blocks.largeLogicDisplay, content -> {
+            LogicDisplay logicBlock = (LogicDisplay) content;
+            logicBlock.requirements = ItemStack.with(Items.silicon, 150, Items.phaseFabric, 75);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+        });
     }
 
     private static void overrideLogistic() {
@@ -805,22 +802,22 @@ public class NHPostProcess {
     }
 
     private static void overrideTurret() {
-		adjustContent(Blocks.duo, content -> {
+        adjustContent(Blocks.duo, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
-				damage = 40;
+                damage = 40;
                 rangeChange = 40;
-				lightningDamage = 8;
-				lightning = 2;
+                lightningDamage = 8;
+                lightning = 2;
                 lightningLength = 3;
-				lightningLengthRand = 1;
-				speed = 6;
+                lightningLengthRand = 1;
+                speed = 6;
                 width = 7f;
                 height = 9f;
                 lifetime = 33f;
                 ammoMultiplier = 5;
-				reloadMultiplier = 1.25f;
-				pierceArmor = true;
+                reloadMultiplier = 1.25f;
+                pierceArmor = true;
                 hitEffect = despawnEffect = Fx.hitBulletColor;
                 frontColor = lightningColor = hitColor = backColor = trailColor = NHItems.zeta.color;
             }});
@@ -976,7 +973,7 @@ public class NHPostProcess {
         adjustContent(Blocks.cyclone, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
-				damage = 8;
+                damage = 8;
                 ammoMultiplier = 2f;
                 speed = 6f;
                 splashDamage = 50f * 1.5f;
@@ -986,7 +983,7 @@ public class NHPostProcess {
                 backSprite = "large-bomb-back";
                 sprite = "mine-bullet";
                 rangeChange = 24;
-				lightningDamage = 10;
+                lightningDamage = 10;
                 lightning = 2;
                 lightningLength = 10;
                 shootEffect = Fx.shootBig;
@@ -1237,25 +1234,25 @@ public class NHPostProcess {
 
     private static void overrideItem() {
         adjustContent(Items.tungsten, content -> {
-            Item item =(Item) content;
+            Item item = (Item) content;
             item.shownPlanets.addAll(Planets.serpulo);
         });
         adjustContent(Items.carbide, content -> {
-            Item item =(Item) content;
+            Item item = (Item) content;
             item.shownPlanets.addAll(Planets.serpulo);
         });
         adjustContent(Items.plastanium, content -> {
-            Item item =(Item) content;
+            Item item = (Item) content;
             item.shownPlanets.addAll(Planets.erekir);
         });
         adjustContent(Items.titanium, content -> {
-            Item item =(Item) content;
+            Item item = (Item) content;
             item.shownPlanets.addAll(Planets.erekir);
         });
-		adjustContent(Items.silicon, content -> {
-			Item item = (Item) content;
-			item.hardness = 3;
-		});
+        adjustContent(Items.silicon, content -> {
+            Item item = (Item) content;
+            item.hardness = 3;
+        });
         adjustContent(Items.fissileMatter, content -> {
             Item item = (Item) content;
             item.hidden = false;
@@ -1277,18 +1274,18 @@ public class NHPostProcess {
         });
 
         Block[] vanillaFactories = {
-            Blocks.payloadConveyor, Blocks.payloadRouter, Blocks.reinforcedPayloadConveyor, Blocks.reinforcedPayloadRouter,
-            Blocks.deconstructor, Blocks.smallDeconstructor, Blocks.constructor, Blocks.largeConstructor,
-            Blocks.groundFactory, Blocks.airFactory, Blocks.navalFactory,
-            Blocks.additiveReconstructor, Blocks.multiplicativeReconstructor, Blocks.exponentialReconstructor, Blocks.tetrativeReconstructor,
-            Blocks.tankFabricator, Blocks.tankRefabricator, Blocks.tankAssembler,
-            Blocks.mechFabricator, Blocks.mechRefabricator, Blocks.mechAssembler,
-            Blocks.shipFabricator, Blocks.shipRefabricator, Blocks.shipAssembler,
-            Blocks.primeRefabricator, Blocks.basicAssemblerModule
+                Blocks.payloadConveyor, Blocks.payloadRouter, Blocks.reinforcedPayloadConveyor, Blocks.reinforcedPayloadRouter,
+                Blocks.deconstructor, Blocks.smallDeconstructor, Blocks.constructor, Blocks.largeConstructor,
+                Blocks.groundFactory, Blocks.airFactory, Blocks.navalFactory,
+                Blocks.additiveReconstructor, Blocks.multiplicativeReconstructor, Blocks.exponentialReconstructor, Blocks.tetrativeReconstructor,
+                Blocks.tankFabricator, Blocks.tankRefabricator, Blocks.tankAssembler,
+                Blocks.mechFabricator, Blocks.mechRefabricator, Blocks.mechAssembler,
+                Blocks.shipFabricator, Blocks.shipRefabricator, Blocks.shipAssembler,
+                Blocks.primeRefabricator, Blocks.basicAssemblerModule
         };
 
-        for(Block b : vanillaFactories){
-            if(b != null){
+        for (Block b : vanillaFactories) {
+            if (b != null) {
                 b.envRequired = Env.none;
                 b.envDisabled = Env.none;
                 b.envEnabled = Env.any;
@@ -1341,7 +1338,7 @@ public class NHPostProcess {
             unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
                 weapon.reload = 15f;
             });
-            
+
         });
 
         adjustContent(UnitTypes.beta, content -> {
@@ -1350,14 +1347,14 @@ public class NHPostProcess {
             unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
                 weapon.reload = 20f;
             });
-            
+
         });
 
         adjustContent(UnitTypes.gamma, content -> {
-            	UnitType unitType = (UnitType) content;
-        	unitType.mineSpeed = 12.5f;
-           	unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
-           	
+            UnitType unitType = (UnitType) content;
+            unitType.mineSpeed = 12.5f;
+            unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
+
         });
 
     }

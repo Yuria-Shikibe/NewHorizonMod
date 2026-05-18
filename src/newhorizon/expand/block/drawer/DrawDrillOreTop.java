@@ -10,7 +10,7 @@ public class DrawDrillOreTop extends DrawBlock {
     public void draw(Building build) {
         if (build instanceof Drill.DrillBuild drill && drill.dominantItem != null) {
             Draw.color(drill.dominantItem.color);
-            Draw.rect(((Drill)drill.block).itemRegion, drill.x, drill.y);
+            Draw.rect(((Drill) drill.block).itemRegion, drill.x, drill.y);
             Draw.color();
         }
     }

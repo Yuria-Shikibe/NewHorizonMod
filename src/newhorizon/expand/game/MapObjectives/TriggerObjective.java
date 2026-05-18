@@ -19,7 +19,8 @@ public class TriggerObjective extends MapObjectives.MapObjective {
         markers = new MapObjectives.ObjectiveMarker[]{raidIndicator};
     }
 
-    public TriggerObjective() {}
+    public TriggerObjective() {
+    }
 
     @Override
     public boolean update() {

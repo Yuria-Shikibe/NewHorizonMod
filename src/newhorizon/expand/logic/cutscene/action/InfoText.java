@@ -17,7 +17,8 @@ public class InfoText extends ActionLStatement {
         duration = ParseUtil.getNextToken(token);
     }
 
-    public InfoText() {}
+    public InfoText() {
+    }
 
     @Override
     public String getLStatementName() {

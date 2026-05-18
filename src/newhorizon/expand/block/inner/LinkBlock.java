@@ -88,7 +88,7 @@ public class LinkBlock extends Block {
         fullIcon = uiIcon = Core.atlas.find("status-blasted");
     }
 
-    public boolean unlockedNow(){
+    public boolean unlockedNow() {
         return false;
     }
 

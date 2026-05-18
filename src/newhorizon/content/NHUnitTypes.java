@@ -21,7 +21,6 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
-import mindustry.ai.types.CommandAI;
 import mindustry.ai.types.FlyingAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.audio.SoundLoop;
@@ -63,7 +62,10 @@ import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.AncientEngine;
 import newhorizon.expand.units.BoostAbility;
 import newhorizon.expand.units.EnergyUnit;
-import newhorizon.expand.units.ablility.*;
+import newhorizon.expand.units.ablility.AdaptedHealAbility;
+import newhorizon.expand.units.ablility.HealFieldAbility;
+import newhorizon.expand.units.ablility.ShockWaveAbility;
+import newhorizon.expand.units.ablility.TurretShield;
 import newhorizon.expand.units.ai.InterceptorAI;
 import newhorizon.expand.units.ai.ProbeAI;
 import newhorizon.expand.units.ai.SniperAI;
@@ -74,10 +76,10 @@ import newhorizon.expand.units.unitEntity.ProbeEntity;
 import newhorizon.expand.units.unitType.AncientUnitType;
 import newhorizon.expand.units.unitType.NHUnitType;
 import newhorizon.expand.units.unitType.content.Destruction;
-import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
+import newhorizon.util.game.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -997,7 +999,7 @@ public class NHUnitTypes {
             payloadCapacity = (2 * 2) * tilePayload;
 
             immunities = ObjectSet.with(NHStatusEffects.scannerDown);
-            
+
             aiController = BuilderAI::new;
             fogRadius = 40f;
             outlineRadius = 4;
@@ -2403,7 +2405,7 @@ public class NHUnitTypes {
                 }});
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
-                
+
                 lowAltitude = true;
                 itemCapacity = 500;
                 health = 72000.0F;
@@ -2822,7 +2824,7 @@ public class NHUnitTypes {
                                 shots = 2;
                                 //shotDelay = 10f;
                                 shootCone = 60f;
-                                firstShotDelay =10f;
+                                firstShotDelay = 10f;
                             }};
 
                             inaccuracy = 4.0F;
@@ -4099,36 +4101,36 @@ public class NHUnitTypes {
                 constructor = EntityMapping.map(3);
 
                 abilities.addAll(
-                new EnergyFieldAbility(180f, 150f, 300f) {{
-                    color = NHColor.thurmixRed;
-                     y = -9f;
-                    healEffect = new Effect(11, e -> {
-                    Draw.color(NHColor.thurmixRed);
-                    Lines.stroke(e.fout() * 2f);
-                    Lines.circle(e.x, e.y, 2f + e.finpow() * 7f);
-                    });
-                    status = NHStatusEffects.emp1;
-                    sectors = 4;
-                    sectorRad = 0.16f;
-                    healPercent = 0.25f;
-                    statusDuration = 120f;
-                    shootSound = NHSounds.synchro;
-                }},
-                new ShieldArcAbility() {{
-                    radius = 120f;
-                    angle = 120;
-                    regen = 20f;
-                    cooldown = 60f * 10f;
-                    max = 25000f;
-                    width = 20f;
-                    whenShooting = true;
-                    chanceDeflect = -1f;
-                }}
-            );
+                        new EnergyFieldAbility(180f, 150f, 300f) {{
+                            color = NHColor.thurmixRed;
+                            y = -9f;
+                            healEffect = new Effect(11, e -> {
+                                Draw.color(NHColor.thurmixRed);
+                                Lines.stroke(e.fout() * 2f);
+                                Lines.circle(e.x, e.y, 2f + e.finpow() * 7f);
+                            });
+                            status = NHStatusEffects.emp1;
+                            sectors = 4;
+                            sectorRad = 0.16f;
+                            healPercent = 0.25f;
+                            statusDuration = 120f;
+                            shootSound = NHSounds.synchro;
+                        }},
+                        new ShieldArcAbility() {{
+                            radius = 120f;
+                            angle = 120;
+                            regen = 20f;
+                            cooldown = 60f * 10f;
+                            max = 25000f;
+                            width = 20f;
+                            whenShooting = true;
+                            chanceDeflect = -1f;
+                        }}
+                );
 
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
-                
+
                 hitSize = 70f;
                 armor = 52;
                 health = 78000.0F;

@@ -13,8 +13,8 @@ import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
-import newhorizon.util.game.PosLightning;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.game.PosLightning;
 
 public class ChainBulletType extends BulletType {
     protected static final Seq<ChainBulletType> all = new Seq<>();

@@ -30,20 +30,21 @@ public class DysonRingMesh extends PlanetMesh {
         rotateSpeed = rand.random(1f, 3f);
     }
 
-    public DysonRingMesh(){}
+    public DysonRingMesh() {
+    }
 
     public float flipRot() {
         return Time.globalTime * flipSpeed / 40f + flipValue;
     }
 
-    public float relRot(){
+    public float relRot() {
         return Time.globalTime * rotateSpeed / 40f;
     }
 
     @Override
-    public void render(PlanetParams params, Mat3D projection, Mat3D transform){
+    public void render(PlanetParams params, Mat3D projection, Mat3D transform) {
         //don't waste performance rendering 0-alpha clouds
-        if(params.planet == planet && Mathf.zero(1f - params.uiAlpha, 0.01f)) return;
+        if (params.planet == planet && Mathf.zero(1f - params.uiAlpha, 0.01f)) return;
 
         preRender(params);
         shader.bind();
@@ -57,7 +58,7 @@ public class DysonRingMesh extends PlanetMesh {
     }
 
     @Override
-    public void preRender(PlanetParams params){
+    public void preRender(PlanetParams params) {
         Shaders.clouds.planet = planet;
         Shaders.clouds.lightDir.set(planet.solarSystem.position).sub(planet.position)
                 .rotate(flipAngle, flipRot())

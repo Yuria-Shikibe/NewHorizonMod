@@ -11,7 +11,6 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import newhorizon.expand.logic.components.action.NullAction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,11 +85,19 @@ public class CutsceneControl {
             String actionName = tokensArray.remove(0);
             String[] args = tokensArray.toArray(String.class);
             return actionParser.get(actionName).get(args);
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.err("Error when parsing token: " + tokens);
             Log.err(e);
             return new NullAction();
         }
+    }
+
+    public static void saveActionBus(String name, String action) {
+        Vars.state.rules.tags.put(CSS_ACTION + name, action);
+    }
+
+    public static String getActionBus(String name) {
+        return Vars.state.rules.tags.get(CSS_ACTION + name, "");
     }
 
     public void update() {
@@ -145,14 +152,6 @@ public class CutsceneControl {
         mainBus = null;
         waitingBuses.clear();
         subBuses.clear();
-    }
-
-    public static void saveActionBus(String name, String action) {
-        Vars.state.rules.tags.put(CSS_ACTION + name, action);
-    }
-
-    public static String getActionBus(String name) {
-        return Vars.state.rules.tags.get(CSS_ACTION + name, "");
     }
 
     //Add a main action bus to the queue. If no main bus is running, starts immediately; otherwise queues it.

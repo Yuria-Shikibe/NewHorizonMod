@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
-import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -37,13 +36,14 @@ public class DrawRotation extends DrawBlock {
     public int rotOffset = 0;
     public int drawType = DRAW_NORMAL;
 
-    public DrawRotation() {}
+    public DrawRotation() {
+    }
 
     public static void drawRotation(float x, float y, int rotation, int drawType, TextureRegion[] regions) {
         if (regions == null || regions.length != 4) return;
         if (rotation < 0 || rotation > 4) return;
 
-        int xSize = regions[rotation].width / tilesize * 2, ySize = regions[rotation].height / tilesize * 2, scl = rotation % 2 == 0? 1: -1;
+        int xSize = regions[rotation].width / tilesize * 2, ySize = regions[rotation].height / tilesize * 2, scl = rotation % 2 == 0 ? 1 : -1;
         float rotDeg = rotation * 90f;
 
         switch (drawType) {
@@ -57,9 +57,9 @@ public class DrawRotation extends DrawBlock {
             case DRAW_X_MIRROR -> Draw.rect(regions[rotation], x, y, xSize * scl, ySize, rotDeg);
             case DRAW_Y_MIRROR -> Draw.rect(regions[rotation], x, y, xSize, ySize * scl, rotDeg);
             case DRAW_OBLIQUE -> {
-                if (rotation == 3){
+                if (rotation == 3) {
                     Draw.rect(regions[rotation], x, y, xSize, ySize * scl);
-                }else {
+                } else {
                     Draw.rect(regions[rotation], x, y, xSize, ySize, rotDeg);
                 }
             }

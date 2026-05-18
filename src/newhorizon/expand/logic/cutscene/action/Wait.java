@@ -17,7 +17,8 @@ public class Wait extends ActionLStatement {
         duration = ParseUtil.getNextToken(token);
     }
 
-    public Wait() {}
+    public Wait() {
+    }
 
     @Override
     public String getLStatementName() {

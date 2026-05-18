@@ -2,28 +2,29 @@ package newhorizon.expand.logic;
 
 import arc.func.Cons;
 import arc.scene.ui.layout.Table;
-import arc.util.Time;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
 import mindustry.logic.LVar;
-import newhorizon.expand.logic.components.Action;
 
 /**
  * Base class for logic statements.
  */
 public class ActionLStatement extends LStatement {
 
-    public ActionLStatement(String[] tokens) {}
+    public ActionLStatement(String[] tokens) {
+    }
 
-    public ActionLStatement() {}
+    public ActionLStatement() {
+    }
 
     public String getLStatementName() {
         return "statement";
     }
 
     @Override
-    public void build(Table table) {}
+    public void build(Table table) {
+    }
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
@@ -47,10 +48,12 @@ public class ActionLStatement extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class ActionInstruction implements LExecutor.LInstruction {
-        public ActionInstruction() {}
+        public ActionInstruction() {
+        }
 
         @Override
-        public void run(LExecutor exec) {}
+        public void run(LExecutor exec) {
+        }
 
         public void startExec(LExecutor exec, String actionName) {
             exec.textBuffer.append(actionName);
@@ -62,13 +65,13 @@ public class ActionLStatement extends LStatement {
 
         public void appendExec(LExecutor exec, LVar... vars) {
             for (LVar var : vars) {
-                exec.textBuffer.append(" ").append(var.isobj? var.name : var.numf());
+                exec.textBuffer.append(" ").append(var.isobj ? var.name : var.numf());
             }
         }
 
         public void writeExec(LExecutor exec, LVar... vars) {
             for (LVar var : vars) {
-                exec.textBuffer.append(" ").append(var.isobj? var.name : var.numf());
+                exec.textBuffer.append(" ").append(var.isobj ? var.name : var.numf());
             }
             exec.textBuffer.append("\n");
         }

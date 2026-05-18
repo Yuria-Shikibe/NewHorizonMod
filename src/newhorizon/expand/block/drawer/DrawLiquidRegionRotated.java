@@ -13,7 +13,8 @@ public class DrawLiquidRegionRotated extends DrawLiquidRegion {
         super(drawLiquid);
     }
 
-    public DrawLiquidRegionRotated() {}
+    public DrawLiquidRegionRotated() {
+    }
 
     @Override
     public void draw(Building build) {

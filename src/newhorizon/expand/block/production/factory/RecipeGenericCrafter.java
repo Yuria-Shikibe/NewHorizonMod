@@ -37,6 +37,30 @@ public class RecipeGenericCrafter extends MultiBlockCrafter {
         consume(new ConsumeRecipe(RecipeGenericCrafterBuild::getRecipe, RecipeGenericCrafterBuild::getDisplayRecipe));
     }
 
+    public static Table display(UnlockableContent content, float amount, float timePeriod) {
+        Table table = new Table();
+        Stack stack = new Stack();
+
+        stack.add(new Table(o -> {
+            o.left();
+            o.add(new Image(content.uiIcon)).size(32f).scaling(Scaling.fit);
+        }));
+
+        if (amount != 0) {
+            stack.add(new Table(t -> {
+                t.left().bottom();
+                t.add(amount >= 1000 ? UI.formatAmount((int) amount) : Strings.autoFixed(amount, 2)).style(Styles.outlineLabel);
+                t.pack();
+            }));
+        }
+
+        withTooltip(stack, content);
+
+        table.add(stack);
+        table.add((content.localizedName + "\n") + "[lightgray]" + Strings.autoFixed(amount / (timePeriod / 60f), 2) + StatUnit.perSecond.localized()).padLeft(2).padRight(5).style(Styles.outlineLabel);
+        return table;
+    }
+
     @Override
     public void init() {
         super.init();
@@ -53,8 +77,8 @@ public class RecipeGenericCrafter extends MultiBlockCrafter {
         outputLiquid = null;
 
         if (recipes.isEmpty()) {
-            outputItems = new ItemStack[]{ new ItemStack(Items.copper, 0) };
-            outputLiquids = new LiquidStack[]{ new LiquidStack(Liquids.water, 0f) };
+            outputItems = new ItemStack[]{new ItemStack(Items.copper, 0)};
+            outputLiquids = new LiquidStack[]{new LiquidStack(Liquids.water, 0f)};
         } else {
             Recipe firstRecipe = recipes.first();
 
@@ -74,14 +98,13 @@ public class RecipeGenericCrafter extends MultiBlockCrafter {
         }
 
 
-
         craftTime = 60f;
 
         if (!liquidOutput.isEmpty()) outputsLiquid = true;
     }
 
     @Override
-    public boolean outputsItems(){
+    public boolean outputsItems() {
         return !itemOutput.isEmpty();
     }
 
@@ -97,7 +120,7 @@ public class RecipeGenericCrafter extends MultiBlockCrafter {
         return table -> {
             table.row();
             table.table(cont -> {
-                for (int i = 0; i < recipes.size; i++){
+                for (int i = 0; i < recipes.size; i++) {
                     Recipe recipe = recipes.get(i);
                     int finalI = i;
                     cont.table(t -> {
@@ -133,30 +156,6 @@ public class RecipeGenericCrafter extends MultiBlockCrafter {
             recipe.inputLiquid.each(stack -> addLiquidBar(stack.liquid));
             recipe.outputLiquid.each(stack -> addLiquidBar(stack.liquid));
         });
-    }
-
-    public static Table display(UnlockableContent content, float amount, float timePeriod){
-        Table table = new Table();
-        Stack stack = new Stack();
-
-        stack.add(new Table(o -> {
-            o.left();
-            o.add(new Image(content.uiIcon)).size(32f).scaling(Scaling.fit);
-        }));
-
-        if(amount != 0){
-            stack.add(new Table(t -> {
-                t.left().bottom();
-                t.add(amount >= 1000 ? UI.formatAmount((int)amount) : Strings.autoFixed(amount, 2)).style(Styles.outlineLabel);
-                t.pack();
-            }));
-        }
-
-        withTooltip(stack, content);
-
-        table.add(stack);
-        table.add((content.localizedName + "\n") + "[lightgray]" + Strings.autoFixed(amount / (timePeriod / 60f), 2) + StatUnit.perSecond.localized()).padLeft(2).padRight(5).style(Styles.outlineLabel);
-        return table;
     }
 
     public class RecipeGenericCrafterBuild extends AdaptCrafterBuild {
@@ -309,14 +308,14 @@ public class RecipeGenericCrafter extends MultiBlockCrafter {
             consume();
 
             getRecipe().outputItem.each(stack -> {
-                for(int i = 0; i < stack.amount; i++){
+                for (int i = 0; i < stack.amount; i++) {
                     offload(stack.item);
                 }
             });
 
             progress %= 1f;
 
-            if(wasVisible) craftEffect.at(x, y);
+            if (wasVisible) craftEffect.at(x, y);
             updateRecipe();
         }
 

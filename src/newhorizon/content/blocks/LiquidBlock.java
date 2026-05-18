@@ -17,34 +17,34 @@ public class LiquidBlock {
             turboPumpSmall, turboPump, standardLiquidStorage, heavyLiquidStorage;
 
     public static void load() {
-        streamSource = new StreamSource("stream-source"){{
+        streamSource = new StreamSource("stream-source") {{
             requirements(Category.liquid, BuildVisibility.shown, with());
             buildVisibility = BuildVisibility.sandboxOnly;
         }};
 
-        streamExtractor = new StreamExtractor("stream-extractor"){{
+        streamExtractor = new StreamExtractor("stream-extractor") {{
             requirements(Category.liquid, BuildVisibility.shown, with());
 
             rotateDraw = true;
         }};
 
-        streamReceiver = new StreamReceiver("stream-receiver"){{
+        streamReceiver = new StreamReceiver("stream-receiver") {{
             requirements(Category.liquid, BuildVisibility.shown, with());
         }};
 
-        streamRepeater = new StreamRepeater("stream-repeater"){{
-            requirements(Category.liquid, BuildVisibility.shown, with());
-
-            rotateDraw = true;
-        }};
-
-        streamRedirector = new StreamRedirector("stream-redirector"){{
+        streamRepeater = new StreamRepeater("stream-repeater") {{
             requirements(Category.liquid, BuildVisibility.shown, with());
 
             rotateDraw = true;
         }};
 
-        streamSplitter = new StreamSplitter("stream-splitter"){{
+        streamRedirector = new StreamRedirector("stream-redirector") {{
+            requirements(Category.liquid, BuildVisibility.shown, with());
+
+            rotateDraw = true;
+        }};
+
+        streamSplitter = new StreamSplitter("stream-splitter") {{
             requirements(Category.liquid, BuildVisibility.shown, with());
 
             rotateDraw = true;

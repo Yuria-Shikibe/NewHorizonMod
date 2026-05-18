@@ -21,18 +21,18 @@ public class ScreenShaderDrawer {
 
     private static boolean capturing = false;
 
-    public static void init(){
+    public static void init() {
         Events.run(EventType.Trigger.drawOver, () -> {
             Draw.draw(Layer.min, ScreenShaderDrawer::drawBegin);
             Draw.draw(Layer.max, ScreenShaderDrawer::drawEnd);
         });
     }
 
-    private static boolean hasActiveEffects(){
+    private static boolean hasActiveEffects() {
         return drawDisplaceGlitch;
     }
 
-    public static void drawBegin(){
+    public static void drawBegin() {
         if (!hasActiveEffects()) {
             capturing = false;
             return;
@@ -45,23 +45,23 @@ public class ScreenShaderDrawer {
         capturing = true;
     }
 
-    public static void drawEnd(Camera camera){
+    public static void drawEnd(Camera camera) {
         if (!capturing) return;
 
         FrameBuffer from = pingPong1;
 
-        if(drawDisplaceGlitch) from = pingPong(from, NHShaders.displaceGlitch, camera);
+        if (drawDisplaceGlitch) from = pingPong(from, NHShaders.displaceGlitch, camera);
 
         from.end();
         from.blit(Shaders.screenspace);
         capturing = false;
     }
 
-    public static void drawEnd(){
+    public static void drawEnd() {
         drawEnd(Core.camera);
     }
 
-    private static FrameBuffer pingPong(FrameBuffer from, NHShaders.ModSurfaceShader shader, Camera camera){
+    private static FrameBuffer pingPong(FrameBuffer from, NHShaders.ModSurfaceShader shader, Camera camera) {
         FrameBuffer to = from == pingPong1 ? pingPong2 : pingPong1;
 
         from.end();
@@ -71,7 +71,7 @@ public class ScreenShaderDrawer {
         return to;
     }
 
-    private static void drawScreen(FrameBuffer active, NHShaders.ModSurfaceShader shader, Camera camera){
+    private static void drawScreen(FrameBuffer active, NHShaders.ModSurfaceShader shader, Camera camera) {
         FrameBuffer screenBuffer = active == pingPong1 ? pingPong2 : pingPong1;
 
         screenBuffer.begin();
@@ -81,7 +81,7 @@ public class ScreenShaderDrawer {
         blit(shader, screenBuffer, camera);
     }
 
-    private static void blit(NHShaders.ModSurfaceShader shader, FrameBuffer buffer, Camera camera){
+    private static void blit(NHShaders.ModSurfaceShader shader, FrameBuffer buffer, Camera camera) {
         shader.texture = buffer.getTexture();
         buffer.blit(shader);
     }
