@@ -26,11 +26,11 @@ public class DistributionBlock {
             conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger,
             logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
-            stackRail, steadyStackRail,lightStackLoader, heavyStackLoader,
+            stackRail, steadyStackRail, lightStackLoader, heavyStackLoader,
             conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load() {
-        multiRouter = new FloatMultiRouter("multi-router"){{
+        multiRouter = new FloatMultiRouter("multi-router") {{
             size = 1;
             health = 560;
             speed = 2f;
@@ -38,7 +38,7 @@ public class DistributionBlock {
             requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.lead, 5));
         }};
 
-        multiJunction = new FloatMultiJunction("multi-junction"){{
+        multiJunction = new FloatMultiJunction("multi-junction") {{
             size = 1;
             health = 560;
             speed = 12f;
@@ -46,8 +46,8 @@ public class DistributionBlock {
 
             requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
         }};
-        multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor"){{
-            requirements(Category.distribution,with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));
+        multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor") {{
+            requirements(Category.distribution, with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));
             speed = 0.12f;
             displayedSpeed = 18f;
             health = 800;
@@ -116,7 +116,7 @@ public class DistributionBlock {
 
             placeableLiquid = true;
         }};
-        
+
         conveyorBridgeExtend = new AdaptItemBridge("logistics-extend-bridge") {{
             requirements(Category.distribution, with(NHItems.hardLight, 10, NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
@@ -139,7 +139,7 @@ public class DistributionBlock {
             health = 300;
             speed = 3;
             capacity = 1;
-            
+
             placeableLiquid = true;
         }};
 
@@ -233,13 +233,13 @@ public class DistributionBlock {
 
         rapidUnloader = new AdaptUnloader("rapid-unloader") {{
             requirements(Category.distribution, BuildVisibility.shown, with(
-                    NHItems.hardLight, 10, 
+                    NHItems.hardLight, 10,
                     Items.silicon, 4
             ));
 
             health = 300;
             speed = 0.5f;
-            
+
             placeableLiquid = true;
         }};
 

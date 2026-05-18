@@ -845,13 +845,25 @@
 	"size": 2,
 	"color": 255
 },
-"new-horizon-processor-manufactory": {
+"new-horizon-processor-manu-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
 	"color": 255
 },
 "new-horizon-processor-printer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-sub-cooler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-hyper-cooler": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
@@ -869,22 +881,40 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-sub-cooler": {
+"new-horizon-plasticator": {
 	"synthetic": true,
 	"solid": true,
-	"size": 2,
+	"size": 3,
 	"color": 255
 },
-"new-horizon-hyper-cooler": {
+"new-horizon-photocatalyst-factory": {
 	"synthetic": true,
 	"solid": true,
-	"size": 2,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-crystallizer": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-metal-oxhydrigen-restructuror": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-particle-activator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-plasma-activator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-crucible-foundry": {
@@ -899,49 +929,7 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-zeta-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-plasticator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-metal-oxhydrigen-restructuror": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-photocatalyst-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-fusion-core-energy-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-thorium-transmuter": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-particle-activator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-plasma-activator": {
+"new-horizon-xen-separator": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -963,6 +951,24 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
+	"color": 255
+},
+"new-horizon-thorium-transmuter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-fusion-core-energy-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-zeta-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
 	"color": 255
 },
 "new-horizon-fabric-restructuror": {
@@ -989,24 +995,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-xen-separator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-processor-etching-facility": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-reverse-collapse-facility": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
 "new-horizon-irdryon-fluid-factory": {
 	"synthetic": true,
 	"solid": true,
@@ -1017,6 +1005,18 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-processor-etching-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-processor-compactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
 	"color": 255
 },
 "new-horizon-irayrond-factory": {
@@ -1043,12 +1043,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-processor-compactor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
 "new-horizon-positive-phase-decayer": {
 	"synthetic": true,
 	"solid": true,
@@ -1073,6 +1067,12 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-reverse-collapse-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-dark-energy-trap": {
 	"synthetic": true,
 	"solid": true,
@@ -1091,19 +1091,49 @@
 	"size": 5,
 	"color": 255
 },
+"new-horizon-flux-node-mk1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-flux-node-mk2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-flux-node-large-mk1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-flux-node-large-mk2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-photothermal-generator": {
 	"synthetic": true,
 	"solid": true,
 	"size": 1,
 	"color": 255
 },
-"new-horizon-photon-panel": {
+"new-horizon-test": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
 	"color": 255
 },
-"new-horizon-hydrazine-generator": {
+"new-horizon-vector-condenser": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-photon-panel": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -1113,6 +1143,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-hydrazine-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-fission-reactor": {

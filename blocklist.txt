@@ -147,6 +147,10 @@ new-horizon-fission-cell 1 1 1 0
 new-horizon-fission-reactor 1 1 3 0
 new-horizon-flood-pipe 1 1 1 0
 new-horizon-floodPipe 1 1 1 0
+new-horizon-flux-node-large-mk1 1 1 2 0
+new-horizon-flux-node-large-mk2 1 1 2 0
+new-horizon-flux-node-mk1 1 1 1 0
+new-horizon-flux-node-mk2 1 1 1 0
 new-horizon-flux-phaser 1 1 3 0
 new-horizon-foundry-basic 1 1 2 0
 new-horizon-foundry-epic 1 1 4 0
@@ -387,6 +391,7 @@ new-horizon-processor-compactor 1 1 4 0
 new-horizon-processor-encoder 1 1 2 0
 new-horizon-processor-etching-facility 1 1 2 0
 new-horizon-processor-junior-factory 1 1 2 0
+new-horizon-processor-manu-factory 1 1 2 0
 new-horizon-processor-manufactory 1 1 2 0
 new-horizon-processor-printer 1 1 2 0
 new-horizon-processor-senior-factory 1 1 2 0
@@ -482,6 +487,7 @@ new-horizon-synchro 1 1 3 0
 new-horizon-tachyon-emitter 1 1 1 0
 new-horizon-tagger 1 1 1 0
 new-horizon-tandem-factory 1 1 3 0
+new-horizon-test 1 1 3 0
 new-horizon-test-turret 1 1 3 0
 new-horizon-thermo-core-factory 1 1 5 0
 new-horizon-thermo-core-negative-factory 1 1 1 0
@@ -504,6 +510,7 @@ new-horizon-turbo-pump-small 1 1 1 0
 new-horizon-ultracooler 1 1 2 0
 new-horizon-unit-initer 1 0 1 0
 new-horizon-upgradeSort-factory 1 1 3 0
+new-horizon-vector-condenser 1 1 3 0
 new-horizon-vent-extractor 1 1 3 0
 new-horizon-vortex 1 1 4 0
 new-horizon-warp-portal-initer 1 0 1 0

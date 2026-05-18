@@ -6,12 +6,8 @@ import mindustry.content.Items;
 import mindustry.graphics.Pal;
 
 public class NHColor {
-    static {
-        Colors.put("heal", Pal.heal);
-        Colors.put("ancient", ancient);
-        Colors.put("reddust", Pal.redderDust);
-        Colors.put("ammo", Pal.ammo);
-    }    public static Color
+
+    public static Color
             ancient = Items.surgeAlloy.color.cpy().lerp(Pal.accent, 0.115f),
             ancientLight = ancient.cpy().lerp(Color.white, 0.7f),
             ancientLightMid = ancient.cpy().lerp(Color.white, 0.4f),
@@ -39,8 +35,12 @@ public class NHColor {
             stampingArc = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f),
             processorBlue = Color.valueOf("cee5ed");
 
-
-
+    static {
+        Colors.put("heal", Pal.heal);
+        Colors.put("ancient", ancient);
+        Colors.put("reddust", Pal.redderDust);
+        Colors.put("ammo", Pal.ammo);
+    }
 
 }
 
