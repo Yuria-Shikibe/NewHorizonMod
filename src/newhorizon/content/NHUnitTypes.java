@@ -112,8 +112,8 @@ public class NHUnitTypes {
             nucleoid, pester, laugra, macrophage, ancientProbe, //ancient
             assaulter, anvil, collapser, //Air-2
             origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
-            sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
-    /*relay,*/ ghost, zarkov, declining, //Navy
+            sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
+            relay, ghost, zarkov, declining, //Navy
             liv;
     public static Seq<StatusEffect> statuses;
 
@@ -2563,6 +2563,144 @@ public class NHUnitTypes {
             }
         };
 
+        striker = new NHUnitType("striker"){{
+			outlineColor = OColor;
+			aiController = SniperAI::new;
+			targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.turret, BlockFlag.generator, null};
+			weapons.add(new Weapon("striker-weapon"){{
+				mirror = false;
+				rotate = false;
+				continuous = true;
+				alternate = false;
+				shake = 4f;
+				heatColor = NHColor.lightSkyBack;
+				shootY = 13f;
+				reload = 420f;
+				//shots = 1;
+				x = y = 0f;
+				predictTarget = false;
+				bullet = new LaserBulletType(400){{
+                    length = 480f;
+                    hitSize = 16f;
+                    lifetime =60;
+                }};
+				chargeSound = Sounds.none;
+				shootSound = Sounds.none;
+				shootStatus = StatusEffects.slow;
+				shootStatusDuration = bullet.lifetime + 60f;
+			}}, closeAATurret);
+            weapons.add(new Weapon(name + "-missile") {{
+                reload = 240f;
+                //xRand = 10f;
+                //shootY = 75f;
+
+                showStatSprite = false;
+                layerOffset = 0.002f;
+
+                shoot = new ShootMulti(new ShootBarrel() {{
+                    shots = 3;
+                    barrels = new float[]
+                            {
+                                    -6, 0, 0,
+                                    8, 0, 0,
+                                    24, 0, 0,
+                            };
+                }}, new ShootPattern() {{
+                    shots = 5;
+                    shotDelay = 4.5f;
+                }});
+
+                velocityRnd = 0.05f;
+                shootSound = NHSounds.launch;
+
+                bullet = new AccelBulletType(4.6f, 80) {
+                    {
+                        sprite = NHBullets.MISSILE_LARGE;
+                        width = 6f;
+                        height = 16f;
+                        //shrinkY = 0f;
+
+                        accelerateBegin = 0.1f;
+                        accelerateEnd = 0.6f;
+
+                        velocityBegin = 3f;
+                        velocityIncrease = 11f;
+
+                        backColor = hitColor = lightColor = lightningColor = NHColor.lightSkyBack;
+                        trailColor = Color.gray;
+                        frontColor = NHColor.lightSky;
+                        homingPower = 0.08f;
+                        homingDelay = 5f;
+                        lifetime = 60f;
+                        hitEffect = NHFx.instHit(backColor, 2, 30f);
+                        despawnEffect = NHFx.shootCircleSmall(backColor);
+
+                        lightning = 1;
+                        lightningLengthRand = 2;
+                        lightningLength = 5;
+                        lightningDamage = 20;
+
+                        smokeEffect = Fx.shootPyraFlame;
+                        shootEffect = NHFx.hugeSmokeGray;
+
+                        if (NHSetting.enableDetails()) {
+                            trailColor = NHColor.trail;
+                            trailWidth = 2f;
+                            trailLength = 12;
+                        }
+                    }
+
+                    @Override
+                    public void updateHoming(Bullet b) {
+                        if (b.time >= this.homingDelay) {
+                            if (b.owner instanceof Unit u) {
+                                if (u.isPlayer()) {
+                                    Player p = u.getPlayer();
+                                    b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(p.mouseX, p.mouseY), homingPower * Time.delta * 50.0F));
+                                } else super.updateHoming(b);
+                            } else super.updateHoming(b);
+                        }
+                    }
+                };
+
+                minWarmup = 0.9f;
+                shootWarmupSpeed /= 3f;
+
+                shootCone = 360;
+                baseRotation = 90;
+                recoil = 2f;
+                mirror = rotate = false;
+                /*parts.add(new RegionPart("-cooler") {{
+                    under = outline = true;
+                    rotation = -90;
+                    y = 49.5f;
+                    x = -69.5f;
+                    moveY = -7f;
+                    progress = PartProgress.warmup;
+                }}, new RegionPart("-silo") {{
+                    under = outline = true;
+                    rotation = -90;
+                    y = 62.5f;
+                    x = -78.75f;
+                }});*/
+            }});
+			constructor = EntityMapping.map(3);
+			lowAltitude = true;
+			health = 5500.0F;
+			speed = 0.8F;
+			accel = 0.02F;
+			drag = 0.025F;
+			flying = true;
+			hitSize = 30.0F;
+			armor = 4.0F;
+			engineOffset = 28.5F;
+			engineSize = 6.0F;
+			rotateSpeed = 1.35F;
+			//buildSpeed = 0.8f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+
         naxos = new NHUnitType("naxos") {
             {
                 outlineColor = OColor;
@@ -3182,6 +3320,67 @@ public class NHUnitTypes {
                 NHPixmap.outlineLegs(packer, this);
             }
         };
+
+        relay = new NHUnitType("relay"){{
+			outlineColor = OColor;
+			armor = 6;
+			buildBeamOffset = 6f;
+			hitSize = 20f;
+			drag = 0.06F;
+			itemCapacity = 20;
+			speed = 1.2F;
+			health = 800.0F;
+			accel = 0.12f;
+			rotateSpeed = 5f;
+
+			//buildSpeed = 1.125f;
+
+			trailLength = 70;
+			trailScl = 1.65f;
+
+			weapons.add(new Weapon(NewHorizon.name("primary-weapon")){{
+				mirror = top = rotate = alternate = true;
+				reload = 60f;
+				shoot = new ShootPattern(){{
+					shotDelay = 6f;
+					shots = 4;
+				}};
+
+				x = 5f;
+				rotateSpeed = 12f;
+				y = -6f;
+				shootY = 18f;
+				velocityRnd = 0.075f;
+				inaccuracy = 5f;
+				shootSound = NHSounds.shootMissile1;
+				bullet = new BasicBulletType(5f, 25f, "missile-large"){{
+					lifetime = 65f;
+					backColor = hitColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
+					frontColor = NHColor.lightSkyFront;
+
+					splashDamage = damage / 4f;
+					splashDamageRadius = 24f;
+
+					hitEffect = NHFx.blast(backColor, splashDamageRadius);
+					despawnEffect = NHFx.square45_6_45;
+					shootEffect = NHFx.shootCircleSmall(backColor);
+					smokeEffect = Fx.shootBigSmoke;
+
+					trailLength = 12;
+					trailWidth = 1.75f;
+
+					width = 7f;
+					height = 30f;
+
+					homingDelay = 5f;
+					homingPower = 0.02f;
+					homingRange = 200f;
+				}};
+			}});
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+
 
         ghost = new NHUnitType("ghost") {
             {
