@@ -26,6 +26,7 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateBasic, UnitTypes.horizon, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.graphite, 60));
         unitRecipePlan(UnitBlock.jumpGateBasic, UnitTypes.minke, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.graphite, 60,Items.titanium,30));
         unitRecipePlan(UnitBlock.jumpGateBasic, UnitTypes.oxynoe, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.graphite, 60,Items.tungsten,30));
+        unitRecipePlan(UnitBlock.jumpGateBasic, NHUnitTypes.relay, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.graphite, 60,Items.tungsten,80,NHItems.titanium,80));
         unitRecipePlan(UnitBlock.jumpGateBasic, UnitTypes.locus, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.tungsten, 60,Items.titanium,60));
         unitRecipePlan(UnitBlock.jumpGateBasic, UnitTypes.cleroi, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.titanium, 75, Items.tungsten, 50));
 
@@ -49,6 +50,7 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.aegires, 160 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 160, NHItems.carbide, 120, NHItems.phaseFabric, 100, NHItems.metalOxhydrigen, 200));
 
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.naxos, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 600, Items.surgeAlloy, 300, NHItems.seniorProcessor, 100, NHItems.multipleSteel, 300));
+        unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.striker, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 400, Items.carbide, 400, NHItems.seniorProcessor, 120, NHItems.multipleSteel, 400));
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.tarlidor, 180 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 500, NHItems.metalOxhydrigen, 600, Items.surgeAlloy, 300, NHItems.multipleSteel, 300));
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.zarkov, 180 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 300, NHItems.metalOxhydrigen, 800, Items.surgeAlloy, 800, NHItems.multipleSteel, 400));
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.eclipse, 180 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.presstanium, 200, NHItems.juniorProcessor, 200, Items.phaseFabric, 300, NHItems.multipleSteel, 200));
