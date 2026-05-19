@@ -1277,7 +1277,7 @@ public class NHUnitTypes {
                 drag /= 3f;
 
                 buildSpeed = 10F;
-                fogRadius = 80;
+                fogRadius = 80f;
 
                 targetAir = false;
                 targetGround = true;
