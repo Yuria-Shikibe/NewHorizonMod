@@ -2613,7 +2613,7 @@ public class NHUnitTypes {
                 velocityRnd = 0.05f;
                 shootSound = NHSounds.launch;
 
-                bullet = new AccelBulletType(4.6f, 50) {
+                bullet = new AccelBulletType(4.6f, 80) {
                     {
                         sprite = NHBullets.MISSILE_LARGE;
                         width = 6f;
@@ -2638,7 +2638,7 @@ public class NHUnitTypes {
                         lightning = 1;
                         lightningLengthRand = 2;
                         lightningLength = 5;
-                        lightningDamage = 10;
+                        lightningDamage = 20;
 
                         smokeEffect = Fx.shootPyraFlame;
                         shootEffect = NHFx.hugeSmokeGray;
