@@ -34,10 +34,10 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             fluxNodeMK1, fluxNodeMK2, fluxNodeLargeMK1, fluxNodeLargeMK2,
-    //serpulo generators
-    photothermalGenerator, test,
-    //erekir generators
-    vectorCondenser,
+            //serpulo generators
+            photothermalGenerator, test,
+           //erekir generators
+            vectorCondenser, test2,
             photonPanel,
             neutralizationGenerator, hydrazineGenerator, fissionReactor, fusionReactor, hyperReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
@@ -274,6 +274,24 @@ public class PowerBlock {
                 stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 2)));
             }
         };
+
+        test2 = new ConsumeGenerator("test2"){{
+            requirements(Category.power, with(
+                    NHItems.graphite, 40,
+                    NHItems.tungsten, 20,
+                    NHItems.oxide, 40f
+                    , NHItems.silicon, 30
+            ));
+            size = 4;
+
+            powerProduction = 4500f / 60f;
+            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 16f / 60f, NHLiquids.slag, 20f / 60f));
+
+
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.06f;
+        }};
+
 
         photonPanel = new SolarGenerator("photon-panel") {
             public final float produceTime = 300f;
