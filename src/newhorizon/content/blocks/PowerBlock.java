@@ -167,8 +167,14 @@ public class PowerBlock {
 
                 powerProduction = 172f / 60f;
 
-                generateEffect = Fx.redgeneratespark;
-                effectChance = 0.011f;
+                drawer = new DrawMulti(
+                        new DrawDefault(),
+                        new DrawGlowRegion() {{
+                            alpha = 0.6f;
+                            glowScale = 5f;
+                            color = Color.valueOf("8966ff");
+                        }}
+                );
 
                 ambientSound = Sounds.loopHum;
                 ambientSoundVolume = 0.06f;
