@@ -47,7 +47,7 @@ public class PowerBlock {
 
         fluxNodeMK1 = new PowerNode("flux-node-mk1") {{
             requirements(Category.power, with(
-                    NHItems.hardLight, 6,
+                    NHItems.hardLight, 3,
                     NHItems.silicar, 6
             ));
 
@@ -60,8 +60,9 @@ public class PowerBlock {
 
         fluxNodeMK2 = new PowerNode("flux-node-mk2") {{
             requirements(Category.power, with(
-                    NHItems.hardLight, 6,
-                    NHItems.silicar, 6
+                    NHItems.hardLight, 12,
+                    NHItems.metalOxhydrigen, 6,
+                    NHItems.fissileMatter, 3
             ));
 
             maxNodes = 16;
@@ -72,9 +73,9 @@ public class PowerBlock {
 
         fluxNodeLargeMK1 = new PowerNode("flux-node-large-mk1") {{
             requirements(Category.power, with(
-                    NHItems.titanium, 5,
-                    NHItems.lead, 10,
-                    NHItems.silicon, 3
+                    NHItems.hardLight, 12,
+                    NHItems.titanium, 6,
+                    NHItems.tungsten, 3
             ));
 
             size = 2;
@@ -85,9 +86,9 @@ public class PowerBlock {
 
         fluxNodeLargeMK2 = new PowerNode("flux-node-large-mk2") {{
             requirements(Category.power, with(
-                    NHItems.titanium, 5,
-                    NHItems.lead, 10,
-                    NHItems.silicon, 3
+                    NHItems.hardLight, 24,
+                    NHItems.carbide, 6,
+                    NHItems.zeta, 3
             ));
 
             size = 2;
