@@ -35,7 +35,7 @@ public class PowerBlock {
     public static Block
             fluxNodeMK1, fluxNodeMK2, fluxNodeLargeMK1, fluxNodeLargeMK2,
             //serpulo generators
-            photothermalGenerator, test,
+            photothermalGenerator, geologicalPhotothermalGenerator,
            //erekir generators
             vectorCondenser, test2,
             photonPanel,
@@ -47,7 +47,7 @@ public class PowerBlock {
 
         fluxNodeMK1 = new PowerNode("flux-node-mk1") {{
             requirements(Category.power, with(
-                    NHItems.hardLight, 6,
+                    NHItems.hardLight, 3,
                     NHItems.silicar, 6
             ));
 
@@ -60,8 +60,9 @@ public class PowerBlock {
 
         fluxNodeMK2 = new PowerNode("flux-node-mk2") {{
             requirements(Category.power, with(
-                    NHItems.hardLight, 6,
-                    NHItems.silicar, 6
+                    NHItems.hardLight, 12,
+                    NHItems.metalOxhydrigen, 6,
+                    NHItems.fissileMatter, 3
             ));
 
             maxNodes = 16;
@@ -72,9 +73,9 @@ public class PowerBlock {
 
         fluxNodeLargeMK1 = new PowerNode("flux-node-large-mk1") {{
             requirements(Category.power, with(
-                    NHItems.titanium, 5,
-                    NHItems.lead, 10,
-                    NHItems.silicon, 3
+                    NHItems.hardLight, 12,
+                    NHItems.titanium, 6,
+                    NHItems.tungsten, 3
             ));
 
             size = 2;
@@ -85,9 +86,9 @@ public class PowerBlock {
 
         fluxNodeLargeMK2 = new PowerNode("flux-node-large-mk2") {{
             requirements(Category.power, with(
-                    NHItems.titanium, 5,
-                    NHItems.lead, 10,
-                    NHItems.silicon, 3
+                    NHItems.hardLight, 24,
+                    NHItems.carbide, 6,
+                    NHItems.zeta, 3
             ));
 
             size = 2;
@@ -150,16 +151,16 @@ public class PowerBlock {
             }
         };
 
-        test = new ThermalGenerator("test") {
+        geologicalPhotothermalGenerator = new ThermalGenerator("geological-photothermal-generator") {
             final float hlTime = 120f;
 
             {
                 requirements(Category.power, with(
-                        NHItems.copper, 40,
-                        NHItems.graphite, 35,
-                        NHItems.lead, 50,
-                        NHItems.silicon, 35,
-                        NHItems.metaglass, 40
+                        NHItems.lead, 200,
+                        NHItems.graphite, 150,
+                        NHItems.metaglass, 75,
+                        NHItems.plastanium, 75,
+                        NHItems.juniorProcessor, 50
                 ));
 
                 size = 3;
@@ -167,8 +168,14 @@ public class PowerBlock {
 
                 powerProduction = 172f / 60f;
 
-                generateEffect = Fx.redgeneratespark;
-                effectChance = 0.011f;
+                drawer = new DrawMulti(
+                        new DrawDefault(),
+                        new DrawGlowRegion() {{
+                            alpha = 0.6f;
+                            glowScale = 5f;
+                            color = Color.valueOf("8966ff");
+                        }}
+                );
 
                 ambientSound = Sounds.loopHum;
                 ambientSoundVolume = 0.06f;
@@ -275,23 +282,22 @@ public class PowerBlock {
             }
         };
 
-        test2 = new ConsumeGenerator("test2"){{
-            requirements(Category.power, with(
-                    NHItems.graphite, 40,
-                    NHItems.tungsten, 20,
-                    NHItems.oxide, 40f
-                    , NHItems.silicon, 30
-            ));
-            size = 4;
-
-            powerProduction = 4500f / 60f;
-            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 16f / 60f, NHLiquids.slag, 20f / 60f));
-
-
-            ambientSound = Sounds.loopSmelter;
-            ambientSoundVolume = 0.06f;
-        }};
-
+//        test2 = new ConsumeGenerator("test2"){{
+//            requirements(Category.power, with(
+//                    NHItems.graphite, 40,
+//                    NHItems.tungsten, 20,
+//                    NHItems.oxide, 40f
+//                    , NHItems.silicon, 30
+//            ));
+//            size = 4;
+//
+//            powerProduction = 4500f / 60f;
+//            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 16f / 60f, NHLiquids.slag, 20f / 60f));
+//
+//
+//            ambientSound = Sounds.loopSmelter;
+//            ambientSoundVolume = 0.06f;
+//        }};
 
         photonPanel = new SolarGenerator("photon-panel") {
             public final float produceTime = 300f;

@@ -76,7 +76,7 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.guardian, 300 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.darkEnergy, 2400));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.pester, 600 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 2800, NHItems.hyperProcessor, 1600, NHItems.thermoCorePositive, 1000, NHItems.thermoCoreNegative, 1000));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.nucleoid, 1200 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 10000, NHItems.hyperProcessor, 10000, NHItems.darkEnergy, 20000));
-        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.ancientProbe, 90 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 10, NHItems.hyperProcessor, 10));
+//        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.ancientProbe, 90 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 10, NHItems.hyperProcessor, 10));
     }
 
 
