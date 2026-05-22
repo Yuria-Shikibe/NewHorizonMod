@@ -282,7 +282,10 @@ public class PowerBlock {
             }
         };
 
-        differentialReactor = new ConsumeGenerator("differential-reactor"){{
+        differentialReactor = new ConsumeGenerator("differential-reactor"){
+            final float hlTime = 120f;
+            {
+
             requirements(Category.power, with(
                     NHItems.graphite, 40,
                     NHItems.tungsten, 20,
@@ -316,7 +319,41 @@ public class PowerBlock {
 
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.06f;
-        }};
+
+                buildType = () -> new ConsumeGeneratorBuild() {
+                    public float produceTime = 0f;
+
+                    @Override
+                    public void updateTile() {
+                        super.updateTile();
+
+                        produceTime += delta();
+                        if (produceTime > hlTime) {
+                            if (core() != null) core().handleItem(this, NHItems.hardLight);
+                            produceTime %= hlTime;
+                        }
+                    }
+
+                    @Override
+                    public void write(Writes write) {
+                        super.write(write);
+                        write.f(produceTime);
+                    }
+
+                    @Override
+                    public void read(Reads read, byte revision) {
+                        super.read(read, revision);
+                        produceTime = read.f();
+                    }
+                };
+            }
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 1)));
+            }
+        };
 
         photonPanel = new SolarGenerator("photon-panel") {
             public final float produceTime = 300f;
