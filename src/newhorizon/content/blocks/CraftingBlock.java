@@ -1520,19 +1520,17 @@ public class CraftingBlock {
                             NHItems.seniorProcessor, 50,
                             NHItems.zeta, 150
                     ));
-
-            size = 3;
-
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
-            craftTime = 120f;
-            itemCapacity = 30;
+            size = 3;
             health = 1800;
             armor = 12;
-            consumePower(480 / 60f);
+            itemCapacity = 30;
+            craftTime = 120f;
 
+            consumePower(480 / 60f);
             consumeItems(with(NHItems.thorium, 5, NHItems.zeta, 2, NHItems.carbide, 4));
-            outputItems = with(NHItems.setonAlloy, 4);
+            outputItems = with(NHItems.setonAlloy, 6);
 
             drawer = new DrawMulti(
                     new DrawRegionFlip("-base"),

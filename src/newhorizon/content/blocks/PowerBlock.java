@@ -37,7 +37,7 @@ public class PowerBlock {
             //serpulo generators
             photothermalGenerator, geologicalPhotothermalGenerator,
            //erekir generators
-            vectorCondenser, test2,
+            vectorCondenser, differentialReactor,
             photonPanel,
             neutralizationGenerator, hydrazineGenerator, fissionReactor, fusionReactor, hyperReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
@@ -282,22 +282,41 @@ public class PowerBlock {
             }
         };
 
-//        test2 = new ConsumeGenerator("test2"){{
-//            requirements(Category.power, with(
-//                    NHItems.graphite, 40,
-//                    NHItems.tungsten, 20,
-//                    NHItems.oxide, 40f
-//                    , NHItems.silicon, 30
-//            ));
-//            size = 4;
-//
-//            powerProduction = 4500f / 60f;
-//            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 16f / 60f, NHLiquids.slag, 20f / 60f));
-//
-//
-//            ambientSound = Sounds.loopSmelter;
-//            ambientSoundVolume = 0.06f;
-//        }};
+        differentialReactor = new ConsumeGenerator("differential-reactor"){{
+            requirements(Category.power, with(
+                    NHItems.graphite, 40,
+                    NHItems.tungsten, 20,
+                    NHItems.oxide, 40f,
+                    NHItems.silicon, 30
+            ));
+            size = 4;
+
+            powerProduction = 4500f / 60f;
+            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 16f / 60f, NHLiquids.slag, 20f / 60f));
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-4x4"),
+                    new DrawPistons(){{
+                        sides = 4;
+                        sinMag = 3f;
+                        sinScl = 5f;
+                        sinOffset = 0f;
+                        angleOffset = 45f;
+                        lenOffset = 9f;
+                    }},
+                    new DrawRegion("-mid"),
+                    new DrawLiquidTile(NHLiquids.slag, 40f / 4f),
+                    new DrawDefault(),
+                    new DrawGlowRegion(){{
+                        alpha = 0.7f;
+                        glowScale = 5f;
+                        color = NHLiquids.cryofluid.color.cpy();
+                        }}
+            );
+
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.06f;
+        }};
 
         photonPanel = new SolarGenerator("photon-panel") {
             public final float produceTime = 300f;
