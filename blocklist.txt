@@ -1,3 +1,4 @@
+new-horizon-Basic-jump-gate 1 1 2 0
 new-horizon-air-radiator 1 1 2 0
 new-horizon-air-raider 1 1 3 0
 new-horizon-alloy-smelter 1 1 3 0
@@ -162,6 +163,7 @@ new-horizon-fusion-core-energy-factory 1 1 3 0
 new-horizon-fusion-energy-sealing-factory 1 1 3 0
 new-horizon-fusion-reactor 1 1 5 0
 new-horizon-gauss-receptor 1 1 1 0
+new-horizon-geological-photothermal-generator 1 1 3 0
 new-horizon-glass-quantifier 1 1 2 0
 new-horizon-gravity 1 1 3 0
 new-horizon-gravity-gully 1 1 3 0
@@ -315,6 +317,12 @@ new-horizon-multiple-surge-alloy-factory 1 1 3 0
 new-horizon-negative-phase-decayer 1 1 4 0
 new-horizon-neutralization-generator 1 1 2 0
 new-horizon-neutron-membrane 1 1 1 0
+new-horizon-new-horizon-plate-floor-1-0 0 1 1 16777215
+new-horizon-new-horizon-plate-floor-1-1 0 1 1 16777215
+new-horizon-new-horizon-plate-floor-2-0 0 1 2 16777215
+new-horizon-new-horizon-plate-floor-2-1 0 1 2 16777215
+new-horizon-new-horizon-plate-floor-3-0 0 1 3 16777215
+new-horizon-new-horizon-plate-floor-3-1 0 1 3 16777215
 new-horizon-nexus-core 1 1 5 0
 new-horizon-nitrogen-dissociator 1 1 3 0
 new-horizon-nodex-factory 1 1 3 0
@@ -368,6 +376,13 @@ new-horizon-placeholder-entity-8 1 1 8 0
 new-horizon-plasma-activator 1 1 3 0
 new-horizon-plastanium-crafter 1 1 3 0
 new-horizon-plasticator 1 1 3 0
+new-horizon-plate-floor 0 0 1 4145225
+new-horizon-plate-floor-1-0 1 1 1 0
+new-horizon-plate-floor-1-1 1 1 1 0
+new-horizon-plate-floor-2-0 1 1 2 0
+new-horizon-plate-floor-2-1 1 1 2 0
+new-horizon-plate-floor-3-0 1 1 3 0
+new-horizon-plate-floor-3-1 1 1 3 0
 new-horizon-plating-block 0 0 1 16777215
 new-horizon-plating-floor-1 0 0 1 4145225
 new-horizon-plating-floor-2 0 0 1 16777215
@@ -489,6 +504,7 @@ new-horizon-tagger 1 1 1 0
 new-horizon-tandem-factory 1 1 3 0
 new-horizon-test 1 1 3 0
 new-horizon-test-turret 1 1 3 0
+new-horizon-test2 1 1 4 0
 new-horizon-thermo-core-factory 1 1 5 0
 new-horizon-thermo-core-negative-factory 1 1 1 0
 new-horizon-thermo-core-positive-factory 1 1 1 0

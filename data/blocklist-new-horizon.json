@@ -779,6 +779,48 @@
 	"size": 1,
 	"color": -1248865281
 },
+"new-horizon-plate-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-plate-floor-1-0": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-plate-floor-1-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-plate-floor-2-0": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-plate-floor-2-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-plate-floor-3-0": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-plate-floor-3-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-plating-metal-floor": {
 	"synthetic": false,
 	"solid": false,
@@ -1121,7 +1163,7 @@
 	"size": 1,
 	"color": 255
 },
-"new-horizon-test": {
+"new-horizon-geological-photothermal-generator": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -1281,6 +1323,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
+	"color": 255
+},
+"new-horizon-Basic-jump-gate": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
 	"color": 255
 },
 "new-horizon-primary-jump-gate": {

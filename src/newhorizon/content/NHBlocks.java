@@ -69,7 +69,7 @@ import newhorizon.expand.block.defence.FireExtinguisher;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShockwaveGenerator;
 import newhorizon.expand.block.drawer.ArcCharge;
-import newhorizon.expand.block.special.UnitSpawner;
+import newhorizon.expand.block.editor.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.Webber;
