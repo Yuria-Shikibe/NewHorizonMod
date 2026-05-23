@@ -698,7 +698,6 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            hasLiquids = true;
             health = 900;
             armor = 6;
             itemCapacity = 20;

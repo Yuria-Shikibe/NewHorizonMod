@@ -12,40 +12,23 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHItems;
-import newhorizon.content.NHUnitTypes;
+import newhorizon.content.units.CoreUnitTypes;
 
 import static mindustry.type.ItemStack.with;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-public class NexusCore extends CoreBlock {
+public class AdaptCore extends CoreBlock {
     public static Rand rand = new Rand();
-    public final Seq<Trail> trails = Seq.with(new Trail(30), new Trail(40), new Trail(50), new Trail(60), new Trail(70), new Trail(80), new Trail(90));
-    public final Interp interp = Interp.pow2Out;
+    public Seq<Trail> trails = Seq.with(new Trail(30), new Trail(40), new Trail(50), new Trail(60), new Trail(70), new Trail(80), new Trail(90));
+    public Interp interp = Interp.pow2Out;
     public float coreDelay = -1;
     public int range = 40;
 
     public TextureRegion base;
 
-    public NexusCore() {
-        super("nexus-core");
-
-        requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
-
-        alwaysUnlocked = true;
-
-        unitType = NHUnitTypes.liv;
-        health = 30000;
-        itemCapacity = 10000;
-        size = 5;
-        armor = 20f;
-        incinerateNonBuildable = false;
-        buildCostMultiplier = 2f;
-        requiresCoreZone = false;
-
-        unitCapModifier = 10;
-
-        drawTeamOverlay = false;
+    public AdaptCore(String name) {
+        super(name);
     }
 
     @Override
@@ -118,4 +101,8 @@ public class NexusCore extends CoreBlock {
     }
 
      */
+
+    public class AdaptCoreBuild extends CoreBuild {
+
+    }
 }

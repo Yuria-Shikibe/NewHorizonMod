@@ -357,7 +357,7 @@ public class EnvironmentBlock {
         plateFloor = new PlateFloor("plate-floor") {{
             addVariant(1, 2);
             addVariant(2, 2);
-            addVariant(3, 2);
+            addVariant(3, 3);
         }};
         ((PlateFloor) plateFloor).loadBlocks();
 

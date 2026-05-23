@@ -821,6 +821,12 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-plate-floor-3-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-plating-metal-floor": {
 	"synthetic": false,
 	"solid": false,
@@ -831,6 +837,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 1,
+	"color": 255
+},
+"new-horizon-core-conflux": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-nexus-core": {
