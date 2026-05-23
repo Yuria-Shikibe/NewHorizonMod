@@ -43,7 +43,7 @@ import static mindustry.type.ItemStack.with;
 public class CraftingBlock {
 
     public static Block
-            silicarCrusher,
+            silicarCrusher, largeSilicarCrusher,
             stampingFacility, heavyStampingFacility, processorManuFactory, processorPrinter, subCooler, hyperCooler,
             rectificatior, phaseRectificatior, plasticator, photocatalystFactory, metalOxhydrigenRestructuror, crystallizer, particleActivator, plasmaActivator,
             crucibleFoundry, castingFoundry, xenSeparator, multipleRollingMill, mixedRollingMill, heavyRollingMill,
@@ -55,7 +55,7 @@ public class CraftingBlock {
             darkEnergyTrap, hadronCompositeBuilder, hyperProcessor;
 
     public static void load() {
-        silicarCrusher = new MultiBlockCrafter("silicar-crusher") {{
+        silicarCrusher = new GenericCrafter("silicar-crusher") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.silicar, 20
             ));
@@ -87,6 +87,20 @@ public class CraftingBlock {
                         Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
                 );
             }).layer(Layer.blockOver + 1);
+        }};
+
+        largeSilicarCrusher = new GenericCrafter("large-silicar-crusher") {{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.silicar, 20
+            ));
+
+            size = 3;
+            itemCapacity = 30;
+            scaledHealth = 100f;
+            craftTime = 120f;
+
+            consumeItems(ItemStack.with(NHItems.silicar, 6));
+            outputItems = ItemStack.with(NHItems.graphite, 4, NHItems.silicon, 4);
         }};
 
         stampingFacility = new GenericCrafter("stamping-facility") {{
@@ -1033,9 +1047,9 @@ public class CraftingBlock {
             itemCapacity = 20;
             craftTime = 60f;
 
-            outputItems = with(NHItems.phaseFabric, 1);
-            consumePower(60 / 60f);
+            consumePower(180 / 60f);
             consumeItems(with(NHItems.silicon, 3, NHItems.thorium, 2));
+            outputItems = with(NHItems.phaseFabric, 1);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
