@@ -10,6 +10,7 @@ import arc.util.Tmp;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.type.UnitType;
+import newhorizon.util.graphic.DrawFunc;
 
 import static arc.graphics.g2d.Lines.circleVertices;
 
@@ -75,6 +76,66 @@ public class AncientEngine extends UnitType.UnitEngine {
             Draw.blend();
 
             Draw.z(z);
+        }
+    }
+
+    public static class PestEngine extends UnitType.UnitEngine {
+        float triScl = 1;
+
+        public PestEngine(float x, float y, float radius, float rotation, float triScl) {
+            super(x, y, radius, rotation);
+            this.triScl = triScl;
+        }
+
+        public PestEngine(float x, float y, float radius, float rotation) {
+            super(x, y, radius, rotation);
+        }
+
+        public void draw(Unit unit) {
+            UnitType type = unit.type;
+            float scale = type.useEngineElevation ? unit.elevation : 1f;
+
+            if (scale <= 0.0001f) return;
+
+            float rot = unit.rotation - 90;
+
+            Color color = unit.team.color;
+
+            Tmp.v1.set(x, y).rotate(rot).add(unit);
+            float ex = Tmp.v1.x, ey = Tmp.v1.y;
+
+            Draw.color(color);
+            Fill.circle(
+                    ex,
+                    ey,
+                    (radius + Mathf.absin(Time.time, 4f, radius / 4f)) * scale
+            );
+
+            float ang = Time.time * 1.5f;
+            for (int i : Mathf.signs) {
+                DrawFunc.tri(ex, ey, radius / 3f * triScl, radius * 2.35f * triScl, ang + 90 * i);
+            }
+
+            ang *= -1.5f;
+            for (int i : Mathf.signs) {
+                DrawFunc.tri(ex, ey, radius / 4f * triScl, radius * 1.85f * triScl, ang + 90 * i);
+            }
+
+            Draw.color(Color.white);
+            Fill.circle(
+                    ex,
+                    ey,
+                    (radius + Mathf.absin(Time.time, 4f, radius / 4f)) * 0.785f * scale
+            );
+
+            Draw.color(Color.black);
+            Fill.circle(
+                    ex,
+                    ey,
+                    (radius + Mathf.absin(Time.time, 4f, radius / 4f)) * 0.7f * scale
+            );
+
+    //					Draw.z(z);
         }
     }
 }
