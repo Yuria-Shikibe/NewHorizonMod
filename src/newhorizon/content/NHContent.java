@@ -8,6 +8,7 @@ import arc.scene.style.TextureRegionDrawable;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
+import mindustry.editor.EditorTool;
 import mindustry.gen.Icon;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;

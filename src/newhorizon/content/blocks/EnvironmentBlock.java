@@ -1,14 +1,19 @@
 package newhorizon.content.blocks;
 
+import arc.func.Prov;
+import arc.util.Log;
 import mindustry.content.Blocks;
 import mindustry.content.StatusEffects;
+import mindustry.gen.Building;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.MultiPacker;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.environment.*;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
+import newhorizon.expand.block.environment.PlateFloor;
 import newhorizon.expand.block.environment.TiledFloor;
 
 public class EnvironmentBlock {
@@ -26,6 +31,8 @@ public class EnvironmentBlock {
 
     armorFloor0, armorFloor1, armorFloor2, armorFloor3, armorFloor4, armorFloor5, armorFloor6, armorFloor7,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
+
+    plateFloor,
 
     conglomerateWall, darkConglomerateWall, thoriumStoneWall,
             conglomerateBoulder, darkConglomerateBoulder,
@@ -346,6 +353,13 @@ public class EnvironmentBlock {
             drawEdgeOut = false;
             drawEdgeIn = false;
         }};
+
+        plateFloor = new PlateFloor("plate-floor") {{
+            addVariant(1, 2);
+            addVariant(2, 2);
+            addVariant(3, 3);
+        }};
+        ((PlateFloor) plateFloor).loadBlocks();
 
         metalFloorPlain = new TiledFloor("plating-metal-floor") {{
             tileName = "plating-floor";

@@ -93,7 +93,7 @@ public class Destruction extends NHUnitType {
     public Destruction() {
         super("destruction");
 
-        outlineColor = OColor;
+        outlineColor = grayOutline;
 
         aiController = SniperAI::new;
 

@@ -1,14 +1,17 @@
 package newhorizon.content.blocks;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ForceProjector;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.defence.AdaptRegenProjector;

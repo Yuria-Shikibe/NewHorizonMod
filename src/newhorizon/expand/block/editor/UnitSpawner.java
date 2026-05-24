@@ -1,4 +1,4 @@
-package newhorizon.expand.block.special;
+package newhorizon.expand.block.editor;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;

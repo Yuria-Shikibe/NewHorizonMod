@@ -14,6 +14,7 @@ public class NHSounds {
     public static ObjectMap<String, Sound> sounds = new ObjectMap<>();
 
     public static Sound
+
             laser2, laser3, laser4, laser5, thermo,
             flak2, alert2, shock, alarm, launch,
             rapidLaser, railGunCharge, blaster, flak, gauss, scatter,
@@ -28,7 +29,7 @@ public class NHSounds {
             shootGauss1, shootGauss2, shootGauss3,
             shootHuge,
             shootMissile1, shootMissile2, shootMissile3, shootMissile4,
-            shootPulse1, shootPulse2, shootPulse3, shootPulse4,
+            shootPulse1, shootPulse2, shootPulse3, shootPulse4, shootPulse5,
             shootRailgun1, shootRailgun2, shootRailgun3,
             shootScatter1, shootScatter2, shootScatter3,
             shootThermo1, shootThermo2, shootThermo3, shootThermo4,
