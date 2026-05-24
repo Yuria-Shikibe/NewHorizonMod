@@ -45,8 +45,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.ItemAmmoType;
-import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
@@ -3715,7 +3713,6 @@ public class NHUnitTypes {
 
                 targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.generator, BlockFlag.battery, null};
 
-                ammoType = new PowerAmmoType();
 
                 for (int i : Mathf.signs) {
                     engines.add(new UnitEngine(i * 30.25f, -28.75f, 5, -90 + i * 45));
@@ -3865,7 +3862,6 @@ public class NHUnitTypes {
                 engineOffset = 46f;
                 engineSize = 12.0F;
                 rotateSpeed = 0.65f;
-                ammoType = new ItemAmmoType(NHItems.presstanium);
 
                 targetFlags = new BlockFlag[]{BlockFlag.turret, null, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core};
 
@@ -4152,8 +4148,6 @@ public class NHUnitTypes {
                 health = 80000f;
                 buildSpeed = 4f;
                 armor = 80f;
-
-                ammoType = new ItemAmmoType(NHItems.presstanium);
 
                 weapons.add(
                         new Weapon(NewHorizon.name("sin-cannon")) {{
@@ -4490,8 +4484,6 @@ public class NHUnitTypes {
                 );
 
                 range = 500f;
-
-                ammoType = new PowerAmmoType();
 
                 targetFlags = new BlockFlag[]{BlockFlag.factory, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
 

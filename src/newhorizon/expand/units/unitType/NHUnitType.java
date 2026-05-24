@@ -4,16 +4,12 @@ import arc.graphics.Color;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.ItemAmmoType;
-import newhorizon.content.NHItems;
 
 public class NHUnitType extends UnitType {
     public static final Color OColor = Color.valueOf("565666");
 
     public NHUnitType(String name) {
         super(name);
-
-        ammoType = new ItemAmmoType(NHItems.presstanium);
     }
 
     @Override
