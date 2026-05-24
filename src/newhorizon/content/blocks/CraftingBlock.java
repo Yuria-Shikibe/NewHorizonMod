@@ -99,8 +99,8 @@ public class CraftingBlock {
             scaledHealth = 100f;
             craftTime = 120f;
 
-            consumeItems(ItemStack.with(NHItems.silicar, 10));
-            outputItems = ItemStack.with(NHItems.graphite, 6, NHItems.silicon, 6);
+            consumeItems(ItemStack.with(NHItems.silicar, 12));
+            outputItems = ItemStack.with(NHItems.graphite, 8, NHItems.silicon, 8);
         }};
 
         stampingFacility = new GenericCrafter("stamping-facility") {{
