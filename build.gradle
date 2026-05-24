@@ -109,7 +109,7 @@ tasks.register('debugDesktop', JavaExec) {
 
     main = "-jar"
     args = [
-            "D:/sprites/Mindustry/Mindustry.jar",
+            "E:/project/MindustryModDevLib/Mindustry8.0.jar",
             //"-debug",
     ]
 }
