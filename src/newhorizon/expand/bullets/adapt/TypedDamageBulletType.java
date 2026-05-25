@@ -16,7 +16,7 @@ import static mindustry.Vars.headless;
  * Bullet with kinetic damage and energy damage.
  * integrated with some other types.
  */
-public class AdaptBulletType extends BasicBulletType implements TypeDamageBulletType {
+public class TypedDamageBulletType extends BasicBulletType implements TypeDamageBulletType {
     public String bundleName = "bullet-name";
 
     public boolean hasTracer = false;

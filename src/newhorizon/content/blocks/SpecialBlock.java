@@ -18,7 +18,7 @@ import static mindustry.type.ItemStack.with;
 
 public class SpecialBlock {
     public static Block
-            coreConflux,
+            coreConflux, coreArray, coreCluster, coreNexus,
             standardStorage, heavyStorage, remoteStorage, nexusCore, juniorModuleBeacon, seniorModuleBeacon;
 
     public static void load() {
@@ -41,12 +41,33 @@ public class SpecialBlock {
             requiresCoreZone = false;
             incinerateNonBuildable = false;
         }};
+
+        coreArray = new CoreBlock("core-array") {{
+            requirements(Category.effect, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 20));
+
+            alwaysUnlocked = true;
+
+            size = 4;
+            armor = 15f;
+            health = 80000;
+            itemCapacity = 10000;
+
+            unitCapModifier = 12;
+            buildCostMultiplier = 2f;
+
+            unitType = CoreUnitTypes.vector;
+
+            drawTeamOverlay = false;
+            requiresCoreZone = false;
+            incinerateNonBuildable = false;
+        }};
+
         nexusCore = new AdaptCore("nexus-core") {{
             requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
 
             alwaysUnlocked = true;
 
-            unitType = CoreUnitTypes.liv;
+            unitType = CoreUnitTypes.martix;
             health = 30000;
             itemCapacity = 10000;
             size = 5;

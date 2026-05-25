@@ -83,6 +83,7 @@ new-horizon-convertor-module 1 1 2 0
 new-horizon-convertor-titanium 1 1 2 0
 new-horizon-convertor-tungsten 1 1 2 0
 new-horizon-cooling-unit 1 1 1 0
+new-horizon-core-array 1 1 4 0
 new-horizon-core-conflux 1 1 3 0
 new-horizon-core-t1 1 1 1 0
 new-horizon-core-t2 1 1 1 0

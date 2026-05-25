@@ -12,7 +12,7 @@ import mindustry.entities.Effect;
 import mindustry.gen.Bullet;
 import newhorizon.content.NHColor;
 
-public class TrajectoryBulletType extends AdaptBulletType {
+public class TrajectoryBulletType extends TypedDamageBulletType {
     public static final Rand rand = new Rand();
 
     public Interp expIn = new Interp.ExpIn(2, 2);

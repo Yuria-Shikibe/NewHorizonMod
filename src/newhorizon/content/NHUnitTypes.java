@@ -45,8 +45,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.ItemAmmoType;
-import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
@@ -55,7 +53,7 @@ import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.units.CoreUnitTypes;
 import newhorizon.expand.bullets.*;
-import newhorizon.expand.bullets.adapt.AdaptBulletType;
+import newhorizon.expand.bullets.adapt.TypedDamageBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.entities.UltFire;
@@ -157,7 +155,7 @@ public class NHUnitTypes {
             autoTarget = true;
             controllable = false;
 
-            shootSound = NHSounds.gauss;
+            shootSound = NHSounds.shootGauss2;
 
             bullet = new PosLightningType(120f) {{
                 maxRange = 160f;
@@ -178,7 +176,7 @@ public class NHUnitTypes {
             inaccuracy = 0;
             shoot = new ShootPattern();
             rotateSpeed = 25f;
-            shootSound = NHSounds.gauss;
+            shootSound = NHSounds.shootGauss2;
             bullet = new ShrapnelBulletType() {{
                 lifetime = 45f;
                 length = 200f;
@@ -232,7 +230,7 @@ public class NHUnitTypes {
                 }};
 
                 rotateSpeed = 1f;
-                shootSound = NHSounds.flak2;
+                shootSound = NHSounds.shootFlak6;
                 shootCone = 5f;
                 shootY = 6f;
                 reload = 300f;
@@ -409,7 +407,6 @@ public class NHUnitTypes {
                 if (mount.shoot && //must be shooting
                         can && //must be able to shoot
                         !(bullet.killShooter && mount.totalShots > 0) && //if the bullet kills the shooter, you should only ever be able to shoot once
-                        (!useAmmo || unit.ammo > 0 || !state.rules.unitAmmo || unit.team.rules().infiniteAmmo) && //check ammo
                         (!alternate || wasFlipped == flipSprite) &&
                         mount.warmup >= minWarmup && //must be warmed up
                         unit.vel.len() >= minShootVelocity && //check velocity requirements
@@ -419,11 +416,6 @@ public class NHUnitTypes {
                     shoot(unit, mount, bulletX, bulletY, shootAngle);
 
                     mount.reload = reload;
-
-                    if (useAmmo) {
-                        unit.ammo--;
-                        if (unit.ammo < 0) unit.ammo = 0;
-                    }
                 }
             }
         };
@@ -490,7 +482,7 @@ public class NHUnitTypes {
             top = alternate = true;
             reload = 45f;
             shootY = 4f;
-            shootSound = NHSounds.laser3;
+            shootSound = NHSounds.shootCoil1;
             heatColor = NHColor.lightSkyBack;
             bullet = new PosLightningType(20f) {{
                 lightningColor = NHColor.lightSkyBack;
@@ -539,7 +531,7 @@ public class NHUnitTypes {
             inaccuracy = 4f;
             rotateSpeed = 2.5f;
             alternate = true;
-            shootSound = NHSounds.scatter;
+            shootSound = NHSounds.shootScatter1;
             shootCone = 15;
             shootY = 5f;
             bullet = new BasicBulletType(5f, 20f) {
@@ -565,7 +557,7 @@ public class NHUnitTypes {
             reload = 12;
             recoil = 1;
             inaccuracy = 0;
-            shootSound = NHSounds.gauss;
+            shootSound = NHSounds.shootGauss2;
             mirror = false;
             rotate = true;
             predictTarget = false;
@@ -778,7 +770,7 @@ public class NHUnitTypes {
             rotateSpeed = 1.4f;
 
             shoot = new ShootPattern();
-            shootSound = NHSounds.thermo;
+            shootSound = NHSounds.shootFlak3;
             recoil = 3f;
 
             reload = 90f;
@@ -812,7 +804,7 @@ public class NHUnitTypes {
             }};
 
             inaccuracy = 1.3f;
-            shootSound = NHSounds.flak;
+            shootSound = NHSounds.shootFlak1;
 
             bullet = NHBullets.laugraBullet;
 
@@ -909,7 +901,7 @@ public class NHUnitTypes {
 
             shake = 1f;
             rotateSpeed = 18f;
-            shootSound = NHSounds.synchro;
+            shootSound = NHSounds.shootPulse4;
             bullet = new BasicBulletType(3.8f, 50) {
                 {
                     speed = 12f;
@@ -1327,7 +1319,7 @@ public class NHUnitTypes {
                 engineSize = -1;
 
                 deathExplosionEffect = Fx.none;
-                deathSound = NHSounds.jumpIn;
+                deathSound = NHSounds.unitJumpIn;
                 crashDamageMultiplier = 0;
                 faceTarget = false;
                 lowAltitude = true;
@@ -1375,7 +1367,7 @@ public class NHUnitTypes {
                         Effect.shake(unit.hitSize / 10f, unit.hitSize / 8f, unit.x, unit.y);
                         NHFx.circleOut.at(unit.x, unit.y, unit.hitSize, unit.team.color);
                         NHFx.jumpTrailOut.at(unit.x, unit.y, unit.rotation, unit.team.color, unit.type);
-                        NHSounds.jumpIn.at(unit.x, unit.y, 1, 3);
+                        NHSounds.unitJumpIn.at(unit.x, unit.y, 1, 3);
                     }
                 });
                 abilities.add(new ShockWaveAbility(180, 320, 2000, NHColor.ancientLightMid).status(StatusEffects.unmoving, 300f, NHStatusEffects.scannerDown, 300f, NHStatusEffects.emp3, 300f, NHStatusEffects.entangled, 300f, StatusEffects.disarmed, 300f).modify(a -> {
@@ -1410,7 +1402,7 @@ public class NHUnitTypes {
                     inaccuracy = 1.5f;
                     velocityRnd = 0.075f;
 
-                    bullet = new AdaptBulletType() {{
+                    bullet = new TypedDamageBulletType() {{
                         lifetime = 50f;
                         trailLength = 14;
                         trailWidth = 1.6F;
@@ -1514,14 +1506,14 @@ public class NHUnitTypes {
 
                         inaccuracy = 1.5f;
                         velocityRnd = 0.075f;
-                        shootSound = NHSounds.railGunBlast;
+                        shootSound = NHSounds.shootRailgun1;
 
                         shoot = new ShootBarrel() {{
                             shots = 2;
                             barrels = new float[]{-20, 31, 0, 20, 31, 0};
                         }};
 
-                        bullet = new AdaptBulletType() {
+                        bullet = new TypedDamageBulletType() {
                             {
                                 lifetime = 40f;
                                 trailLength = 90;
@@ -1902,7 +1894,7 @@ public class NHUnitTypes {
                         reload = 5f;
                         targetInterval = 10f;
                         targetSwitchInterval = 8f;
-                        shootSound = NHSounds.gauss;
+                        shootSound = NHSounds.shootGauss2;
 
                         bullet = new BulletType() {{
                             shootEffect = Fx.none;
@@ -2658,7 +2650,7 @@ public class NHUnitTypes {
 
                             shootSound = NHSounds.laser5;
 
-                            bullet = new AdaptBulletType() {{
+                            bullet = new TypedDamageBulletType() {{
                                 trailLength = 20;
                                 trailWidth = 2.5f;
                                 trailColor = lightColor = lightningColor = backColor = hitColor = NHColor.lightSkyBack;
@@ -2996,7 +2988,7 @@ public class NHUnitTypes {
                         shootEffect = NHFx.shootLineSmall(backColor);
                         smokeEffect = Fx.shootBigSmoke2;
                     }};
-                    shootSound = NHSounds.thermoShoot;
+                    shootSound = NHSounds.shootThermo4;
                 }});
             }
 
@@ -3092,7 +3084,7 @@ public class NHUnitTypes {
                     inaccuracy = 3f;
                     ejectEffect = Fx.none;
                     bullet = NHBullets.warperBullet;
-                    shootSound = NHSounds.blaster;
+                    shootSound = NHSounds.shootBlaster1;
                 }});
                 abilities.add(new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSkyBack));
                 targetAir = false;
@@ -3139,7 +3131,7 @@ public class NHUnitTypes {
                             }};
                             inaccuracy = 4f;
                             velocityRnd = 0.15f;
-                            shootSound = NHSounds.scatter;
+                            shootSound = NHSounds.shootScatter1;
                             shake = 0.75f;
                             bullet = new BasicBulletType(4f, 7f) {{
                                 width = 5f;
@@ -3623,8 +3615,6 @@ public class NHUnitTypes {
 
                 targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.generator, BlockFlag.battery, null};
 
-                ammoType = new PowerAmmoType();
-
                 for (int i : Mathf.signs) {
                     engines.add(new UnitEngine(i * 30.25f, -28.75f, 5, -90 + i * 45));
                     engines.add(new UnitEngine(i * 48f, -13f, 4, -90 + i * 45));
@@ -3723,7 +3713,7 @@ public class NHUnitTypes {
                             y = -7;
                             reload = 75f;
                             recoil = 7f;
-                            shootSound = NHSounds.laser3;
+                            shootSound = NHSounds.shootCoil1;
                             cooldownTime = 40f;
 
                             bullet = NHBullets.saviourBullet;
@@ -3773,7 +3763,6 @@ public class NHUnitTypes {
                 engineOffset = 46f;
                 engineSize = 12.0F;
                 rotateSpeed = 0.65f;
-                ammoType = new ItemAmmoType(NHItems.presstanium);
 
                 targetFlags = new BlockFlag[]{BlockFlag.turret, null, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core};
 
@@ -3902,13 +3891,13 @@ public class NHUnitTypes {
 
                             top = false;
                             mirror = false;
-                            shootSound = NHSounds.railGunBlast;
+                            shootSound = NHSounds.shootRailgun1;
                             soundPitchMax = 1.1f;
                             soundPitchMin = 0.9f;
 
                             layerOffset = -0.0005f;
 
-                            bullet = new AdaptBulletType() {
+                            bullet = new TypedDamageBulletType() {
                                 {
                                     recoil = 0.095f;
                                     lifetime = 40f;
@@ -4060,8 +4049,6 @@ public class NHUnitTypes {
                 health = 80000f;
                 buildSpeed = 4f;
                 armor = 80f;
-
-                ammoType = new ItemAmmoType(NHItems.presstanium);
 
                 weapons.add(
                         new Weapon(NewHorizon.name("sin-cannon")) {{
@@ -4221,7 +4208,7 @@ public class NHUnitTypes {
                             sectorRad = 0.16f;
                             healPercent = 0.25f;
                             statusDuration = 120f;
-                            shootSound = NHSounds.synchro;
+                            shootSound = NHSounds.shootPulse4;
                         }},
                         new ShieldArcAbility() {{
                             radius = 120f;
@@ -4332,7 +4319,7 @@ public class NHUnitTypes {
                     x = 30;
                     y = -2;
 
-                    shootSound = NHSounds.flak;
+                    shootSound = NHSounds.shootFlak1;
                     shake = 4f;
                 }};
 
@@ -4373,7 +4360,7 @@ public class NHUnitTypes {
                     x = 20;
                     y = -34;
 
-                    shootSound = NHSounds.synchro;
+                    shootSound = NHSounds.shootPulse4;
                     shake = 1f;
                 }};
 
@@ -4398,8 +4385,6 @@ public class NHUnitTypes {
                 );
 
                 range = 500f;
-
-                ammoType = new PowerAmmoType();
 
                 targetFlags = new BlockFlag[]{BlockFlag.factory, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
 
@@ -4466,7 +4451,7 @@ public class NHUnitTypes {
                     reload = 180f;
                     x = y = shootX = shootY = 0;
                     shootCone = 360;
-                    shootSound = NHSounds.blaster;
+                    shootSound = NHSounds.shootBlaster1;
                     bullet = NHBullets.guardianBullet;
                     shoot = new ShootPattern() {
                         public void shoot(int totalShots, BulletHandler handler) {
@@ -4485,7 +4470,7 @@ public class NHUnitTypes {
                     x = y = shootX = shootY = 0;
                     rotateSpeed = 360;
 
-                    shootSound = NHSounds.hugeShoot;
+                    shootSound = NHSounds.shootArc9000;
 
                     velocityRnd = 0.015f;
 
@@ -4838,7 +4823,7 @@ public class NHUnitTypes {
                             rotateSpeed = 1.5f;
                             rotate = true;
                             top = true;
-                            shootSound = NHSounds.flak;
+                            shootSound = NHSounds.shootFlak1;
                             mirror = alternate = false;
                             bullet = NHBullets.collapserBullet;
                         }},
@@ -4931,7 +4916,7 @@ public class NHUnitTypes {
                                 top = false;
                                 mirror = alternate = predictTarget = false;
                                 heatColor = NHColor.thurmixRed;
-                                shootSound = NHSounds.hugeShoot;
+                                shootSound = NHSounds.shootArc9000;
                                 bullet = new EffectBulletType(480f) {
                                     @Override
                                     protected float calculateRange() {
@@ -5013,7 +4998,7 @@ public class NHUnitTypes {
                                             }
 
                                         if (b.fin() > 0.05f && Mathf.chanceDelta(b.fin() * 0.3f + 0.02f)) {
-                                            NHSounds.blaster.at(b.x, b.y, 1f, 0.3f);
+                                            NHSounds.shootBlaster1.at(b.x, b.y, 1f, 0.3f);
                                             Tmp.v1.rnd(rad / 4 * b.fin());
                                             NHFx.shuttleLerp.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v1.angle(), hitColor, Mathf.random(rad, rad * 3f) * (Mathf.curve(b.fin(Interp.pow2In), 0, 0.7f) + 2) / 3);
                                         }
@@ -5086,7 +5071,7 @@ public class NHUnitTypes {
 
                                         fragBullets = 22;
                                         fragBullet = NHBullets.collapserBullet;
-                                        hitSound = NHSounds.hugeBlast;
+                                        hitSound = NHSounds.blastArc9000;
                                         hitSoundVolume = 4f;
 
                                         fragLifeMax = 1.1f;
