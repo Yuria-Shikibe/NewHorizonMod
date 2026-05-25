@@ -37,7 +37,7 @@ import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.expand.bullets.UpgradePointLaserBulletType;
-import newhorizon.expand.bullets.adapt.AdaptBulletType;
+import newhorizon.expand.bullets.adapt.TypedDamageBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.game.NHUnitSorts;
@@ -91,7 +91,7 @@ public class TurretBlock {
             shake = 7;
             recoil = 3;
             shootY = -13.5f;
-            shootSound = NHSounds.flak;
+            shootSound = NHSounds.shootFlak1;
 
             consumePowerCond(5, TurretBuild::isActive);
 
@@ -273,7 +273,7 @@ public class TurretBlock {
             smokeEffect = Fx.shootSmallSmoke;
             shootSound = NHSounds.shootBlaster3;
 
-            shootType = new AdaptBulletType() {{
+            shootType = new TypedDamageBulletType() {{
                 setDamage(this, 25, 40);
                 bundleName = "basic-thermo-bullet";
 
@@ -335,7 +335,7 @@ public class TurretBlock {
             shootSound = NHSounds.shootBlaster2;
 
             ammo(
-                    NHItems.titanium, new AdaptBulletType() {{
+                    NHItems.titanium, new TypedDamageBulletType() {{
                         setDamage(this, 45, 20);
                         bundleName = "pulse-bullet-titanium";
 
@@ -352,7 +352,7 @@ public class TurretBlock {
 
                         trailLength = 5;
                     }},
-                    NHItems.plastanium, new AdaptBulletType() {{
+                    NHItems.plastanium, new TypedDamageBulletType() {{
                         setDamage(this, 20, 30, 45, 15);
                         bundleName = "pulse-bullet-plastanium";
 
@@ -368,7 +368,7 @@ public class TurretBlock {
 
                         trailLength = 5;
                     }},
-                    NHItems.zeta, new AdaptBulletType() {{
+                    NHItems.zeta, new TypedDamageBulletType() {{
                         setDamage(this, 32, 100, 80);
                         bundleName = "pulse-bullet-zeta";
 
@@ -498,7 +498,7 @@ public class TurretBlock {
 
             range = 250f;
 
-            shootSound = NHSounds.synchro;
+            shootSound = NHSounds.shootPulse4;
 
             shoot = new ShootMulti(
                     new ShootPattern(),
@@ -569,7 +569,7 @@ public class TurretBlock {
             range = 200;
             reload = 60f;
             shootCone = 24f;
-            shootSound = NHSounds.laser3;
+            shootSound = NHSounds.shootCoil1;
             shootType = new PosLightningType() {{
                 damage = 150f;
                 shieldDamageMultiplier = 0.2f;
@@ -585,7 +585,7 @@ public class TurretBlock {
             requirements(Category.turret, with(NHItems.juniorProcessor, 120, NHItems.presstanium, 150, Items.carbide, 150, NHItems.metalOxhydrigen, 80));
 
             ammo(
-                    NHItems.zeta, new AdaptBulletType() {{
+                    NHItems.zeta, new TypedDamageBulletType() {{
                         damage = 30;
                         splashDamage = 160f;
                         splashDamageRadius = 16f;
@@ -622,7 +622,7 @@ public class TurretBlock {
                         ammoMultiplier = 3f;
                         lifetime = 80f;
                     }},
-                    NHItems.metalOxhydrigen, new AdaptBulletType() {{
+                    NHItems.metalOxhydrigen, new TypedDamageBulletType() {{
                         damage = 10;
                         splashDamage = 60f;
                         splashDamageRadius = 20f;
@@ -660,7 +660,7 @@ public class TurretBlock {
                         reloadMultiplier = 1.35f;
                         lifetime = 60f;
                     }},
-                    Items.surgeAlloy, new AdaptBulletType() {{
+                    Items.surgeAlloy, new TypedDamageBulletType() {{
                         damage = 10;
                         splashDamage = 120f;
                         splashDamageRadius = 20f;
@@ -715,7 +715,7 @@ public class TurretBlock {
             rotateSpeed = 5f;
             shootCone = 15f;
             consumeAmmoOnce = true;
-            shootSound = NHSounds.scatter;
+            shootSound = NHSounds.shootScatter1;
 
             unitSort = NHUnitSorts.noShield;
 
@@ -814,7 +814,7 @@ public class TurretBlock {
             outlineColor = Pal.darkOutline;
 
             ammo(
-                    NHItems.metalOxhydrigen, new AdaptBulletType() {{
+                    NHItems.metalOxhydrigen, new TypedDamageBulletType() {{
                         setDamage(this, 48f, 150f, 180f);
                         sprite = "mine-bullet";
 
@@ -846,7 +846,7 @@ public class TurretBlock {
                         backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.metalOxhydrigen.color;
                         trailParam = 1.2f;
                     }},
-                    NHItems.carbide, new AdaptBulletType() {{
+                    NHItems.carbide, new TypedDamageBulletType() {{
                         setDamage(this, 40f, 330f, 220f);
                         sprite = "mine-bullet";
 
@@ -879,7 +879,7 @@ public class TurretBlock {
                         frontColor = NHItems.carbide.color.cpy().lerp(Color.white, 0.1f);
                         backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.carbide.color;
                     }},
-                    NHItems.fusionEnergy, new AdaptBulletType() {{
+                    NHItems.fusionEnergy, new TypedDamageBulletType() {{
                         setDamage(this, 96f, 350f, 500f);
                         sprite = "mine-bullet";
 
@@ -916,7 +916,7 @@ public class TurretBlock {
                         backColor = hitColor = lightColor = trailColor = NHItems.fusionEnergy.color;
                         despawnEffect = NHFx.blast(NHItems.fusionEnergy.color, splashDamageRadius * 0.52f);
                     }},
-                    NHItems.thermoCoreNegative, new AdaptBulletType() {{
+                    NHItems.thermoCoreNegative, new TypedDamageBulletType() {{
                         setDamage(this, 80f, 1000f, 900f);
                         sprite = "mine-bullet";
 
@@ -1044,7 +1044,7 @@ public class TurretBlock {
             shootSound = NHSounds.laser4;
             outlineColor = Pal.darkOutline;
 
-            ammo(NHItems.multipleSteel, new AdaptBulletType() {{
+            ammo(NHItems.multipleSteel, new TypedDamageBulletType() {{
                 setDamage(this, 40f, 160f, 100f);
 
                 collides = true;
@@ -1071,7 +1071,7 @@ public class TurretBlock {
                 despawnEffect = NHFx.square45_6_45;
                 frontColor = NHColor.lightSkyFront;
                 backColor = hitColor = lightColor = trailColor = NHItems.multipleSteel.color;
-            }}, NHItems.phaseFabric, new AdaptBulletType() {{
+            }}, NHItems.phaseFabric, new TypedDamageBulletType() {{
                 setDamage(this, 24f, 80f, 150f);
 
                 collides = true;
@@ -1099,7 +1099,7 @@ public class TurretBlock {
                 despawnEffect = NHFx.square45_6_45;
                 smokeEffect = Fx.shootSmokeDisperse;
                 backColor = hitColor = lightColor = trailColor = Items.phaseFabric.color;
-            }}, NHItems.irayrondPanel, new AdaptBulletType() {{
+            }}, NHItems.irayrondPanel, new TypedDamageBulletType() {{
                 setDamage(this, 40f, 200f, 120f);
 
                 collides = true;
@@ -1276,7 +1276,7 @@ public class TurretBlock {
             rotateSpeed = 2f;
             shootCone = 15f;
             consumeAmmoOnce = true;
-            shootSound = NHSounds.laser2;
+            shootSound = NHSounds.shootThermo2;
 
             consumePower(1000 / 60f);
 

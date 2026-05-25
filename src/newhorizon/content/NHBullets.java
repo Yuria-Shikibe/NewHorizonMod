@@ -31,7 +31,7 @@ import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.bullets.*;
-import newhorizon.expand.bullets.adapt.AdaptBulletType;
+import newhorizon.expand.bullets.adapt.TypedDamageBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;
@@ -1024,7 +1024,7 @@ public class NHBullets {
             smokeEffect = NHFx.hugeSmoke;
         }};
 
-        railGun1 = new AdaptBulletType() {{
+        railGun1 = new TypedDamageBulletType() {{
             width = 12f;
             height = 36f;
 
@@ -1064,7 +1064,7 @@ public class NHBullets {
             despawnSound = Sounds.explosion;
         }};
 
-        railGun2 = new AdaptBulletType() {{
+        railGun2 = new TypedDamageBulletType() {{
             width = 16f;
             height = 50f;
 
@@ -1108,7 +1108,7 @@ public class NHBullets {
             despawnSound = Sounds.explosion;
         }};
 
-        railGun3 = new AdaptBulletType() {{
+        railGun3 = new TypedDamageBulletType() {{
             width = 16f;
             height = 50f;
 
@@ -1276,7 +1276,7 @@ public class NHBullets {
             }
         };
 
-        declineProjectile = new AdaptBulletType() {
+        declineProjectile = new TypedDamageBulletType() {
             {
                 lifetime = 122f;
                 speed = 9.25f;
@@ -1540,7 +1540,7 @@ public class NHBullets {
             }});
         }};
 
-        synchroTitanium = new AdaptBulletType() {{
+        synchroTitanium = new TypedDamageBulletType() {{
             damage = 60f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
@@ -1572,7 +1572,7 @@ public class NHBullets {
             bundleName = "synchro-titanium";
         }};
 
-        synchroTungsten = new AdaptBulletType() {{
+        synchroTungsten = new TypedDamageBulletType() {{
             damage = 80f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
@@ -1606,7 +1606,7 @@ public class NHBullets {
             bundleName = "synchro-Tungsten";
         }};
 
-        synchroZeta = new AdaptBulletType() {{
+        synchroZeta = new TypedDamageBulletType() {{
             damage = 120f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.7f;
@@ -1640,7 +1640,7 @@ public class NHBullets {
             bundleName = "synchro-zeta";
         }};
 
-        synchroFusionEnergy = new AdaptBulletType() {{
+        synchroFusionEnergy = new TypedDamageBulletType() {{
             damage = 180f;
             shieldDamageMultiplier = 0.8f;
 

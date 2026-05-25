@@ -1421,6 +1421,21 @@ public class NHFx {
         });
     }
 
+    public static Effect shootLine(Color color, float size, float angleRange) {
+        int num = Mathf.clamp((int) size / 6, 6, 20);
+        float thick = Mathf.clamp(0.75f, 2f, size / 22f);
+
+        return new Effect(37f, e -> {
+            color(color, Color.white, e.fout() * 0.7f);
+            rand.setSeed(e.id);
+            DrawFunc.randLenVectors(e.id, num, 4 + (size * 1.2f) * e.fin(), size * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
+                Lines.stroke(thick * e.fout(0.32f));
+                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), (e.fslope() + e.fin()) * 0.5f * (size * rand.random(0.15f, 0.5f) + rand.random(2f)) + rand.random(2f));
+                Drawf.light(e.x + x, e.y + y, e.fslope() * (size * 0.5f + 14f) + 3, e.color, 0.7f);
+            });
+        });
+    }
+
     public static Effect shootSquare(float lifetime, int num, float size, float angle, float range, float angleRange) {
         return new Effect(lifetime, e -> {
             color(e.color, Color.white, e.fout() * 0.7f);
@@ -1711,7 +1726,7 @@ public class NHFx {
     }
 
     public static Effect lineCircleOut(Color color, float lifetime, float size, float stroke) {
-        return new Effect(50, e -> {
+        return new Effect(lifetime, e -> {
             color(color);
             stroke(e.fout() * stroke);
             Lines.circle(e.x, e.y, e.fin(Interp.pow3Out) * size);

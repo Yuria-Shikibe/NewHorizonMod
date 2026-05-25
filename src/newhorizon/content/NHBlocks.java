@@ -835,7 +835,7 @@ public class NHBlocks {
 
             inaccuracy = 3f;
 
-            shootSound = NHSounds.laser3;
+            shootSound = NHSounds.shootCoil1;
             outlineColor = Pal.darkOutline;
 
             ammo(NHItems.zeta, new AccelBulletType(2.85f, 60f) {
@@ -1221,7 +1221,7 @@ public class NHBlocks {
             beamEffect = Fx.chainLightning;
             hitEffect = NHFx.square45_4_45;
             shootEffect = NHFx.shootLineSmall(color);
-            shootSound = NHSounds.gauss;
+            shootSound = NHSounds.shootGauss2;
 
             range = 280f;
 
@@ -1248,7 +1248,7 @@ public class NHBlocks {
 
             rotateSpeed = 2.4f;
 
-            shootSound = NHSounds.flak2;
+            shootSound = NHSounds.shootFlak6;
 
             ammo(NHItems.ancimembrane, new TrailFadeBulletType(4f, 580f, "circle-bullet") {
                 {
@@ -1675,7 +1675,7 @@ public class NHBlocks {
                     }
                 };
 
-                shootSound = NHSounds.railGunBlast;
+                shootSound = NHSounds.shootRailgun1;
 //			heatColor = NHItems.irayrondPanel.color;
 
                 outlineColor = Pal.darkOutline;
@@ -1851,7 +1851,7 @@ public class NHBlocks {
             inaccuracy = 1;
             heatColor = NHBullets.blastEnergyPst.lightColor;
             recoil = 4.0F;
-            shootSound = NHSounds.thermoShoot;
+            shootSound = NHSounds.shootThermo4;
             coolant = new ConsumeCoolant(0.25f);
         }};
     }

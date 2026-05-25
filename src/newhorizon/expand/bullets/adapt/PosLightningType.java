@@ -7,7 +7,7 @@ import mindustry.gen.*;
 import newhorizon.content.NHFx;
 import newhorizon.util.game.PosLightning;
 
-public class PosLightningType extends AdaptBulletType {
+public class PosLightningType extends TypedDamageBulletType {
     public int boltNum = 2;
     public float hitEffectRotation = 12f;
 
