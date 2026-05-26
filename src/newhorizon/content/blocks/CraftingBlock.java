@@ -107,21 +107,6 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
-                    new DrawPistons(){{
-                        sides = 2;
-                        sinMag = 3f;
-                        sinScl = 4f;
-                        lenOffset = 3.8f;
-                        y = 4.25f;
-                    }},
-                    new DrawPistons(){{
-                        sides = 2;
-                        sinMag = 3f;
-                        sinScl = 4f;
-                        sinOffset = 32;
-                        lenOffset = 3.8f;
-                        y = -4.25f;
-                    }},
                     new DrawDefault()
             );
 
