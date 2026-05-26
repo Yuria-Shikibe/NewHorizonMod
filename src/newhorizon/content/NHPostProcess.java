@@ -33,6 +33,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
+import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
 
@@ -53,7 +54,7 @@ public class NHPostProcess {
     public static void load() {
         {
             modSpawnGroup.addAll(
-                    new SpawnGroup(NHUnitTypes.origin) {{
+                    new SpawnGroup(GroundUnitTypes.origin) {{
                         end = 12;
                         unitScaling = 2f;
                         max = 30;
@@ -72,7 +73,7 @@ public class NHPostProcess {
                         unitScaling = 1f;
                     }},
 
-                    new SpawnGroup(NHUnitTypes.origin) {{
+                    new SpawnGroup(GroundUnitTypes.origin) {{
                         begin = 11;
                         unitScaling = 1.7f;
                         spacing = 2;
@@ -87,7 +88,7 @@ public class NHPostProcess {
                         max = 25;
                     }},
 
-                    new SpawnGroup(NHUnitTypes.origin) {{
+                    new SpawnGroup(GroundUnitTypes.origin) {{
                         begin = 12;
                         unitScaling = 1;
                         unitAmount = 4;
@@ -371,7 +372,7 @@ public class NHPostProcess {
 
     public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval) {
         UnitType[][] species = {
-                {NHUnitTypes.origin, NHUnitTypes.thynomo, NHUnitTypes.aliotiat, NHUnitTypes.tarlidor, NHUnitTypes.annihilation, NHUnitTypes.sin},
+                {GroundUnitTypes.origin, NHUnitTypes.thynomo, NHUnitTypes.aliotiat, NHUnitTypes.tarlidor, NHUnitTypes.annihilation, NHUnitTypes.sin},
                 {NHUnitTypes.sharp, NHUnitTypes.branch, NHUnitTypes.warper, NHUnitTypes.naxos, NHUnitTypes.hurricane},
                 {flare, NHUnitTypes.assaulter, NHUnitTypes.restrictionEnzyme, NHUnitTypes.destruction, NHUnitTypes.longinus},
                 {NHUnitTypes.sharp, NHUnitTypes.assaulter, NHUnitTypes.branch, NHUnitTypes.longinus, NHUnitTypes.guardian},

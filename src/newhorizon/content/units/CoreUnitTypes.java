@@ -31,7 +31,6 @@ public class CoreUnitTypes {
 
     public static UnitType scalar, vector, martix, tensor;
 
-    public static Color bulletFrontColor, bulletBackColor;
 
     static {
         EntityMapping.nameMap.put(NewHorizon.name("scalar"), EntityMapping.idMap[5]);
@@ -40,14 +39,7 @@ public class CoreUnitTypes {
         EntityMapping.nameMap.put(NewHorizon.name("tensor"), EntityMapping.idMap[5]);
     }
 
-    public static void loadColor() {
-        bulletFrontColor = Color.valueOf("94b3fa");
-        bulletBackColor = Color.valueOf("c3d4fc");
-    }
-
     public static void load() {
-        loadColor();
-
         scalar = new NHUnitType("scalar") {{
             armor = 2;
             health = 600;
@@ -124,12 +116,12 @@ public class CoreUnitTypes {
 
                     keepVelocity = false;
 
-                    hitColor = bulletFrontColor;
-                    lightColor = bulletBackColor;
-                    trailColor = bulletFrontColor;
+                    hitColor = NHColor.bulletFrontColor;
+                    lightColor = NHColor.bulletBackColor;
+                    trailColor = NHColor.bulletFrontColor;
 
-                    frontColor = bulletFrontColor;
-                    backColor = bulletBackColor;
+                    frontColor = NHColor.bulletFrontColor;
+                    backColor = NHColor.bulletBackColor;
 
                     status = StatusEffects.shocked;
 
@@ -225,12 +217,12 @@ public class CoreUnitTypes {
                     keepVelocity = false;
                     sprite = NewHorizon.name("circle-bolt");
 
-                    hitColor = bulletFrontColor;
-                    lightColor = bulletBackColor;
-                    trailColor = bulletFrontColor;
+                    hitColor = NHColor.bulletFrontColor;
+                    lightColor = NHColor.bulletBackColor;
+                    trailColor = NHColor.bulletFrontColor;
 
-                    frontColor = bulletFrontColor;
-                    backColor = bulletBackColor;
+                    frontColor = NHColor.bulletFrontColor;
+                    backColor = NHColor.bulletBackColor;
 
                     status = StatusEffects.shocked;
 
@@ -333,12 +325,12 @@ public class CoreUnitTypes {
 
                     keepVelocity = false;
 
-                    hitColor = bulletFrontColor;
-                    lightColor = bulletBackColor;
-                    trailColor = bulletFrontColor;
+                    hitColor = NHColor.bulletFrontColor;
+                    lightColor = NHColor.bulletBackColor;
+                    trailColor = NHColor.bulletFrontColor;
 
-                    frontColor = bulletFrontColor;
-                    backColor = bulletBackColor;
+                    frontColor = NHColor.bulletFrontColor;
+                    backColor = NHColor.bulletBackColor;
 
                     status = StatusEffects.shocked;
 
@@ -436,12 +428,12 @@ public class CoreUnitTypes {
 
                     keepVelocity = false;
 
-                    hitColor = bulletFrontColor;
-                    lightColor = bulletBackColor;
-                    trailColor = bulletFrontColor;
+                    hitColor = NHColor.bulletFrontColor;
+                    lightColor = NHColor.bulletBackColor;
+                    trailColor = NHColor.bulletFrontColor;
 
-                    frontColor = bulletFrontColor;
-                    backColor = bulletBackColor;
+                    frontColor = NHColor.bulletFrontColor;
+                    backColor = NHColor.bulletBackColor;
 
                     status = StatusEffects.shocked;
 
