@@ -303,7 +303,6 @@ public class PowerBlock {
                         sides = 4;
                         sinMag = 3f;
                         sinScl = 5f;
-                        sinOffset = 0f;
                         angleOffset = 45f;
                         lenOffset = 9f;
                     }},

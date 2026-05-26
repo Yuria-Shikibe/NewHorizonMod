@@ -101,8 +101,38 @@ public class CraftingBlock {
             armor = 5;
             craftTime = 120f;
 
+            consumePower(120f / 60f);
             consumeItems(ItemStack.with(NHItems.silicar, 12));
             outputItems = ItemStack.with(NHItems.graphite, 8, NHItems.silicon, 8);
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-3x3"),
+                    new DrawPistons(){{
+                        sides = 2;
+                        sinMag = 3f;
+                        sinScl = 4f;
+                        lenOffset = 3.8f;
+                        y = 4.25f;
+                    }},
+                    new DrawPistons(){{
+                        sides = 2;
+                        sinMag = 3f;
+                        sinScl = 4f;
+                        sinOffset = 32;
+                        lenOffset = 3.8f;
+                        y = -4.25f;
+                    }},
+                    new DrawDefault()
+            );
+
+            craftEffect = NHFx.hugeSmokeGray;
+            updateEffect = new Effect(80f, e -> {
+                Fx.rand.setSeed(e.id);
+                Draw.color(Color.lightGray, Color.gray, e.fin());
+                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) ->
+                        Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
+                );
+            }).layer(Layer.blockOver + 1);
         }};
 
         stampingFacility = new GenericCrafter("stamping-facility") {{
