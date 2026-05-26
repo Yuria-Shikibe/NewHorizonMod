@@ -20,6 +20,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.bullets.DecelerateFlakBulletType;
+import newhorizon.expand.bullets.TracerBulletType;
 import newhorizon.expand.units.BoostAbility;
 import newhorizon.expand.units.unitType.NHUnitType;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -28,7 +29,7 @@ import static mindustry.Vars.tilePayload;
 
 public class CoreUnitTypes {
 
-    public static UnitType scalar, vector, martix, liv;
+    public static UnitType scalar, vector, martix, tensor;
 
     public static Color bulletFrontColor, bulletBackColor;
 
@@ -36,7 +37,7 @@ public class CoreUnitTypes {
         EntityMapping.nameMap.put(NewHorizon.name("scalar"), EntityMapping.idMap[5]);
         EntityMapping.nameMap.put(NewHorizon.name("vector"), EntityMapping.idMap[5]);
         EntityMapping.nameMap.put(NewHorizon.name("martix"), EntityMapping.idMap[5]);
-        EntityMapping.nameMap.put(NewHorizon.name("liv"), EntityMapping.idMap[5]);
+        EntityMapping.nameMap.put(NewHorizon.name("tensor"), EntityMapping.idMap[5]);
     }
 
     public static void loadColor() {
@@ -353,97 +354,107 @@ public class CoreUnitTypes {
             }});
         }};
 
-        liv = new NHUnitType("liv") {{
-            outlineColor = grayOutline;
+        tensor = new NHUnitType("tensor") {{
+            armor = 15;
+            health = 2500;
+            hitSize = 24f;
 
-            itemCapacity = 150;
-            payloadCapacity = (2 * 2) * tilePayload;
+            drag = 0.12f;
+            speed = 5.5f;
+            accel = 0.85f;
+            rotateSpeed = 14.5f;
+            strafePenalty = 0.3f;
 
-            immunities = ObjectSet.with(NHStatusEffects.scannerDown);
-
-            aiController = BuilderAI::new;
-            fogRadius = 40f;
-            outlineRadius = 4;
-
-            lightRadius = 20f;
+            lightRadius = 24f;
             lightOpacity = 0.1f;
 
-            flying = true;
-            health = 1000;
-            armor = 5;
-            hitSize = 18f;
-            drag /= 5f;
-
-            rotateSpeed = 4.5f;
-            speed = 4.5f;
-            accel = 0.5f;
-
-            engineSize = 0;
-            engineColor = NHColor.lightSky;
+            trailLength = 10;
+            outlineRadius = 4;
+            itemCapacity = 150;
+            payloadCapacity = 9 * tilePayload;
 
             buildBeamOffset = 6f;
-            buildSpeed = 3f;
+            buildSpeed = 3.5f;
 
-            mineTier = 3;
-            mineSpeed = 12f;
+            mineTier = 8;
+            mineSpeed = 20f;
+            engineSize = 0;
 
+            flying = true;
+            mineWalls = true;
+            mineFloor = true;
+            aiController = BuilderAI::new;
             engines.add(
                     new UnitEngine(4.5f, -7.2f, 2.2f, -115),
                     new UnitEngine(0, -9.8f, 2.8f, -90),
                     new UnitEngine(-4.5f, -7.2f, 2.2f, -65)
             );
+            abilities.add(new BoostAbility(false, 1.5f, 180f));
 
-            abilities.add(
-                    new BoostAbility(false, 1.5f, 90.0f));
+            weapons.add(new Weapon("martix-mx-pulse-gun") {{
+                x = 5f;
 
-            weapons.add(new Weapon() {{
-                reload = 42;
+                reload = 8f;
                 recoil = 1.5f;
-                inaccuracy = 5;
-                shootSound = NHSounds.shootThermo4;
+                inaccuracy = 1.2f;
+                shootCone = 15f;
+                rotateSpeed = 8.25f;
+
                 top = false;
-                mirror = alternate = true;
-                rotate = false;
-                rotateSpeed = 2.55f;
+                mirror = true;
+                rotate = true;
+                alternate = true;
+
                 heatColor = NHColor.lightSky;
-                shootCone = 30f;
+                shootSound = NHSounds.shootThermo3;
 
+                bullet = new TracerBulletType() {{
+                    speed = 6.5f;
+                    damage = 55f;
+                    lifetime = 45f;
+                    inaccuracy = 1f;
 
-                shoot = new ShootPattern() {{
-                    shots = 5;
-                    shotDelay = 5f;
-                }};
+                    width = 8f;
+                    height = 15f;
+                    drawSize = 40f;
+                    shrinkX = 0;
+                    shrinkY = 0;
 
-                bullet = new BasicBulletType(4.5f, 20f) {{
-                    ejectEffect = Fx.none;
-                    trailWidth = 1.5f;
-                    trailLength = 15;
-                    drawSize = 200f;
+                    trailWidth = 1.25f;
+                    trailLength = 10;
+                    trailParam = 1f;
+                    trailChance = 0.1f;
+
+                    tracerRandRange = 3f;
+                    tracerUpdateInterval = 0.2f;
+
+                    homingPower = 0.02f;
+                    homingRange = 120f;
+                    homingDelay = 10f;
+                    knockback = 0.75f;
+                    statusDuration = 30f;
+
+                    keepVelocity = false;
+
+                    hitColor = bulletFrontColor;
+                    lightColor = bulletBackColor;
+                    trailColor = bulletFrontColor;
+
+                    frontColor = bulletFrontColor;
+                    backColor = bulletBackColor;
 
                     status = StatusEffects.shocked;
-                    statusDuration = 30f;
-                    lifetime = 40f;
-                    homingPower = 0.1f;
-                    homingRange = 120f;
-                    width = 10f;
-                    height = 25f;
-                    keepVelocity = true;
-                    knockback = 0.75f;
-                    trailColor = backColor = lightColor = lightningColor = hitColor = NHColor.lightSkyBack;
-                    frontColor = backColor.cpy().lerp(Color.white, 0.45f);
-                    trailChance = 0.1f;
-                    trailParam = 1f;
-                    trailEffect = NHFx.trailToGray;
-                    despawnEffect = NHFx.square(backColor, 18f, 2, 12f, 2);
-                    hitEffect = NHFx.lightningHitSmall(backColor);
-                    shootEffect = NHFx.shootLineSmall(backColor);
-                    smokeEffect = Fx.shootBigSmoke2;
 
-                    buildingDamageMultiplier = 0.2f;
+                    ejectEffect = Fx.none;
+                    trailEffect = NHFx.trailToGray;
+                    despawnEffect = NHFx.square(backColor, 18f, 3, 24f, 3);
+                    hitEffect = NHFx.hitSpark(backColor, 45f, 8, 15, 1, 4);
+                    shootEffect = NHFx.shootCircleSmall(backColor);
+                    smokeEffect = Fx.shootSmallSmoke;
+
+                    buildingDamageMultiplier = 0.05f;
                 }};
             }});
-
-            strafePenalty = 0.3f;
         }};
     }
 }
