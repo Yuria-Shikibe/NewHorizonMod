@@ -132,7 +132,6 @@ public class CraftingBlock {
 
             size = 2;
             hasLiquids = true;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
             scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 120f;
