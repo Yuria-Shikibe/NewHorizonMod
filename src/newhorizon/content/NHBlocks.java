@@ -2168,7 +2168,6 @@ public class NHBlocks {
         loadPowers();
 
         InnerBlock.load();
-        ModuleBlock.load();
         ProductionBlock.load();
         TurretBlock.load();
         DefenseBlock.load();
