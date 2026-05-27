@@ -6,7 +6,7 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 
 public class NHUnitType extends UnitType {
-    public static final Color grayOutline = Color.valueOf("565666");
+    public static final Color grayOutline = Color.valueOf("2e3039");
 
     public NHUnitType(String name) {
         super(name);

@@ -52,6 +52,7 @@ import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.units.CoreUnitTypes;
+import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.bullets.adapt.TypedDamageBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
@@ -110,7 +111,7 @@ public class NHUnitTypes {
             restrictionEnzyme,
             nucleoid, pester, laugra, macrophage, ancientProbe, //ancient
             assaulter, anvil, collapser, //Air-2
-            origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
+            aliotiat, tarlidor, annihilation, sin, //Ground-1
             sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
             relay, ghost, zarkov, declining; //Navy
     public static Seq<StatusEffect> statuses;
@@ -127,8 +128,6 @@ public class NHUnitTypes {
         EntityMapping.nameMap.put(NewHorizon.name("liv"), EntityMapping.idMap[5]);
         EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 
-        EntityMapping.nameMap.put(NewHorizon.name("origin"), EntityMapping.idMap[4]);
-        EntityMapping.nameMap.put(NewHorizon.name("thynomo"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("aliotiat"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("tarlidor"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
@@ -983,6 +982,7 @@ public class NHUnitTypes {
         loadPreviousWeapon();
 
         CoreUnitTypes.load();
+        GroundUnitTypes.load();
 
         macrophage = new AncientUnitType("macrophage") {
             {
@@ -3110,116 +3110,9 @@ public class NHUnitTypes {
             }
         };
 
-        origin = new NHUnitType("origin") {
-            {
-                outlineColor = grayOutline;
-                weapons.add(
-                        new Weapon(NewHorizon.name("origin-weapon")) {{
-                            mirror = true;
-                            this.top = false;
 
-                            rotate = true;
-                            rotationLimit = 15f;
 
-                            x = 5f;
-                            y = -1f;
-                            shootY = 6f;
-                            reload = 15f;
-                            shoot = new ShootSpread() {{
-                                shots = 3;
-                                spread = 3;
-                            }};
-                            inaccuracy = 4f;
-                            velocityRnd = 0.15f;
-                            shootSound = NHSounds.shootScatter1;
-                            shake = 0.75f;
-                            bullet = new BasicBulletType(4f, 7f) {{
-                                width = 5f;
-                                height = 25f;
-                                backColor = lightningColor = lightColor = hitColor = NHColor.lightSkyBack;
-                                frontColor = backColor.cpy().lerp(Color.white, 0.45f);
-                                shootEffect = NHFx.shootLineSmall(backColor);
-                                despawnEffect = NHFx.square(hitColor, 16f, 2, 12, 2f);
-                                hitEffect = NHFx.lightningHitSmall(backColor);
-                                smokeEffect = Fx.shootBigSmoke2;
-                                lifetime = 45f;
-                            }};
-                        }}
-                );
-                speed = 0.6F;
-                hitSize = 8.0F;
-                health = 160.0F;
-            }
 
-            @Override
-            public void createIcons(MultiPacker packer) {
-                super.createIcons(packer);
-                NHPixmap.createIcons(packer, this);
-                NHPixmap.outlineLegs(packer, this);
-            }
-        };
-
-        thynomo = new NHUnitType("thynomo") {
-            {
-                outlineColor = grayOutline;
-                weapons.add(
-                        new Weapon(NewHorizon.name("thynomo-weapon")) {{
-                            mirror = true;
-                            top = false;
-
-                            rotate = true;
-                            rotationLimit = 15f;
-
-                            x = 8f;
-                            y = 1f;
-                            shootY = 9.5f;
-                            reload = 90f;
-                            shootCone = 25f;
-                            shootStatus = StatusEffects.slow;
-                            shootStatusDuration = 90f;
-                            continuous = true;
-                            shootSound = Sounds.beamPlasma;
-                            bullet = new ContinuousLaserBulletType(18f) {{
-                                length = 120f;
-                                width = 2.55f;
-
-                                incendChance = 0.025F;
-                                incendSpread = 5.0F;
-                                incendAmount = 1;
-
-                                shake = 3;
-                                colors = new Color[]{NHColor.lightSkyFront.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSkyBack, Color.white};
-                                oscScl = 0.4f;
-                                oscMag = 1.5f;
-                                lifetime = 90f;
-                                lightColor = hitColor = NHColor.lightSkyBack;
-                                hitEffect = NHFx.lightSkyCircleSplash;
-                                shootEffect = NHFx.square(hitColor, 22f, 4, 16, 3f);
-                                smokeEffect = Fx.shootBigSmoke;
-                            }};
-                        }}
-                );
-                boostMultiplier = 2.0F;
-                health = 650.0F;
-                rotateSpeed = 2.5f;
-                canBoost = true;
-                armor = 9.0F;
-                mechLandShake = 2.0F;
-                riseSpeed = 0.05F;
-                mechFrontSway = 0.55F;
-                speed = 0.4F;
-                hitSize = 15f;
-                engineOffset = 7.4F;
-                engineSize = 4.25F;
-            }
-
-            @Override
-            public void createIcons(MultiPacker packer) {
-                super.createIcons(packer);
-                NHPixmap.createIcons(packer, this);
-                NHPixmap.outlineLegs(packer, this);
-            }
-        };
 
         relay = new NHUnitType("relay"){{
 			outlineColor = grayOutline;

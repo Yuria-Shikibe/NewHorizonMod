@@ -43,7 +43,7 @@ import static mindustry.type.ItemStack.with;
 public class CraftingBlock {
 
     public static Block
-            silicarCrusher, largeSilicarCrusher,
+            silicarCrusher,
             stampingFacility, heavyStampingFacility, processorManuFactory, processorPrinter, subCooler, hyperCooler,
             rectificatior, phaseRectificatior, plasticator, photocatalystFactory, metalOxhydrigenRestructuror, crystallizer, particleActivator, plasmaActivator,
             crucibleFoundry, castingFoundry, xenSeparator, multipleRollingMill, mixedRollingMill, heavyRollingMill,
@@ -55,15 +55,14 @@ public class CraftingBlock {
             darkEnergyTrap, hadronCompositeBuilder, hyperProcessor;
 
     public static void load() {
-        silicarCrusher = new GenericCrafter("silicar-crusher") {{
+        silicarCrusher = new MultiBlockCrafter("silicar-crusher") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.silicar, 20
             ));
 
             size = 2;
             itemCapacity = 20;
-            health = 300;
-            armor = 2;
+            scaledHealth = 100f;
             craftTime = 60f;
 
             outputItems = ItemStack.with(NHItems.graphite, 1, NHItems.silicon, 1);
@@ -90,36 +89,6 @@ public class CraftingBlock {
             }).layer(Layer.blockOver + 1);
         }};
 
-        largeSilicarCrusher = new GenericCrafter("large-silicar-crusher") {{
-            requirements(Category.crafting, ItemStack.with(
-                    NHItems.silicar, 20
-            ));
-
-            size = 3;
-            itemCapacity = 30;
-            health = 800;
-            armor = 5;
-            craftTime = 120f;
-
-            consumePower(120f / 60f);
-            consumeItems(ItemStack.with(NHItems.silicar, 12));
-            outputItems = ItemStack.with(NHItems.graphite, 8, NHItems.silicon, 8);
-
-            drawer = new DrawMulti(
-                    new DrawBaseRegion("-3x3"),
-                    new DrawDefault()
-            );
-
-            craftEffect = NHFx.hugeSmokeGray;
-            updateEffect = new Effect(80f, e -> {
-                Fx.rand.setSeed(e.id);
-                Draw.color(Color.lightGray, Color.gray, e.fin());
-                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) ->
-                        Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
-                );
-            }).layer(Layer.blockOver + 1);
-        }};
-
         stampingFacility = new GenericCrafter("stamping-facility") {{
             requirements(Category.crafting, with(
                     NHItems.titanium, 30,
@@ -127,8 +96,8 @@ public class CraftingBlock {
                     NHItems.hardLight, 15
             ));
             size = 2;
-            health = 300;
-            armor = 2;
+            health = 600;
+            armor = 4;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -163,7 +132,6 @@ public class CraftingBlock {
 
             size = 2;
             hasLiquids = true;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
             health = 600;
             armor = 4;
             itemCapacity = 20;
@@ -202,8 +170,7 @@ public class CraftingBlock {
             ));
 
             size = 2;
-            health = 300;
-            armor = 2;
+            scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -305,8 +272,7 @@ public class CraftingBlock {
             ));
 
             size = 2;
-            health = 300;
-            armor = 2;
+            scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -341,8 +307,7 @@ public class CraftingBlock {
 
             size = 2;
             hasLiquids = true;
-            health = 600;
-            armor = 4;
+            scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 60f;
 
@@ -382,8 +347,8 @@ public class CraftingBlock {
             ));
 
             size = 2;
-            health = 300;
-            armor = 2;
+            health = 600;
+            armor = 4;
             itemCapacity = 20;
             craftTime = 60f;
 
@@ -400,8 +365,7 @@ public class CraftingBlock {
             ));
 
             size = 3;
-            health = 800;
-            armor = 5;
+            scaledHealth = 100f;
             itemCapacity = 20;
             liquidCapacity = 100;
             craftTime = 120f;
@@ -448,8 +412,7 @@ public class CraftingBlock {
 
             hasItems = true;
             size = 3;
-            health = 800;
-            armor = 5;
+            health = 640;
             craftTime = 120f;
 
             consumePower(4f);
@@ -492,8 +455,7 @@ public class CraftingBlock {
             size = 3;
             hasLiquids = true;
             canMirror = true;
-            health = 1200;
-            armor = 6;
+            scaledHealth = 100f;
             itemCapacity = 20;
             liquidCapacity = 30f;
             craftTime = 120f;
@@ -533,8 +495,7 @@ public class CraftingBlock {
             hasLiquids = true;
             canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-            health = 600;
-            armor = 4;
+            scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -594,8 +555,7 @@ public class CraftingBlock {
             canMirror = true;
             rotateDraw = false;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-            health = 600;
-            armor = 4;
+            scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -676,8 +636,8 @@ public class CraftingBlock {
             ));
 
             size = 2;
-            health = 300;
-            armor = 2;
+            health = 600;
+            armor = 4;
             itemCapacity = 20;
             craftTime = 60f;
 
@@ -708,8 +668,7 @@ public class CraftingBlock {
             ));
 
             size = 3;
-            health = 800;
-            armor = 5;
+            scaledHealth = 100f;
             itemCapacity = 20;
             liquidCapacity = 20f;
             craftTime = 120f;
@@ -739,7 +698,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1200;
+            health = 900;
             armor = 6;
             itemCapacity = 20;
             liquidCapacity = 15f;
@@ -780,8 +739,7 @@ public class CraftingBlock {
             size = 3;
             canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-            health = 1200;
-            armor = 6;
+            scaledHealth = 150f;
             itemCapacity = 20;
             craftTime = 60f;
 
@@ -831,8 +789,8 @@ public class CraftingBlock {
             size = 3;
             rotate = true;
             invertFlip = true;
-            health = 800;
-            armor = 5;
+            health = 600;
+            armor = 4;
             itemCapacity = 20;
             craftTime = 60f;
 
@@ -866,8 +824,6 @@ public class CraftingBlock {
             ));
 
             size = 3;
-            health = 800;
-            armor = 5;
             itemCapacity = 30;
             craftTime = 120f;
 
@@ -952,8 +908,7 @@ public class CraftingBlock {
             hasLiquids = true;
             canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-            health = 1200;
-            armor = 6;
+            scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -984,8 +939,7 @@ public class CraftingBlock {
             ));
 
             size = 4;
-            health = 1500;
-            armor = 8;
+            scaledHealth = 100f;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -1009,8 +963,6 @@ public class CraftingBlock {
             ));
 
             size = 3;
-            health = 800;
-            armor = 5;
             itemCapacity = 20;
             craftTime = 60f;
 
@@ -1041,8 +993,8 @@ public class CraftingBlock {
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
 
             size = 2;
-            health = 600;
-            armor = 4;
+            health = 900;
+            armor = 6;
             itemCapacity = 30;
             craftTime = 60f;
 
@@ -1076,13 +1028,13 @@ public class CraftingBlock {
 
             size = 3;
             health = 800;
-            armor = 5;
+            armor = 4;
             itemCapacity = 20;
             craftTime = 60f;
 
-            consumePower(180 / 60f);
-            consumeItems(with(NHItems.silicon, 3, NHItems.thorium, 2));
             outputItems = with(NHItems.phaseFabric, 1);
+            consumePower(60 / 60f);
+            consumeItems(with(NHItems.silicon, 3, NHItems.thorium, 2));
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),
@@ -1134,7 +1086,7 @@ public class CraftingBlock {
             size = 3;
             itemCapacity = 30;
             health = 1200;
-            armor = 6;
+            armor = 8;
             craftTime = 60f;
 
             consumePower(480 / 60f);
@@ -1195,8 +1147,6 @@ public class CraftingBlock {
             ));
 
             size = 3;
-            health = 800;
-            armor = 5;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -1225,7 +1175,7 @@ public class CraftingBlock {
 
             size = 3;
             health = 1200;
-            armor = 6;
+            armor = 8;
             itemCapacity = 30;
             craftTime = 120f;
 
@@ -1260,8 +1210,6 @@ public class CraftingBlock {
             ));
 
             size = 2;
-            health = 300;
-            armor = 2;
             itemCapacity = 20;
             craftTime = 60;
 
@@ -1295,8 +1243,6 @@ public class CraftingBlock {
             ));
 
             size = 2;
-            health = 300;
-            armor = 2;
             itemCapacity = 20;
             craftTime = 60;
 
@@ -1330,8 +1276,8 @@ public class CraftingBlock {
 
             size = 2;
             itemCapacity = 20;
-            health = 600;
-            armor = 4;
+            health = 1500;
+            armor = 10;
             craftTime = 60;
 
             consumePower(240f / 60f);
@@ -1404,7 +1350,7 @@ public class CraftingBlock {
 
             size = 4;
             health = 1500;
-            armor = 8;
+            armor = 4;
             itemCapacity = 50;
             craftTime = 120;
 
@@ -1488,8 +1434,8 @@ public class CraftingBlock {
             ));
 
             size = 4;
-            health = 1500;
-            armor = 8;
+            health = 600;
+            armor = 4;
             itemCapacity = 20;
             craftTime = 60f;
 
@@ -1512,8 +1458,8 @@ public class CraftingBlock {
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
 
             size = 4;
-            health = 2500;
-            armor = 10;
+            health = 600;
+            armor = 4;
             itemCapacity = 20;
             craftTime = 120f;
 
@@ -1540,8 +1486,7 @@ public class CraftingBlock {
 
             size = 3;
             hasLiquids = true;
-            health = 800;
-            armor = 5;
+            health = 500;
             itemCapacity = 24;
             craftTime = 60;
 
@@ -1574,17 +1519,19 @@ public class CraftingBlock {
                             NHItems.seniorProcessor, 50,
                             NHItems.zeta, 150
                     ));
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1600;
-            armor = 8;
-            itemCapacity = 30;
-            craftTime = 120f;
 
+            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            craftTime = 120f;
+            itemCapacity = 30;
+            health = 1800;
+            armor = 12;
             consumePower(480 / 60f);
+
             consumeItems(with(NHItems.thorium, 5, NHItems.zeta, 2, NHItems.carbide, 4));
-            outputItems = with(NHItems.setonAlloy, 6);
+            outputItems = with(NHItems.setonAlloy, 4);
 
             drawer = new DrawMulti(
                     new DrawRegionFlip("-base"),
@@ -1651,8 +1598,8 @@ public class CraftingBlock {
 
             size = 4;
             hasLiquids = true;
-            health = 2500;
-            armor = 10;
+            health = 3000;
+            armor = 10f;
             itemCapacity = 45;
             craftTime = 60;
 
@@ -1686,8 +1633,8 @@ public class CraftingBlock {
 
             size = 4;
             hasLiquids = true;
-            health = 2500;
-            armor = 10;
+            health = 3000;
+            armor = 10f;
             itemCapacity = 45;
             liquidCapacity = 45;
 
@@ -1720,8 +1667,8 @@ public class CraftingBlock {
             );
 
             size = 3;
-            health = 2200;
-            armor = 12;
+            health = 2100;
+            armor = 14;
             itemCapacity = 40;
             craftTime = 60f;
 
@@ -1744,6 +1691,8 @@ public class CraftingBlock {
                 });
             });
             updateEffect = NHStatusEffects.quantization.effect;
+
+//            clipSize = size * tilesize * 2f;
         }};
 
         ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
@@ -1755,8 +1704,8 @@ public class CraftingBlock {
             );
 
             size = 3;
-            health = 2200;
-            armor = 12;
+            health = 2100;
+            armor = 14;
             itemCapacity = 40;
             craftTime = 60f;
 
@@ -1842,7 +1791,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1800;
+            health = 1200;
             armor = 8;
             itemCapacity = 30;
             craftTime = 180f;
@@ -1869,8 +1818,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1, -1, -2, 1, 0, -2, 1, 1, -2, 1);
 
             size = 3;
-            health = 2500;
-            armor = 14;
+            health = 600;
             itemCapacity = 15;
             craftTime = 120f;
 
@@ -1893,12 +1841,10 @@ public class CraftingBlock {
 
             size = 3;
             hasLiquids = true;
-            health = 5000;
-            armor = 20;
             itemCapacity = 30;
             craftTime = 120;
 
-            consumePower(1800 / 60f);
+            consumePower(1600 / 60f);
             consumeItems(ItemStack.with(NHItems.nodexPlate, 3, NHItems.zeta, 4));
             consumeLiquid(NHLiquids.neutron, 12 / 60f);
             outputItems = with(NHItems.hadronicomp, 2);
@@ -1924,12 +1870,10 @@ public class CraftingBlock {
 
             size = 5;
             hasLiquids = true;
-            health = 5000;
-            armor = 20;
             itemCapacity = 30;
             craftTime = 120;
 
-            consumePower(1800 / 60f);
+            consumePower(1600 / 60f);
             consumeItems(ItemStack.with(NHItems.ancimembrane, 3));
             consumeLiquids(LiquidStack.with(NHLiquids.proton, 12 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
             outputItems = with(NHItems.hyperProcessor, 2);

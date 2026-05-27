@@ -1421,17 +1421,14 @@ public class NHFx {
         });
     }
 
-    public static Effect shootLine(Color color, float size, float angleRange) {
-        int num = Mathf.clamp((int) size / 6, 6, 20);
-        float thick = Mathf.clamp(0.75f, 2f, size / 22f);
-
-        return new Effect(37f, e -> {
+    public static Effect shootLine(Color color, float length, float stroke, int num, float angleRange) {
+        return new Effect(30f, e -> {
             color(color, Color.white, e.fout() * 0.7f);
             rand.setSeed(e.id);
-            DrawFunc.randLenVectors(e.id, num, 4 + (size * 1.2f) * e.fin(), size * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
-                Lines.stroke(thick * e.fout(0.32f));
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), (e.fslope() + e.fin()) * 0.5f * (size * rand.random(0.15f, 0.5f) + rand.random(2f)) + rand.random(2f));
-                Drawf.light(e.x + x, e.y + y, e.fslope() * (size * 0.5f + 14f) + 3, e.color, 0.7f);
+            DrawFunc.randLenVectors(e.id, num, 4 + (length * 1.2f) * e.fin(), length * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
+                Lines.stroke(stroke * e.fout(0.32f));
+                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), (e.fslope() + e.fin()) * 0.5f * (length * rand.random(0.15f, 0.5f) + rand.random(2f)) + rand.random(2f));
+                Drawf.light(e.x + x, e.y + y, e.fslope() * (length * 0.5f + 14f) + 3, e.color, 0.7f);
             });
         });
     }

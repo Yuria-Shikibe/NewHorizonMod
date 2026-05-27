@@ -13,7 +13,10 @@ public class NHColor {
             ancientLightMid = ancient.cpy().lerp(Color.white, 0.4f),
             ancientDark = ancient.cpy().lerp(Color.black, 0.995f),
             ancientHeat = Color.red.cpy().mul(1.075f),
-            ally = new Color(0, 0, 1, 0.15f), hostile = new Color(1, 0, 0, 0.15f),
+            bulletFrontColor = Color.valueOf("94b3fa"),
+            bulletBackColor = Color.valueOf("c3d4fc"),
+            ally = new Color(0, 0, 1, 0.15f),
+            hostile = new Color(1, 0, 0, 0.15f),
             deeperBlue = Color.valueOf("#778ff2"),
             lightSky = Color.valueOf("#8DB0FF"),
             lightSkyBack = lightSky.cpy().lerp(Color.white, 0.2f),
@@ -28,10 +31,6 @@ public class NHColor {
             trail = Color.lightGray.cpy().lerp(Color.gray, 0.65f),
             thermoPst = Color.valueOf("CFFF87").lerp(Color.white, 0.15f),
             powerArea = Pal.power.cpy().a(0.5f),
-            xenEmpty = Color.valueOf("a3a9ad"),
-            xenAlpha = Color.valueOf("abc8dc"),
-            xenBeta = Color.valueOf("94caed"),
-            xenGamma = Color.valueOf("78c9ff"),
             stampingArc = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f),
             processorBlue = Color.valueOf("cee5ed");
 
