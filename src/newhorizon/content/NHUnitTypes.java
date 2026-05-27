@@ -111,7 +111,7 @@ public class NHUnitTypes {
             restrictionEnzyme,
             nucleoid, pester, laugra, macrophage, ancientProbe, //ancient
             assaulter, anvil, collapser, //Air-2
-            thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
+            aliotiat, tarlidor, annihilation, sin, //Ground-1
             sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
             relay, ghost, zarkov, declining; //Navy
     public static Seq<StatusEffect> statuses;
@@ -128,7 +128,6 @@ public class NHUnitTypes {
         EntityMapping.nameMap.put(NewHorizon.name("liv"), EntityMapping.idMap[5]);
         EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 
-        EntityMapping.nameMap.put(NewHorizon.name("thynomo"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("aliotiat"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("tarlidor"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
@@ -3113,67 +3112,7 @@ public class NHUnitTypes {
 
 
 
-        thynomo = new NHUnitType("thynomo") {
-            {
-                outlineColor = grayOutline;
-                weapons.add(
-                        new Weapon(NewHorizon.name("thynomo-weapon")) {{
-                            mirror = true;
-                            top = false;
 
-                            rotate = true;
-                            rotationLimit = 15f;
-
-                            x = 8f;
-                            y = 1f;
-                            shootY = 9.5f;
-                            reload = 90f;
-                            shootCone = 25f;
-                            shootStatus = StatusEffects.slow;
-                            shootStatusDuration = 90f;
-                            continuous = true;
-                            shootSound = Sounds.beamPlasma;
-                            bullet = new ContinuousLaserBulletType(18f) {{
-                                length = 120f;
-                                width = 2.55f;
-
-                                incendChance = 0.025F;
-                                incendSpread = 5.0F;
-                                incendAmount = 1;
-
-                                shake = 3;
-                                colors = new Color[]{NHColor.lightSkyFront.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSkyBack, Color.white};
-                                oscScl = 0.4f;
-                                oscMag = 1.5f;
-                                lifetime = 90f;
-                                lightColor = hitColor = NHColor.lightSkyBack;
-                                hitEffect = NHFx.lightSkyCircleSplash;
-                                shootEffect = NHFx.square(hitColor, 22f, 4, 16, 3f);
-                                smokeEffect = Fx.shootBigSmoke;
-                            }};
-                        }}
-                );
-                boostMultiplier = 2.0F;
-                health = 650.0F;
-                rotateSpeed = 2.5f;
-                canBoost = true;
-                armor = 9.0F;
-                mechLandShake = 2.0F;
-                riseSpeed = 0.05F;
-                mechFrontSway = 0.55F;
-                speed = 0.4F;
-                hitSize = 15f;
-                engineOffset = 7.4F;
-                engineSize = 4.25F;
-            }
-
-            @Override
-            public void createIcons(MultiPacker packer) {
-                super.createIcons(packer);
-                NHPixmap.createIcons(packer, this);
-                NHPixmap.outlineLegs(packer, this);
-            }
-        };
 
         relay = new NHUnitType("relay"){{
 			outlineColor = grayOutline;

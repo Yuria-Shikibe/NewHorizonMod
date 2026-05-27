@@ -81,7 +81,7 @@ public class NHPostProcess {
                         shieldScaling = 25f;
                     }},
 
-                    new SpawnGroup(NHUnitTypes.thynomo) {{
+                    new SpawnGroup(GroundUnitTypes.thynomo) {{
                         begin = 16;
                         spacing = 3;
                         unitScaling = 0.5f;
@@ -97,7 +97,7 @@ public class NHPostProcess {
                         max = 14;
                     }},
 
-                    new SpawnGroup(NHUnitTypes.thynomo) {{
+                    new SpawnGroup(GroundUnitTypes.thynomo) {{
                         begin = 28;
                         spacing = 3;
                         unitScaling = 1;
@@ -372,7 +372,7 @@ public class NHPostProcess {
 
     public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval) {
         UnitType[][] species = {
-                {GroundUnitTypes.origin, NHUnitTypes.thynomo, NHUnitTypes.aliotiat, NHUnitTypes.tarlidor, NHUnitTypes.annihilation, NHUnitTypes.sin},
+                {GroundUnitTypes.origin, GroundUnitTypes.thynomo, NHUnitTypes.aliotiat, NHUnitTypes.tarlidor, NHUnitTypes.annihilation, NHUnitTypes.sin},
                 {NHUnitTypes.sharp, NHUnitTypes.branch, NHUnitTypes.warper, NHUnitTypes.naxos, NHUnitTypes.hurricane},
                 {flare, NHUnitTypes.assaulter, NHUnitTypes.restrictionEnzyme, NHUnitTypes.destruction, NHUnitTypes.longinus},
                 {NHUnitTypes.sharp, NHUnitTypes.assaulter, NHUnitTypes.branch, NHUnitTypes.longinus, NHUnitTypes.guardian},
