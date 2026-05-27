@@ -114,13 +114,28 @@ public class OreCollector extends BasicMultiBlock {
 
         getOreOutput(tmpClusters, x, y, rotation);
 
-        int i = 0;
-        for (var entry : returnCount.entries()) {
+        boolean haveMineable = false;
+
+        for (Tile t : tmpClusters) {
+            if (t.block() != null && t.block().itemDrop.hardness <= tier) {
+                haveMineable = true;
+                break;
+            }
+        }
+
+        if (!haveMineable) {
             Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
             if (rotation == 3) Tmp.v1.set(x, y);
-            drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
-                    Strings.autoFixed(entry.value / (mineTime / Time.toSeconds), 2) + StatUnit.perSecond.localized(), (int) Tmp.v1.x, (int) (Tmp.v1.y) + i, valid);
-            i++;
+            drawPlaceText(Core.bundle.get("bar.drilltierreq"), (int) Tmp.v1.x, (int) (Tmp.v1.y), valid);
+        } else {
+            int i = 0;
+            for (var entry : returnCount.entries()) {
+                Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
+                if (rotation == 3) Tmp.v1.set(x, y);
+                drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
+                        Strings.autoFixed(entry.value / (mineTime / Time.toSeconds), 2) + StatUnit.perSecond.localized(), (int) Tmp.v1.x, (int) (Tmp.v1.y) + i, valid);
+                i++;
+            }
         }
 
         x *= tilesize;
@@ -149,9 +164,21 @@ public class OreCollector extends BasicMultiBlock {
         Rect rect = getRect(Tmp.r1, tile.worldx() + offset, tile.worldy() + offset, rotation).grow(-0.1f);
         getOreClusters(tmpClusters, tile.x, tile.y, rotation);
         boolean hasOre = !tmpClusters.isEmpty();
+        boolean canMine = false;
+        for (Tile t : tmpClusters) {
+            if (canMineTile(t)) {
+                canMine = true;
+                break;
+            }
+        }
         boolean overlap = indexer.getFlagged(team, BlockFlag.drill).contains(b -> checkOverlap(rect, Tmp.r2, b.block, b));
         boolean planOverlap = team.data().getBuildings(ConstructBlock.get(size)).contains(b -> checkOverlap(rect, Tmp.r2, ((ConstructBlock.ConstructBuild) b).current, b));
-        return super.canPlaceOn(tile, team, rotation) && hasOre && !overlap && !planOverlap;
+        return super.canPlaceOn(tile, team, rotation) && hasOre && canMine && !overlap && !planOverlap;
+    }
+
+    public boolean canMineTile(Tile tile) {
+        Item drops = tile.block().itemDrop;
+        return drops != null && drops.hardness <= tier;
     }
 
     public boolean checkOverlap(Rect rect1, Rect rect2, Block block, Building building) {
@@ -209,11 +236,7 @@ public class OreCollector extends BasicMultiBlock {
         public float progress;
         public float warmup;
 
-        @Override
-        public void created() {
-            super.created();
-            getOreClusters(oreClusters, tileX(), tileY(), rotation);
-        }
+        public boolean checkFlag = false;
 
         @Override
         public void draw() {
@@ -328,7 +351,7 @@ public class OreCollector extends BasicMultiBlock {
             Lines.stroke(0.5f);
 
             oreClusters.each(tile -> {
-                if (tile.block().itemDrop != null) {
+                if (canMineTile(tile)) {
                     Draw.color(tile.block().itemDrop.color);
                     Draw.z(Layer.buildBeam);
                     Fill.rect(tile.worldx(), tile.worldy(), tilesize * scl, tilesize * scl, ang);
@@ -385,6 +408,11 @@ public class OreCollector extends BasicMultiBlock {
         public void updateTile() {
             super.updateTile();
 
+            if (!checkFlag) {
+                getOreClusters(oreClusters, tileX(), tileY(), rotation);
+                checkFlag = true;
+            }
+
             if (timer(timerDump, dumpTime / timeScale)) dump();
 
             if (items.total() < itemCapacity && efficiency > 0) {
@@ -399,7 +427,7 @@ public class OreCollector extends BasicMultiBlock {
             if (progress >= mineTime) {
                 getOreOutput(oreClusters, tileX(), tileY(), rotation);
                 oreClusters.each(tile -> {
-                    if (tile.block() != null && tile.block().itemDrop != null) {
+                    if (canMineTile(tile)) {
                         Fx.mineHuge.at(tile.worldx(), tile.worldy(), tile.block().itemDrop.color);
                         Fx.itemTransfer.at(tile.worldx(), tile.worldy(), 0, tile.block().itemDrop.color, this);
                     }
