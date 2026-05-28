@@ -48,10 +48,10 @@ public class StreamBeam {
                     source.tileX() + Geometry.d4x(getRotation()) * (i + 1),
                     source.tileY() + Geometry.d4y(getRotation()) * (i + 1)
             );
-            if (!(building == null || building.block.underBullets)) {
+            if (building instanceof StreamBlock.StreamBuild sbb) {
                 target = building;
                 distance = i;
-                if (building instanceof StreamBlock.StreamBuild sbb) clog = !sbb.acceptStream(this);
+                clog = !sbb.acceptStream(this);
                 break;
             }
         }

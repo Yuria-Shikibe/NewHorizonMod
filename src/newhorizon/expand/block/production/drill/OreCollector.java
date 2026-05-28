@@ -244,6 +244,7 @@ public class OreCollector extends BasicMultiBlock {
             if (warmup > 0.01f) drawScanner();
         }
 
+        //todo
         private void drawScanner() {
             float len1 = collectSize * tilesize / 2f;
             float len2 = size * tilesize / 2f;

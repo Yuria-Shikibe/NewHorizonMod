@@ -35,7 +35,6 @@ import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
-import newhorizon.util.ui.frag.PayloadInventoryFragment;
 
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.underline;
@@ -51,7 +50,6 @@ public class NHUI {
     public static Table objectiveList, eventList;
 
     public static NHWorldSettingDialog nhWorldSettingDialog;
-    public static PayloadInventoryFragment payloadInventoryFragment;
 
     public static void init() {
 
@@ -66,15 +64,6 @@ public class NHUI {
         } catch (Exception e) {
             Log.err(e);
         }
-
-        payloadInventoryFragment = new PayloadInventoryFragment();
-        payloadInventoryFragment.build(itemInv.parent);
-
-        Events.run(EventType.Trigger.update, () -> {
-            payloadInventoryFragment.table.visible = itemInv.visible && !state.isMenu();
-            payloadInventoryFragment.rebuild();
-        });
-
 
         try {
             BaseDialog menu = Reflect.get(MapEditorDialog.class, ui.editor, "menu");

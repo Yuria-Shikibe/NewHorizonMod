@@ -89,7 +89,7 @@ public class CraftingBlock {
             }).layer(Layer.blockOver + 1);
         }};
 
-        stampingFacility = new GenericCrafter("stamping-facility") {{
+        stampingFacility = new MultiBlockCrafter("stamping-facility") {{
             requirements(Category.crafting, with(
                     NHItems.titanium, 30,
                     NHItems.silicon, 20,
@@ -128,7 +128,7 @@ public class CraftingBlock {
                     NHItems.juniorProcessor, 20,
                     NHItems.hardLight, 80
             ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
+            addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1));
 
             size = 2;
             hasLiquids = true;
@@ -213,7 +213,8 @@ public class CraftingBlock {
                     NHItems.juniorProcessor, 60,
                     NHItems.hardLight, 80
             ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
+
+            addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1));
 
             size = 2;
             health = 600;
@@ -303,7 +304,8 @@ public class CraftingBlock {
                     NHItems.presstanium, 50,
                     NHItems.silicon, 60
             ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
+
+            addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1));
 
             size = 2;
             hasLiquids = true;
@@ -489,7 +491,8 @@ public class CraftingBlock {
                     NHItems.silicon, 20,
                     NHItems.hardLight, 80
             ));
-            addLink(2, 0, 1, 2, 1, 1, 0, 2, 1, 1, 2, 1);
+
+            addLink(p(2, 0), p(2, 1), p(0, 2), p(1, 2));
 
             size = 2;
             hasLiquids = true;
@@ -548,7 +551,8 @@ public class CraftingBlock {
                     NHItems.silicon, 150,
                     NHItems.metalOxhydrigen, 90
             ));
-            addLink(2, 0, 1, 2, 1, 1, 0, 2, 1, 1, 2, 1, -1, 0, 1, -1, 1, 1, 0, -1, 1, 1, -1, 1);
+
+            addLink(p(2, 0), p(2, 1), p(0, 2), p(1, 2), p(-1, 0), p(-1, 1), p(0, -1), p(1, -1));
 
             size = 2;
             hasLiquids = true;
@@ -695,7 +699,8 @@ public class CraftingBlock {
                     NHItems.metalOxhydrigen, 50,
                     NHItems.tungsten, 80
             ));
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
 
             size = 3;
             health = 900;
@@ -734,7 +739,9 @@ public class CraftingBlock {
                     NHItems.carbide, 150,
                     NHItems.irayrondPanel, 75
             ));
-            addLink(2, -1, 2, 2, 1, 1, 3, 1, 1, -1, 2, 2, 1, 2, 1, 1, 3, 1);
+
+            //addLink(p(2, 0), p(2, 0), p(2, 0), p(2, 0), p(2, 0), p(2, 0));
+            //addLink(2, -1, 2, 2, 1, 1, 3, 1, 1, -1, 2, 2, 1, 2, 1, 1, 3, 1);
 
             size = 3;
             canMirror = true;
@@ -902,7 +909,8 @@ public class CraftingBlock {
                     NHItems.multipleSteel, 150,
                     NHItems.presstanium, 175
             ));
-            addLink(2, 0, 1, 2, 1, 1, 2, 2, 1, 0, 2, 1, 1, 2, 1, -2, 0, 1, -2, -1, 1, -2, -2, 1, -1, -2, 1, 0, -2, 1);
+
+            addLink(p(2, 0), p(2, 1), p(2, 2), p(0, 2), p(1, 2), p(-2, 0), p(-2, -1), p(-2, -2), p(-1, -2), p(0, -2));
 
             size = 3;
             hasLiquids = true;
@@ -990,7 +998,8 @@ public class CraftingBlock {
                     NHItems.carbide, 50,
                     NHItems.metalOxhydrigen, 50
             ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
+
+            addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1));
 
             size = 2;
             health = 900;
@@ -1081,7 +1090,8 @@ public class CraftingBlock {
                     NHItems.phaseFabric, 150,
                     NHItems.irayrondPanel, 75
             ));
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
 
             size = 3;
             itemCapacity = 30;
@@ -1171,7 +1181,8 @@ public class CraftingBlock {
                     NHItems.irayrondPanel, 125,
                     NHItems.tungsten, 225
             ));
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
 
             size = 3;
             health = 1200;
@@ -1272,7 +1283,8 @@ public class CraftingBlock {
                     NHItems.zeta, 125,
                     NHItems.carbide, 90
             ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
+
+            addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1));
 
             size = 2;
             itemCapacity = 20;
@@ -1455,7 +1467,8 @@ public class CraftingBlock {
                     NHItems.surgeAlloy, 140,
                     NHItems.multipleSteel, 150
             ));
-            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            addLink(p(-2, -1), p(-2, 0), p(-2, 1), p(-2, 2), p(3, -1), p(3, 0), p(3, 1), p(3, 2));
 
             size = 4;
             health = 600;
@@ -1522,7 +1535,7 @@ public class CraftingBlock {
 
             size = 3;
 
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
 
             craftTime = 120f;
             itemCapacity = 30;
@@ -1594,7 +1607,8 @@ public class CraftingBlock {
                     NHItems.seniorProcessor, 100,
                     NHItems.plastanium, 225
             ));
-            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            addLink(p(-2, -1), p(-2, 0), p(-2, 1), p(-2, 2), p(3, -1), p(3, 0), p(3, 1), p(3, 2));
 
             size = 4;
             hasLiquids = true;
@@ -1629,7 +1643,8 @@ public class CraftingBlock {
                     NHItems.seniorProcessor, 100,
                     NHItems.plastanium, 225
             ));
-            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            addLink(p(-2, -1), p(-2, 0), p(-2, 1), p(-2, 2), p(3, -1), p(3, 0), p(3, 1), p(3, 2));
 
             size = 4;
             hasLiquids = true;
@@ -1788,7 +1803,8 @@ public class CraftingBlock {
                     NHItems.irayrondPanel, 125,
                     NHItems.tungsten, 225
             ));
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
 
             size = 3;
             health = 1200;
@@ -1815,7 +1831,13 @@ public class CraftingBlock {
                     NHItems.presstanium, 150,
                     NHItems.multipleSteel, 125,
                     NHItems.seniorProcessor, 80));
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1, -1, -2, 1, 0, -2, 1, 1, -2, 1);
+
+            addLink(
+                    p(2, -1), p(2, 0), p(2, 1),
+                    p(-2, -1), p(-2, 0), p(-2, 1),
+                    p(-1, 2), p(0, 2), p(1, 2),
+                    p(-1, -2), p(0, -2), p(1, -2)
+            );
 
             size = 3;
             health = 600;
@@ -1837,7 +1859,7 @@ public class CraftingBlock {
                     NHItems.seniorProcessor, 120,
                     NHItems.ancimembrane, 75
             ));
-            addLink(-1, 2, 2, 1, 2, 1, 1, 3, 1, -1, -3, 2, 1, -2, 1, 1, -3, 1, -3, -1, 2, -2, 1, 1, -3, 1, 1, 2, -1, 2, 2, 1, 1, 3, 1, 1);
+            //addLink(-1, 2, 2, 1, 2, 1, 1, 3, 1, -1, -3, 2, 1, -2, 1, 1, -3, 1, -3, -1, 2, -2, 1, 1, -3, 1, 1, 2, -1, 2, 2, 1, 1, 3, 1, 1);
 
             size = 3;
             hasLiquids = true;
@@ -1866,7 +1888,7 @@ public class CraftingBlock {
                     NHItems.seniorProcessor, 120,
                     NHItems.ancimembrane, 75
             ));
-            addLink(-3, 2, 1, -3, 3, 1, -2, 3, 1, 3, 2, 1, 3, 3, 1, 2, 3, 1, -3, -2, 1, -3, -3, 1, -2, -3, 1, 3, -2, 1, 3, -3, 1, 2, -3, 1);
+            //addLink(-3, 2, 1, -3, 3, 1, -2, 3, 1, 3, 2, 1, 3, 3, 1, 2, 3, 1, -3, -2, 1, -3, -3, 1, -2, -3, 1, 3, -2, 1, 3, -3, 1, 2, -3, 1);
 
             size = 5;
             hasLiquids = true;

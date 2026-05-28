@@ -29,13 +29,14 @@ import static mindustry.Vars.*;
 
 public abstract class BasicMultiBlock extends Block implements MultiBlock {
     public final int checkTimer = timers++;
-    public Seq<Point2> linkPos = new Seq<>();
-    public IntSeq linkSize = new IntSeq();
+    public IntSeq links = new IntSeq();
     public boolean canMirror = true;
     public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
+    public LinkBlock link;
 
     public BasicMultiBlock(String name) {
         super(name);
+        link = new LinkBlock(name + "-link-entity");
     }
 
     public void enableRotate() {
@@ -58,39 +59,23 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
         super.init();
 
         if (scaledHealth > 0) {
-            int count = getTileCount();
+            int count = size * size + linkSize();
             health = (int) (scaledHealth * count);
             if (armor == 0) armor = count;
         }
-    }
 
-    public int getTileCount() {
-        int out = 0;
-        out += size * size;
-        for (int i = 0; i < linkSize().size; i++) {
-            out += linkSize().get(i) * linkSize().get(i);
-        }
-        return out;
+        link.liquidCapacity = liquidCapacity;
+        link.outputsLiquid = outputsLiquid;
     }
 
     @Override
-    public Seq<Point2> linkPos() {
-        return linkPos;
+    public LinkBlock linkBlock() {
+        return link;
     }
 
     @Override
-    public IntSeq linkSize() {
-        return linkSize;
-    }
-
-    @Override
-    public Block mirrorBlock() {
-        return this;
-    }
-
-    @Override
-    public boolean isMirror() {
-        return false;
+    public IntSeq links() {
+        return links;
     }
 
     @Override
@@ -114,9 +99,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
     @Override
     public void flipRotation(BuildPlan req, boolean x) {
         if (canMirror) {
-            if (mirrorBlock() != null) {
-                req.rotation = rotations[req.rotation + (x ? 0 : 4)];
-            }
+            req.rotation = rotations[req.rotation + (x ? 0 : 4)];
         } else {
             super.flipRotation(req, x);
         }
@@ -135,7 +118,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
             linkProximityMap = new Seq<>();
 
             if (instantBuild || (!state.rules.editor && state.rules.instantBuild && state.rules.infiniteResources)) {
-                linkEntities = setLinkBuild(this, block, tile, team, size, rotation);
+                linkEntities = setLinkBuild(this, tile, team, size, rotation);
                 linkCreated = true;
                 updateLinkProximity();
             }
@@ -150,7 +133,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
         public void updateLinkBlock() {
             if (isPayload()) return;
             if (!linkCreated) {
-                linkEntities = setLinkBuild(this, block, tile, team, size, rotation);
+                linkEntities = setLinkBuild(this, tile, team, size, rotation);
                 linkCreated = true;
                 updateLinkProximity();
             }
