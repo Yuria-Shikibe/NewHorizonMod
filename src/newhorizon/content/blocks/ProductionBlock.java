@@ -44,7 +44,7 @@ public class ProductionBlock {
                     NHItems.graphite, 40
             ));
             size = 3;
-            addLink(0, 2, 2, 0, -3, 2);
+            //addLink(0, 2, 2, 0, -3, 2);
 
             itemCapacity = 30;
 
