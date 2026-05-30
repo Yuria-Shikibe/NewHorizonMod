@@ -51,6 +51,7 @@ import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
+import newhorizon.content.units.AirUnitTypes;
 import newhorizon.content.units.CoreUnitTypes;
 import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.bullets.*;
@@ -111,7 +112,7 @@ public class NHUnitTypes {
             restrictionEnzyme,
             nucleoid, pester, laugra, macrophage, ancientProbe, //ancient
             assaulter, anvil, collapser, //Air-2
-            aliotiat, tarlidor, annihilation, sin, //Ground-1
+            aliotiat, tarlidor, sin, //Ground-1
             sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
             relay, ghost, zarkov, declining; //Navy
     public static Seq<StatusEffect> statuses;
@@ -125,12 +126,10 @@ public class NHUnitTypes {
         EntityMapping.nameMap.put(NewHorizon.name("relay"), EntityMapping.idMap[20]);
 
         EntityMapping.nameMap.put(NewHorizon.name("saviour"), EntityMapping.idMap[5]);
-        EntityMapping.nameMap.put(NewHorizon.name("liv"), EntityMapping.idMap[5]);
         EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 
         EntityMapping.nameMap.put(NewHorizon.name("aliotiat"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("tarlidor"), EntityMapping.idMap[4]);
-        EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("sin"), EntityMapping.idMap[4]);
         EntityMapping.nameMap.put(NewHorizon.name("pester"), PesterEntity::new);
         EntityMapping.nameMap.put(NewHorizon.name("laugra"), EntityMapping.idMap[43]);
@@ -983,6 +982,7 @@ public class NHUnitTypes {
 
         CoreUnitTypes.load();
         GroundUnitTypes.load();
+        AirUnitTypes.load();
 
         macrophage = new AncientUnitType("macrophage") {
             {
@@ -2801,133 +2801,6 @@ public class NHUnitTypes {
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
                 NHPixmap.createIcons(packer, this);
-            }
-        };
-
-        annihilation = new NHUnitType("annihilation") {
-            {
-                outlineColor = grayOutline;
-                drawShields = false;
-                weapons.add(
-                        new Weapon(NewHorizon.name("large-launcher")) {{
-                            top = false;
-                            rotate = false;
-                            alternate = true;
-                            shake = 3.5f;
-                            shootY = 16f;
-                            x = 20f;
-                            recoil = 5.4f;
-                            predictTarget = false;
-                            shootCone = 30f;
-                            reload = 40f;
-                            shoot = new ShootSpread() {{
-                                spread = 10f;
-                                shots = 4;
-                                //shotDelay = 5f;
-                                shootCone = 30f;
-                            }};
-
-                            inaccuracy = 4.0F;
-                            ejectEffect = Fx.none;
-                            bullet = new ShrapnelBulletType() {{
-                                width -= 2;
-                                hitLarge = true;
-                                length = 200;
-                                damage = 300.0F;
-                                status = NHStatusEffects.ultFireBurn;
-                                statusDuration = 120f;
-                                fromColor = NHColor.lightSkyFront;
-                                toColor = NHColor.lightSkyBack;
-                                shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
-                                smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
-                                    Draw.color(fromColor, toColor, b.fin());
-                                    Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
-                                }));
-                            }};
-                            shootSound = Sounds.shoot;
-                        }},
-                        new Weapon(NewHorizon.name("large-launcher")) {{
-                            top = false;
-                            rotate = false;
-                            alternate = true;
-                            shake = 3.5f;
-                            shootY = 16f;
-                            x = 20f;
-                            recoil = 5.4f;
-                            predictTarget = false;
-                            shootCone = 30f;
-                            reload = 40f;
-                            shoot = new ShootSpread() {{
-                                spread = 60f;
-                                shots = 2;
-                                //shotDelay = 10f;
-                                shootCone = 60f;
-                                firstShotDelay = 10f;
-                            }};
-
-                            inaccuracy = 4.0F;
-                            ejectEffect = Fx.none;
-                            bullet = new ShrapnelBulletType() {{
-                                width -= 2;
-                                hitLarge = true;
-                                length = 80;
-                                damage = 100.0F;
-                                status = NHStatusEffects.ultFireBurn;
-                                statusDuration = 120f;
-                                fromColor = NHColor.lightSkyFront;
-                                toColor = NHColor.lightSkyBack;
-                                shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
-                                smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
-                                    Draw.color(fromColor, toColor, b.fin());
-                                    Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
-                                }));
-                            }};
-                            shootSound = Sounds.shoot;
-                        }},
-                        new Weapon() {{
-                            mirror = false;
-                            rotate = true;
-                            alternate = true;
-                            rotateSpeed = 25f;
-                            x = 0;
-                            y = 8f;
-                            recoil = 2.7f;
-                            shootY = 7f;
-                            shootCone = 40f;
-                            reload = 180f;
-                            shoot = new ShootPattern() {{
-                                shots = 8;
-                                shotDelay = 16f;
-                            }};
-                            inaccuracy = 5.0F;
-                            ejectEffect = Fx.none;
-                            bullet = NHBullets.annMissile;
-                            shootSound = NHSounds.launch;
-                        }}
-                );
-                abilities.add(new ForceFieldAbility(120F, 2F, 10000F, 800F, 4, 0f));
-                engineOffset = 15.0F;
-                engineSize = 6.5F;
-                speed = 0.275f;
-                hitSize = 33f;
-                health = 22000f;
-                buildSpeed = 2.8f;
-                armor = 25f;
-                rotateSpeed = 1.8f;
-                singleTarget = false;
-                fallSpeed = 0.016f;
-                mechStepParticles = true;
-                stepShake = 0.5f;
-                canBoost = true;
-                mechLandShake = 6f;
-                boostMultiplier = 3.5f;
-            }
-
-            @Override
-            public void createIcons(MultiPacker packer) {
-                super.createIcons(packer);
-                NHPixmap.createIcons(packer, this);
-                NHPixmap.outlineLegs(packer, this);
             }
         };
 

@@ -63,7 +63,7 @@ public class UnitRecipeRegister {
 
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.destruction, 360 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 400, NHItems.setonAlloy, 200, NHItems.thermoCoreNegative, 50));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.longinus, 180 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.multipleSteel, 100, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 200, NHItems.thermoCoreNegative, 50));
-        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.annihilation, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 100, NHItems.setonAlloy, 400, NHItems.thermoCoreNegative, 50));
+        unitRecipePlan(UnitBlock.jumpGateHyper, GroundUnitTypes.annihilation, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 100, NHItems.setonAlloy, 400, NHItems.thermoCoreNegative, 50));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.saviour, 360 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.zeta, 1000, Items.surgeAlloy, 500, NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 600, NHItems.thermoCorePositive, 100));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.declining, 360 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 1000, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 250, NHItems.nodexPlate, 300));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.hurricane, 480 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 600, NHItems.thermoCoreNegative, 300, NHItems.nodexPlate, 600, NHItems.ancimembrane, 300));

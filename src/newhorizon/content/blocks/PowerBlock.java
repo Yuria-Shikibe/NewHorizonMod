@@ -37,7 +37,7 @@ public class PowerBlock {
             //serpulo generators
             photothermalGenerator, geologicalPhotothermalGenerator,
            //erekir generators
-            vectorCondenser, differentialReactor,
+            vectorCondenser, test2,
             photonPanel,
             neutralizationGenerator, hydrazineGenerator, fissionReactor, fusionReactor, hyperReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
@@ -282,77 +282,22 @@ public class PowerBlock {
             }
         };
 
-        differentialReactor = new ConsumeGenerator("differential-reactor"){
-            final float hlTime = 120f;
-            {
-
-            requirements(Category.power, with(
-                    NHItems.graphite, 40,
-                    NHItems.tungsten, 20,
-                    NHItems.oxide, 40f,
-                    NHItems.silicon, 30
-            ));
-            size = 4;
-
-            powerProduction = 4500f / 60f;
-            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 16f / 60f, NHLiquids.slag, 20f / 60f));
-
-            drawer = new DrawMulti(
-                    new DrawBaseRegion("-4x4"),
-                    new DrawPistons(){{
-                        sides = 4;
-                        sinMag = 3f;
-                        sinScl = 5f;
-                        angleOffset = 45f;
-                        lenOffset = 9f;
-                    }},
-                    new DrawRegion("-mid"),
-                    new DrawLiquidTile(NHLiquids.slag, 40f / 4f),
-                    new DrawDefault(),
-                    new DrawGlowRegion(){{
-                        alpha = 0.7f;
-                        glowScale = 5f;
-                        color = NHLiquids.cryofluid.color.cpy();
-                        }}
-            );
-
-            ambientSound = Sounds.loopSmelter;
-            ambientSoundVolume = 0.06f;
-
-                buildType = () -> new ConsumeGeneratorBuild() {
-                    public float produceTime = 0f;
-
-                    @Override
-                    public void updateTile() {
-                        super.updateTile();
-
-                        produceTime += delta();
-                        if (produceTime > hlTime) {
-                            if (core() != null) core().handleItem(this, NHItems.hardLight);
-                            produceTime %= hlTime;
-                        }
-                    }
-
-                    @Override
-                    public void write(Writes write) {
-                        super.write(write);
-                        write.f(produceTime);
-                    }
-
-                    @Override
-                    public void read(Reads read, byte revision) {
-                        super.read(read, revision);
-                        produceTime = read.f();
-                    }
-                };
-            }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.add(Stat.output, NHStatValues.itemsWithEfficiency(hlTime, ItemStack.with(NHItems.hardLight, 1)));
-            }
-        };
+//        test2 = new ConsumeGenerator("test2"){{
+//            requirements(Category.power, with(
+//                    NHItems.graphite, 40,
+//                    NHItems.tungsten, 20,
+//                    NHItems.oxide, 40f
+//                    , NHItems.silicon, 30
+//            ));
+//            size = 4;
+//
+//            powerProduction = 4500f / 60f;
+//            consumeLiquids(LiquidStack.with(NHLiquids.cryofluid, 16f / 60f, NHLiquids.slag, 20f / 60f));
+//
+//
+//            ambientSound = Sounds.loopSmelter;
+//            ambientSoundVolume = 0.06f;
+//        }};
 
         photonPanel = new SolarGenerator("photon-panel") {
             public final float produceTime = 300f;
@@ -527,13 +472,7 @@ public class PowerBlock {
                     NHItems.multipleSteel, 400,
                     NHItems.seniorProcessor, 200
             ));
-
-            addLink(
-                    p(-3, 2), p(-3,1), p(-3, 0), p(-3, -1), p(-3, -2),
-                    p(-2, 3), p(-1,3), p(0, 3), p(1, 3), p(2, 3),
-                    p(3, 2), p(3, 1), p(3, 0), p(3, -1), p(3, -2),
-                    p(-2, -3), p(-1, -3), p(0, -3), p(1, -3), p(2, -3)
-            );
+            //addLink(-3, 2, 1, -3, 1, 1, -3, 0, 1, -3, -1, 1, -3, -2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, 3, 1, 2, 3, 1, 3, 2, 1, 3, 1, 1, 3, 0, 1, 3, -1, 1, 3, -2, 1, -2, -3, 1, -1, -3, 1, 0, -3, 1, 1, -3, 1, 2, -3, 1);
 
             size = 5;
             hasItems = true;

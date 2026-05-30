@@ -35,7 +35,7 @@ import newhorizon.expand.block.turrets.AdaptItemTurret;
 import newhorizon.expand.block.turrets.ContinuousOverheatTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
-import newhorizon.expand.bullets.DOTBulletType;
+import newhorizon.expand.bullets.EmpDotBulletType;
 import newhorizon.expand.bullets.UpgradePointLaserBulletType;
 import newhorizon.expand.bullets.adapt.TypedDamageBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
@@ -1203,11 +1203,11 @@ public class TurretBlock {
                         status = NHStatusEffects.emp2;
                         hitSound = Sounds.none;
 
-                        fragBullet = new DOTBulletType() {{
+                        fragBullet = new EmpDotBulletType() {{
                             DOTDamage = damage = 40f;
                             DOTRadius = 12f;
                             radIncrease = 0.25f;
-                            fx = NHFx.triSpark1;
+                            sparkFx = NHFx.triSpark1;
                             lightningColor = Pal.techBlue;
                         }};
                         fragBullets = 1;
@@ -1234,12 +1234,12 @@ public class TurretBlock {
                         status = NHStatusEffects.emp3;
                         hitSound = Sounds.none;
 
-                        fragBullet = new DOTBulletType() {{
+                        fragBullet = new EmpDotBulletType() {{
                             DOTDamage = damage = 75f;
                             DOTRadius = 16f;
                             radIncrease = 0.28f;
                             effect = NHStatusEffects.emp3;
-                            fx = NHFx.triSpark2;
+                            sparkFx = NHFx.triSpark2;
                             lightningColor = NHItems.seniorProcessor.color;
                         }};
                         fragBullets = 1;

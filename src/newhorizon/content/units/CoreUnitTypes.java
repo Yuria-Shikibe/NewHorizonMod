@@ -33,10 +33,10 @@ public class CoreUnitTypes {
 
 
     static {
-        EntityMapping.nameMap.put(NewHorizon.name("scalar"), EntityMapping.idMap[5]);
-        EntityMapping.nameMap.put(NewHorizon.name("vector"), EntityMapping.idMap[5]);
-        EntityMapping.nameMap.put(NewHorizon.name("martix"), EntityMapping.idMap[5]);
-        EntityMapping.nameMap.put(NewHorizon.name("tensor"), EntityMapping.idMap[5]);
+        EntityMapping.nameMap.put(NewHorizon.name("scalar"), EntityMapping.map(5));
+        EntityMapping.nameMap.put(NewHorizon.name("vector"), EntityMapping.map(5));
+        EntityMapping.nameMap.put(NewHorizon.name("martix"), EntityMapping.map(5));
+        EntityMapping.nameMap.put(NewHorizon.name("tensor"), EntityMapping.map(5));
     }
 
     public static void load() {
@@ -422,7 +422,7 @@ public class CoreUnitTypes {
 
                     homingPower = 0.02f;
                     homingRange = 120f;
-                    homingDelay = 10f;
+                    homingDelay = 5f;
                     knockback = 0.75f;
                     statusDuration = 30f;
 

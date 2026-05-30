@@ -7,7 +7,7 @@ import mindustry.graphics.Pal;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
-import newhorizon.expand.bullets.DOTBulletType;
+import newhorizon.expand.bullets.EmpDotBulletType;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 public class RepulsionWaveAbility extends ActiveAbility {
@@ -17,12 +17,12 @@ public class RepulsionWaveAbility extends ActiveAbility {
     public float time = 30;
     public float cooldown = 300;
 
-    public BulletType b = new DOTBulletType() {{
+    public BulletType b = new EmpDotBulletType() {{
         DOTDamage = damage = 40f;
         DOTRadius = 30f;
         radIncrease = 0.25f;
         lightningColor = Pal.techBlue;
-        fx = NHFx.triSpark1;
+        sparkFx = NHFx.triSpark1;
     }};
 
     public Effect createEffect = new OptionalMultiEffect(
