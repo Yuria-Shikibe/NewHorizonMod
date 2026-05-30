@@ -501,7 +501,7 @@
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
-	"color": 1617672703
+	"color": -1851791361
 },
 "new-horizon-ore-cluster-zeta": {
 	"synthetic": false,
@@ -1287,6 +1287,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
+	"color": 255
+},
+"new-horizon-differential-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
 	"color": 255
 },
 "new-horizon-photon-panel": {

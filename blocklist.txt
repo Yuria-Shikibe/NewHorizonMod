@@ -350,7 +350,7 @@ new-horizon-nodex-factory 1 1 3 0
 new-horizon-oil-refiner 1 1 2 0
 new-horizon-optical-medium-drill 1 1 3 0
 new-horizon-ore-beryllium-dense 0 0 1 3837796
-new-horizon-ore-cluster-titanium 0 1 1 6319033
+new-horizon-ore-cluster-titanium 0 1 1 9543655
 new-horizon-ore-cluster-zeta 0 1 1 16772835
 new-horizon-ore-coal-dense 0 0 1 2565927
 new-horizon-ore-copper-dense 0 0 1 14261619
