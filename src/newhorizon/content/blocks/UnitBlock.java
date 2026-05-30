@@ -23,7 +23,6 @@ public class UnitBlock {
             health = 900;
             armor = 5f;
             size = 2;
-            hasLiquids = false;
 
             warmupPerSpawn = 0.2f;
             maxWarmupSpeed = 8f;
@@ -43,7 +42,6 @@ public class UnitBlock {
             health = 1800;
             armor = 10f;
             size = 3;
-            hasLiquids = false;
 
             warmupPerSpawn = 0.2f;
             maxWarmupSpeed = 8f;
@@ -67,7 +65,6 @@ public class UnitBlock {
             health = 10000;
             armor = 20f;
             size = 5;
-            hasLiquids = false;
 
             maxRadius = 240f;
 
@@ -89,7 +86,6 @@ public class UnitBlock {
             health = 80000;
             armor = 20f;
             size = 8;
-            hasLiquids = false;
 
             maxRadius = 320f;
 
