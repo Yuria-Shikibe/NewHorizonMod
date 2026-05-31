@@ -13,12 +13,17 @@ import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.Item;
-import mindustry.world.blocks.distribution.Conveyor;
+import mindustry.world.Block;
+import mindustry.world.Edges;
+import mindustry.world.Tile;
+import mindustry.world.blocks.distribution.*;
 import newhorizon.util.graphic.SpriteUtil;
+
+import java.sql.Blob;
 
 import static mindustry.Vars.*;
 
-public class AdaptConveyor extends Conveyor {
+public class AdaptConveyor extends ArmoredConveyor {
     public TextureRegion[] edgeRegions, lightRegions, pulseRegions, arrowRegions;
     public float framePeriod = 8f;
 
@@ -50,10 +55,36 @@ public class AdaptConveyor extends Conveyor {
         Draw.rect(region, plan.drawx(), plan.drawy(), plan.rotation * 90);
     }
 
+    public boolean isLogisticComponentDirectional(Building source) {
+        Block b = source.block;
+        return b instanceof DirectionBridge || b instanceof Duct;
+    }
+
+    public boolean isLogisticComponentDirectional(Block block) {
+        return block instanceof DirectionBridge || block instanceof Duct;
+    }
+
+    public boolean isLogisticComponentOmni(Building source) {
+        Block b = source.block;
+        return b instanceof Junction || b instanceof OverflowGate || b instanceof OverflowDuct || b instanceof Router || b instanceof Sorter || b instanceof DuctRouter;
+    }
+
+    public boolean isLogisticComponentOmni(Block block) {
+        return block instanceof Junction || block instanceof OverflowGate || block instanceof OverflowDuct || block instanceof Router || block instanceof Sorter || block instanceof DuctRouter;
+    }
+
     public boolean blends(Building self, Building other) {
         if (other == null) return false;
-        return blends(self.tile, self.rotation, other.tileX(), other.tileY(), other.rotation, other.block);
+        return blends(self.tile, self.rotation, other.tileX(), other.tileY(), other.rotation, other.block) || isLogisticComponentOmni(other);
     }
+
+
+    @Override
+    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+        return (otherblock.outputsItems() && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) ||
+                (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems || isLogisticComponentDirectional(otherblock));
+    }
+
 
     @Override
     public TextureRegion[] icons() {
@@ -140,6 +171,13 @@ public class AdaptConveyor extends Conveyor {
         @Override
         public void drawLight() {
             Drawf.light(x, y, lightRadius, Tmp.c1.set(team.color).lerp(Color.white, 0.5f), 0.5f);
+        }
+
+        @Override
+        public boolean acceptItem(Building source, Item item){
+            return super.acceptItem(source, item) && (isLogisticComponentOmni(source) ||
+                    Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation ||
+                    source.front() == this && isLogisticComponentDirectional(source));
         }
     }
 }

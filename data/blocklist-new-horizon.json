@@ -1541,6 +1541,12 @@
 	"size": 1,
 	"color": 255
 },
+"new-horizon-logistics-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
 "new-horizon-logistics-junction": {
 	"synthetic": true,
 	"solid": false,
@@ -1559,13 +1565,25 @@
 	"size": 1,
 	"color": 255
 },
-"new-horizon-logistics-directional-gate": {
+"new-horizon-logistics-directional-overflow-gate": {
 	"synthetic": true,
 	"solid": false,
 	"size": 1,
 	"color": 255
 },
-"new-horizon-logistics-omni-gate": {
+"new-horizon-logistics-directional-underflow-gate": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-omni-overflow-gate": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-omni-underflow-gate": {
 	"synthetic": true,
 	"solid": false,
 	"size": 1,

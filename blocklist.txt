@@ -270,7 +270,9 @@ new-horizon-liquid-radiator 1 1 2 0
 new-horizon-logistics-bridge 1 1 1 0
 new-horizon-logistics-directional-gate 1 0 1 0
 new-horizon-logistics-directional-merger 1 0 1 0
+new-horizon-logistics-directional-overflow-gate 1 0 1 0
 new-horizon-logistics-directional-router 1 0 1 0
+new-horizon-logistics-directional-underflow-gate 1 0 1 0
 new-horizon-logistics-extend-bridge 1 1 1 0
 new-horizon-logistics-extend-liquid-bridge 1 1 1 0
 new-horizon-logistics-gate 1 0 1 0
@@ -282,7 +284,9 @@ new-horizon-logistics-liquid-unloader 1 1 1 0
 new-horizon-logistics-merger 1 0 1 0
 new-horizon-logistics-omni-blocker 1 0 1 0
 new-horizon-logistics-omni-gate 1 0 1 0
+new-horizon-logistics-omni-overflow-gate 1 0 1 0
 new-horizon-logistics-omni-sorter 1 0 1 0
+new-horizon-logistics-omni-underflow-gate 1 0 1 0
 new-horizon-logistics-router 1 0 1 0
 new-horizon-logistics-unloader 1 1 1 0
 new-horizon-manufactory 1 1 2 0

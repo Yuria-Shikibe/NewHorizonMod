@@ -1,12 +1,17 @@
 package newhorizon.content.blocks;
 
+import arc.Core;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.distribution.Conveyor;
+import mindustry.world.blocks.distribution.OverflowDuct;
+import mindustry.world.blocks.distribution.OverflowGate;
+import mindustry.world.blocks.distribution.Router;
 import mindustry.world.blocks.liquid.LiquidJunction;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.distribution.item.AdaptConveyor;
 import newhorizon.expand.block.distribution.item.AdaptStackConveyor;
@@ -23,11 +28,16 @@ import static mindustry.type.ItemStack.with;
 public class DistributionBlock {
     public static Block
             multiRouter, multiJunction, multiArmorConveyor,
-            conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger,
-            logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
+
+            conveyor, conduit, stackRail, steadyStackRail, lightStackLoader, heavyStackLoader,
+
+            logisticsRouter, logisticsJunction,
+            logisticsDirectionalRouter, logisticsDirectionalMerger,
+            logisticsDirectionalOverflowGate, logisticsDirectionalUnderflowGate,
+            logisticsOmniOverflowGate, logisticsOmniUnderflowGate,
+            logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
-            stackRail, steadyStackRail, lightStackLoader, heavyStackLoader,
-            conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
+            conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load() {
         multiRouter = new FloatMultiRouter("multi-router") {{
@@ -129,6 +139,21 @@ public class DistributionBlock {
             placeableLiquid = true;
         }};
 
+        logisticsRouter = new Router("logistics-router") {{
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
+
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+
+            health = 300;
+            speed = 3;
+
+            placeableLiquid = true;
+            squareSprite = false;
+        }};
+
         logisticsJunction = new AdaptJunction("logistics-junction") {{
             requirements(Category.distribution, with(
                     NHItems.hardLight, 1
@@ -169,7 +194,7 @@ public class DistributionBlock {
             placeableLiquid = true;
         }};
 
-        logisticsDirectionalGate = new AdaptDirectionalGate("logistics-directional-gate") {{
+        logisticsDirectionalOverflowGate = new OverflowDuct("logistics-directional-overflow-gate") {{
             requirements(Category.distribution, with(
                     NHItems.hardLight, 1
             ));
@@ -180,14 +205,53 @@ public class DistributionBlock {
             speed = 4f;
 
             placeableLiquid = true;
-        }};
+        }
 
-        logisticsOmniGate = new AdaptGate("logistics-omni-gate") {{
+            @Override
+            public void load() {
+                super.load();
+                region = Core.atlas.find(NewHorizon.name("logistics-base"));
+            }
+        };
+
+        logisticsDirectionalUnderflowGate = new OverflowDuct("logistics-directional-underflow-gate") {{
             requirements(Category.distribution, with(
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
+
+            health = 300;
+            speed = 4f;
+
+            invert = true;
+            placeableLiquid = true;
+        }
+            @Override
+            public void load() {
+                super.load();
+                region = Core.atlas.find(NewHorizon.name("logistics-base"));
+            }
+        };
+
+        logisticsOmniOverflowGate = new OverflowGate("logistics-omni-overflow-gate") {{
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+
+            placeableLiquid = true;
+            health = 300;
+        }};
+
+        logisticsOmniUnderflowGate = new OverflowGate("logistics-omni-underflow-gate") {{
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+            invert = true;
 
             placeableLiquid = true;
             health = 300;
