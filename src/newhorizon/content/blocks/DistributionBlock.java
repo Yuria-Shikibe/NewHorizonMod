@@ -36,7 +36,7 @@ public class DistributionBlock {
             logisticsDirectionalOverflowGate, logisticsDirectionalUnderflowGate,
             logisticsOmniOverflowGate, logisticsOmniUnderflowGate,
             logisticsOmniSorter, logisticsOmniBlocker,
-            conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
+            conveyorBridge, conveyorBridgeExtend, conveyorUnloader, conveyorUnloaderFast, omniUnloader, rapidUnloader,
             conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load() {
@@ -289,9 +289,35 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             health = 300;
-            speed = 60f / 16.5f;
+            speed = 60f / 15f;
             hasPower = true;
             conductivePower = true;
+            placeableLiquid = true;
+        }};
+
+        conveyorUnloaderFast = new AdaptDirectionalUnloader("logistics-fast-unloader") {{
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 10
+            ));
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+
+            health = 300;
+            speed = 60f / 30f;
+            hasPower = true;
+            conductivePower = true;
+            placeableLiquid = true;
+        }};
+
+        omniUnloader = new AdaptUnloader("omni-unloader") {{
+            requirements(Category.distribution, BuildVisibility.shown, with(
+                    NHItems.hardLight, 10,
+                    Items.silicon, 4
+            ));
+
+            health = 300;
+            speed = 1f;
+
             placeableLiquid = true;
         }};
 

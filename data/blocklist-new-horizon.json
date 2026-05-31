@@ -1607,6 +1607,18 @@
 	"size": 1,
 	"color": 255
 },
+"new-horizon-logistics-fast-unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-omni-unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
 "new-horizon-rapid-unloader": {
 	"synthetic": true,
 	"solid": true,
