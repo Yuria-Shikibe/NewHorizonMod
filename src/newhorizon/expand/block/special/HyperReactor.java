@@ -168,7 +168,7 @@ public class HyperReactor extends PowerGenerator {
                 updateEffect1 = NHFx.circleOut(effectColor, lightningRange * 0.75f);
 
                 hitShake = despawnShake = 80f;
-                despawnSound = NHSounds.hugeBlast;
+                despawnSound = NHSounds.blastArc9000;
             }
 
             @Override

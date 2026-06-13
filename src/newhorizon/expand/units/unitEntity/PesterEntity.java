@@ -343,7 +343,7 @@ public class PesterEntity extends UnitEntity {
         nextTargets.clear();
 
         if (!Vars.headless && itr > 0) {
-            NHSounds.hugeShoot.at(ex, ey);
+            NHSounds.shootArc9000.at(ex, ey);
             NHFx.crossSpinBlast.at(ex, ey, 0, team.color, self());
         }
 

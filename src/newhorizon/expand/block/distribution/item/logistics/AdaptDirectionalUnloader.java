@@ -55,13 +55,13 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
     public void setStats() {
         super.setStats();
         stats.remove(Stat.speed);
-        stats.add(Stat.speed, 15, StatUnit.itemsSecond);
+        stats.add(Stat.speed, speed * Time.toSeconds, StatUnit.itemsSecond);
     }
 
     public class AdaptDirectionalUnloaderBuild extends DirectionalUnloaderBuild {
         @Override
         public void updateTile() {
-            float inc = unloadItem == null ? edelta() : (edelta() / 16.5f * 30f);
+            float inc = unloadItem == null ? edelta() : (edelta() / 2f);
             if ((unloadTimer += inc) >= speed) {
                 Building front = front(), back = back();
 

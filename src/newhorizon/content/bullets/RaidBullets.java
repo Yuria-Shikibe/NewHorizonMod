@@ -20,7 +20,7 @@ import newhorizon.content.NHBullets;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHStatusEffects;
-import newhorizon.expand.bullets.DOTBulletType;
+import newhorizon.expand.bullets.EmpDotBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.bullets.raid.RailRaidBulletType;
 import newhorizon.expand.bullets.raid.TracerRaidBulletType;
@@ -331,12 +331,12 @@ public class RaidBullets {
             status = NHStatusEffects.emp3;
             hitSound = Sounds.none;
 
-            fragBullet = new DOTBulletType() {{
+            fragBullet = new EmpDotBulletType() {{
                 DOTDamage = damage = 75f;
                 DOTRadius = 16f;
                 radIncrease = 0.28f;
                 effect = NHStatusEffects.emp3;
-                fx = NHFx.triSpark2;
+                sparkFx = NHFx.triSpark2;
                 lightningColor = NHColor.ancient;
             }};
             fragBullets = 1;

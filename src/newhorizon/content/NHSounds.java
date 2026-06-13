@@ -14,25 +14,24 @@ public class NHSounds {
     public static ObjectMap<String, Sound> sounds = new ObjectMap<>();
 
     public static Sound
-            laser2, laser3, laser4, laser5, thermo,
-            flak2, alert2, shock, alarm, launch,
-            rapidLaser, railGunCharge, blaster, flak, gauss, scatter,
-            thermoShoot, jumpIn, metalWalk, hugeShoot, hugeBlast,
-            signal, synchro, railGunBlast, largeBeam, coil1, coil2,
 
-    blastHuge, blastShockwave, blastSmoke, blastZap, hyperspace,
+            laser4, laser5, shock, launch, rapidLaser, railGunCharge, metalWalk, largeBeam,
+
+            blastArc9000, blastShockwave, blastSmoke, blastZap, hyperspace,
+
             loopLaser1, loopLaser2, loopLaser3,
+
+            shootArc9000,
             shootBlaster1, shootBlaster2, shootBlaster3,
             shootCoil1, shootCoil2, shootCoil3,
-            shootFlak1, shootFlak2, shootFlak3, shootFlak4,
+            shootFlak1, shootFlak2, shootFlak3, shootFlak4, shootFlak5, shootFlak6,
             shootGauss1, shootGauss2, shootGauss3,
-            shootHuge,
             shootMissile1, shootMissile2, shootMissile3, shootMissile4,
-            shootPulse1, shootPulse2, shootPulse3, shootPulse4,
+            shootPulse1, shootPulse2, shootPulse3, shootPulse4, shootPulse5,
             shootRailgun1, shootRailgun2, shootRailgun3,
             shootScatter1, shootScatter2, shootScatter3,
             shootThermo1, shootThermo2, shootThermo3, shootThermo4,
-            uiAlert1, uiAlert2, uiSignal, unitJumpIn;
+            uiAlert1, uiAlarm1, uiSignal, unitJumpIn;
 
     public static void load() {
         try {

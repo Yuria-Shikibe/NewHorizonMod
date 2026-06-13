@@ -105,7 +105,7 @@ public class RaidControlI implements LExecutor.LInstruction {
             t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("nh.cutscene.event.raid-alert") + " >>")).color(team.team().color).padBottom(4).row()).growX().fillY();
         });
 
-        NHSounds.alert2.play();
+        NHSounds.uiAlert1.play();
 
         state.rules.objectives.each(mapObjective -> {
             if (mapObjective instanceof TriggerObjective obj && Objects.equals(obj.timer, timer.name)) {

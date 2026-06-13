@@ -93,7 +93,7 @@ public class Destruction extends NHUnitType {
     public Destruction() {
         super("destruction");
 
-        outlineColor = OColor;
+        outlineColor = grayOutline;
 
         aiController = SniperAI::new;
 
@@ -115,7 +115,7 @@ public class Destruction extends NHUnitType {
                     predictTarget = false;
                     bullet = gauss;
 
-                    shootSound = NHSounds.coil1;
+                    shootSound = NHSounds.shootCoil2;
                 }},
                 new Weapon(NewHorizon.name("gauss-cannon")) {{
                     alternate = mirror = top = rotate = true;
@@ -133,7 +133,7 @@ public class Destruction extends NHUnitType {
                     predictTarget = false;
                     bullet = gauss;
 
-                    shootSound = NHSounds.laser3;
+                    shootSound = NHSounds.shootCoil1;
                 }}
         );
 

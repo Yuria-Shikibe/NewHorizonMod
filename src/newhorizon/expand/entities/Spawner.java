@@ -139,7 +139,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc {
 
     public void effect() {
         Effect.shake(type.hitSize / 3f, type.hitSize / 4f, toSpawn);
-        NHSounds.jumpIn.at(toSpawn.x, toSpawn.y);
+        NHSounds.unitJumpIn.at(toSpawn.x, toSpawn.y);
         if (type.flying) {
             NHFx.jumpTrail.at(toSpawn.x, toSpawn.y, rotation(), team.color, type);
             toSpawn.apply(StatusEffects.slow, NHFx.jumpTrail.lifetime);

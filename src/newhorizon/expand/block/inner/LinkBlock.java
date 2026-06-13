@@ -40,6 +40,8 @@ public class LinkBlock extends Block {
         rebuildable = false;
         canOverdrive = false;
 
+        liquidCapacity = 200f;
+
         instantDeconstruct = true;
 
         hasItems = true;

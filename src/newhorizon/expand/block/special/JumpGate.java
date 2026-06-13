@@ -51,7 +51,6 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NHVars;
 import newhorizon.content.NHContent;
 import newhorizon.expand.block.consumer.ConsumeRecipe;
-import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.expand.entities.Spawner;
 import newhorizon.expand.type.Recipe;
 import newhorizon.util.func.NHFunc;
@@ -245,11 +244,6 @@ public class JumpGate extends Block {
         @Override
         public PayloadSeq getPayloads() {
             return NHVars.worldData.teamPayloadData.getPayload(team);
-        }
-
-        @Override
-        public boolean acceptPayload(Building source, Payload payload) {
-            return payload.content() instanceof ModulePayload && getPayloads().get(payload.content()) < 1000;
         }
 
         @Override

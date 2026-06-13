@@ -9,6 +9,7 @@ import mindustry.world.Block;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.content.blocks.UnitBlock;
+import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.type.Recipe;
 
@@ -18,8 +19,8 @@ public class UnitRecipeRegister {
         //spawnList = Seq.with(NHUnitTypes.naxos, NHUnitTypes.tarlidor, NHUnitTypes.zarkov, UnitTypes.eclipse, UnitTypes.disrupt, UnitTypes.corvus, UnitTypes.navanax, UnitTypes.collaris);
         //spawnList = Seq.with(NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.annihilation, NHUnitTypes.saviour, NHUnitTypes.declining, NHUnitTypes.hurricane, NHUnitTypes.anvil, NHUnitTypes.sin, NHUnitTypes.collapser);
 
-        unitRecipePlan(UnitBlock.jumpGateBasic, NHUnitTypes.origin, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.silicar, 20));
-        unitRecipePlan(UnitBlock.jumpGateBasic, NHUnitTypes.thynomo, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.graphite, 60,Items.titanium,80,Items.tungsten,80));
+        unitRecipePlan(UnitBlock.jumpGateBasic, GroundUnitTypes.origin, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.silicar, 20));
+        unitRecipePlan(UnitBlock.jumpGateBasic, GroundUnitTypes.thynomo, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.graphite, 60,Items.titanium,80,Items.tungsten,80));
         unitRecipePlan(UnitBlock.jumpGateBasic, NHUnitTypes.sharp, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.silicar, 20,Items.titanium,20));
         unitRecipePlan(UnitBlock.jumpGateBasic, NHUnitTypes.branch, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 80, Items.graphite, 80,Items.titanium,60,Items.tungsten,80));
         unitRecipePlan(UnitBlock.jumpGateBasic, UnitTypes.poly, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 20, Items.titanium, 25));
@@ -62,7 +63,7 @@ public class UnitRecipeRegister {
 
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.destruction, 360 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 400, NHItems.setonAlloy, 200, NHItems.thermoCoreNegative, 50));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.longinus, 180 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.multipleSteel, 100, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 200, NHItems.thermoCoreNegative, 50));
-        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.annihilation, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 100, NHItems.setonAlloy, 400, NHItems.thermoCoreNegative, 50));
+        unitRecipePlan(UnitBlock.jumpGateHyper, GroundUnitTypes.annihilation, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 100, NHItems.setonAlloy, 400, NHItems.thermoCoreNegative, 50));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.saviour, 360 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.zeta, 1000, Items.surgeAlloy, 500, NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 600, NHItems.thermoCorePositive, 100));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.declining, 360 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 1000, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 250, NHItems.nodexPlate, 300));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.hurricane, 480 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 600, NHItems.thermoCoreNegative, 300, NHItems.nodexPlate, 600, NHItems.ancimembrane, 300));

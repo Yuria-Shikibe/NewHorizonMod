@@ -4,22 +4,103 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
+import newhorizon.content.units.CoreUnitTypes;
 import newhorizon.expand.block.special.AdaptOverdriveProjector;
 import newhorizon.expand.block.special.AssignedBeacon;
-import newhorizon.expand.block.special.NexusCore;
+import newhorizon.expand.block.special.AdaptCore;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 
 import static mindustry.type.ItemStack.with;
 
 public class SpecialBlock {
     public static Block
-            standardStorage, heavyStorage, remoteStorage, nexusCore, juniorModuleBeacon, seniorModuleBeacon, deviceTest;
+            coreConflux, coreArray, coreNexus, coreCluster,
+            standardStorage, heavyStorage, remoteStorage, nexusCore, juniorModuleBeacon, seniorModuleBeacon;
 
     public static void load() {
-        nexusCore = new NexusCore();
+        coreConflux = new CoreBlock("core-conflux") {{
+            requirements(Category.effect, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 20));
+
+            alwaysUnlocked = true;
+
+            size = 3;
+            armor = 10f;
+            health = 30000;
+            itemCapacity = 6000;
+
+            unitCapModifier = 8;
+            buildCostMultiplier = 2f;
+
+            unitType = CoreUnitTypes.scalar;
+
+            drawTeamOverlay = false;
+            requiresCoreZone = false;
+            incinerateNonBuildable = false;
+        }};
+
+        coreArray = new CoreBlock("core-array") {{
+            requirements(Category.effect, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 20));
+
+            alwaysUnlocked = true;
+
+            size = 4;
+            armor = 15f;
+            health = 80000;
+            itemCapacity = 12000;
+
+            unitCapModifier = 12;
+            buildCostMultiplier = 2f;
+
+            unitType = CoreUnitTypes.vector;
+
+            drawTeamOverlay = false;
+            requiresCoreZone = false;
+            incinerateNonBuildable = false;
+        }};
+
+        coreNexus = new CoreBlock("core-nexus") {{
+            requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
+
+            alwaysUnlocked = true;
+
+            size = 5;
+            armor = 25f;
+            health = 200000;
+            itemCapacity = 25000;
+
+            unitCapModifier = 18;
+            buildCostMultiplier = 2f;
+
+            unitType = CoreUnitTypes.martix;
+
+            drawTeamOverlay = false;
+            requiresCoreZone = false;
+            incinerateNonBuildable = false;
+        }};
+
+        coreCluster = new CoreBlock("core-cluster") {{
+            requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
+
+            alwaysUnlocked = true;
+
+            size = 6;
+            armor = 40f;
+            health = 500000;
+            itemCapacity = 50000;
+
+            unitCapModifier = 25;
+            buildCostMultiplier = 2f;
+
+            unitType = CoreUnitTypes.tensor;
+
+            drawTeamOverlay = false;
+            requiresCoreZone = false;
+            incinerateNonBuildable = false;
+        }};
 
         standardStorage = new StorageBlock("standard-storage") {{
             requirements(Category.effect, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 20));

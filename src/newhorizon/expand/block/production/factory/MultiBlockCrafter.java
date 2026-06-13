@@ -42,9 +42,6 @@ public class MultiBlockCrafter extends BasicMultiBlock {
     public boolean dumpExtraLiquid = true;
     public boolean ignoreLiquidFullness = false;
 
-    public Seq<int[]> outputItemDirection = new Seq<>();
-    public Seq<int[]> outputLiquidDirection = new Seq<>();
-
     public float craftTime = 80;
     public Effect craftEffect = Fx.none;
     public Effect updateEffect = Fx.none;
@@ -66,14 +63,6 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         ambientSoundVolume = 0.03f;
 
         flags = EnumSet.of(BlockFlag.factory);
-    }
-
-    public void addOutputItemDirection(int xOffset, int yOffset, Item item) {
-        outputItemDirection.add(new int[]{xOffset, yOffset, item.id});
-    }
-
-    public void addOutputLiquidDirection(int xOffset, int yOffset, Liquid liquid) {
-        outputLiquidDirection.add(new int[]{xOffset, yOffset, liquid.id});
     }
 
     @Override
@@ -133,30 +122,6 @@ public class MultiBlockCrafter extends BasicMultiBlock {
     }
 
     @Override
-    public void drawOverlay(float x, float y, int rotation) {
-        super.drawOverlay(x, y, rotation);
-        for (int[] packed : outputItemDirection) {
-            MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], size, 1, rotation);
-            Item item = content.item(packed[2]);
-            Draw.rect(item.fullIcon,
-                    x - (size + 1) % 2f * 4f + Tmp.p1.x * tilesize,
-                    y - (size + 1) % 2f * 4f + Tmp.p1.y * tilesize,
-                    6f, 6f
-            );
-        }
-
-        for (int[] packed : outputLiquidDirection) {
-            MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], size, 1, rotation);
-            Liquid liquid = content.liquid(packed[2]);
-            Draw.rect(liquid.fullIcon,
-                    x - (size + 1) % 2f * 4f + Tmp.p1.x * tilesize,
-                    y - (size + 1) % 2f * 4f + Tmp.p1.y * tilesize,
-                    8f, 8f
-            );
-        }
-    }
-
-    @Override
     public boolean rotatedOutput(int x, int y) {
         return false;
     }
@@ -185,44 +150,6 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         public float progress;
         public float totalProgress;
         public float warmup;
-
-        public boolean isValidOutputItemBuilding(Building other, Item item) {
-            if (outputItemDirection.isEmpty()) return true;
-            for (int[] packed : outputItemDirection) {
-                if (item.id == packed[2]) {
-                    MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], block.size, 1, rotation);
-                    Building b = world.build(Tmp.p1.x + tileX(), Tmp.p1.y + tileY());
-                    if (b == other || b instanceof LinkBlock.LinkBuild lb && lb.linkBuild == other) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public boolean isValidLiquidOutputBuilding(Building other, Liquid liquid) {
-            if (outputLiquidDirection.isEmpty()) return true;
-            for (int[] packed : outputLiquidDirection) {
-                if (liquid.id == packed[2]) {
-                    MultiBlock.calculateRotatedOffsetPosition(Tmp.p1, packed[0], packed[1], block.size, 1, rotation);
-                    Building b = world.build(Tmp.p1.x, Tmp.p1.y);
-                    if (b == other || b instanceof LinkBlock.LinkBuild lb && lb.linkBuild == other) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public boolean canDump(Building to, Item item) {
-            return super.canDump(to, item) && isValidOutputItemBuilding(to, item);
-        }
-
-        @Override
-        public boolean canDumpLiquid(Building to, Liquid liquid) {
-            return super.canDumpLiquid(to, liquid) && isValidLiquidOutputBuilding(to, liquid);
-        }
 
         @Override
         public void draw() {
