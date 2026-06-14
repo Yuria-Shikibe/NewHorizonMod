@@ -110,7 +110,7 @@ public class NHUnitTypes {
             guardian, //Energy
             gather, saviour, rhino, //Air-Assist
             restrictionEnzyme,
-            nucleoid, pester, laugra, macrophage, ancientProbe, //ancient
+            nucleoid, pester, laugra, macrophage, ancientProbe,histone, //ancient
             assaulter, anvil, collapser, //Air-2
             aliotiat, tarlidor, sin, //Ground-1
             sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
