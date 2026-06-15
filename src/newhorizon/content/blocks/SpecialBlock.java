@@ -11,7 +11,6 @@ import newhorizon.content.NHItems;
 import newhorizon.content.units.CoreUnitTypes;
 import newhorizon.expand.block.special.AdaptOverdriveProjector;
 import newhorizon.expand.block.special.AssignedBeacon;
-import newhorizon.expand.block.special.AdaptCore;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 
 import static mindustry.type.ItemStack.with;
@@ -23,7 +22,11 @@ public class SpecialBlock {
 
     public static void load() {
         coreConflux = new CoreBlock("core-conflux") {{
-            requirements(Category.effect, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 20));
+            requirements(Category.effect, with(
+                    NHItems.titanium, 1000,
+                    NHItems.graphite, 500,
+                    NHItems.silicon, 500
+            ));
 
             alwaysUnlocked = true;
 
@@ -43,7 +46,12 @@ public class SpecialBlock {
         }};
 
         coreArray = new CoreBlock("core-array") {{
-            requirements(Category.effect, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 20));
+            requirements(Category.effect, with(
+                    NHItems.juniorProcessor, 2000,
+                    NHItems.metalOxhydrigen, 1000,
+                    NHItems.multipleSteel, 1000,
+                    NHItems.carbide, 1000
+            ));
 
             alwaysUnlocked = true;
 
@@ -63,7 +71,13 @@ public class SpecialBlock {
         }};
 
         coreNexus = new CoreBlock("core-nexus") {{
-            requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
+            requirements(Category.effect, with(
+                    NHItems.multipleSteel, 4000,
+                    NHItems.carbide, 4000,
+                    NHItems.zeta, 2000,
+                    NHItems.phaseFabric, 3000,
+                    NHItems.surgeAlloy, 3000
+            ));
 
             alwaysUnlocked = true;
 
@@ -83,7 +97,12 @@ public class SpecialBlock {
         }};
 
         coreCluster = new CoreBlock("core-cluster") {{
-            requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
+            requirements(Category.effect, with(
+                    NHItems.zeta, 5000,
+                    NHItems.seniorProcessor, 3000,
+                    NHItems.irayrondPanel, 5000,
+                    NHItems.setonAlloy, 5000
+            ));
 
             alwaysUnlocked = true;
 
