@@ -31,6 +31,7 @@ import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.part.DrawPart;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.part.ShapePart;
@@ -110,7 +111,7 @@ public class NHUnitTypes {
             guardian, //Energy
             gather, saviour, rhino, //Air-Assist
             restrictionEnzyme,
-            nucleoid, pester, laugra, macrophage, ancientProbe,histone, //ancient
+            nucleoid, pester, laugra, macrophage, ancientProbe,histone,lymph, //ancient
             assaulter, anvil, collapser, //Air-2
             aliotiat, tarlidor, sin, //Ground-1
             sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
@@ -136,7 +137,7 @@ public class NHUnitTypes {
         EntityMapping.nameMap.put(NewHorizon.name("nucleoid"), NucleoidEntity::new);
         EntityMapping.nameMap.put(NewHorizon.name("restriction-enzyme"), EntityMapping.idMap[24]);
         EntityMapping.nameMap.put(NewHorizon.name("histone"), EntityMapping.idMap[24]);
-        //EntityMapping.nameMap.put(NewHorizon.name("lymph"), EntityMapping.idMap[24]);
+        EntityMapping.nameMap.put(NewHorizon.name("lymph"), EntityMapping.idMap[24]);
         EntityMapping.nameMap.put(NewHorizon.name("ancient-probe"), ProbeEntity::new);
 
         EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
@@ -1067,7 +1068,7 @@ public class NHUnitTypes {
                 NHPixmap.createIcons(packer, this);
             }
         };
-        /*
+
         lymph = new AncientUnitType("lymph") {
             {
                 speed = 0.6F;
@@ -1287,7 +1288,7 @@ public class NHUnitTypes {
                         shots = 1;
                         shotDelay = 4.5f;
                     }});
-                    bullet= new AdaptBulletType() {{
+                    bullet= new TypedDamageBulletType() {{
                         damage = 120f;
                         buildingDamageMultiplier = 0.8f;
                         shieldDamageMultiplier = 1.5f;
@@ -1318,7 +1319,7 @@ public class NHUnitTypes {
                     }};
                 }});
             }
-        };*/
+        };
 
         restrictionEnzyme = new AncientUnitType("restriction-enzyme") {
             {
