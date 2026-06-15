@@ -13,7 +13,7 @@ public class UnitBlock {
     public static Block jumpGateBasic,jumpGatePrimary, jumpGateStandard, jumpGateHyper;
 
     public static void load() {
-        jumpGateBasic = new JumpGate("Basic-jump-gate") {{
+        jumpGateBasic = new JumpGate("basic-jump-gate") {{
             requirements(Category.units, BuildVisibility.shown, with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40,

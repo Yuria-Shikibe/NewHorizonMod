@@ -124,9 +124,9 @@ public class CraftingBlock {
 
         heavyStampingFacility = new MultiBlockCrafter("heavy-stamping-facility") {{
             requirements(Category.crafting, with(
-                    NHItems.metalOxhydrigen, 40,
-                    NHItems.presstanium, 60,
-                    NHItems.juniorProcessor, 20,
+                    NHItems.plastanium, 30,
+                    NHItems.presstanium, 20,
+                    NHItems.juniorProcessor, 60,
                     NHItems.hardLight, 80
             ));
             addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1));
@@ -303,9 +303,10 @@ public class CraftingBlock {
 
         hyperCooler = new MultiBlockCrafter("hyper-cooler") {{
             requirements(Category.crafting, ItemStack.with(
-                    NHItems.tungsten, 60,
-                    NHItems.presstanium, 50,
-                    NHItems.silicon, 60
+                    NHItems.titanium, 60,
+                    NHItems.presstanium, 60,
+                    NHItems.carbide, 30,
+                    NHItems.multipleSteel, 30
             ));
 
             addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1));
@@ -366,8 +367,10 @@ public class CraftingBlock {
 
         phaseRectificatior = new GenericCrafter("phase-rectificatior") {{
             requirements(Category.crafting, with(
-                    NHItems.presstanium, 60,
-                    NHItems.juniorProcessor, 45
+                    NHItems.juniorProcessor, 60,
+                    NHItems.multipleSteel, 60,
+                    NHItems.zeta, 10,
+                    NHItems.phaseFabric, 20
             ));
 
             size = 3;
@@ -411,9 +414,9 @@ public class CraftingBlock {
 
         plasticator = new GenericCrafter("plasticator") {{
             requirements(Category.crafting, with(
-                    NHItems.silicar, 70,
+                    NHItems.silicon, 70,
+                    NHItems.presstanium, 60,
                     NHItems.juniorProcessor, 45,
-                    NHItems.metalOxhydrigen, 60,
                     NHItems.hardLight, 100
             ));
 
@@ -454,15 +457,14 @@ public class CraftingBlock {
 
         photocatalystFactory = new MultiBlockCrafter("photocatalyst-factory") {{
             requirements(Category.crafting, with(
-                    NHItems.tungsten, 50,
-                    NHItems.juniorProcessor, 30,
+                    NHItems.hardLight, 75,
                     NHItems.silicon, 80,
-                    NHItems.metalOxhydrigen, 30
+                    NHItems.presstanium, 30,
+                    NHItems.juniorProcessor, 30
             ));
 
             size = 3;
             hasLiquids = true;
-            canMirror = true;
             health = 1200;
             armor = 6;
             itemCapacity = 20;
@@ -554,19 +556,19 @@ public class CraftingBlock {
 
         metalOxhydrigenRestructuror = new MultiBlockCrafter("metal-oxhydrigen-restructuror") {{
             requirements(Category.crafting, with(
-                    NHItems.presstanium, 65,
                     NHItems.plastanium, 50,
-                    NHItems.silicon, 150,
-                    NHItems.metalOxhydrigen, 90
+                    NHItems.multipleSteel, 100,
+                    NHItems.metalOxhydrigen, 90,
+                    NHItems.fusionEnergy, 20
             ));
-
-            addLink(p(2, 0), p(2, 1), p(0, 2), p(1, 2), p(-1, 0), p(-1, 1), p(0, -1), p(1, -1));
+            addLink(p(2, 0), p(2, 1),
+                    p(0, 2), p(1, 2),
+                    p(-1, 0), p(-1, 1),
+                    p(0, -1), p(1, -1)
+            );
 
             size = 2;
             hasLiquids = true;
-            canMirror = true;
-            rotateDraw = false;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
             health = 600;
             armor = 4;
             itemCapacity = 20;
@@ -644,7 +646,7 @@ public class CraftingBlock {
             requirements(Category.crafting, ItemStack.with(
                     NHItems.titanium, 30,
                     NHItems.graphite, 20,
-                    NHItems.silicon, 20,
+                    NHItems.juniorProcessor, 20,
                     NHItems.hardLight, 40
             ));
 
@@ -675,9 +677,10 @@ public class CraftingBlock {
 
         plasmaActivator = new GenericCrafter("plasma-activator") {{
             requirements(Category.crafting, with(
-                    NHItems.plastanium, 50,
-                    NHItems.multipleSteel, 80,
-                    NHItems.carbide, 80
+                    NHItems.plastanium, 150,
+                    NHItems.surgeAlloy, 50,
+                    NHItems.phaseFabric, 50,
+                    NHItems.zeta, 20
             ));
 
             size = 3;
@@ -704,13 +707,14 @@ public class CraftingBlock {
 
         crucibleFoundry = new MultiBlockCrafter("crucible-foundry") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.multipleSteel, 90,
+                    NHItems.juniorProcessor, 75,
                     NHItems.plastanium, 60,
                     NHItems.metalOxhydrigen, 50,
                     NHItems.tungsten, 80
             ));
-
-            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
+            addLink(p(2, -1), p(2, 0), p(2, 1),
+                    p(-2, -1), p(-2, 0), p(-2, 1)
+            );
 
             size = 3;
             health = 900;
@@ -747,9 +751,8 @@ public class CraftingBlock {
                     NHItems.zeta, 125,
                     NHItems.tungsten, 200,
                     NHItems.carbide, 150,
-                    NHItems.irayrondPanel, 75
+                    NHItems.surgeAlloy, 100
             ));
-
             addLink(p(-1, 2), p(-1, 3), p(0, 2), p(0, 3), p(1, 2), p(1, 3),
                     p(2, -1), p(3, -1), p(2, 0), p(3, 0), p(2, 1), p(3, 1)
             );
@@ -799,7 +802,8 @@ public class CraftingBlock {
 
         xenSeparator = new GenericCrafter("xen-separator") {{
             requirements(Category.crafting, ItemStack.with(
-                    NHItems.multipleSteel, 30,
+                    NHItems.juniorProcessor, 80,
+                    NHItems.plastanium, 80,
                     NHItems.metalOxhydrigen, 70,
                     NHItems.hardLight, 100
             ));
@@ -859,7 +863,7 @@ public class CraftingBlock {
             requirements(Category.crafting, with(
                     NHItems.multipleSteel, 90,
                     NHItems.plastanium, 75,
-                    NHItems.metalOxhydrigen, 80,
+                    NHItems.carbide, 80,
                     NHItems.silicon, 150
             ));
 
@@ -915,13 +919,14 @@ public class CraftingBlock {
 
         heavyRollingMill = new MultiBlockCrafter("heavy-rolling-mill") {{
             requirements(Category.crafting, with(
-                    NHItems.irayrondPanel, 40,
+                    NHItems.zeta, 80,
                     NHItems.surgeAlloy, 60,
                     NHItems.multipleSteel, 150,
-                    NHItems.presstanium, 175
+                    NHItems.carbide, 150
             ));
-
-            addLink(p(2, 0), p(2, 1), p(2, 2), p(0, 2), p(1, 2), p(-2, 0), p(-2, -1), p(-2, -2), p(-1, -2), p(0, -2));
+            addLink(p(2, 0), p(2, 1), p(2, 2), p(0, 2), p(1, 2),
+                    p(-2, 0), p(-2, -1), p(-2, -2), p(-1, -2), p(0, -2)
+            );
 
             size = 3;
             hasLiquids = true;
@@ -952,7 +957,7 @@ public class CraftingBlock {
 
         thoriumTransmuter = new GenericCrafter("thorium-transmuter") {{
             requirements(Category.crafting, with(
-                    NHItems.tungsten, 120,
+                    NHItems.carbide, 120,
                     NHItems.thorium, 125,
                     NHItems.multipleSteel, 75,
                     NHItems.juniorProcessor, 60
@@ -977,10 +982,10 @@ public class CraftingBlock {
 
         fusionCoreEnergyFactory = new GenericCrafter("fusion-core-energy-factory") {{
             requirements(Category.crafting, with(
-                    NHItems.thorium, 135,
-                    NHItems.presstanium, 100,
-                    NHItems.plastanium, 60,
-                    NHItems.juniorProcessor, 100
+                    NHItems.multipleSteel, 120,
+                    NHItems.thorium, 125,
+                    NHItems.metalOxhydrigen, 75,
+                    NHItems.juniorProcessor, 60
             ));
 
             size = 3;
@@ -1009,7 +1014,7 @@ public class CraftingBlock {
         zetaFactory = new MultiBlockCrafter("zeta-factory") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.hardLight, 50,
-                    NHItems.tungsten, 100,
+                    NHItems.multipleSteel, 100,
                     NHItems.carbide, 50,
                     NHItems.metalOxhydrigen, 50
             ));
@@ -1047,7 +1052,8 @@ public class CraftingBlock {
             requirements(Category.crafting, ItemStack.with(
                     NHItems.thorium, 70,
                     NHItems.juniorProcessor, 60,
-                    NHItems.metalOxhydrigen, 80
+                    NHItems.metalOxhydrigen, 80,
+                    NHItems.fissileMatter, 20
             ));
 
             size = 3;
@@ -1100,13 +1106,15 @@ public class CraftingBlock {
 
         fabricSynthesizer = new MultiBlockCrafter("fabric-synthesizer") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.thorium, 175,
-                    NHItems.juniorProcessor, 125,
+                    NHItems.zeta, 150,
+                    NHItems.seniorProcessor, 60,
                     NHItems.phaseFabric, 150,
-                    NHItems.irayrondPanel, 75
+                    NHItems.irayrondPanel, 75,
+                    NHItems.fissileMatter, 40
             ));
-
-            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
+            addLink(p(2, -1), p(2, 0), p(2, 1),
+                    p(-2, -1), p(-2, 0), p(-2, 1)
+            );
 
             size = 3;
             itemCapacity = 30;
@@ -1168,7 +1176,8 @@ public class CraftingBlock {
             requirements(Category.crafting, with(
                     NHItems.multipleSteel, 100,
                     NHItems.plastanium, 90,
-                    NHItems.tungsten, 80
+                    NHItems.thorium, 80,
+                    NHItems.fusionEnergy, 20
             ));
 
             size = 3;
@@ -1193,11 +1202,14 @@ public class CraftingBlock {
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.zeta, 150,
                     NHItems.surgeAlloy, 145,
-                    NHItems.irayrondPanel, 125,
-                    NHItems.tungsten, 225
+                    NHItems.setonAlloy, 75,
+                    NHItems.seniorProcessor, 60,
+                    NHItems.fusionEnergy, 20
             ));
 
-            addLink(p(2, -1), p(2, 0), p(2, 1), p(-2, -1), p(-2, 0), p(-2, 1));
+            addLink(p(2, -1), p(2, 0), p(2, 1),
+                    p(-2, -1), p(-2, 0), p(-2, 1)
+            );
 
             size = 3;
             health = 1200;
@@ -1230,8 +1242,8 @@ public class CraftingBlock {
         irdryonFluidFactory = new GenericCrafter("irdryon-fluid-factory") {{
             requirements(Category.crafting, with(
                     NHItems.plastanium, 100,
-                    NHItems.surgeAlloy, 75,
-                    NHItems.zeta, 50,
+                    NHItems.carbide, 75,
+                    NHItems.fissileMatter, 30,
                     NHItems.metalOxhydrigen, 100
             ));
 
@@ -1460,8 +1472,8 @@ public class CraftingBlock {
             requirements(Category.crafting, ItemStack.with(
                     NHItems.multipleSteel, 120,
                     NHItems.surgeAlloy, 75,
-                    NHItems.tungsten, 90,
-                    NHItems.presstanium, 45
+                    NHItems.seniorProcessor, 20,
+                    NHItems.zeta, 50
             ));
 
             size = 4;
@@ -1481,13 +1493,14 @@ public class CraftingBlock {
 
         largeIrayrondFactory = new MultiBlockCrafter("large-irayrond-factory") {{
             requirements(Category.crafting, ItemStack.with(
-                    NHItems.presstanium, 200,
-                    NHItems.irayrondPanel, 135,
-                    NHItems.surgeAlloy, 140,
+                    NHItems.seniorProcessor, 50,
+                    NHItems.irayrondPanel, 150,
+                    NHItems.nodexPlate, 100,
                     NHItems.multipleSteel, 150
             ));
-
-            addLink(p(-2, -1), p(-2, 0), p(-2, 1), p(-2, 2), p(3, -1), p(3, 0), p(3, 1), p(3, 2));
+            addLink(p(-2, -1), p(-2, 0), p(-2, 1), p(-2, 2),
+                    p(3, -1), p(3, 0), p(3, 1), p(3, 2)
+            );
 
             size = 4;
             health = 2500;
@@ -1510,10 +1523,10 @@ public class CraftingBlock {
 
         denseFactory = new GenericCrafter("dense-factory") {{
             requirements(Category.crafting, with(
-                    NHItems.irayrondPanel, 75,
                     NHItems.carbide, 80,
-                    NHItems.plastanium, 120,
-                    NHItems.metalOxhydrigen, 120
+                    NHItems.metalOxhydrigen, 120,
+                    NHItems.seniorProcessor, 20,
+                    NHItems.zeta, 50
             ));
 
             size = 3;
@@ -1548,8 +1561,8 @@ public class CraftingBlock {
                     ItemStack.with(
                             NHItems.multipleSteel, 120,
                             NHItems.setonAlloy, 80,
-                            NHItems.irayrondPanel, 120,
-                            NHItems.seniorProcessor, 50,
+                            NHItems.nodexPlate, 60,
+                            NHItems.seniorProcessor, 100,
                             NHItems.zeta, 150
                     ));
 

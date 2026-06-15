@@ -297,7 +297,8 @@ public class DistributionBlock {
 
         conveyorUnloaderFast = new AdaptDirectionalUnloader("logistics-fast-unloader") {{
             requirements(Category.distribution, with(
-                    NHItems.hardLight, 10
+                    NHItems.hardLight, 10,
+                    NHItems.multipleSteel, 4
             ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
@@ -324,7 +325,7 @@ public class DistributionBlock {
         rapidUnloader = new AdaptUnloader("rapid-unloader") {{
             requirements(Category.distribution, BuildVisibility.shown, with(
                     NHItems.hardLight, 10,
-                    Items.silicon, 4
+                    NHItems.multipleSteel, 4
             ));
 
             health = 300;
