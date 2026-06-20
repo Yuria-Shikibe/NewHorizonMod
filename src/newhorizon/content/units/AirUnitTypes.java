@@ -56,11 +56,11 @@ public class AirUnitTypes {
             itemCapacity = 70;
             payloadCapacity = 2 * tilePayload;
 
-            buildBeamOffset = 2f;
-            buildSpeed = 2f;
+            //buildBeamOffset = 2f;
+            //buildSpeed = 2f;
 
-            mineTier = 2;
-            mineSpeed = 8f;
+            //mineTier = 2;
+            //mineSpeed = 8f;
             engineSize = 0;
 
             flying = true;
@@ -105,7 +105,7 @@ public class AirUnitTypes {
 
                 bullet = new TracerBulletType() {{
                     speed = 8.5f;
-                    damage = 40f;
+                    damage = 160f;
                     lifetime = 45f;
                     inaccuracy = 15f;
 

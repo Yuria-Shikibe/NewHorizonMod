@@ -1512,7 +1512,7 @@ public class NHUnitTypes {
                     bullet = new RailBulletType() {
                         {
                             length = 200f;
-                            damage = 75.001f;
+                            damage = 75f;
 
                             hitColor = NHColor.ancient;
                             hitEffect = endEffect = NHFx.emped;
