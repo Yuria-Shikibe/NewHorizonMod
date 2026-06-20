@@ -97,7 +97,7 @@ public class TurretBlock {
 
             enableDrawStatus = false;
 
-            drawer = new DrawTurret() {{
+            drawer = new DrawTurret("ancient-artillery") {{
                 parts.addAll(
                         new RegionPart("-additional") {{
                             drawRegion = false;

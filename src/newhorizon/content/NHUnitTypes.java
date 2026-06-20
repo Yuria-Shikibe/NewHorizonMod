@@ -1079,19 +1079,30 @@ public class NHUnitTypes {
                 armor = 32.0F;
                 fogRadius = 64.0F;
                 legCount = 6;
-                legLength = 24.0F;
+                legLength = 24.2F;
                 legGroupSize = 3;
+
                 lockLegBase = true;
                 legContinuousMove = true;
-                legForwardScl = 0.6f;
-                legMoveSpace = 0.8f;
-                rippleScale = 2f;
-                stepShake = 0.5f;
-                legExtension = -6f;
-                legBaseOffset = 7f;
-                legMaxLength = 1.1f;
-                legStraightLength = 3f;
-                //legPairOffset = 1.5f;
+
+                legLengthScl = 0.97F;
+                legForwardScl = 0.95F;
+                legMoveSpace = 0.8F;
+
+                rippleScale = 2F;
+                stepShake = 0.5F;
+
+                legExtension = 6F;
+                legBaseOffset = 12.8F;
+
+                legMaxLength = 1.05F;
+                legMinLength = 0.25F;
+
+                baseLegStraightness = -0.36F;
+                //legStraightness = -0.09F;
+                legStraightLength = 1.25F;
+
+                legPairOffset = 0.5F;
                 hovering = false;
                 shadowElevation = 0.22F;
                 groundLayer = 74.0F;
@@ -2008,9 +2019,9 @@ public class NHUnitTypes {
                         shots = 3;
                         barrels = new float[]
                                 {
-                                        -96, 0, 0,
-                                        -82, 0, 0,
-                                        -110, 0, 0,
+                                        -106, 0, 0,
+                                        -92, 0, 0,
+                                        -120, 0, 0,
                                 };
                     }}, new ShootPattern() {{
                         shots = 15;
@@ -2080,15 +2091,15 @@ public class NHUnitTypes {
                     parts.add(new RegionPart("-cooler") {{
                         under = outline = true;
                         rotation = -90;
-                        y = 49.5f;
-                        x = -69.5f;
+                        y = 63.5f;
+                        x = -96.5f;
                         moveY = -7f;
-                        progress = PartProgress.warmup;
+                        progress = PartProgress.smoothReload;
                     }}, new RegionPart("-silo") {{
                         under = outline = true;
                         rotation = -90;
-                        y = 62.5f;
-                        x = -78.75f;
+                        y = 67.5f;
+                        x = -98.75f;
                     }});
                 }});
             }

@@ -42,6 +42,7 @@ configurations.all {
             details.because '强制所有 Arc 模块用 v158.1，绕开 core v158.1 POM 里失效的 commit 0e5679dc9c'
         }
     }
+
 }
 
 dependencies{
