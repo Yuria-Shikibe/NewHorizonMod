@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.math.Angles;
 import arc.util.Time;
 import mindustry.ai.types.BuilderAI;
+import mindustry.ai.types.FlyingAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Units;
@@ -66,7 +67,7 @@ public class AirUnitTypes {
             flying = true;
             mineWalls = true;
             mineFloor = true;
-            aiController = BuilderAI::new;
+            aiController = FlyingAI::new;
             engines.add(
                     new UnitEngine(5, -14.75f, 2.25f, -90),
                     new UnitEngine(-5, -14.75f, 2.25f, -90),
