@@ -5,6 +5,8 @@ import arc.struct.ObjectSet;
 import mindustry.ai.types.BuilderAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.entities.abilities.ShieldArcAbility;
+import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.entities.pattern.ShootMulti;
@@ -57,7 +59,7 @@ public class CoreUnitTypes {
             trailLength = 8;
             outlineRadius = 4;
             itemCapacity = 70;
-            payloadCapacity = 2 * tilePayload;
+            payloadCapacity = 0 * tilePayload;
 
             buildBeamOffset = 2f;
             buildSpeed = 2f;
@@ -157,7 +159,7 @@ public class CoreUnitTypes {
             trailLength = 9;
             outlineRadius = 4;
             itemCapacity = 100;
-            payloadCapacity = 4 * tilePayload;
+            payloadCapacity = 0 * tilePayload;
 
             buildBeamOffset = 3f;
             buildSpeed = 2.5f;
@@ -259,7 +261,7 @@ public class CoreUnitTypes {
             trailLength = 10;
             outlineRadius = 4;
             itemCapacity = 150;
-            payloadCapacity = 6 * tilePayload;
+            payloadCapacity = 0 * tilePayload;
 
             buildBeamOffset = 5f;
             buildSpeed = 3.5f;
@@ -274,6 +276,7 @@ public class CoreUnitTypes {
             aiController = BuilderAI::new;
             engines.add(new UnitEngine(3, -8f, 1.85f, -90), new UnitEngine(-3, -8f, 1.85f, -90));
             abilities.add(new BoostAbility(false, 1.2f, 180f));
+            abilities.add(new ShieldRegenFieldAbility(200,600,240,120));
 
             weapons.add(new Weapon("martix-mx-pulse-gun") {{
                 x = 0f;
@@ -305,7 +308,7 @@ public class CoreUnitTypes {
 
                 bullet = new BasicBulletType() {{
                     speed = 6.5f;
-                    damage = 75f;
+                    damage = 100f;
                     lifetime = 40f;
                     inaccuracy = 1f;
 
@@ -348,7 +351,7 @@ public class CoreUnitTypes {
 
         tensor = new NHUnitType("tensor") {{
             armor = 15;
-            health = 2500;
+            health = 2000;
             hitSize = 24f;
 
             drag = 0.12f;
@@ -363,7 +366,7 @@ public class CoreUnitTypes {
             trailLength = 10;
             outlineRadius = 4;
             itemCapacity = 150;
-            payloadCapacity = 9 * tilePayload;
+            payloadCapacity = 0 * tilePayload;
 
             buildBeamOffset = 6f;
             buildSpeed = 3.5f;
@@ -382,6 +385,18 @@ public class CoreUnitTypes {
                     new UnitEngine(-4.5f, -7.2f, 2.2f, -65)
             );
             abilities.add(new BoostAbility(false, 1.5f, 180f));
+            abilities.add(new ShieldRegenFieldAbility(400,1200,480,60));
+            abilities.add(new ShieldArcAbility() {{
+                              radius = 16f;
+                              angle = 361;
+                              regen = 2.5f;
+                              cooldown = 120f * 10f;
+                              max = 1000f;
+                              width = 4f;
+                              whenShooting = false;
+                              chanceDeflect = -1f;
+                              pushUnits = false;
+                          }});
 
             weapons.add(new Weapon("martix-mx-pulse-gun") {{
                 x = 5f;
@@ -402,7 +417,7 @@ public class CoreUnitTypes {
 
                 bullet = new TracerBulletType() {{
                     speed = 6.5f;
-                    damage = 55f;
+                    damage = 60f;
                     lifetime = 45f;
                     inaccuracy = 1f;
 
@@ -444,7 +459,7 @@ public class CoreUnitTypes {
                     shootEffect = NHFx.shootCircleSmall(backColor);
                     smokeEffect = Fx.shootSmallSmoke;
 
-                    buildingDamageMultiplier = 0.05f;
+                    buildingDamageMultiplier = 0.01f;
                 }};
             }});
         }};
