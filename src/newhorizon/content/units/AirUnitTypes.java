@@ -105,7 +105,7 @@ public class AirUnitTypes {
 
                 bullet = new TracerBulletType() {{
                     speed = 8.5f;
-                    damage = 160f;
+                    damage = 80f;
                     lifetime = 45f;
                     inaccuracy = 15f;
 

@@ -9,6 +9,7 @@ import mindustry.world.Block;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.content.blocks.UnitBlock;
+import newhorizon.content.units.AirUnitTypes;
 import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.type.Recipe;
@@ -32,6 +33,7 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateBasic, UnitTypes.cleroi, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.titanium, 75, Items.tungsten, 50));
 
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.assaulter, 30 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 40, NHItems.silicar, 200, Items.thorium, 120));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, AirUnitTypes.apparition, 90 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.plastanium, 200, NHItems.presstanium, 50, NHItems.juniorProcessor, 150));
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.mega, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.tungsten, 180, Items.thorium, 80));
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.quasar, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.titanium, 180, Items.thorium, 80));
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.zenith, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 150, Items.titanium, 150, Items.thorium, 60));
