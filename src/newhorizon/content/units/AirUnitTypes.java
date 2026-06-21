@@ -112,7 +112,6 @@ public class AirUnitTypes {
                     width = 12f;
                     height = 20f;
                     drawSize = 120f;
-
                     trailWidth = 1.2f;
                     trailLength = 8;
                     trailParam = 1f;
