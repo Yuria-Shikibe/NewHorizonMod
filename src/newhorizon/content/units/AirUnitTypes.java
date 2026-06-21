@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.math.Angles;
 import arc.util.Time;
 import mindustry.ai.types.BuilderAI;
+import mindustry.ai.types.FlyingAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Units;
@@ -56,17 +57,17 @@ public class AirUnitTypes {
             itemCapacity = 70;
             payloadCapacity = 2 * tilePayload;
 
-            buildBeamOffset = 2f;
-            buildSpeed = 2f;
+            //buildBeamOffset = 2f;
+            //buildSpeed = 2f;
 
-            mineTier = 2;
-            mineSpeed = 8f;
+            //mineTier = 2;
+            //mineSpeed = 8f;
             engineSize = 0;
 
             flying = true;
             mineWalls = true;
             mineFloor = true;
-            aiController = BuilderAI::new;
+            aiController = FlyingAI::new;
             engines.add(
                     new UnitEngine(5, -14.75f, 2.25f, -90),
                     new UnitEngine(-5, -14.75f, 2.25f, -90),
@@ -105,14 +106,13 @@ public class AirUnitTypes {
 
                 bullet = new TracerBulletType() {{
                     speed = 8.5f;
-                    damage = 40f;
+                    damage = 80f;
                     lifetime = 45f;
                     inaccuracy = 15f;
 
                     width = 12f;
                     height = 20f;
                     drawSize = 120f;
-
                     trailWidth = 1.2f;
                     trailLength = 8;
                     trailParam = 1f;

@@ -31,6 +31,7 @@ import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.part.DrawPart;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.part.ShapePart;
@@ -110,7 +111,7 @@ public class NHUnitTypes {
             guardian, //Energy
             gather, saviour, rhino, //Air-Assist
             restrictionEnzyme,
-            nucleoid, pester, laugra, macrophage, ancientProbe, //ancient
+            nucleoid, pester, laugra, macrophage, ancientProbe,histone,lymph, //ancient
             assaulter, anvil, collapser, //Air-2
             aliotiat, tarlidor, sin, //Ground-1
             sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
@@ -135,6 +136,8 @@ public class NHUnitTypes {
         EntityMapping.nameMap.put(NewHorizon.name("laugra"), EntityMapping.idMap[43]);
         EntityMapping.nameMap.put(NewHorizon.name("nucleoid"), NucleoidEntity::new);
         EntityMapping.nameMap.put(NewHorizon.name("restriction-enzyme"), EntityMapping.idMap[24]);
+        EntityMapping.nameMap.put(NewHorizon.name("histone"), EntityMapping.idMap[24]);
+        EntityMapping.nameMap.put(NewHorizon.name("lymph"), EntityMapping.idMap[24]);
         EntityMapping.nameMap.put(NewHorizon.name("ancient-probe"), ProbeEntity::new);
 
         EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
@@ -723,13 +726,13 @@ public class NHUnitTypes {
                     shootStatus = NHStatusEffects.stronghold;
                     shootStatusDuration = 0;
 
-                    status = StatusEffects.melting;
+                    status = NHStatusEffects.ultFireBurn;
                     statusDuration = 600f;
 
                     despawnShake = hitShake = 2f;
                     collidesAir = collidesGround = true;
 
-                    fragBullets = 1;
+                    fragBullets = 2;
                     fragBullet = new ChainBulletType(80) {{
                         length = 0;
                         collidesAir = collidesGround = true;
@@ -1066,6 +1069,269 @@ public class NHUnitTypes {
             }
         };
 
+        lymph = new AncientUnitType("lymph") {
+            {
+                speed = 0.6F;
+                drag = 0.1F;
+                hitSize = 30.0F;
+                rotateSpeed = 3.0F;
+                health = 8000.0F;
+                armor = 32.0F;
+                fogRadius = 64.0F;
+                legCount = 6;
+                legLength = 24.2F;
+                legGroupSize = 3;
+
+                lockLegBase = true;
+                legContinuousMove = true;
+
+                legLengthScl = 0.97F;
+                legForwardScl = 0.95F;
+                legMoveSpace = 0.8F;
+
+                rippleScale = 2F;
+                stepShake = 0.5F;
+
+                legExtension = 6F;
+                legBaseOffset = 12.8F;
+
+                legMaxLength = 1.05F;
+                legMinLength = 0.25F;
+
+                baseLegStraightness = -0.36F;
+                //legStraightness = -0.09F;
+                legStraightLength = 1.25F;
+
+                legPairOffset = 0.5F;
+                hovering = false;
+                shadowElevation = 0.22F;
+                groundLayer = 74.0F;
+                faceTarget = true;
+                abilities.add(new AdaptedHealAbility(450, 900, hitSize * 1.5f, healColor).modify(a -> {
+                    a.selfHealReloadTime = 420;
+                    a.selfHealAmount /= 16;
+                }), new TurretShield() {{
+                    radius = hitSize + 8f;
+                    angle = 240;
+                    regen = 12f;
+                    cooldown = 60f * 10f;
+                    max = 6000f;
+                    width = 22f;
+                    drawWidth = 11f;
+                    whenShooting = false;
+                    chanceDeflect = -1f;
+                }
+                    @Override
+                    public void update(Unit unit){
+                        if(data < max){
+                            data += Time.delta * regen;
+                        }
+
+                        if(unit.isShooting()){
+                            alpha = Math.max(alpha - Time.delta / 10f, 0f);
+                            widthScale = Mathf.lerpDelta(widthScale, 0f, 0.11f);
+                            return;
+                        }
+                        super.update(unit);
+                    }
+                }, new ShockWaveAbility(150f, 80f, 120f, healColor).modify(a -> {
+                    a.status(NHStatusEffects.emp1, 45f);
+                    a.maxSpeed = 0.1f;
+                    a.boltNum = 0;
+                    a.boltWidth = 1;
+                    a.shootSound = Sounds.explosionDull;
+                }));
+                weapons.add(new Weapon(NewHorizon.name("lymph-weapon")) {
+                    final Color teamColor = new Color();
+                    float drawRotAngle = 0f;
+                    float rotAngle = 0f;
+
+                    final float baseRotSpeed = 0.5f;
+                    final float activeRotSpeed = 1.2f;
+                    float curRotSpeed = baseRotSpeed;
+                    {
+                        mirror = false;
+                        top = true;
+                        rotate = false;
+                        x = 0f;
+                        y = 0f;
+                        shootY = 20f;
+
+                        reload = 120f;
+                        shootWarmupSpeed = 0.05f;
+                        minWarmup = 0.6f;
+                        cooldownTime = 90f;
+
+                        parts.add(new RegionPart("-grab") {{
+                            layerOffset = -0.001f;
+                            heatLayerOffset = 0;
+
+                            mirror = outline = true;
+                            layer = groundLayer + 0.02f;
+                            x = 0.5f;
+                            y = 0.5f;
+
+                            moveY = -0.5f;
+                            moveRot = 40f;
+                            heatLightOpacity = 0.75f;
+
+                            heatColor = Pal.techBlue;
+                            progress = PartProgress.warmup;
+                            heatProgress = PartProgress.warmup.compress(0.85f, 0.975f);
+                        }});
+
+                        parts.add(new RegionPart("-grab2") {{
+                            layerOffset = -0.001f;
+                            heatLayerOffset = 0;
+
+                            mirror = outline = true;
+                            layer = groundLayer + 0.01f;
+                            x = -1f;
+                            y = -3.4f;
+
+                            moveX = 1f;
+                            moveY = 20f;
+                            heatLightOpacity = 0.75f;
+
+                            heatColor = Pal.techBlue;
+                            progress = PartProgress.warmup;
+                            heatProgress = PartProgress.warmup.compress(0.85f, 0.975f);
+                        }});
+
+                        parts.add(new DrawPart() {
+                            float triScl = 1f;
+                            float radius = 6f;
+                            float forceZ = Layer.effect + 0.01f;
+
+                            @Override
+                            public void draw(PartParams params) {
+                                float scale = Math.max(params.warmup, params.heat);
+                                boolean active = scale > 0.0001f;
+                                float z = Draw.z();
+                                if(forceZ > 0f) Draw.z(forceZ);
+                                float rot = params.rotation - 90f;
+
+                                Color color = Tmp.c1.set(teamColor).lerp(Color.white, 0.1f + Mathf.absin(4f, 0.15f));
+
+                                Tmp.v1.set(0f, 20f).rotate(rot).add(params.x, params.y);
+                                float ex = Tmp.v1.x, ey = Tmp.v1.y;
+
+                                Draw.color(color);
+                                float ang = drawRotAngle;
+
+                                for(int i : Mathf.signs){
+                                    DrawFunc.tri(ex, ey, radius / 3f * triScl, radius * 2.35f * triScl, ang + 90f * i);
+                                }
+
+                                float ang2 = -drawRotAngle * 1.5f;
+                                for(int i : Mathf.signs){
+                                    DrawFunc.tri(ex, ey, radius / 4f * triScl, radius * 1.85f * triScl, ang2 + 90f * i);
+                                }
+
+                                if(active){
+                                    float rad = (radius + Mathf.absin(Time.time, 4f, radius / 4f)) * scale;
+
+                                    Draw.color(color);
+                                    Fill.circle(ex, ey, rad);
+                                    Draw.color(Color.white);
+                                    Fill.circle(ex, ey, rad * 0.785f);
+
+                                    Draw.color(Color.black);
+                                    Fill.circle(ex, ey, rad * 0.7f);
+
+                                    Drawf.light(ex, ey, rad * 1.9f, color, 0.85f * scale);
+                                }
+
+                                Draw.reset();
+                                Draw.z(z);
+                            }
+                        });
+
+                        BulletType b = NHBullets.guardianBulletLightningBall.copy();
+                        b.damage = 120f;
+                        b.speed = 3f;
+                        b.lifetime = 120f;
+                        b.lightning = 2;
+                        b.lightningLength = 8;
+                        b.lightningDamage = 30f;
+                        b.homingRange = 20f;
+                        b.homingPower = 0.05f;
+                        b.homingDelay = 10f;
+                        this.bullet = b;
+                    }
+
+                    @Override
+                    public void draw(Unit unit, WeaponMount mount){
+                        teamColor.set(unit.team.color);
+
+                        boolean active = mount.warmup > 0.01f;
+                        float targetSpeed = active ? activeRotSpeed : baseRotSpeed;
+
+                        if(!Vars.state.isPaused()){
+                            curRotSpeed = Mathf.lerpDelta(curRotSpeed, targetSpeed, 0.08f);
+                            drawRotAngle += curRotSpeed * Time.delta;
+                        }
+
+                        super.draw(unit, mount);
+                    }
+                });
+                weapons.add(new Weapon(NewHorizon.name("lymph-turret1")) {{
+                    mirror = true;
+                    rotate = false;
+                    top = true;
+                    //display = false;
+                    x = -1.2f;
+                    y = -2f;
+                    reload = 6.0F;
+                    targetInterval = 8.0F;
+                    targetSwitchInterval = 8.0F;
+                    rotateSpeed = 8;
+                    shootCone = 30f;
+                    layerOffset = 10f;
+                    shoot = new ShootMulti(new ShootBarrel() {{
+                        shots = 2;
+                        barrels = new float[]
+                                {
+                                        10, -1, 0,
+                                        10, -1, 0
+                                };
+                    }}, new ShootPattern() {{
+                        shots = 1;
+                        shotDelay = 4.5f;
+                    }});
+                    bullet= new TypedDamageBulletType() {{
+                        damage = 120f;
+                        buildingDamageMultiplier = 0.8f;
+                        shieldDamageMultiplier = 1.5f;
+
+                        speed = 8f;
+                        lifetime = 40f;
+
+                        width = 8f;
+                        height = 42f;
+
+                        shrinkX = 0;
+
+                        trailWidth = 1.7f;
+                        trailLength = 9;
+
+                        trailColor = backColor = hitColor = lightColor = lightningColor = NHColor.ancient;
+                        frontColor = Color.white;
+
+                        shootEffect = NHFx.square(backColor, 45f, 5, 18, 4);
+                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+
+                        despawnEffect = hitEffect = NHFx.square(backColor, 85f, 5, 32, 5);
+
+                        status = NHStatusEffects.emp2;
+                        statusDuration = 30f;
+
+                        pierceCap = 2;
+                    }};
+                }});
+            }
+        };
+
         restrictionEnzyme = new AncientUnitType("restriction-enzyme") {
             {
                 speed = 0.6F;
@@ -1151,6 +1417,169 @@ public class NHUnitTypes {
                 }});
             }
 
+            @Override
+            public void createIcons(MultiPacker packer) {
+                super.createIcons(packer);
+                NHPixmap.createIcons(packer, this);
+            }
+        };
+        histone = new AncientUnitType("histone") {
+            {
+                speed = 1.2F;
+                drag = 0.1F;
+                hitSize = 12.0F;
+                rotateSpeed = 3.0F;
+                health = 1600.0F;
+                armor = 6.0F;
+                fogRadius = 24.0F;
+                stepShake = 0.75F;
+                legCount = 4;
+                legLength = 18.0F;
+                legGroupSize = 2;
+                lockLegBase = true;
+                legContinuousMove = true;
+                legExtension = -3.0F;
+                legBaseOffset = 4.0F;
+                legMaxLength = 0.9F;
+                legMinLength = 0.3F;
+                legLengthScl = 0.925F;
+                legForwardScl = 0.9075F;
+                legMoveSpace = 1.085F;
+                hovering = true;
+                shadowElevation = 0.22F;
+                groundLayer = 74.0F;
+                faceTarget = false;
+                //constructor = LegsUnit::create;
+                abilities.add(new AdaptedHealAbility(50, 600, hitSize * 1.5f, healColor).modify(a -> {
+                    a.selfHealReloadTime = 420;
+                    a.selfHealAmount /= 16;
+                }), new TurretShield() {{
+                    radius = hitSize - 8f;
+                    angle = 90;
+                    regen = 2.5f;
+                    cooldown = 60f * 10f;
+                    max = 600f;
+                    width = 6f;
+                    drawWidth = 6f;
+                    whenShooting = true;
+                    chanceDeflect = -1f;
+                }}, new ShockWaveAbility(150f, 80f, 30f, healColor).modify(a -> {
+                    a.status(NHStatusEffects.emp1, 45f);
+                    a.maxSpeed = 0.1f;
+                    a.boltNum = 0;
+                    a.boltWidth = 1;
+                    a.shootSound = Sounds.explosionDull;
+                }));
+                weapons.add(new Weapon(NewHorizon.name("histone-laser")){{
+                    shoot = new ShootAlternate(2f);
+                    shootSound = Sounds.shootLocus;
+                    layerOffset = 0.0001f;
+                    reload = 18f;
+                    shootY = 4f;
+                    recoil = 0.5f;
+                    rotate = true;
+                    rotateSpeed = 2.5f;
+                    mirror = false;
+                    shootCone = 2f;
+                    x = 0f;
+                    y = 0f;
+                    heatColor = NHColor.ancientHeat;
+                    shootWarmupSpeed /= 1f;
+                    minWarmup = 0.54f;
+
+                    cooldownTime = reload - 30f;
+
+                    parts.addAll(
+
+                            new RegionPart("-back"){{
+                                outline = true;
+                                heatLayerOffset = 0;
+                                heatLightOpacity = 0.4f;
+                                heatColor = NHColor.ancientHeat;
+                                layer = groundLayer + 0.01f;
+                            }},
+                            new RegionPart("-barrel"){{
+                                outline = true;
+                                moveY = -4;
+                                heatLayerOffset = 0;
+                                heatLightOpacity = 0.4f;
+                                progress = PartProgress.recoil;
+                                heatColor = NHColor.ancientHeat;
+                                layer = groundLayer + 0.01f;
+                            }}
+
+                    );
+                    bullet = new RailBulletType() {
+                        {
+                            length = 200f;
+                            damage = 75f;
+
+                            hitColor = NHColor.ancient;
+                            hitEffect = endEffect = NHFx.emped;
+                            //pierceDamageFactor = 0.4f;
+                            pierceCap = 3;
+                            pierce = true;
+                            pierceBuilding = true;
+
+                            status = NHStatusEffects.emp1;
+                            statusDuration = 60f;
+
+                            smokeEffect = Fx.colorSpark;
+
+                            endEffect = new Effect(16f, e -> {
+                                color(e.color);
+                                Drawf.tri(e.x, e.y, e.fout() * 1.5f, 6f, e.rotation);
+                            });
+
+                            shootEffect = new Effect(16f, e -> {
+                                color(e.color);
+                                float w = 1.2f + 4 * e.fout();
+
+                                Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+                                color(e.color);
+
+                                for (int i : Mathf.signs) {
+                                    Drawf.tri(e.x, e.y, w * 0.9f, 22f * e.fout(), e.rotation + i * 60f);
+                                }
+
+                                Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+                            });
+
+                            lineEffect = new Effect(25f, 600, e -> {
+                                if (!(e.data instanceof Vec2)) return;
+
+                                Vec2 v = (Vec2) e.data;
+
+                                color(e.color);
+                                stroke((e.fout() + 0.5f) * 2f);
+
+                                Fx.rand.setSeed(e.id);
+                                for (int i = 0; i < 40; i++) {
+                                    Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                                    Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                                }
+
+                                e.scaled(16f, b -> {
+                                    stroke(b.fout() * 3f);
+                                    color(e.color);
+                                    Lines.line(e.x, e.y, v.x, v.y);
+                                });
+                            });
+                        }
+
+                        @Override
+                        public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct) {
+                            super.hitTile(b, build, x, y, initialHealth, direct);
+
+                            build.applySlowdown(0.25f, 240f);
+                        }
+                    };
+                            }
+                            }
+                );
+
+
+            }
             @Override
             public void createIcons(MultiPacker packer) {
                 super.createIcons(packer);
@@ -1590,9 +2019,9 @@ public class NHUnitTypes {
                         shots = 3;
                         barrels = new float[]
                                 {
-                                        -96, 0, 0,
-                                        -82, 0, 0,
-                                        -110, 0, 0,
+                                        -106, 0, 0,
+                                        -92, 0, 0,
+                                        -120, 0, 0,
                                 };
                     }}, new ShootPattern() {{
                         shots = 15;
@@ -1662,15 +2091,15 @@ public class NHUnitTypes {
                     parts.add(new RegionPart("-cooler") {{
                         under = outline = true;
                         rotation = -90;
-                        y = 49.5f;
-                        x = -69.5f;
+                        y = 63.5f;
+                        x = -96.5f;
                         moveY = -7f;
-                        progress = PartProgress.warmup;
+                        progress = PartProgress.smoothReload;
                     }}, new RegionPart("-silo") {{
                         under = outline = true;
                         rotation = -90;
-                        y = 62.5f;
-                        x = -78.75f;
+                        y = 67.5f;
+                        x = -98.75f;
                     }});
                 }});
             }
@@ -1776,7 +2205,7 @@ public class NHUnitTypes {
                     a.selfHealAmount /= 8;
                 }));
 
-                class PestEngine extends UnitEngine {
+                /*class PestEngine extends UnitEngine {
                     float triScl = 1;
 
                     public PestEngine(float x, float y, float radius, float rotation, float triScl) {
@@ -1834,10 +2263,10 @@ public class NHUnitTypes {
 
 //					Draw.z(z);
                     }
-                }
+                }*/
 
-                engines.add(new PestEngine(0f, -engineOffset, 16f, -90f));
-                engines.add(new PestEngine(0f, -115, 6f, -90f, 0.3f));
+                engines.add(new AncientEngine.PestEngine(0f, -engineOffset, 16f, -90f));
+                engines.add(new AncientEngine.PestEngine(0f, -115, 6f, -90f, 0.3f));
 
                 engines.add(new AncientEngine(0f, -engineOffset, 16f, -90f) {{
                     forceZ = Layer.flyingUnit - 1f;
@@ -2075,6 +2504,91 @@ public class NHUnitTypes {
                 NHPixmap.createIcons(packer, this);
             }
         };
+
+        /*veil = new AncientUnitType("veil") {
+            {
+                lowAltitude = true;
+                itemCapacity = 300;
+                health = 80000.0F;
+                speed = 2F;
+                accel = 0.04F;
+                drag = 0.025F;
+                flying = true;
+                hitSize = 80.0F;
+                armor = 72.0F;
+                engineOffset = -1.0F;
+                flyingLayer = Layer.flyingUnitLow;
+                engineSize = 0F;
+                engineLayer = Layer.effect+0.01f;
+                rotateSpeed = 1.5F;
+                buildSpeed = 2.8f;
+                engines.add(new AncientEngine.PestEngine(0f, -1, 6f, -90f));
+                engines.add(new AncientEngine(0f, -1, 6f, -90f));
+                engines.add(new AncientEngine.PestEngine(0f, -20, 2f, -90f,0f));
+                engines.add(new AncientEngine(0f, -20, 2f, -90f));
+
+                engines.add(new AncientEngine(32, -3f, 6.5f, -90, 0.85f, 0.8f, 2.6f){{
+                    forceZ =Layer.flyingUnitLow - 0.01f;
+                }});
+                engines.add(new AncientEngine(-32, -3f, 6.5f, -90, 0.85f, 0.8f, 2.6f){{
+                    forceZ = Layer.flyingUnitLow - 0.01f;
+                }});
+                abilities.add(new AdaptedHealAbility(50, 600, hitSize * 1.5f, healColor).modify(a -> {
+                    a.selfHealReloadTime = 420;
+                    a.selfHealAmount /= 16;
+                }), new TurretShield() {{
+                    radius = hitSize + 10f;
+                    angle = 120;
+                    regen = 20f;
+                    cooldown = 60f * 15f;
+                    max = 20000f;
+                    width = 18f;
+                    drawWidth = 18f;
+                    whenShooting = false;
+                    chanceDeflect = -1f;
+                }}, new ShockWaveAbility(150f, 80f, 30f, healColor).modify(a -> {
+                    a.status(NHStatusEffects.emp1, 45f);
+                    a.maxSpeed = 0.1f;
+                    a.boltNum = 0;
+                    a.boltWidth = 1;
+                    a.shootSound = Sounds.explosionDull;
+                }));
+                weapons.add(new Weapon(NewHorizon.name("veil-weapon")) {{
+                    mirror = true;
+                    rotate = true;
+                    rotationLimit = 30f;
+                    rotateSpeed = 0.5f;
+                    top = true;
+                    //display = false;
+                    x = 32f;
+                    y = 16f;
+                    reload = 30F;
+                    targetInterval = 8.0F;
+                    targetSwitchInterval = 8.0F;
+                    shootCone = 10f;
+                    layerOffset = 0.1f;
+                    shoot = new ShootMulti(new ShootBarrel() {{
+                        shots = 1;
+                        barrels = new float[]
+                                {
+                                        0, 4, 0
+                                };
+                    }},
+                     new ShootPattern() {{
+                        shots = 1;
+                        shotDelay = 4.5f;
+                    }}
+                    );
+
+                    BulletType b= NHBullets.laugraBullet.copy();
+                    b.buildingDamageMultiplier = 1.2f;
+                    b.pierceDamageFactor = 0.6f;
+                    this.bullet = b;
+
+                }});
+
+            }
+        };*/
 
         hurricane = new NHUnitType("hurricane") {
             {
@@ -2464,7 +2978,7 @@ public class NHUnitTypes {
         };
 
         striker = new NHUnitType("striker"){{
-			outlineColor = grayOutline;
+			outlineColor = OColor;
 			aiController = SniperAI::new;
 			targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.turret, BlockFlag.generator, null};
 			weapons.add(new Weapon("striker-weapon"){{
@@ -2484,11 +2998,11 @@ public class NHUnitTypes {
                     hitSize = 16f;
                     lifetime =60;
                 }};
-				chargeSound = Sounds.none;
-				shootSound = Sounds.none;
-				shootStatus = StatusEffects.slow;
-				shootStatusDuration = bullet.lifetime + 60f;
-			}}, closeAATurret);
+                chargeSound = Sounds.none;
+                shootSound = Sounds.shootLancer;
+                shootStatus = StatusEffects.slow;
+                shootStatusDuration = bullet.lifetime + 60f;
+            }}, closeAATurret);
             weapons.add(new Weapon(name + "-missile") {{
                 reload = 240f;
                 //xRand = 10f;
@@ -2584,22 +3098,22 @@ public class NHUnitTypes {
                     x = -78.75f;
                 }});*/
             }});
-			constructor = EntityMapping.map(3);
-			lowAltitude = true;
-			health = 5500.0F;
-			speed = 0.8F;
-			accel = 0.02F;
-			drag = 0.025F;
-			flying = true;
-			hitSize = 30.0F;
-			armor = 4.0F;
-			engineOffset = 28.5F;
-			engineSize = 6.0F;
-			rotateSpeed = 1.35F;
-			//buildSpeed = 0.8f;
-		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
-		};
+            constructor = EntityMapping.map(3);
+            lowAltitude = true;
+            health = 9500.0F;
+            speed = 0.8F;
+            accel = 0.02F;
+            drag = 0.025F;
+            flying = true;
+            hitSize = 30.0F;
+            armor = 40F;
+            engineOffset = 28.5F;
+            engineSize = 6.0F;
+            rotateSpeed = 1.35F;
+            //buildSpeed = 0.8f;
+        }
+            @Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+        };
 
         naxos = new NHUnitType("naxos") {
             {
@@ -2988,7 +3502,7 @@ public class NHUnitTypes {
 
 
         relay = new NHUnitType("relay"){{
-			outlineColor = grayOutline;
+			outlineColor = OColor;
 			armor = 6;
 			buildBeamOffset = 6f;
 			hitSize = 20f;
@@ -2999,53 +3513,71 @@ public class NHUnitTypes {
 			accel = 0.12f;
 			rotateSpeed = 5f;
 
-			//buildSpeed = 1.125f;
+            //buildSpeed = 1.125f;
 
-			trailLength = 70;
-			trailScl = 1.65f;
+            trailLength = 70;
+            trailScl = 1.65f;
 
-			weapons.add(new Weapon(NewHorizon.name("primary-weapon")){{
-				mirror = top = rotate = alternate = true;
-				reload = 60f;
-				shoot = new ShootPattern(){{
-					shotDelay = 6f;
-					shots = 4;
-				}};
+            weapons.add(new Weapon(NewHorizon.name("primary-weapon")){{
+                mirror = false;
+                top = rotate = true;
+                alternate = true;
+                reload = 60f;
+                shoot = new ShootAlternate(){{
+                    shots = 4;
+                    shotDelay = 6f;
+                    spread = 8f;
+                }};
+                x = 0f;
+                y = -3f;
+                shootY = 15f;
+                rotateSpeed = 12f;
+                velocityRnd = 0.075f;
+                inaccuracy = 5f;
+                shootSound = NHSounds.shootMissile1;
 
-				x = 5f;
-				rotateSpeed = 12f;
-				y = -6f;
-				shootY = 18f;
-				velocityRnd = 0.075f;
-				inaccuracy = 5f;
-				shootSound = NHSounds.shootMissile1;
-				bullet = new BasicBulletType(5f, 25f, "missile-large"){{
-					lifetime = 65f;
-					backColor = hitColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
-					frontColor = NHColor.lightSkyFront;
+                parts.addAll(
+                        new RegionPart("-base"){{
+                            mirror = true;
+                            //under = true;
+                            layerOffset = 1f;
+                        }},
+                        new RegionPart("-barrel"){{
+                            mirror = outline =true;
+                            under = false;
+                            layerOffset = 1f;
+                            progress = PartProgress.recoil;
+                            moveY = -3f;
+                        }}
+                );
 
-					splashDamage = damage / 4f;
-					splashDamageRadius = 24f;
+                bullet = new BasicBulletType(5f, 25f, "missile-large"){{
+                    lifetime = 65f;
+                    backColor = hitColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
+                    frontColor = NHColor.lightSkyFront;
 
-					hitEffect = NHFx.blast(backColor, splashDamageRadius);
-					despawnEffect = NHFx.square45_6_45;
-					shootEffect = NHFx.shootCircleSmall(backColor);
-					smokeEffect = Fx.shootBigSmoke;
+                    splashDamage = damage / 4f;
+                    splashDamageRadius = 24f;
 
-					trailLength = 12;
-					trailWidth = 1.75f;
+                    hitEffect = NHFx.blast(backColor, splashDamageRadius);
+                    despawnEffect = NHFx.square45_6_45;
+                    shootEffect = NHFx.shootCircleSmall(backColor);
+                    smokeEffect = Fx.shootBigSmoke;
 
-					width = 7f;
-					height = 30f;
+                    trailLength = 12;
+                    trailWidth = 1.75f;
 
-					homingDelay = 5f;
-					homingPower = 0.02f;
-					homingRange = 200f;
-				}};
-			}});
-		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
-		};
+                    width = 7f;
+                    height = 30f;
+
+                    homingDelay = 5f;
+                    homingPower = 0.02f;
+                    homingRange = 200f;
+                }};
+            }});
+        }
+            @Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+        };
 
 
         ghost = new NHUnitType("ghost") {

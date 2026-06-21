@@ -1,5 +1,6 @@
 package newhorizon.content.blocks;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -97,7 +98,7 @@ public class TurretBlock {
 
             enableDrawStatus = false;
 
-            drawer = new DrawTurret() {{
+            drawer = new DrawTurret("ancient-artillery") {{
                 parts.addAll(
                         new RegionPart("-additional") {{
                             drawRegion = false;
@@ -252,7 +253,13 @@ public class TurretBlock {
                         }}
                 );
             }};
-        }};
+        }
+            @Override
+            public void loadIcon() {
+                super.loadIcon();
+                uiIcon = Core.atlas.find(name + "-icon", name);
+            }
+        };
 
         thermo = new PowerTurret("thermo-turret") {{
             requirements(Category.turret, BuildVisibility.shown, with(

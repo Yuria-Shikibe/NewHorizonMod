@@ -35,6 +35,16 @@ allprojects{
     }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'com.github.Anuken.Arc') {
+            details.useVersion 'v158.1'
+            details.because '强制所有 Arc 模块用 v158.1，绕开 core v158.1 POM 里失效的 commit 0e5679dc9c'
+        }
+    }
+
+}
+
 dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:v158.1"
     compileOnly "com.github.Anuken.Mindustry:core:v158.1"
