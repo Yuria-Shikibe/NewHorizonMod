@@ -1427,7 +1427,7 @@ public class NHUnitTypes {
             {
                 speed = 1.2F;
                 drag = 0.1F;
-                hitSize = 21.0F;
+                hitSize = 12.0F;
                 rotateSpeed = 3.0F;
                 health = 1600.0F;
                 armor = 6.0F;
