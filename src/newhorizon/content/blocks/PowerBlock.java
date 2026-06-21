@@ -361,7 +361,7 @@ public class PowerBlock {
             public TextureRegion[] baseRegions, reflectRegions;
 
             {
-                requirements(Category.power, with(
+                requirements(Category.production, with(
                         NHItems.silicar, 20
                 ));
                 size = 3;
