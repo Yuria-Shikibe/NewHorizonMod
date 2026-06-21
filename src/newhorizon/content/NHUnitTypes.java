@@ -3519,20 +3519,38 @@ public class NHUnitTypes {
             trailScl = 1.65f;
 
             weapons.add(new Weapon(NewHorizon.name("primary-weapon")){{
-                mirror = top = rotate = alternate = true;
+                mirror = false;
+                top = rotate = true;
+                alternate = true;
                 reload = 60f;
-                shoot = new ShootPattern(){{
-                    shotDelay = 6f;
+                shoot = new ShootAlternate(){{
                     shots = 4;
+                    shotDelay = 6f;
+                    spread = 8f;
                 }};
-
-                x = 5f;
+                x = 0f;
+                y = -3f;
+                shootY = 15f;
                 rotateSpeed = 12f;
-                y = -6f;
-                shootY = 18f;
                 velocityRnd = 0.075f;
                 inaccuracy = 5f;
                 shootSound = NHSounds.shootMissile1;
+
+                parts.addAll(
+                        new RegionPart("-base"){{
+                            mirror = true;
+                            //under = true;
+                            layerOffset = 1f;
+                        }},
+                        new RegionPart("-barrel"){{
+                            mirror = outline =true;
+                            under = false;
+                            layerOffset = 1f;
+                            progress = PartProgress.recoil;
+                            moveY = -3f;
+                        }}
+                );
+
                 bullet = new BasicBulletType(5f, 25f, "missile-large"){{
                     lifetime = 65f;
                     backColor = hitColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
