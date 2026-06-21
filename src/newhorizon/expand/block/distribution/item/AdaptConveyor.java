@@ -17,7 +17,10 @@ import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.storage.Unloader;
 import newhorizon.util.graphic.SpriteUtil;
+import arc.math.geom.Geometry;
+import arc.math.geom.Point2;
 
 import java.sql.Blob;
 
@@ -57,20 +60,44 @@ public class AdaptConveyor extends ArmoredConveyor {
 
     public boolean isLogisticComponentDirectional(Building source) {
         Block b = source.block;
-        return b instanceof DirectionBridge || b instanceof Duct;
+        return b instanceof DirectionBridge ||
+                b instanceof Duct ||
+                b instanceof Conveyor ||
+                b instanceof DirectionalUnloader;
     }
 
-    public boolean isLogisticComponentDirectional(Block block) {
-        return block instanceof DirectionBridge || block instanceof Duct;
-    }
+    /*public boolean isLogisticComponentDirectional(Block block) {
+        return block instanceof DirectionBridge ||
+                block instanceof Duct;
+    }*/
 
     public boolean isLogisticComponentOmni(Building source) {
         Block b = source.block;
-        return b instanceof Junction || b instanceof OverflowGate || b instanceof OverflowDuct || b instanceof Router || b instanceof Sorter || b instanceof DuctRouter;
+        return b instanceof Junction ||
+                b instanceof OverflowGate ||
+                b instanceof OverflowDuct ||
+                b instanceof Router ||
+                b instanceof Sorter ||
+                b instanceof DuctRouter||
+                b instanceof Unloader ||
+                b instanceof ItemBridge;
+    }
+    /*public boolean isLogisticComponentOmni(Block block) {
+        return block instanceof Junction || block instanceof OverflowGate || block instanceof OverflowDuct || block instanceof Router || block instanceof Sorter || block instanceof DuctRouter;
+    }*/
+    public boolean rotatedOutputFaces(Tile tile, int otherx, int othery, int otherrot, Block otherblock) {
+        return otherblock.rotatedOutput(otherx, othery, tile) &&
+                Point2.equals(
+                        otherx + Geometry.d4x(otherrot),
+                        othery + Geometry.d4y(otherrot),
+                        tile.x,
+                        tile.y
+                );
     }
 
-    public boolean isLogisticComponentOmni(Block block) {
-        return block instanceof Junction || block instanceof OverflowGate || block instanceof OverflowDuct || block instanceof Router || block instanceof Sorter || block instanceof DuctRouter;
+    public boolean rotatedOutputFaces(Building source, Building self) {
+        return source.block.rotatedOutput(source.tileX(), source.tileY(), self.tile) &&
+                source.front() == self;
     }
 
     public boolean blends(Building self, Building other) {
@@ -82,7 +109,9 @@ public class AdaptConveyor extends ArmoredConveyor {
     @Override
     public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
         return (otherblock.outputsItems() && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) ||
-                (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems || isLogisticComponentDirectional(otherblock));
+                (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems) ||
+                //isLogisticComponentDirectional(otherblock) ||
+                rotatedOutputFaces(tile, otherx, othery, otherrot, otherblock);
     }
 
 
@@ -175,9 +204,15 @@ public class AdaptConveyor extends ArmoredConveyor {
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return super.acceptItem(source, item) && (isLogisticComponentOmni(source) ||
-                    Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation ||
-                    source.front() == this && isLogisticComponentDirectional(source));
+            if(source.block.rotatedOutput(source.tileX(), source.tileY(), tile)){
+                return super.acceptItem(source, item) && rotatedOutputFaces(source, this);
+            }
+
+            return super.acceptItem(source, item) && (
+                    isLogisticComponentOmni(source) ||
+                            Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation ||
+                            source.front() == this && isLogisticComponentDirectional(source)
+            );
         }
     }
 }
