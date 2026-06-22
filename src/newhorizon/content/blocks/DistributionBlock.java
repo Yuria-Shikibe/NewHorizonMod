@@ -45,7 +45,7 @@ public class DistributionBlock {
             health = 560;
             speed = 2f;
 
-            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.lead, 5));
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2));
         }};
 
         multiJunction = new FloatMultiJunction("multi-junction") {{
@@ -54,7 +54,7 @@ public class DistributionBlock {
             speed = 12f;
             capacity = 12;
 
-            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2));
         }};
         multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor") {{
             requirements(Category.distribution, with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));

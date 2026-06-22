@@ -705,7 +705,7 @@ public class NHBlocks {
             shootWarmupSpeed /= 2f;
             cooldownTime = 65f;
 
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.presstanium, 250, NHItems.juniorProcessor, 120, Items.beryllium, 90, NHItems.zeta, 300));
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.presstanium, 250, NHItems.juniorProcessor, 120, Items.carbide, 90, NHItems.zeta, 300));
             shootY -= 6f;
             shootType = new LightningLinkerBulletType(1.5f, 40) {{
                 lifetime = 110;
@@ -931,7 +931,7 @@ public class NHBlocks {
 
         gravity = new MultTractorBeamTurret("gravity") {{
             size = 3;
-            requirements(Category.turret, ItemStack.with(Items.metaglass, 35, NHItems.juniorProcessor, 15, Items.lead, 80, NHItems.presstanium, 45));
+            requirements(Category.turret, ItemStack.with(NHItems.juniorProcessor, 15, Items.tungsten, 80, NHItems.presstanium, 45));
             health = 1020;
             maxAttract = 8;
             shootCone = 60f;
