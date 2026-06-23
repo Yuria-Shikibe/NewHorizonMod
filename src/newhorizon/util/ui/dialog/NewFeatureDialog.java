@@ -14,6 +14,9 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHUnitTypes;
+import newhorizon.content.blocks.SpecialBlock;
+import newhorizon.content.units.AirUnitTypes;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -31,11 +34,38 @@ public class NewFeatureDialog extends BaseDialog {
         addCloseListener();
     }
 
-    public static FeatureLog[] getUpdateContent() {
-        Seq<FeatureLog> updates = Seq.with(
-                new FeatureLog(0, FeatureLog.featureType.IMPORTANT, NHContent.icon2)
-        );
-        return updates.toArray(FeatureLog.class);
+    private FeatureLog[] getUpdateContent() {
+        return new FeatureLog[]{
+                new FeatureLog(0, FeatureLog.featureType.IMPORTANT, NHContent.icon2),
+
+                new FeatureLog(0, FeatureLog.featureType.CONTENT, NHContent.icon2),
+
+                new FeatureLog(1, FeatureLog.featureType.CONTENT, SpecialBlock.coreConflux),
+                new FeatureLog(2, FeatureLog.featureType.CONTENT, SpecialBlock.coreArray),
+                new FeatureLog(3, FeatureLog.featureType.CONTENT, SpecialBlock.coreNexus),
+                new FeatureLog(4, FeatureLog.featureType.CONTENT, SpecialBlock.coreCluster),
+
+                new FeatureLog(5, FeatureLog.featureType.CONTENT, NHContent.icon2),
+
+                new FeatureLog(6, FeatureLog.featureType.CONTENT, NHUnitTypes.relay),
+                new FeatureLog(7, FeatureLog.featureType.CONTENT, AirUnitTypes.apparition),
+                new FeatureLog(8, FeatureLog.featureType.CONTENT, NHUnitTypes.striker),
+
+                new FeatureLog(9, FeatureLog.featureType.CONTENT, NHUnitTypes.lymph),
+                new FeatureLog(10, FeatureLog.featureType.CONTENT, NHUnitTypes.histone),
+
+                new FeatureLog(11, FeatureLog.featureType.CONTENT, NHContent.icon2),
+
+                new FeatureLog(12, FeatureLog.featureType.CONTENT, NHContent.icon2),
+                new FeatureLog(13, FeatureLog.featureType.CONTENT, NHContent.icon2),
+                new FeatureLog(14, FeatureLog.featureType.CONTENT, NHContent.icon2),
+                new FeatureLog(15, FeatureLog.featureType.CONTENT, NHContent.icon2),
+                new FeatureLog(16, FeatureLog.featureType.CONTENT, NHContent.icon2),
+
+                new FeatureLog(0, FeatureLog.featureType.BALANCE, NHContent.icon2),
+                new FeatureLog(1, FeatureLog.featureType.BALANCE, NHContent.icon2),
+                new FeatureLog(0, FeatureLog.featureType.FIX, NHContent.icon2)
+        };
     }
 
 
