@@ -289,7 +289,7 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             health = 300;
-            speed = 60f / 15f;
+            speed = 4f;
             hasPower = true;
             conductivePower = true;
             placeableLiquid = true;
@@ -304,7 +304,7 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             health = 300;
-            speed = 60f / 30f;
+            speed = 1f;
             hasPower = true;
             conductivePower = true;
             placeableLiquid = true;
