@@ -312,8 +312,8 @@ public class DistributionBlock {
 
         omniUnloader = new AdaptUnloader("omni-unloader") {{
             requirements(Category.distribution, BuildVisibility.shown, with(
-                    NHItems.hardLight, 10,
-                    Items.silicon, 4
+                    NHItems.presstanium, 10,
+                    NHItems.juniorProcessor, 4
             ));
 
             health = 300;
@@ -324,8 +324,8 @@ public class DistributionBlock {
 
         rapidUnloader = new AdaptUnloader("rapid-unloader") {{
             requirements(Category.distribution, BuildVisibility.shown, with(
-                    NHItems.hardLight, 10,
-                    NHItems.multipleSteel, 4
+                    NHItems.multipleSteel, 10,
+                    NHItems.juniorProcessor, 4
             ));
 
             health = 300;
