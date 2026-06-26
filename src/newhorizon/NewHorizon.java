@@ -193,10 +193,7 @@ public class NewHorizon extends Mod {
         }
     }
 
-    /** Synchronously generates the tech font and registers it with the asset manager. */
-    /**
-     * return "new-horizon-name" for sprite.
-     */
+    /** return "new-horizon-name" for sprite. */
     public static String name(String name) {
         return MOD_NAME + "-" + name;
     }

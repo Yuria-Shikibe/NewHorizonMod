@@ -19,32 +19,27 @@ public class NHLoadRenderer extends LoadRenderer{
     private static final Color bgColor = Color.valueOf("2c3037");
     private static final Color barColor = Color.valueOf("ffd37f").lerp(Color.black, 0.5f);
 
-    private float smoothProgress = 0f;
+    private float smoothProgress;
     private TextureRegion logoRegion;
 
     public static NHLoadRenderer create(){
-        // Try sun.misc.Unsafe (available on desktop JVM and Android ART)
+        // sun.misc.Unsafe — desktop JVM / Android ART
         try{
             Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
             Field f = unsafeClass.getDeclaredField("theUnsafe");
             f.setAccessible(true);
             Object unsafe = f.get(null);
-            java.lang.reflect.Method alloc = unsafeClass.getMethod("allocateInstance", Class.class);
-            NHLoadRenderer instance = (NHLoadRenderer)alloc.invoke(unsafe, NHLoadRenderer.class);
-            return instance;
+            return (NHLoadRenderer)unsafeClass.getMethod("allocateInstance", Class.class).invoke(unsafe, NHLoadRenderer.class);
         }catch(Throwable ignored){}
 
-        // Try Android dalvik.system.VMRuntime (fallback for older Android)
+        // dalvik.system.VMRuntime — older Android fallback
         try{
             Class<?> vmRuntime = Class.forName("dalvik.system.VMRuntime");
-            java.lang.reflect.Method getRuntime = vmRuntime.getMethod("getRuntime");
-            Object runtime = getRuntime.invoke(null);
-            java.lang.reflect.Method newInstance = vmRuntime.getMethod("newInstance", Class.class);
-            NHLoadRenderer instance = (NHLoadRenderer)newInstance.invoke(runtime, NHLoadRenderer.class);
-            return instance;
+            Object runtime = vmRuntime.getMethod("getRuntime").invoke(null);
+            return (NHLoadRenderer)vmRuntime.getMethod("newInstance", Class.class).invoke(runtime, NHLoadRenderer.class);
         }catch(Throwable ignored){}
 
-        throw new RuntimeException("No supported runtime object allocation method found for this platform.");
+        throw new RuntimeException("No supported runtime allocation method for this platform.");
     }
 
     private NHLoadRenderer(){}
@@ -91,8 +86,7 @@ public class NHLoadRenderer extends LoadRenderer{
         Lines.stroke(1.5f * s);
         Lines.rect(x, y, barWidth, barHeight);
 
-        // mod logo above progress bar (after atlas is loaded)
-        // logo above progress bar
+        // mod logo above progress bar
         drawModLogo(cx, cy + barHeight + 20 * s);
 
         Draw.flush();
