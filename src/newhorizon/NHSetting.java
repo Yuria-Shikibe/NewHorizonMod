@@ -42,7 +42,9 @@ public class NHSetting {
     EVENT_RAID = "nh-event-raid",
 
     DEBUGGING = "nh-debugging",
-            DEBUG_PANEL = "nh-debug-panel";
+            DEBUG_PANEL = "nh-debug-panel",
+
+    CUSTOM_LOADING_SCREEN = "nh-custom-loading-screen";
 
     public static boolean enableEffectDetail = true;
 
@@ -59,7 +61,8 @@ public class NHSetting {
     public static void load() {
         allSettings.put("control", Seq.with(
                 new BoolSetting(START_LOG, false, false),
-                new BoolSetting(EFFECT_DETAIL, true, true)
+                new BoolSetting(EFFECT_DETAIL, true, true),
+                new BoolSetting(CUSTOM_LOADING_SCREEN, false, true)
         ));
 
         allSettings.put("graphic", Seq.with(

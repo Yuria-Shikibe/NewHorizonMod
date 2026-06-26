@@ -3,6 +3,8 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.scene.ui.Image;
+import arc.scene.actions.Actions;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -19,6 +21,7 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
+import newhorizon.client.NHLoadRenderer;
 import newhorizon.content.*;
 import newhorizon.content.register.RecipeRegister;
 import newhorizon.content.register.UnitRecipeRegister;
@@ -26,6 +29,8 @@ import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
+
+import java.lang.reflect.Field;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -47,9 +52,29 @@ public class NewHorizon extends Mod {
     public NewHorizon() {
         DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 
+        // Experimental: replace the default loading screen with NH custom one.
+        // This runs during assets.update() → Vars.init() → mods.load() → loadMod(),
+        // so the original LoadRenderer has already drawn for the current frame.
+        // Our custom renderer will take effect starting from the next frame.
+        if(NHSetting.getBool(NHSetting.CUSTOM_LOADING_SCREEN)){
+            tryReplaceLoadRenderer();
+        }
+
         Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
         Events.on(EventType.PlayerConnect.class, e -> Call.clientPacketReliable("override_check", NHSetting.overrideStatus()));
         Events.on(ClientLoadEvent.class, e -> {
+            // fade-in overlay: black screen that fades out over 3 seconds
+            if(NHSetting.getBool(NHSetting.CUSTOM_LOADING_SCREEN)){
+                try{
+                    Image overlay = new Image(Styles.black);
+                    overlay.setFillParent(true);
+                    overlay.actions(Actions.sequence(Actions.fadeOut(3f), Actions.remove()));
+                    Core.scene.root.addChild(overlay);
+                }catch(Throwable t){
+                    Log.warn("[NH] Failed to create fade overlay.", t);
+                }
+            }
+
             Core.app.post(NHUI::init);
             updateServer();
             fetchNewRelease();
@@ -120,6 +145,55 @@ public class NewHorizon extends Mod {
         if (DEBUGGING) Log.info(obj);
     }
 
+    /**
+     * Attempts to replace Mindustry's default LoadRenderer with NHLoadRenderer.
+     * Uses reflection to access the private 'loader' field in ClientLauncher.
+     * <p>
+     * This is an experimental feature. If reflection fails, the default loading
+     * screen will remain — no crash, no side effects.
+     */
+    private void tryReplaceLoadRenderer() {
+        try {
+            // ClientLauncher is the platform instance, set in setup() before Vars is loaded
+            Object launcher = Vars.platform;
+            if (launcher == null) {
+                Log.warn("[NH] platform is null, cannot replace load renderer.");
+                return;
+            }
+
+            // Walk up the class hierarchy to find the 'loader' field
+            Field loaderField = null;
+            Class<?> cls = launcher.getClass();
+            while (cls != null) {
+                try {
+                    loaderField = cls.getDeclaredField("loader");
+                    break;
+                } catch (NoSuchFieldException e) {
+                    cls = cls.getSuperclass();
+                }
+            }
+
+            if (loaderField == null) {
+                Log.warn("[NH] Could not find 'loader' field in ClientLauncher.");
+                return;
+            }
+
+            loaderField.setAccessible(true);
+
+            // Replace with our custom renderer (created via Unsafe to bypass parent constructor).
+            // We intentionally do NOT dispose the original here — ClientLauncher.update() will
+            // call loader.dispose() on whatever is in the field when loading finishes.
+            // Our dispose() is a no-op (parent GL resources were never created).
+            loaderField.set(launcher, NHLoadRenderer.create());
+            Log.info("[NH] Successfully replaced loading screen renderer.");
+
+        } catch (Throwable t) {
+            Log.err("[NH] Custom loading screen not supported on this platform (using default). Platform: @ @",
+                t.getClass().getSimpleName(), t.getMessage());
+        }
+    }
+
+    /** Synchronously generates the tech font and registers it with the asset manager. */
     /**
      * return "new-horizon-name" for sprite.
      */
