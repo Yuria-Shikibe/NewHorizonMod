@@ -225,12 +225,12 @@ public class NHUI {
         float strength = DefaultRaidStrength.evaluate(player);
         int tier = DefaultRaidStrength.toTier(player);
         float next = DefaultRaidStrength.nextTierMin(tier);
-        String strengthText = Strings.fixed(strength, 1);
+        String strengthText = Strings.fixed(strength, 0);
 
         if (next < 0f) {
             return Core.bundle.format("mod.ui.raid-strength-bar-max", strengthText, tier);
         }
-        return Core.bundle.format("mod.ui.raid-strength-bar", strengthText, Strings.fixed(next, 1), tier);
+        return Core.bundle.format("mod.ui.raid-strength-bar", strengthText, Strings.fixed(next, 0), tier);
     }
 
     public static float getRaidStrengthProgress() {
