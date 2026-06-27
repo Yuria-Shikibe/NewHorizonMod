@@ -11,10 +11,9 @@ import mindustry.gen.Call;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
 import mindustry.ui.Styles;
-import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
-import newhorizon.content.bullets.RaidBullets;
+import newhorizon.expand.logic.RaidBulletUtil;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -118,13 +117,6 @@ public class RaidControlI implements LExecutor.LInstruction {
     }
 
     public BulletType bulletType() {
-        if (type.numi() < 10000) {
-            return switch (type.numi()) {
-                case 1 -> RaidBullets.defaultRaidBullet1;
-                default -> NHBullets.railGun1;
-            };
-        }
-        if (content.bullet(type.numi() - 10000) != null) return content.bullet(type.numi() - 10000);
-        return content.bullet(0);
+        return RaidBulletUtil.resolve(type.numi());
     }
 }

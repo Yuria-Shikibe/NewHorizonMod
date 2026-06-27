@@ -169,18 +169,23 @@ public class DelaySlideBar extends Table {
         Font font = Fonts.outline;
         GlyphLayout lay = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 
+        float scl = fontScale.get(this);
+        font.getData().setScale(scl);
         lay.setText(font, info.get());
+
+        float maxW = width / scaleX;
+        if (maxW > 0f && lay.width > maxW) {
+            scl = Math.max(0.325f, scl * maxW / lay.width);
+            font.getData().setScale(scl);
+            lay.setText(font, info.get());
+        }
 
         font.setColor(1f, 1f, 1f, 1f);
         font.getCache().clear();
 
-        float scl = fontScale.get(this);
-
-        font.getData().setScale(scl);
-
         font.getCache().addText(info.get(), x + width * 0.035f, y + height * 0.8125f);
 
-        if (lay.width > width / scaleX || scl < 0.325f) fontAlpha = Mathf.lerp(fontAlpha, 0, 0.2f);
+        if (lay.width > maxW || scl < 0.325f) fontAlpha = Mathf.lerp(fontAlpha, 0, 0.2f);
         else fontAlpha = Mathf.lerp(fontAlpha, 1, 0.05f);
 
         font.getCache().draw(parentAlpha * color.a * fontAlpha);

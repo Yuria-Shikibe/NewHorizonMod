@@ -14,6 +14,8 @@ public enum RaidPreset {
     EXPLOSIVE_RAID_1(RaidBullets.explosiveRaidBullet1, NHSounds.uiAlert1, "event-explosive-raid-t1", 15, 5, 1, 40),
 
     RAIL_RAID_1(RaidBullets.railRaidBullet1, NHSounds.uiAlert1, "event-rail-raid-t1", 15, 5, 1, 40),
+
+    CUSTOM_RAID(null, NHSounds.uiAlert1, "event-default-raid-t1", 15, 5, 1, 40),
     ;
 
     public static final RaidPreset[] all = values();

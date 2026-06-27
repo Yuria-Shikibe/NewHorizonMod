@@ -1,23 +1,31 @@
 package newhorizon.content;
 
+import arc.func.Boolf;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Blocks;
+import mindustry.game.MapObjectives;
 import mindustry.game.Team;
 import mindustry.gen.LogicIO;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
+import mindustry.logic.LStatement;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.LogicBlock;
-import newhorizon.NHSetting;
+import newhorizon.expand.game.MapObjectives.ReuseObjective;
+import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.ActionLStatement;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.CutsceneControl;
 import newhorizon.expand.logic.components.action.*;
 import newhorizon.expand.logic.cutscene.action.*;
 import newhorizon.expand.logic.cutscene.actionBus.*;
+import newhorizon.expand.logic.wip.NearestSpawn;
+import newhorizon.expand.logic.wip.RandomTarget;
+import newhorizon.expand.game.DefaultRaid;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,21 +40,15 @@ public class NHLogic {
     public static LCategory nhwproc, nhcutscene, nhaction;
     public static LCategory actionCameraControl, actionInputControl, actionCurtainControl, actionFlowControl;
 
+    private static boolean customRaidLogic;
+
     public static void load() {
         loadLCategory();
         loadLStatements();
+        loadWprocStatements();
         loadActions();
 
-        if (NHSetting.getBool(NHSetting.EVENT_RAID)) {
-            /*
-            Events.on(EventType.PlayEvent.class, event -> {
-                if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
-                updateWprocList();
-                registerDefaultRaid();
-            });
-
-             */
-        }
+        DefaultRaid.load();
     }
 
     public static void loadLCategory() {
@@ -68,6 +70,12 @@ public class NHLogic {
         registerStatement(GetActions.class);
         registerStatement(RunMainBus.class);
         registerStatement(RunSubBus.class);
+    }
+
+    public static void loadWprocStatements() {
+        registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultRaid.class, "defaultraid");
+        registerPrivilegedStatement(RandomTarget.class, "randtarget");
+        registerPrivilegedStatement(NearestSpawn.class, "nearspawn");
     }
 
     public static void loadActions() {
@@ -129,9 +137,31 @@ public class NHLogic {
         }
     }
 
-    public static void registerDefaultRaid() {
-        registerWproc("wait 300\n" + "setflag \"raid-trigger\" true", "raid protection period");
-        registerWproc("defaultraid raid-executor raid-timer 30 5 200 1 5 20", "raid event");
+    public static void registerPrivilegedStatement(Class<? extends LStatement> lstatement, String name) {
+        try {
+            Constructor<? extends LStatement> parserCons = lstatement.getDeclaredConstructor(String[].class);
+            Constructor<? extends LStatement> defaultCons = lstatement.getDeclaredConstructor();
+
+            parserCons.setAccessible(true);
+            defaultCons.setAccessible(true);
+
+            LAssembler.customParsers.put(name, (tokens) -> {
+                try {
+                    return parserCons.newInstance((Object) tokens);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException("Failed to create instance of " + lstatement.getSimpleName() + " with tokens", e);
+                }
+            });
+            LogicIO.allStatements.addUnique(() -> {
+                try {
+                    return defaultCons.newInstance();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException("Failed to create default instance of " + lstatement.getSimpleName(), e);
+                }
+            });
+        } catch (Exception e) {
+            Log.err(e);
+        }
     }
 
     public static void registerWproc(String code, String tag) {
@@ -185,10 +215,86 @@ public class NHLogic {
     }
 
     public static void updateWprocList() {
+        processors.clear();
         Vars.world.tiles.eachTile(t -> {
             if (t.isCenter() && t.block() == Blocks.worldProcessor) {
                 processors.add((LogicBlock.LogicBuild) t.build);
             }
         });
     }
+
+    public static boolean hasCustomRaidLogic() {
+        return customRaidLogic;
+    }
+
+    public static void refreshCustomRaidLogic() {
+        customRaidLogic = scanCustomRaidLogic();
+    }
+
+    private static boolean scanCustomRaidLogic() {
+        boolean[] found = {false};
+
+        world.tiles.eachTile(t -> {
+            if (found[0]) return;
+            if (!t.isCenter() || t.block() != Blocks.worldProcessor) return;
+            if (!(t.build instanceof LogicBlock.LogicBuild proc)) return;
+
+            String tag = proc.tag;
+            if (tag != null && tag.toLowerCase().contains("raid")) {
+                found[0] = true;
+                return;
+            }
+
+            String code = proc.code;
+            if (code != null && !code.isEmpty() && codeContainsRaid(code)) found[0] = true;
+        });
+
+        if (!found[0]) {
+            state.rules.tags.each((key, value) -> {
+                if (found[0]) return;
+                if (!key.startsWith(CutsceneControl.CSS_ACTION)) return;
+                if (value != null && value.contains("raidevent")) found[0] = true;
+            });
+        }
+
+        return found[0];
+    }
+
+    private static boolean codeContainsRaid(String code) {
+        if (code.contains("defaultraid") || code.contains("raidevent") || code.contains("raidcontrol")) return true;
+        return code.contains("randtarget") && code.contains("nearspawn");
+    }
+
+    public static void registerReuseTimer(float time, String eventTrigger, String eventExecutor) {
+        if (!containObjective(obj -> obj instanceof ReuseObjective reuse &&
+                Objects.equals(reuse.trigger, eventTrigger) &&
+                Objects.equals(reuse.executor, eventExecutor))) {
+            objectives().all.add(new ReuseObjective(time, eventTrigger, eventExecutor));
+            Log.info("Registered reuse timer: " + eventTrigger + "|" + eventExecutor);
+        } else if (Log.level == Log.LogLevel.debug) {
+            Log.info("Already registered reuse timer: " + eventTrigger + "|" + eventExecutor + ", Skip.");
+        }
+    }
+
+    public static void registerTriggerTimer(String eventTimer) {
+        if (!containObjective(obj -> obj instanceof TriggerObjective trigger && Objects.equals(trigger.timer, eventTimer))) {
+            objectives().all.add(new TriggerObjective(eventTimer));
+            Log.info("Registered trigger timer: " + eventTimer);
+        } else if (Log.level == Log.LogLevel.debug) {
+            Log.info("Already registered Trigger timer: " + eventTimer + ", Skip.");
+        }
+    }
+
+    public static MapObjectives objectives() {
+        return state.rules.objectives;
+    }
+
+    public static boolean containObjective(Boolf<MapObjectives.MapObjective> checker) {
+        AtomicBoolean found = new AtomicBoolean(false);
+        objectives().each(objective -> {
+            if (checker.get(objective)) found.set(true);
+        });
+        return found.get();
+    }
 }
+

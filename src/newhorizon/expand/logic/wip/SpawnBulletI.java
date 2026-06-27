@@ -9,10 +9,7 @@ import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
-import newhorizon.content.NHBullets;
-import newhorizon.content.bullets.RaidBullets;
-
-import static mindustry.Vars.content;
+import newhorizon.expand.logic.RaidBulletUtil;
 
 public class SpawnBulletI implements LExecutor.LInstruction {
     public LVar team, type, seed, count, sourceX, sourceY, targetX, targetY, inaccuracy;
@@ -56,13 +53,6 @@ public class SpawnBulletI implements LExecutor.LInstruction {
     }
 
     public BulletType bulletType(int type) {
-        if (type < 10000) {
-            return switch (type) {
-                case 1 -> RaidBullets.defaultRaidBullet1;
-                default -> NHBullets.railGun1;
-            };
-        }
-        if (content.bullet(type - 10000) != null) return content.bullet(type - 10000);
-        return content.bullet(0);
+        return RaidBulletUtil.resolve(type);
     }
 }

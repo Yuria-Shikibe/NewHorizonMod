@@ -7,10 +7,12 @@ import arc.math.Mathf;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.ui.Styles;
 import newhorizon.expand.logic.ParseUtil;
+import newhorizon.expand.logic.RaidBulletUtil;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
@@ -22,6 +24,9 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class EventRaidAction extends Action {
     public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_1");
+
+    public int customBulletType = 1;
+    public BulletType customBullet;
 
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
@@ -45,6 +50,9 @@ public class EventRaidAction extends Action {
     @Override
     public void parseTokens(String[] tokens) {
         raidType = RaidPreset.valueOf(ParseUtil.getFirstToken(tokens));
+        if (raidType == RaidPreset.CUSTOM_RAID) {
+            customBulletType = ParseUtil.getNextInt(tokens);
+        }
         team = ParseUtil.getNextTeam(tokens);
 
         overrideRaidStats = ParseUtil.getNextBool(tokens);
@@ -82,13 +90,11 @@ public class EventRaidAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        String key = raidType.name().replace("_", "-").toLowerCase();
-        NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), Core.bundle.format("css-raid." + key + ".popup",
-                Strings.fixed(targetX / tilesize, 1), Strings.fixed(targetY / tilesize, 1)), raidType.raidAlarmSound, team.color);
+        showRaidToast();
         NHUIFunc.showLabel(4.5f, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
-                var icon = Core.atlas.find(raidType.warningIcon);
+                var icon = Core.atlas.find(warningIconName());
                 if (icon.width == 192) {
                     t2.table(left -> left.image().growX().height(OFFSET / 2).pad(OFFSET / 3).pad(0, 0, 0, -9).color(team.color).row()).pad(0).growX();
                     t2.image(icon).fill().color(team.color);
@@ -120,7 +126,7 @@ public class EventRaidAction extends Action {
                 }
             }).growX().pad(OFFSET / 2).fillY().row();
 
-            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("css-raid." + key + ".alert") + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
+            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get(alertBundleKey()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
 
         new RaidMarker()
@@ -129,7 +135,7 @@ public class EventRaidAction extends Action {
                 .setMarkColor(team.color)
                 .setRadius(inaccuracy)
                 .setAngle(Angles.angle(sourceX, sourceY, targetX, targetY))
-                .setIcon(Core.atlas.find(raidType.warningIcon))
+                .setIcon(Core.atlas.find(warningIconName()))
                 .addMarker();
     }
 
@@ -141,9 +147,7 @@ public class EventRaidAction extends Action {
 
         if (lifeTimer > alertTime && !popupDisplayed) {
             popupDisplayed = true;
-            String key = raidType.name().replace("_", "-").toLowerCase();
-            NHUIFunc.showToast(Core.atlas.find(raidType.warningIcon), Core.bundle.format("css-raid." + key + ".popup",
-                    Strings.fixed(targetX / tilesize, 1), Strings.fixed(targetY / tilesize, 1)), raidType.raidAlarmSound, team.color);
+            showRaidToast();
         }
 
         for (int i = 0; i < raid; i++) {
@@ -151,11 +155,45 @@ public class EventRaidAction extends Action {
         }
     }
 
+    public BulletType bulletType() {
+        if (customBullet != null) return customBullet;
+        if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.resolve(customBulletType);
+        return raidType.bulletType;
+    }
+
     public void createBullet() {
+        BulletType bt = bulletType();
         Tmp.v1.trns(Mathf.random(360f), inaccuracy);
         float dst = Mathf.dst(sourceX, sourceY, targetX, targetY);
         float ang = Angles.angle(sourceX, sourceY, targetX, targetY);
-        float lifetimeScl = dst / (raidType.bulletType.speed * raidType.bulletType.lifetime);
-        Call.createBullet(raidType.bulletType, team, sourceX + Tmp.v1.x, sourceY + Tmp.v1.y, ang, -1, 1f, lifetimeScl);
+        float lifetimeScl = dst / (bt.speed * bt.lifetime);
+        Call.createBullet(bt, team, sourceX + Tmp.v1.x, sourceY + Tmp.v1.y, ang, -1, 1f, lifetimeScl);
+    }
+
+    public String alertBundleKey() {
+        if (customBullet != null) return RaidBulletUtil.alertKey(customBullet);
+        if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.alertKey(customBulletType);
+        return "css-raid." + raidType.name().replace("_", "-").toLowerCase() + ".alert";
+    }
+
+    public String popupBundleKey() {
+        if (customBullet != null) return RaidBulletUtil.popupKey(customBullet);
+        if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.popupKey(customBulletType);
+        return "css-raid." + raidType.name().replace("_", "-").toLowerCase() + ".popup";
+    }
+
+    public String warningIconName() {
+        if (customBullet != null) return RaidBulletUtil.warningIcon(customBullet);
+        if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.warningIcon(customBulletType);
+        return raidType.warningIcon;
+    }
+
+    public void showRaidToast() {
+        NHUIFunc.showToast(
+                Core.atlas.find(warningIconName()),
+                Core.bundle.format(popupBundleKey(), Strings.fixed(targetX / tilesize, 1), Strings.fixed(targetY / tilesize, 1)),
+                raidType.raidAlarmSound,
+                team.color
+        );
     }
 }

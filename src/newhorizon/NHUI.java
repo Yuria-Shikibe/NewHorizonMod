@@ -1,7 +1,6 @@
 package newhorizon;
 
 import arc.Core;
-import arc.Events;
 import arc.func.Boolp;
 import arc.func.Floatp;
 import arc.func.Intp;
@@ -21,16 +20,20 @@ import arc.util.Align;
 import arc.util.Log;
 import arc.util.Reflect;
 import arc.util.Scaling;
+import arc.util.Strings;
 import mindustry.core.UI;
 import mindustry.editor.MapEditorDialog;
-import mindustry.game.EventType;
+import mindustry.game.Gamemode;
 import mindustry.game.MapObjectives;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHLogic;
+import newhorizon.expand.game.DefaultRaidStrength;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
@@ -128,6 +131,9 @@ public class NHUI {
                     infoT.clear();
                     infoT.table().padTop(4);
                     ScrollPane pane = infoT.pane(Styles.smallPane, i -> {
+                        if (showRaidStrengthHud()) {
+                            i.add(getRaidStrengthTable()).growX().row();
+                        }
                         i.table(p -> {
                             p.align(Align.topLeft).defaults().growX().fillY().row();
                             state.rules.objectives.each(mapObjective -> {
@@ -182,12 +188,64 @@ public class NHUI {
                 activeCount++;
             }
         }
-        return activeCount == 0 ? "[lightgray]No Objective[]" : activeCount + " Objective(s)";
+        return activeCount == 0 ? Core.bundle.get("mod.ui.no-objective") : Core.bundle.format("mod.ui.objective-count", activeCount);
     }
 
     public static String getDisplayEventCount() {
         int eventCount = cutsceneUI.markers.size;
-        return eventCount == 0 ? "[lightgray]No Event[]" : eventCount + " Event(s)";
+        return eventCount == 0 ? Core.bundle.get("mod.ui.no-event") : Core.bundle.format("mod.ui.event-count", eventCount);
+    }
+
+    public static boolean showRaidStrengthHud() {
+        return NHSetting.getBool(NHSetting.EVENT_RAID)
+                && state.isGame()
+                && state.rules.mode() != Gamemode.sandbox
+                && state.rules.mode() != Gamemode.pvp
+                && !NHLogic.hasCustomRaidLogic();
+    }
+
+    public static Table getRaidStrengthTable() {
+        return new Table(t -> {
+            t.defaults().growX().fillY().padBottom(6f).pad(6f);
+            t.add(new Stack(
+                    new Table(table -> table.add(new DelaySlideBar(
+                            () -> Pal.accent,
+                            () -> "     " + getRaidStrengthBarText(),
+                            NHUI::getRaidStrengthProgress
+                    )).padLeft(20f).height(40).expandX().fillX()),
+                    new Table(table -> table.image(NHContent.icon).color(Pal.accent).size(54).pad(-8).expandX().left())
+            ));
+        });
+    }
+
+    public static CharSequence getRaidStrengthBarText() {
+        Team player = state.rules.defaultTeam;
+        if (player == null) return Core.bundle.get("mod.ui.raid-strength-bar-empty");
+
+        float strength = DefaultRaidStrength.evaluate(player);
+        int tier = DefaultRaidStrength.toTier(player);
+        float next = DefaultRaidStrength.nextTierMin(tier);
+        String strengthText = Strings.fixed(strength, 1);
+
+        if (next < 0f) {
+            return Core.bundle.format("mod.ui.raid-strength-bar-max", strengthText, tier);
+        }
+        return Core.bundle.format("mod.ui.raid-strength-bar", strengthText, Strings.fixed(next, 1), tier);
+    }
+
+    public static float getRaidStrengthProgress() {
+        Team player = state.rules.defaultTeam;
+        if (player == null) return 0f;
+
+        float strength = DefaultRaidStrength.evaluate(player);
+        int tier = DefaultRaidStrength.toTier(player);
+        float next = DefaultRaidStrength.nextTierMin(tier);
+        if (next < 0f) return 1f;
+
+        float base = DefaultRaidStrength.tierMin(tier);
+        float range = next - base;
+        if (range <= 0f) return 1f;
+        return Mathf.clamp((strength - base) / range);
     }
 
     public static Table getObjectiveTable(MapObjectives.MapObjective e) {

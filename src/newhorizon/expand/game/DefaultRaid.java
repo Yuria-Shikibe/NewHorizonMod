@@ -4,19 +4,20 @@ import arc.Events;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Geometry;
+import arc.struct.IntMap;
 import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
 import mindustry.game.Gamemode;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Tile;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BlockFlag;
 import newhorizon.NHSetting;
-import newhorizon.content.NHItems;
-import newhorizon.content.NHLogic;
+import newhorizon.content.*;
+import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
@@ -35,23 +36,43 @@ public class DefaultRaid {
     private static final int OVERRIDE_CHECK_INTERVAL = 120;
 
     private static final Interval overrideCheck = new Interval(OVERRIDE_CHECK_INTERVAL);
-
-    private static final float[][] TIER_CONFIG = {
-            {30f, 5f, 1f, 60f},
-            {30f, 5f, 1.2f, 65f},
-            {30f, 6f, 1.5f, 70f},
-            {30f, 6f, 2f, 75f},
-            {30f, 7f, 2.5f, 80f},
-            {30f, 7f, 3f, 85f},
-            {30f, 8f, 3.5f, 90f},
-            {30f, 8f, 4f, 100f},
-    };
+    private static final IntMap<RaidEvent> raids = new IntMap<>();
+    private static final Seq<int[]> tierPoolBuilder = new Seq<>();
+    private static int[][] tierPools;
 
     private static float waitTimer;
     private static boolean raidRunning;
     private static ActionBus currentRaidBus;
 
+    public static final class RaidEvent {
+        public final int id;
+        public final BulletType bullet;
+        public final float alertTime;
+        public final float raidTime;
+        public final float raidScale;
+        public final float inaccuracy;
+
+        public RaidEvent(int id, BulletType bullet, float alertTime, float raidTime, float raidScale, float inaccuracy) {
+            this.id = id;
+            this.bullet = bullet;
+            this.alertTime = alertTime;
+            this.raidTime = raidTime;
+            this.raidScale = raidScale;
+            this.inaccuracy = inaccuracy;
+        }
+    }
+
+    private static void event(int id, BulletType bullet, float alert, float raid, float scale, float spread) {
+        register(id, bullet, alert, raid, scale, spread);
+    }
+
+    private static void tier(int... ids) {
+        tierPoolBuilder.add(ids);
+    }
+
     public static void load() {
+        registerRaids();
+
         Events.on(EventType.PlayEvent.class, event -> {
             NHLogic.refreshCustomRaidLogic();
             reset();
@@ -60,6 +81,62 @@ public class DefaultRaid {
             NHLogic.refreshCustomRaidLogic();
             reset();
         });
+    }
+
+    public static void register(int id, BulletType bullet, float alertTime, float raidTime, float raidScale, float inaccuracy) {
+        raids.put(id, new RaidEvent(id, bullet, alertTime, raidTime, raidScale, inaccuracy));
+    }
+
+    public static RaidEvent get(int id) {
+        return raids.get(id);
+    }
+
+    public static IntMap<RaidEvent> all() {
+        return raids;
+    }
+
+    private static void registerRaids() {
+        if (raids.size > 0) return;
+        tierPoolBuilder.clear();
+
+        registerRaidEvents();
+        registerTierPools();
+
+        tierPools = tierPoolBuilder.toArray(int[].class);
+    }
+
+    private static void registerRaidEvents() {
+        event(1, RaidBullets.defaultRaidBullet1, 60, 8, 1.0f, 60);
+        event(2, NHBullets.synchroZeta, 120, 10, 4f, 90);
+        event(3, RaidBullets.raidBullet_9, 180, 20, 3f, 75);
+        event(4, NHBullets.warperBullet, 180, 20, 4f, 120);
+        event(5, NHBullets.synchroFusionEnergy, 180, 10, 4f, 120);
+        event(6, NHBullets.laugraBullet, 180, 3, 1f, 60);
+        event(7, NHBullets.saviourBullet, 240, 20, 3f, 90);
+        event(8, NHBullets.artilleryFusion, 180, 40, 0.4f, 72);
+        event(9, RaidBullets.raidBullet_10, 30, 14, 3f, 80);
+        event(10, NHBullets.guardianBulletLightningBall, 180, 6, 1f, 60);
+        event(11, NHBullets.railGun1, 120, 8, 3.0f, 30);
+        event(12, RaidBullets.raidBullet_6, 120, 12, 2f, 180);
+        event(13, NHBullets.saviourBullet, 240, 30, 4f, 180);
+        event(14, NHBullets.artilleryNgt, 180, 10, 4.0f, 120);
+        event(15, NHBullets.blastEnergyNgt, 240, 4, 10f, 30);
+        event(16, NHBullets.collapserBullet, 240, 3, 2, 240);
+        event(17, NHBullets.shieldDestroyer, 240, 9, 2f, 120);
+        event(18, RaidBullets.raidBullet_8, 300, 6, 2f, 90);
+        event(19, NHBullets.airRaidBomb, 300, 20, 1.0f, 90);
+        event(20, NHBullets.arc_9000, 300, 1, 1f, 60);
+    }
+
+    private static void registerTierPools() {
+        tier(1, 2, 3);                     // tier 1
+        tier(3, 4, 5);                     // tier 2
+        tier(5, 6, 7);                     // tier 3
+        tier(7, 8, 9);                     // tier 4
+        tier(7, 9, 10, 11);                   // tier 5
+        tier(6, 11, 12, 13);                  // tier 6
+        tier(13, 14, 15, 16, 17);          // tier 7
+        tier(16, 17, 18, 19, 20);          // tier 8
     }
 
     public static void reset() {
@@ -102,6 +179,9 @@ public class DefaultRaid {
 
     private static void dispatchRaid(Team wave, Team player) {
         int tier = getRaidTier(player);
+        RaidEvent raid = pickRaid(tier, raidSeed());
+        if (raid == null) return;
+
         float[] target = pickTarget(wave, player, raidSeed());
         if (target[0] == 0f && target[1] == 0f) {
             target = pickTargetCore(wave, player, raidSeed() + 1);
@@ -109,28 +189,41 @@ public class DefaultRaid {
         if (target[0] == 0f && target[1] == 0f) return;
 
         float[] source = pickSpawn(target[0], target[1]);
-        float[] config = TIER_CONFIG[Mathf.clamp(tier - 1, 0, TIER_CONFIG.length - 1)];
-
-        EventRaidAction action = new EventRaidAction();
-        action.raidType = RaidPreset.CUSTOM_RAID;
-        action.customBulletType = tier;
-        action.team = wave;
-        action.overrideRaidStats = true;
-        action.alertTime = config[0] * Time.toSeconds;
-        action.raidTime = config[1] * Time.toSeconds;
-        action.raidScale = config[2];
-        action.inaccuracy = config[3];
-        action.overrideDefaultCoordinate = true;
-        action.sourceX = source[0] * tilesize;
-        action.sourceY = source[1] * tilesize;
-        action.targetX = target[0] * tilesize;
-        action.targetY = target[1] * tilesize;
-        action.postInit();
 
         currentRaidBus = new ActionBus();
-        currentRaidBus.add(action);
+        currentRaidBus.add(createAction(raid, wave, source[0], source[1], target[0], target[1]));
         cutscene.addSubActionBus(currentRaidBus);
         raidRunning = true;
+    }
+
+    private static RaidEvent pickRaid(int tier, int seed) {
+        if (tierPools == null || tierPools.length == 0) return raids.get(1);
+
+        int[] pool = tierPools[Mathf.clamp(tier - 1, 0, tierPools.length - 1)];
+        if (pool.length == 0) return raids.get(1);
+
+        int id = pool[new Rand(seed).random(0, pool.length - 1)];
+        RaidEvent event = raids.get(id);
+        return event != null ? event : raids.get(1);
+    }
+
+    private static EventRaidAction createAction(RaidEvent raid, Team wave, float sourceX, float sourceY, float targetX, float targetY) {
+        EventRaidAction action = new EventRaidAction();
+        action.raidType = RaidPreset.CUSTOM_RAID;
+        action.customBullet = raid.bullet;
+        action.team = wave;
+        action.overrideRaidStats = true;
+        action.alertTime = raid.alertTime * Time.toSeconds;
+        action.raidTime = raid.raidTime * Time.toSeconds;
+        action.raidScale = raid.raidScale;
+        action.inaccuracy = raid.inaccuracy;
+        action.overrideDefaultCoordinate = true;
+        action.sourceX = sourceX * tilesize;
+        action.sourceY = sourceY * tilesize;
+        action.targetX = targetX * tilesize;
+        action.targetY = targetY * tilesize;
+        action.postInit();
+        return action;
     }
 
     private static int raidSeed() {
@@ -138,20 +231,12 @@ public class DefaultRaid {
     }
 
     public static int getRaidTier(Team player) {
-        int[] tier = {1};
-        player.cores().each(core -> tier[0] = Math.max(tier[0], getCoreTier(core)));
-        return tier[0];
+        int maxTier = tierPools != null && tierPools.length > 0 ? tierPools.length : DefaultRaidStrength.maxTier();
+        return DefaultRaidStrength.toTier(player, maxTier);
     }
 
-    private static int getCoreTier(CoreBlock.CoreBuild core) {
-        if (core.items.has(NHItems.hyperProcessor) || core.items.has(NHItems.darkEnergy)) return 8;
-        if (core.items.has(NHItems.ancimembrane) || core.items.has(NHItems.hadronicomp)) return 7;
-        if (core.items.has(NHItems.nodexPlate)) return 6;
-        if (core.items.has(NHItems.setonAlloy)) return 5;
-        if (core.items.has(NHItems.multipleSteel)) return 4;
-        if (core.items.has(NHItems.presstanium)) return 3;
-        if (core.items.has(NHItems.silicar)) return 2;
-        return 1;
+    public static float getRaidStrength(Team player) {
+        return DefaultRaidStrength.evaluate(player);
     }
 
     private static float[] pickTarget(Team wave, Team player, int seed) {

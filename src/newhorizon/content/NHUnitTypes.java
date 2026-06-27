@@ -14,6 +14,7 @@ import arc.math.Rand;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
+import arc.struct.IntMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -1143,12 +1144,12 @@ public class NHUnitTypes {
                 }));
                 weapons.add(new Weapon(NewHorizon.name("lymph-weapon")) {
                     final Color teamColor = new Color();
-                    float drawRotAngle = 0f;
-                    float rotAngle = 0f;
+                    final IntMap<Float> drawRotAngles = new IntMap<>();
+                    final IntMap<Float> curRotSpeeds = new IntMap<>();
+                    float drawRotAngle;
 
                     final float baseRotSpeed = 0.5f;
                     final float activeRotSpeed = 1.2f;
-                    float curRotSpeed = baseRotSpeed;
                     {
                         mirror = false;
                         top = true;
@@ -1264,14 +1265,20 @@ public class NHUnitTypes {
                     public void draw(Unit unit, WeaponMount mount){
                         teamColor.set(unit.team.color);
 
-                        boolean active = mount.warmup > 0.01f;
-                        float targetSpeed = active ? activeRotSpeed : baseRotSpeed;
+                        int id = unit.id;
+                        float angle = drawRotAngles.get(id, 0f);
+                        float speed = curRotSpeeds.get(id, baseRotSpeed);
 
                         if(!Vars.state.isPaused()){
-                            curRotSpeed = Mathf.lerpDelta(curRotSpeed, targetSpeed, 0.08f);
-                            drawRotAngle += curRotSpeed * Time.delta;
+                            boolean active = mount.warmup > 0.01f;
+                            float targetSpeed = active ? activeRotSpeed : baseRotSpeed;
+                            speed = Mathf.lerpDelta(speed, targetSpeed, 0.08f);
+                            angle += speed * Time.delta;
+                            drawRotAngles.put(id, angle);
+                            curRotSpeeds.put(id, speed);
                         }
 
+                        drawRotAngle = angle;
                         super.draw(unit, mount);
                     }
                 });
@@ -1454,7 +1461,7 @@ public class NHUnitTypes {
                     a.selfHealReloadTime = 420;
                     a.selfHealAmount /= 16;
                 }), new TurretShield() {{
-                    radius = hitSize - 8f;
+                    radius = hitSize + 2f;
                     angle = 90;
                     regen = 2.5f;
                     cooldown = 60f * 10f;
