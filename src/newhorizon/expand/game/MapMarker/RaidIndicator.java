@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
 
 public class RaidIndicator extends MapObjectives.PosMarker {
     public Vec2 source = new Vec2();
@@ -90,17 +89,17 @@ public class RaidIndicator extends MapObjectives.PosMarker {
     }
 
     public void drawArrow() {
+        float f = scale();
         float ang = source.angleTo(target);
+        float outerR = radius * (1f + Mathf.absin(4f, 0.055f));
 
         Draw.color(Team.get(teamID).color, Color.white, 0.075f);
         Draw.blend(Blending.additive);
 
-        float size = NHContent.arrowRegion.height;
-
-        for (int i = 0; i < radius / size * tilesize; i++) {
-            float s = (1 - ((Time.time + 25 * i) % 100) / 100) * scale() * Draw.scl * 1.75f;
-            Tmp.v1.trns(ang + 180, 36 + 12 * i).add(target);
-            Draw.rect(NHContent.arrowRegion, Tmp.v1, size * s, size * s, ang - 90);
+        for (int i = 0; i < 4; i++) {
+            float s = (1 - ((Time.time + 25 * i) % 100) / 100) * f * Draw.scl * 1.75f;
+            Tmp.v1.trns(ang + 180, outerR + 16f + 28f * i).add(target);
+            Draw.rect(NHContent.arrowRegion, Tmp.v1, NHContent.arrowRegion.width * s, NHContent.arrowRegion.height * s, ang - 90);
         }
 
         Draw.blend();

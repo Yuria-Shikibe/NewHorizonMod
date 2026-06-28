@@ -16,13 +16,19 @@ import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHItems;
 import newhorizon.content.NHStatusEffects;
+import newhorizon.expand.bullets.AccelBulletType;
 import newhorizon.expand.bullets.EmpDotBulletType;
+import newhorizon.expand.bullets.adapt.TypedDamageBulletType;
+import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.bullets.raid.RailRaidBulletType;
+import newhorizon.expand.bullets.raid.RandomRaidBulletType;
 import newhorizon.expand.bullets.raid.TracerRaidBulletType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -40,24 +46,25 @@ public class RaidBullets {
             defaultRaidBullet1, defaultRaidBullet2, defaultRaidBullet3,
             explosiveRaidBullet1, explosiveRaidBullet2, explosiveRaidBullet3,
             railRaidBullet1, railRaidBullet2, railRaidBullet3,
-            raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8;
+            raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8,
+            raidBullet_9, raidBullet_10, raidBullet_11;
 
     public static void load() {
         defaultRaidBullet1 = new BasicRaidBulletType() {{
             speed = 12f;
             lifetime = 120f;
 
-            damage = 600;
+            damage = 200;
 
-            splashDamageRadius = 55f;
-            splashDamage = 400f;
+            splashDamageRadius = 15f;
+            splashDamage = 200f;
 
             splashDamagePierce = true;
             scaledSplashDamage = true;
-            collides = false;
-            collidesGround = true;
-            collideFloor = true;
-            collidesAir = true;
+            //collides = false;
+            //collidesGround = true;
+            //collideFloor = true;
+            //collidesAir = true;
 
             hittable = true;
             reflectable = false;
@@ -368,6 +375,96 @@ public class RaidBullets {
         }};
         raidBullet_7 = NHBullets.shieldDestroyer;
         raidBullet_8 = NHBullets.ancientArtilleryProjectile;
+
+        raidBullet_9 = new TypedDamageBulletType() {{
+            damage = 30;
+            splashDamage = 160f;
+            splashDamageRadius = 16f;
+            shieldDamageMultiplier = 0.6f;
+
+            backSprite = "missile-large-back";
+            sprite = "mine-bullet";
+
+            height = 9f;
+            width = 5.6f;
+
+            frontColor = NHItems.zeta.color;
+            backColor = trailColor = hitColor = Pal.bulletYellowBack;
+
+            trailChance = 0.44f;
+            trailLength = 12;
+            trailWidth = 2f;
+            trailEffect = NHFx.triSpark;
+            trailRotation = true;
+
+            shootEffect = Fx.shootBig2;
+            smokeEffect = Fx.shootSmokeDisperse;
+            hitEffect = despawnEffect = NHFx.hitSpark;
+
+            despawnShake = 7f;
+
+            speed = 5.2f;
+            shrinkY = 0.3f;
+
+            homingDelay = 0f;
+            homingRange = 40f;
+            homingPower = 0.05f;
+
+            ammoMultiplier = 3f;
+            lifetime = 80f;
+        }};
+
+        raidBullet_10 = new AccelBulletType(5.2f, 75, NHBullets.STRIKE) {{
+            width = 7f;
+            height = 13f;
+            shrinkY = 0f;
+
+            collideFloor = collidesGround = collidesTiles = false;
+            ammoMultiplier = 8f;
+            backColor = lightningColor = hitColor = Pal.bulletYellowBack;
+            lightColor = frontColor = Pal.bulletYellow;
+            splashDamageRadius = 12f;
+            splashDamage = damage / 3;
+            despawnEffect = Fx.smoke;
+            hitEffect = NHFx.hitSpark;
+            lifetime = 100f;
+            lightningDamage = damage / 2;
+            lightning = 2;
+            lightningLength = 3;
+            lightningLengthRand = 12;
+
+            status = NHStatusEffects.emp2;
+            statusDuration = 180f;
+
+            hitSound = despawnSound = Sounds.explosionDull;
+            hitSoundVolume = 0.6f;
+            hitSoundPitch -= 0.11f;
+            hitShake = 1.1f;
+
+            shootEffect = EffectWrapper.wrap(Fx.shootBigSmoke2, 180, true);
+            smokeEffect = NHFx.hugeSmokeGray;
+            lightningType = NHBullets.lightningAir;
+
+            inaccuracy = 0.3f;
+
+            weaveMag = 3f;
+            weaveScale = 3.55f;
+            homingDelay = 5f;
+            homingPower = 0.25f;
+            homingRange = 160f;
+
+            velocityBegin = 1.4f;
+            velocityIncrease = 8f;
+            accelerateBegin = 0.005f;
+            accelerateEnd = 0.75f;
+
+            trailColor = NHColor.trail;
+            trailWidth = 1f;
+            trailLength = 15;
+        }};
+
+        raidBullet_11 = new RandomRaidBulletType();
+        RandomRaidBulletType.initPool();
     }
 
     public static Effect circle(float lifetime, float radius) {

@@ -13,16 +13,17 @@ public class ThreatLevel {
 
     public static void init() {
         threatMap.clear();
-        threatMap.put(1, Seq.with(Items.copper, Items.lead));
-        threatMap.put(2, Seq.with(Items.graphite, Items.silicon, Items.beryllium));
-        threatMap.put(3, Seq.with(Items.metaglass, Items.titanium));
-        threatMap.put(4, Seq.with(NHItems.presstanium, NHItems.juniorProcessor));
-        threatMap.put(5, Seq.with(Items.thorium, Items.plastanium, NHItems.metalOxhydrigen));
-        threatMap.put(6, Seq.with(NHItems.zeta, Items.carbide));
-        threatMap.put(7, Seq.with(NHItems.multipleSteel, Items.phaseFabric, Items.surgeAlloy));
+        threatMap.put(1, Seq.with(Items.copper, Items.lead, Items.sand, Items.beryllium, NHItems.silicar));
+        threatMap.put(2, Seq.with(NHItems.hardLight, Items.graphite, Items.silicon, Items.titanium, Items.scrap, Items.coal));
+        threatMap.put(3, Seq.with(Items.metaglass, Items.tungsten, Items.pyratite, Items.sporePod));
+        threatMap.put(4, Seq.with(NHItems.presstanium, Items.thorium,NHItems.juniorProcessor, Items.blastCompound, Items.oxide));
+        threatMap.put(5, Seq.with(NHItems.zeta, Items.carbide, NHItems.multipleSteel,Items.plastanium, NHItems.metalOxhydrigen, NHItems.fusionEnergy,Items.fissileMatter ));
+        threatMap.put(6, Seq.with( NHItems.thermoCorePositive, NHItems.thermoCoreNegative));
+        threatMap.put(7, Seq.with(Items.phaseFabric, Items.surgeAlloy));
         threatMap.put(8, Seq.with(NHItems.seniorProcessor));
         threatMap.put(9, Seq.with(NHItems.irayrondPanel, NHItems.setonAlloy));
-        threatMap.put(10, Seq.with(NHItems.ancimembrane, NHItems.nodexPlate));
+        threatMap.put(10, Seq.with(NHItems.ancimembrane, NHItems.nodexPlate, NHItems.darkEnergy));
+        threatMap.put(12, Seq.with(NHItems.hyperProcessor, NHItems.hadronicomp));
     }
 
     public static int getTeamThreat(Team team) {

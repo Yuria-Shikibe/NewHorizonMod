@@ -38,6 +38,8 @@ public class NewFeatureDialog extends BaseDialog {
         return new FeatureLog[]{
                 new FeatureLog(0, FeatureLog.featureType.IMPORTANT, NHContent.icon2),
 
+                new FeatureLog(0, FeatureLog.featureType.IMPROVE, NHContent.adfsds),
+
                 new FeatureLog(0, FeatureLog.featureType.CONTENT, NHContent.icon2),
 
                 new FeatureLog(1, FeatureLog.featureType.CONTENT, SpecialBlock.coreConflux),

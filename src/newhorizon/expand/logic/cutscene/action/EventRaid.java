@@ -14,6 +14,8 @@ import newhorizon.expand.logic.cutscene.types.RaidPreset;
 public class EventRaid extends ActionLStatement {
     public RaidPreset raidType = RaidPreset.valueOf("PRESET_RAID_1");
 
+    public String customBulletType = "1";
+
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
     public String team = "@waveteam";
@@ -24,6 +26,9 @@ public class EventRaid extends ActionLStatement {
         ParseUtil.getFirstToken(token);
 
         raidType = RaidPreset.valueOf(ParseUtil.getNextToken(token));
+        if (raidType == RaidPreset.CUSTOM_RAID) {
+            customBulletType = ParseUtil.getNextToken(token);
+        }
         team = ParseUtil.getNextToken(token);
 
         overrideRaidStats = ParseUtil.getNextBool(token);
@@ -68,10 +73,21 @@ public class EventRaid extends ActionLStatement {
             t.add(" Raid Preset Type: ");
             t.button(b -> {
                 b.label(() -> raidType.name());
-                b.clicked(() -> showSelect(b, RaidPreset.all, raidType, cType -> raidType = cType, 2, cell -> cell.size(240, 50)));
+                b.clicked(() -> showSelect(b, RaidPreset.all, raidType, cType -> {
+                    raidType = cType;
+                    rebuild(table);
+                }, 2, cell -> cell.size(240, 50)));
             }, Styles.logict, () -> {
             }).size(240, 40).color(table.color).left().padLeft(2);
         });
+
+        if (raidType == RaidPreset.CUSTOM_RAID) {
+            buildRowTable(table, t -> {
+                t.add(" Raid Bullet Type: ").padLeft(20f);
+                fields(t, customBulletType, str -> customBulletType = str).width(180f);
+                t.add(" (1-10 / 666=random / 10000+contentId)").padLeft(4f);
+            });
+        }
 
         buildRowTable(table, t -> {
             t.add(" From Team : ");
@@ -140,7 +156,9 @@ public class EventRaid extends ActionLStatement {
     @Override
     public void write(StringBuilder builder) {
         super.write(builder);
-        writeTokens(builder, raidType.name(), team);
+        writeTokens(builder, raidType.name());
+        if (raidType == RaidPreset.CUSTOM_RAID) writeTokens(builder, customBulletType);
+        writeTokens(builder, team);
         writeTokens(builder, String.valueOf(overrideRaidStats));
         if (overrideRaidStats) writeTokens(builder, alertTime, raidTime, raidScale, inaccuracy);
         writeTokens(builder, String.valueOf(overrideDefaultCoordinate));
@@ -151,7 +169,7 @@ public class EventRaid extends ActionLStatement {
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
         return new EventRaidI(
-                raidType, builder.var(team),
+                raidType, customBulletType, builder.var(team),
                 overrideRaidStats, builder.var(alertTime), builder.var(raidTime), builder.var(raidScale), builder.var(inaccuracy),
                 overrideDefaultCoordinate, builder.var(sourceX), builder.var(sourceY), builder.var(targetX), builder.var(targetY)
         );
@@ -159,6 +177,7 @@ public class EventRaid extends ActionLStatement {
 
     public class EventRaidI extends ActionInstruction {
         public RaidPreset raidType;
+        public String customBulletType;
 
         public boolean overrideRaidStats, overrideDefaultCoordinate;
 
@@ -167,11 +186,12 @@ public class EventRaid extends ActionLStatement {
         public LVar sourceX, sourceY, targetX, targetY;
 
         public EventRaidI(
-                RaidPreset raidType, LVar team,
+                RaidPreset raidType, String customBulletType, LVar team,
                 boolean overrideRaidStats, LVar alertTime, LVar raidTime, LVar raidScale, LVar inaccuracy,
                 boolean overrideDefaultCoordinate, LVar sourceX, LVar sourceY, LVar targetX, LVar targetY
         ) {
             this.raidType = raidType;
+            this.customBulletType = customBulletType;
             this.team = team;
 
             this.overrideRaidStats = overrideRaidStats;
@@ -191,6 +211,7 @@ public class EventRaid extends ActionLStatement {
         public void run(LExecutor exec) {
             startExec(exec, "event-raid");
             appendExec(exec, raidType.name());
+            if (raidType == RaidPreset.CUSTOM_RAID) appendExec(exec, customBulletType);
             appendExec(exec, team);
             appendExec(exec, String.valueOf(overrideRaidStats));
             if (overrideRaidStats) appendExec(exec, alertTime, raidTime, raidScale, inaccuracy);

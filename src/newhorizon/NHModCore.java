@@ -2,6 +2,7 @@ package newhorizon;
 
 import arc.ApplicationListener;
 import mindustry.Vars;
+import newhorizon.expand.game.DefaultRaid;
 
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.renderer;
@@ -14,6 +15,7 @@ public class NHModCore implements ApplicationListener {
     public void update() {
         if (Vars.state.isPlaying()) {
             cutscene.update();
+            DefaultRaid.update();
             NHGroups.update();
             if (!Vars.headless) {
                 renderer.statusRenderer.update();

@@ -7,14 +7,12 @@ import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.Call;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
 import mindustry.ui.Styles;
-import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
-import newhorizon.content.bullets.RaidBullets;
+import newhorizon.expand.logic.RaidBulletUtil;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -89,8 +87,7 @@ public class RaidControlI implements LExecutor.LInstruction {
         float sx = sourceX.numf() * tilesize, sy = sourceY.numf() * tilesize, tx = targetX.numf() * tilesize, ty = targetY.numf() * tilesize;
         float dst = Mathf.dst(sx, sy, tx, ty);
         float ang = Angles.angle(sx, sy, tx, ty);
-        float lifetimeScl = dst / (bulletType().speed * bulletType().lifetime);
-        Call.createBullet(bulletType(), team.team(), sx + Tmp.v1.x, sy + Tmp.v1.y, ang, -1f, 1f, lifetimeScl);
+        RaidBulletUtil.spawn(bulletType(), team.team(), sx + Tmp.v1.x, sy + Tmp.v1.y, ang, -1f, 1f, dst, tx, ty);
     }
 
     public void showAlert() {
@@ -118,13 +115,6 @@ public class RaidControlI implements LExecutor.LInstruction {
     }
 
     public BulletType bulletType() {
-        if (type.numi() < 10000) {
-            return switch (type.numi()) {
-                case 1 -> RaidBullets.defaultRaidBullet1;
-                default -> NHBullets.railGun1;
-            };
-        }
-        if (content.bullet(type.numi() - 10000) != null) return content.bullet(type.numi() - 10000);
-        return content.bullet(0);
+        return RaidBulletUtil.resolve(type.numi());
     }
 }

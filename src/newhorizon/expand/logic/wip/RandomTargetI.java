@@ -13,6 +13,7 @@ import newhorizon.util.struct.WeightedOption;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static mindustry.Vars.indexer;
+import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public class RandomTargetI implements LExecutor.LInstruction {
@@ -34,8 +35,11 @@ public class RandomTargetI implements LExecutor.LInstruction {
 
     @Override
     public void run(LExecutor exec) {
-        Team t = team.team();
-        if (t == null) return;
+        if (!exec.privileged) return;
+
+        Team wave = state.rules.waveTeam;
+        Team player = state.rules.defaultTeam;
+        if (wave == null || player == null) return;
 
         int s = seed.numi();
         Rand r = new Rand(s);
@@ -49,9 +53,12 @@ public class RandomTargetI implements LExecutor.LInstruction {
                 new WeightedOption(w3.numf(), () -> flag.set(BlockFlag.factory)),
                 new WeightedOption(w4.numf(), () -> flag.set(BlockFlag.core))
         );
-        Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(t, flag.get()));
-        if (b == null) b = t.core();
+
+        Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(wave, flag.get()));
+        if (b == null) b = Geometry.findClosest(wx, wy, indexer.getFlagged(player, flag.get()));
+        if (b == null) b = player.core();
         if (b == null) return;
+
         x.setnum(b.tileX());
         y.setnum(b.tileY());
     }

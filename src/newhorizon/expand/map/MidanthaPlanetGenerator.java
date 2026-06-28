@@ -29,7 +29,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
     public static float waterOffset = 0.81f;
 
     static {
-        PlanetDialog.debugSelect = true;
+        PlanetDialog.debugSelect = false;
     }
 
     public Color ammonia = Color.valueOf("262762");
