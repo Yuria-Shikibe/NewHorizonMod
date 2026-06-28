@@ -188,7 +188,7 @@ public class DefaultRaid {
         }
         if (target[0] == 0f && target[1] == 0f) return;
 
-        float[] source = pickSpawn(target[0], target[1]);
+        float[] source = pickSpawn(wave, target[0], target[1]);
 
         currentRaidBus = new ActionBus();
         currentRaidBus.add(createAction(raid, wave, source[0], source[1], target[0], target[1]));
@@ -271,25 +271,32 @@ public class DefaultRaid {
         return out;
     }
 
-    private static float[] pickSpawn(float targetX, float targetY) {
+    private static float[] pickSpawn(Team wave, float targetX, float targetY) {
         float[] out = new float[2];
         Seq<Tile> spawns = spawner.getSpawns();
-        if (spawns.isEmpty()) return out;
+        if (!spawns.isEmpty()) {
+            Tile closest = spawns.first();
+            float minDst = Mathf.dst2(closest.x, closest.y, targetX, targetY);
 
-        Tile closest = spawns.first();
-        float minDst = Mathf.dst2(closest.x, closest.y, targetX, targetY);
-
-        for (int i = 1; i < spawns.size; i++) {
-            Tile t = spawns.get(i);
-            float dst = Mathf.dst2(t.x, t.y, targetX, targetY);
-            if (dst < minDst) {
-                minDst = dst;
-                closest = t;
+            for (int i = 1; i < spawns.size; i++) {
+                Tile t = spawns.get(i);
+                float dst = Mathf.dst2(t.x, t.y, targetX, targetY);
+                if (dst < minDst) {
+                    minDst = dst;
+                    closest = t;
+                }
             }
+
+            out[0] = closest.x;
+            out[1] = closest.y;
+            return out;
         }
 
-        out[0] = closest.x;
-        out[1] = closest.y;
+        Building core = Geometry.findClosest(targetX * tilesize, targetY * tilesize, wave.cores());
+        if (core != null) {
+            out[0] = core.tileX();
+            out[1] = core.tileY();
+        }
         return out;
     }
 }
