@@ -61,10 +61,10 @@ public class RaidBullets {
 
             splashDamagePierce = true;
             scaledSplashDamage = true;
-            //collides = false;
-            //collidesGround = true;
-            //collideFloor = true;
-            //collidesAir = true;
+            collides = true;
+            collidesGround = true;
+            collideFloor = true;
+            collidesAir = true;
 
             hittable = true;
             reflectable = false;
