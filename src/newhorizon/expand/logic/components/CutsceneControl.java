@@ -152,6 +152,7 @@ public class CutsceneControl {
         mainBus = null;
         waitingBuses.clear();
         subBuses.clear();
+        if (!Vars.headless) cutsceneUI.clearMarkers();
     }
 
     //Add a main action bus to the queue. If no main bus is running, starts immediately; otherwise queues it.

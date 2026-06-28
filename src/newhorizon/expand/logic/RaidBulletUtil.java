@@ -4,13 +4,16 @@ import arc.math.Mathf;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import newhorizon.NewHorizon;
+import newhorizon.expand.net.NHCall;
 import newhorizon.content.NHBullets;
 import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.bullets.AccelBulletType;
 import newhorizon.expand.bullets.LightningLinkerBulletType;
 import newhorizon.expand.bullets.raid.RandomRaidBulletType;
+import newhorizon.expand.game.RaidLogic;
 
 import static mindustry.Vars.content;
+import static mindustry.Vars.net;
 
 public class RaidBulletUtil {
     public static final int RANDOM_RAID_ID = 666;
@@ -83,11 +86,20 @@ public class RaidBulletUtil {
     }
 
     public static void spawn(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float dst, float aimX, float aimY) {
+        if (RaidLogic.isRemoteClient()) return;
         if (isRandomType(type)) {
             RandomRaidBulletType.fire(team, x, y, angle, damage, velocityScl, dst, aimX, aimY);
             return;
         }
         float lifetimeScl = lifetimeScl(type, dst);
+        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY);
+        if (net.server() && net.active()) {
+            NHCall.syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY);
+        }
+    }
+
+    public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY) {
+        if (type == null || team == null) return;
         BulletType bt = prepareForRaid(type);
         bt.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null, null, aimX, aimY);
     }

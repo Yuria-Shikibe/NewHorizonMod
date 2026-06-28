@@ -221,7 +221,17 @@ public class CutsceneUI {
         textArea.add(cutsceneUI.textLabel).pad(4f, 32f, 4f, 32f);
         textTable.actions(Actions.alpha(0));
 
+        clearMarkers();
+    }
+
+    public void clearMarkers() {
+        for (int i = markers.size - 1; i >= 0; i--) {
+            HudMarker marker = markers.get(i);
+            marker.clearActions();
+            root.removeChild(marker);
+        }
         markers.clear();
+        if (NHUI.eventList != null) NHUI.rebuildEventList();
     }
 
     public void resetSave() {
