@@ -34,7 +34,7 @@ import static mindustry.Vars.*;
 import static newhorizon.NHVars.cutscene;
 
 public class DefaultRaid {
-    private static final float PROTECTION_TIME = 10f;
+    private static final float PROTECTION_TIME = 300f;
     private static final float COOLDOWN_MIN = 60f;
     private static final float COOLDOWN_RANGE = 120f;
     private static final int OVERRIDE_CHECK_INTERVAL = 120;
