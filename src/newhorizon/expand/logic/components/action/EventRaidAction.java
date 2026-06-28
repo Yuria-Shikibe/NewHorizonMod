@@ -4,20 +4,25 @@ import arc.Core;
 import arc.flabel.FLabel;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.ui.Styles;
+import newhorizon.expand.game.RaidLogic;
+import newhorizon.expand.game.RaidState;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.RaidBulletUtil;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
+import newhorizon.expand.net.NHCall;
 import newhorizon.util.ui.NHUIFunc;
 
 import static mindustry.Vars.headless;
+import static mindustry.Vars.net;
 import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -32,6 +37,7 @@ public class EventRaidAction extends Action {
     public Team team = Team.crux;
     public float alertTime = 15f, raidTime = 5f, raidScale = 1, inaccuracy = 40f;
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0;
+    public int syncSeed;
 
     private boolean popupDisplayed;
     private int raidCounter;
@@ -84,11 +90,31 @@ public class EventRaidAction extends Action {
         }
 
         duration = alertTime + raidTime;
+        raidScale *= RaidState.scale();
     }
 
     @Override
     public void begin() {
-        if (headless) return;
+        if (!headless) {
+            showRaidPresentation();
+        }
+        if (syncSeed == 0) syncSeed = (int) Time.time;
+        if (net.server() && net.active()) {
+            NHCall.syncRaidAlert(this);
+        }
+    }
+
+    public void applyNetworkState(float lifeTimer, int raidCounter) {
+        this.lifeTimer = lifeTimer;
+        this.raidCounter = raidCounter;
+        if (lifeTimer > alertTime) popupDisplayed = true;
+    }
+
+    public int raidCounter() {
+        return raidCounter;
+    }
+
+    private void showRaidPresentation() {
         showRaidToast();
         NHUIFunc.showLabel(4.5f, t -> {
             t.background(Styles.black5);
@@ -128,10 +154,12 @@ public class EventRaidAction extends Action {
             t.table(l -> l.add(new FLabel("<< " + Core.bundle.get(alertBundleKey()) + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
         });
 
-        new RaidMarker()
-                .setMarkPosition(targetX, targetY)
+        RaidMarker marker = new RaidMarker();
+        marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)
-                .setMarkColor(team.color)
+                .bindLifeTimer(() -> this.lifeTimer);
+        marker.bindAlertTime(() -> this.alertTime);
+        marker.setMarkColor(team.color)
                 .setRadius(inaccuracy)
                 .setAngle(Angles.angle(sourceX, sourceY, targetX, targetY))
                 .setIcon(Core.atlas.find(warningIconName()))
@@ -140,17 +168,27 @@ public class EventRaidAction extends Action {
 
     @Override
     public void act() {
+        updateRaidPopup();
+
+        if (RaidLogic.isRemoteClient()) return;
+        if (!RaidState.enabled()) return;
+
         int raidCount = Mathf.round(Mathf.maxZero(lifeTimer - alertTime) / Time.toSeconds * raidScale);
         int raid = raidCount - raidCounter;
         raidCounter = raidCount;
 
+        Rand rand = new Rand(syncSeed);
+        int baseIndex = raidCounter - raid;
+        for (int i = 0; i < raid; i++) {
+            createBullet(rand, baseIndex + i);
+        }
+    }
+
+    private void updateRaidPopup() {
+        if (headless) return;
         if (lifeTimer > alertTime && !popupDisplayed) {
             popupDisplayed = true;
             showRaidToast();
-        }
-
-        for (int i = 0; i < raid; i++) {
-            createBullet();
         }
     }
 
@@ -160,12 +198,16 @@ public class EventRaidAction extends Action {
         return raidType.bulletType;
     }
 
-    public void createBullet() {
+    public void createBullet(Rand rand, int index) {
         BulletType bt = bulletType();
-        Tmp.v1.trns(Mathf.random(360f), inaccuracy);
-        float dst = Mathf.dst(sourceX, sourceY, targetX, targetY);
-        float ang = Angles.angle(sourceX, sourceY, targetX, targetY);
-        RaidBulletUtil.spawn(bt, team, sourceX + Tmp.v1.x, sourceY + Tmp.v1.y, ang, -1, 1f, dst, targetX, targetY);
+        rand.setSeed(syncSeed + index * 7919);
+        float spread = inaccuracy;
+        Tmp.v1.trns(rand.random(360f), rand.random(spread));
+        float tx = targetX + Tmp.v1.x;
+        float ty = targetY + Tmp.v1.y;
+        float dst = Mathf.dst(sourceX, sourceY, tx, ty);
+        float ang = Angles.angle(sourceX, sourceY, tx, ty);
+        RaidBulletUtil.spawn(bt, team, sourceX, sourceY, ang, -1, 1f, dst, tx, ty);
     }
 
     public String alertBundleKey() {

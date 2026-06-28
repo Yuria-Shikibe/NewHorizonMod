@@ -44,17 +44,27 @@ public class HudMarker extends Table {
     public float angle = 0f;
     protected float lifeTimer = 0;
     protected float displayAlpha = 30f;
+    protected Prov<Float> lifeTimerProv;
 
     public HudMarker() {
         touchable = Touchable.childrenOnly;
         fillParent = true;
 
         update(() -> {
-            if (!Vars.state.isPaused()) lifeTimer += Time.delta;
+            if (lifeTimerProv == null && !Vars.state.isPaused()) lifeTimer += Time.delta;
             if (Vars.state.isMenu()) remove();
         });
 
         color.a = 0;
+    }
+
+    public HudMarker bindLifeTimer(Prov<Float> prov) {
+        lifeTimerProv = prov;
+        return this;
+    }
+
+    protected float elapsed() {
+        return lifeTimerProv != null ? lifeTimerProv.get() : lifeTimer;
     }
 
     public HudMarker setMarkPosition(float x, float y) {
@@ -111,7 +121,7 @@ public class HudMarker extends Table {
     }
 
     public boolean completed() {
-        return lifeTimer > duration;
+        return elapsed() > duration;
     }
 
     public Prov<String> displayText() {
@@ -125,18 +135,20 @@ public class HudMarker extends Table {
                     new Table(table -> table.add(new DelaySlideBar(
                             () -> markColor,
                             () -> "     " + displayText().get(),
-                            () -> Mathf.clamp(lifeTimer / duration)
+                            () -> Mathf.clamp(elapsed() / duration)
                     )).padLeft(20f).height(40).expandX().fillX()),
                     new Table(table -> table.image(icon).color(markColor).size(54).pad(-8).expandX().left()),
                     new Table(table -> table.button(Icon.eyeSmall, Styles.clearNonei, () -> {
                         displayAlpha = 30f;
+                        float cx = markPoint.x;
+                        float cy = markPoint.y;
                         ActionBus bus = new ActionBus();
                         bus.addAll(
                                 new InputLockAction(),
                                 new CameraControlAction() {{
                                     duration = 90f;
-                                    worldX = markPoint.x;
-                                    worldY = markPoint.y;
+                                    worldX = cx;
+                                    worldY = cy;
                                 }},
                                 new InputUnlockAction()
                         );

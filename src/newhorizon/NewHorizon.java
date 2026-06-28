@@ -3,6 +3,7 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.math.Mathf;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -23,6 +24,7 @@ import newhorizon.content.*;
 import newhorizon.content.register.RecipeRegister;
 import newhorizon.content.register.UnitRecipeRegister;
 import newhorizon.expand.entities.EntityRegister;
+import newhorizon.expand.net.NHCall;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
@@ -194,17 +196,19 @@ public class NewHorizon extends Mod {
 
     @Override
     public void init() {
+        NHVars.init();
+
         Events.on(ClientLoadEvent.class, e -> {
             if (Vars.netServer != null) {
                 Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
             }
-            NHVars.init();
         });
     }
 
     @Override
     public void registerClientCommands(CommandHandler handler) {
         super.registerClientCommands(handler);
+        registerSetScaleCommand(handler);
 
         //from JSEval
         handler.<Player>register("js", "<code...>", "Execute JavaScript code.", (args, player) -> {
@@ -213,6 +217,26 @@ public class NewHorizon extends Mod {
                 player.sendMessage("> " + (isError(output) ? "[#ff341c]" + output : output));
             } else {
                 player.sendMessage("[scarlet]You must be admin to use this command.");
+            }
+        });
+    }
+
+    @Override
+    public void registerServerCommands(CommandHandler handler) {
+        super.registerServerCommands(handler);
+        registerSetScaleCommand(handler);
+    }
+
+    private void registerSetScaleCommand(CommandHandler handler) {
+        handler.<Player>register("setscale", "<0-1>", Core.bundle.get("command.setscale.desc", "Set event raid scale (0=off, 1=on)."), (args, player) -> {
+            if (args.length == 0) {
+                if (player != null) player.sendMessage("[scarlet]" + Core.bundle.get("command.setscale.usage"));
+                return;
+            }
+            try {
+                NHCall.setRaidScale(Mathf.clamp(Float.parseFloat(args[0]), 0f, 1f), player);
+            } catch (NumberFormatException e) {
+                if (player != null) player.sendMessage("[scarlet]" + Core.bundle.get("command.setscale.usage"));
             }
         });
     }

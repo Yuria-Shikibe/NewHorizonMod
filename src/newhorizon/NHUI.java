@@ -34,6 +34,7 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHDatabaseEntries;
 import newhorizon.content.NHLogic;
 import newhorizon.expand.game.DefaultRaidStrength;
+import newhorizon.expand.game.RaidState;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
@@ -197,7 +198,7 @@ public class NHUI {
     }
 
     public static boolean showRaidStrengthHud() {
-        return NHSetting.getBool(NHSetting.EVENT_RAID)
+        return RaidState.enabled()
                 && state.isGame()
                 && state.rules.mode() != Gamemode.sandbox
                 && state.rules.mode() != Gamemode.pvp

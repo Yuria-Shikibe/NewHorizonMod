@@ -1,5 +1,6 @@
 package newhorizon.expand.game;
 
+import arc.Core;
 import arc.Events;
 import arc.math.Mathf;
 import arc.math.Rand;
@@ -13,14 +14,17 @@ import mindustry.game.EventType;
 import mindustry.game.Gamemode;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Call;
+import mindustry.gen.Player;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockFlag;
-import newhorizon.NHSetting;
 import newhorizon.content.*;
 import newhorizon.content.bullets.RaidBullets;
+import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
+import newhorizon.expand.net.NHCall;
 import newhorizon.util.func.WeightedRandom;
 import newhorizon.util.struct.WeightedOption;
 
@@ -40,7 +44,7 @@ public class DefaultRaid {
     private static final Seq<int[]> tierPoolBuilder = new Seq<>();
     private static int[][] tierPools;
 
-    private static float waitTimer;
+    private static long nextRaidAt = Long.MAX_VALUE;
     private static boolean raidRunning;
     private static ActionBus currentRaidBus;
 
@@ -75,12 +79,51 @@ public class DefaultRaid {
 
         Events.on(EventType.PlayEvent.class, event -> {
             NHLogic.refreshCustomRaidLogic();
+            RaidState.init();
             reset();
         });
         Events.on(EventType.WorldLoadEvent.class, event -> {
             NHLogic.refreshCustomRaidLogic();
+            RaidState.init();
             reset();
+            if (RaidLogic.isRemoteClient()) {
+                Core.app.post(NHCall::requestRaidSync);
+            }
         });
+
+        Events.on(EventType.PlayerConnect.class, e -> {
+            if (!net.server() || !net.active() || e.player == null) return;
+            RaidSync.pushStateTo(e.player);
+        });
+
+        Events.on(EventType.ServerLoadEvent.class, e -> registerSyncCommand());
+    }
+
+    private static void registerSyncCommand() {
+        if (netServer == null) return;
+        netServer.clientCommands.removeCommand("sync");
+        netServer.clientCommands.<Player>register("sync", "Re-synchronize world state.", (args, player) -> {
+            if (player.isLocal()) {
+                player.sendMessage("[scarlet]Re-synchronizing as the host is pointless.");
+            } else {
+                if (Time.timeSinceMillis(player.getInfo().lastSyncTime) < 1000 * 5) {
+                    player.sendMessage("[scarlet]You may only /sync every 5 seconds.");
+                    return;
+                }
+                player.getInfo().lastSyncTime = Time.millis();
+                Call.worldDataBegin(player.con());
+                netServer.sendWorldData(player);
+            }
+        });
+    }
+
+    public static EventRaidAction activeRaidAction() {
+        if (!raidRunning || currentRaidBus == null) return null;
+        if (currentRaidBus.current instanceof EventRaidAction action) return action;
+        for (Action queued : currentRaidBus.queue) {
+            if (queued instanceof EventRaidAction action) return action;
+        }
+        return null;
     }
 
     public static void register(int id, BulletType bullet, float alertTime, float raidTime, float raidScale, float inaccuracy) {
@@ -109,18 +152,18 @@ public class DefaultRaid {
         event(1, RaidBullets.defaultRaidBullet1, 60, 8, 3.0f, 60);
         event(2, NHBullets.synchroZeta, 120, 10, 16f, 90);
         event(3, RaidBullets.raidBullet_9, 180, 20, 5f, 75);
-        event(4, NHBullets.warperBullet, 180, 10, 12f, 120);
+        event(4, NHBullets.blastEnergyPst, 180, 10, 3f, 120);
         event(5, NHBullets.synchroFusionEnergy, 180, 10, 10f, 120);
         event(6, NHBullets.laugraBullet, 180, 3, 3f, 60);
         event(7, NHBullets.saviourBullet, 240, 20, 4f, 90);
         event(8, NHBullets.artilleryFusion, 180, 40, 6f, 72);
-        event(9, RaidBullets.raidBullet_10, 30, 14, 3f, 80);
+        event(9, NHBullets.artilleryNgt, 30, 10, 4f, 80);
         event(10, NHBullets.guardianBulletLightningBall, 180, 6, 2f, 60);
         event(11, NHBullets.railGun1, 120, 8, 3.0f, 30);
         event(12, RaidBullets.raidBullet_6, 120, 12, 2f, 180);
         event(13, NHBullets.saviourBullet, 240, 30, 12f, 180);
         event(14, NHBullets.artilleryNgt, 180, 10, 8f, 120);
-        event(15, NHBullets.blastEnergyNgt, 240, 4, 10f, 30);
+        event(15, NHBullets.blastEnergyNgt, 240, 12, 10f, 30);
         event(16, NHBullets.collapserBullet, 240, 8, 6, 240);
         event(17, NHBullets.shieldDestroyer, 60, 9, 2f, 120);
         event(18, RaidBullets.raidBullet_8, 300, 6, 1f, 90);
@@ -140,14 +183,19 @@ public class DefaultRaid {
     }
 
     public static void reset() {
-        waitTimer = PROTECTION_TIME;
+        scheduleNextRaid(PROTECTION_TIME);
         raidRunning = false;
         currentRaidBus = null;
         overrideCheck.reset(0, OVERRIDE_CHECK_INTERVAL);
     }
 
+    private static void scheduleNextRaid(float delaySeconds) {
+        nextRaidAt = Time.millis() + (long) (delaySeconds * 1000f);
+    }
+
     public static void update() {
-        if (!NHSetting.getBool(NHSetting.EVENT_RAID)) return;
+        if (!RaidState.enabled()) return;
+        if (!RaidLogic.isLogicSide()) return;
         if (!state.isPlaying()) return;
         if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
 
@@ -164,15 +212,12 @@ public class DefaultRaid {
             if (currentRaidBus == null || currentRaidBus.complete()) {
                 raidRunning = false;
                 currentRaidBus = null;
-                waitTimer = COOLDOWN_MIN + Mathf.random(COOLDOWN_RANGE);
+                scheduleNextRaid(COOLDOWN_MIN + new Rand((int) Time.time).random(COOLDOWN_RANGE));
             }
             return;
         }
 
-        if (waitTimer > 0f) {
-            waitTimer -= Time.delta / 60f;
-            return;
-        }
+        if (Time.millis() < nextRaidAt) return;
 
         dispatchRaid(wave, player);
     }
@@ -218,6 +263,7 @@ public class DefaultRaid {
         action.raidScale = raid.raidScale;
         action.inaccuracy = raid.inaccuracy;
         action.overrideDefaultCoordinate = true;
+        action.syncSeed = raidSeed();
         action.sourceX = sourceX * tilesize;
         action.sourceY = sourceY * tilesize;
         action.targetX = targetX * tilesize;
@@ -240,35 +286,52 @@ public class DefaultRaid {
     }
 
     private static float[] pickTarget(Team wave, Team player, int seed) {
-        return pickTarget(wave, player, seed, 3f, 3f, 3f, 1f);
-    }
-
-    private static float[] pickTargetCore(Team wave, Team player, int seed) {
-        return pickTarget(wave, player, seed, 0f, 0f, 0f, 1f);
-    }
-
-    private static float[] pickTarget(Team wave, Team player, int seed, float w1, float w2, float w3, float w4) {
         float[] out = new float[2];
         Rand r = new Rand(seed);
         float wx = r.random(0f, world.unitWidth());
         float wy = r.random(0f, world.unitHeight());
 
-        AtomicReference<BlockFlag> flag = new AtomicReference<>(BlockFlag.core);
+        AtomicReference<BlockFlag> flag = new AtomicReference<>(BlockFlag.turret);
         WeightedRandom.random(
-                new WeightedOption(w1, () -> flag.set(BlockFlag.turret)),
-                new WeightedOption(w2, () -> flag.set(BlockFlag.generator)),
-                new WeightedOption(w3, () -> flag.set(BlockFlag.factory)),
-                new WeightedOption(w4, () -> flag.set(BlockFlag.core))
+                new WeightedOption(3f, () -> flag.set(BlockFlag.turret)),
+                new WeightedOption(3f, () -> flag.set(BlockFlag.generator)),
+                new WeightedOption(3f, () -> flag.set(BlockFlag.factory))
         );
 
-        Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(wave, flag.get()));
-        if (b == null) b = Geometry.findClosest(wx, wy, indexer.getFlagged(player, flag.get()));
+        Building b = findClosestBuilding(wave, player, flag.get(), wx, wy);
+        if (b == null) {
+            for (BlockFlag fallback : new BlockFlag[]{BlockFlag.turret, BlockFlag.generator, BlockFlag.factory}) {
+                if (fallback == flag.get()) continue;
+                b = findClosestBuilding(wave, player, fallback, wx, wy);
+                if (b != null) break;
+            }
+        }
+        if (b == null) return out;
+
+        out[0] = b.tileX();
+        out[1] = b.tileY();
+        return out;
+    }
+
+    private static float[] pickTargetCore(Team wave, Team player, int seed) {
+        float[] out = new float[2];
+        Rand r = new Rand(seed);
+        float wx = r.random(0f, world.unitWidth());
+        float wy = r.random(0f, world.unitHeight());
+
+        Building b = findClosestBuilding(wave, player, BlockFlag.core, wx, wy);
         if (b == null) b = player.core();
         if (b == null) return out;
 
         out[0] = b.tileX();
         out[1] = b.tileY();
         return out;
+    }
+
+    private static Building findClosestBuilding(Team wave, Team player, BlockFlag flag, float wx, float wy) {
+        Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(wave, flag));
+        if (b == null) b = Geometry.findClosest(wx, wy, indexer.getFlagged(player, flag));
+        return b;
     }
 
     private static float[] pickSpawn(Team wave, float targetX, float targetY) {

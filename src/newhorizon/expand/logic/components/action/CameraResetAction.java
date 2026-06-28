@@ -3,12 +3,12 @@ package newhorizon.expand.logic.components.action;
 import arc.Core;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.Vars;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
+import static mindustry.Vars.player;
 
 public class CameraResetAction extends Action {
     @Override
@@ -25,9 +25,9 @@ public class CameraResetAction extends Action {
     public void act() {
         if (headless) return;
 
-        Tmp.v1.set(Core.camera.position).lerpDelta(Vars.player, progress());
+        Tmp.v1.set(Core.camera.position).lerpDelta(player, progress());
         control.input.logicCamSpeed = 1000f;
-        control.input.logicCamPan = Tmp.v1;
+        control.input.logicCamPan.set(Tmp.v1);
     }
 
     @Override
