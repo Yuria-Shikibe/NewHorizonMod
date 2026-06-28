@@ -107,7 +107,7 @@ public class DefaultRaid {
 
     private static void registerRaidEvents() {
         event(1, RaidBullets.defaultRaidBullet1, 60, 8, 3.0f, 60);
-        event(2, NHBullets.synchroZeta, 120, 10, 8f, 90);
+        event(2, NHBullets.synchroZeta, 120, 10, 16f, 90);
         event(3, RaidBullets.raidBullet_9, 180, 20, 5f, 75);
         event(4, NHBullets.warperBullet, 180, 10, 12f, 120);
         event(5, NHBullets.synchroFusionEnergy, 180, 10, 10f, 120);
