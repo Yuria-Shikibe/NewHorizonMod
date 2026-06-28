@@ -3,7 +3,6 @@ package newhorizon.expand.logic;
 import arc.math.Mathf;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.Call;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.bullets.RaidBullets;
@@ -60,7 +59,7 @@ public class RaidBulletUtil {
         }
         if (type.scaleLife) {
             float range = raidRange(type);
-            if (range > 0.001f) return Mathf.clamp(dst / range, 0f, 10f);
+            if (range > 0.001f) return dst / range;
         }
         if (type.speed > 0.001f && type.lifetime > 0.001f) return dst / (type.speed * type.lifetime);
         return 1f;
@@ -90,11 +89,7 @@ public class RaidBulletUtil {
         }
         float lifetimeScl = lifetimeScl(type, dst);
         BulletType bt = prepareForRaid(type);
-        if (bt != type) {
-            bt.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null, null, aimX, aimY);
-            return;
-        }
-        Call.createBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl);
+        bt.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null, null, aimX, aimY);
     }
 
     public static String alertKey(BulletType type) {
@@ -138,8 +133,7 @@ public class RaidBulletUtil {
                 NHBullets.pesterBlackHole,
                 NHBullets.nuBlackHole,
                 NHBullets.declineProjectile,
-                NHBullets.guardianBullet,
-                NHBullets.saviourBullet
+                NHBullets.guardianBullet
         )) return "bullet-black-hole";
 
         if (is(type,
@@ -187,7 +181,8 @@ public class RaidBulletUtil {
         if (is(type,
                 RaidBullets.raidBullet_6,
                 NHBullets.blastEnergyPst,
-                NHBullets.blastEnergyNgt
+                NHBullets.blastEnergyNgt,
+                NHBullets.saviourBullet
         )) return "bullet-emp";
 
         if (is(type,

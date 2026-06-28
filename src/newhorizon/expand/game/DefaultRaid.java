@@ -106,19 +106,19 @@ public class DefaultRaid {
     }
 
     private static void registerRaidEvents() {
-        event(1, RaidBullets.defaultRaidBullet1, 60, 8, 2.0f, 60);
+        event(1, RaidBullets.defaultRaidBullet1, 60, 8, 3.0f, 60);
         event(2, NHBullets.synchroZeta, 120, 10, 8f, 90);
-        event(3, RaidBullets.raidBullet_9, 180, 20, 3f, 75);
+        event(3, RaidBullets.raidBullet_9, 180, 20, 5f, 75);
         event(4, NHBullets.warperBullet, 180, 10, 12f, 120);
-        event(5, NHBullets.synchroFusionEnergy, 180, 10, 8f, 120);
-        event(6, NHBullets.laugraBullet, 180, 3, 2f, 60);
-        event(7, NHBullets.saviourBullet, 240, 20, 3f, 90);
-        event(8, NHBullets.artilleryFusion, 180, 40, 1.2f, 72);
+        event(5, NHBullets.synchroFusionEnergy, 180, 10, 10f, 120);
+        event(6, NHBullets.laugraBullet, 180, 3, 3f, 60);
+        event(7, NHBullets.saviourBullet, 240, 20, 4f, 90);
+        event(8, NHBullets.artilleryFusion, 180, 40, 6f, 72);
         event(9, RaidBullets.raidBullet_10, 30, 14, 3f, 80);
         event(10, NHBullets.guardianBulletLightningBall, 180, 6, 2f, 60);
         event(11, NHBullets.railGun1, 120, 8, 3.0f, 30);
         event(12, RaidBullets.raidBullet_6, 120, 12, 2f, 180);
-        event(13, NHBullets.saviourBullet, 240, 30, 4f, 180);
+        event(13, NHBullets.saviourBullet, 240, 30, 12f, 180);
         event(14, NHBullets.artilleryNgt, 180, 10, 8f, 120);
         event(15, NHBullets.blastEnergyNgt, 240, 4, 10f, 30);
         event(16, NHBullets.collapserBullet, 240, 8, 6, 240);
