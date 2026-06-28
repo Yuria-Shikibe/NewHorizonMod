@@ -24,6 +24,7 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NHGroups;
 import newhorizon.content.NHStats;
+import newhorizon.expand.block.production.factory.MultiBlockCrafter;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.DrawFunc;
 
@@ -114,22 +115,32 @@ public class AssignedBeacon extends AdaptOverdriveProjector {
         public void updateLink() {
             linkBuilds().each(b -> {
                 float progress = linkBuilds.get(b, 0f);
-                if (b.block instanceof GenericCrafter crafter && b instanceof GenericCrafter.GenericCrafterBuild build) {
+
+                if (b.block instanceof MultiBlockCrafter crafter && b instanceof MultiBlockCrafter.AdaptCrafterBuild build) {
                     progress += getProgressIncrease(crafter.craftTime / realBoost() / efficiency) * build.efficiency * build.timeScale();
                     if (progress >= 1f) {
-                        if (b.block instanceof RecipeGenericCrafter crafter1 && b instanceof RecipeGenericCrafter.RecipeGenericCrafterBuild build1) {
-                            if (build1.getRecipe() != null) {
-                                if (crafter1.outputItems != null) {
-                                    for (ItemStack stack : crafter1.outputItems) {
-                                        build.items.add(stack.item, stack.amount);
-                                    }
+                        if (b instanceof RecipeGenericCrafter.RecipeGenericCrafterBuild build1 && build1.getRecipe() != null) {
+                            build1.getRecipe().outputItem.each(stack -> {
+                                for (int i = 0; i < stack.amount; i++) {
+                                    build1.offload(stack.item);
+                                }
+                            });
+                        } else if (crafter.outputItems != null) {
+                            for (ItemStack stack : crafter.outputItems) {
+                                for (int i = 0; i < stack.amount; i++) {
+                                    build.offload(stack.item);
                                 }
                             }
-                        } else {
-                            if (crafter.outputItems != null) {
-                                for (ItemStack stack : crafter.outputItems) {
-                                    build.items.add(stack.item, stack.amount);
-                                }
+                        }
+                        progress %= 1f;
+                    }
+                    linkBuilds.put(b, progress);
+                } else if (b.block instanceof GenericCrafter crafter && b instanceof GenericCrafter.GenericCrafterBuild build) {
+                    progress += getProgressIncrease(crafter.craftTime / realBoost() / efficiency) * build.efficiency * build.timeScale();
+                    if (progress >= 1f) {
+                        if (crafter.outputItems != null) {
+                            for (ItemStack stack : crafter.outputItems) {
+                                build.items.add(stack.item, stack.amount);
                             }
                         }
                         progress %= 1f;
