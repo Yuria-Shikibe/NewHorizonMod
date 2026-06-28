@@ -31,12 +31,12 @@ public class NHContent extends Content {
 
     public static TextureRegion
             crossRegion, sourceCenter, timeIcon, xenIcon,
-            iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade, upgrade2,
+            iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade, upgrade2,danger,
             linkArrow, activeBoost,
             beamLaser, beamLaserEnd, beamLaserInner, beamLaserInnerEnd;
 
     public static TextureRegion //UI
-            raid, objective, fleet, capture;
+            raid, objective, fleet, capture, adfsds;
 
     public static Attribute quantum, density;
 
@@ -94,6 +94,9 @@ public class NHContent extends Content {
         objective = Core.atlas.find(NewHorizon.name("objective"));
         fleet = Core.atlas.find(NewHorizon.name("fleet"));
         capture = Core.atlas.find(NewHorizon.name("capture"));
+
+        danger = Core.atlas.find(NewHorizon.name("danger"));
+        adfsds = Core.atlas.find(NewHorizon.name("ADFSDS"));
 
         linkArrow = Core.atlas.find(NewHorizon.name("linked-arrow"));
         activeBoost = Core.atlas.find(NewHorizon.name("active-boost"));

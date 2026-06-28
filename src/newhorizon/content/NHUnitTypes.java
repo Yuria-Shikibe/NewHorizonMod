@@ -1162,6 +1162,8 @@ public class NHUnitTypes {
                         shootWarmupSpeed = 0.05f;
                         minWarmup = 0.6f;
                         cooldownTime = 90f;
+                        shootSound = NHSounds.hugeShoot ;
+                        recoil = 2f;
 
                         parts.add(new RegionPart("-grab") {{
                             layerOffset = -0.001f;
@@ -1295,6 +1297,7 @@ public class NHUnitTypes {
                     rotateSpeed = 8;
                     shootCone = 30f;
                     layerOffset = 10f;
+                    shootSound = NHSounds.shootGauss1;
                     shoot = new ShootMulti(new ShootBarrel() {{
                         shots = 2;
                         barrels = new float[]

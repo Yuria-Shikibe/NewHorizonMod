@@ -21,7 +21,6 @@ import arc.util.Log;
 import arc.util.Reflect;
 import arc.util.Scaling;
 import arc.util.Strings;
-import mindustry.core.UI;
 import mindustry.editor.MapEditorDialog;
 import mindustry.game.Gamemode;
 import mindustry.game.MapObjectives;
@@ -32,6 +31,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHDatabaseEntries;
 import newhorizon.content.NHLogic;
 import newhorizon.expand.game.DefaultRaidStrength;
 import newhorizon.util.ui.DelayCollapser;
@@ -137,7 +137,7 @@ public class NHUI {
                         i.table(p -> {
                             p.align(Align.topLeft).defaults().growX().fillY().row();
                             state.rules.objectives.each(mapObjective -> {
-                                Boolp shown = () -> mapObjective.qualified() && !mapObjective.hidden;
+                                Boolp shown = () -> mapObjective.qualified() && !mapObjective.hidden && hasObjectiveUi(mapObjective);
                                 DelayCollapser col = new DelayCollapser(getObjectiveTable(mapObjective), !shown.get());
                                 col.setCollapsed(true, () -> !shown.get());
                                 p.add(col).row();
@@ -213,7 +213,9 @@ public class NHUI {
                             () -> "     " + getRaidStrengthBarText(),
                             NHUI::getRaidStrengthProgress
                     )).padLeft(20f).height(40).expandX().fillX()),
-                    new Table(table -> table.image(NHContent.icon).color(Pal.accent).size(54).pad(-8).expandX().left())
+                    new Table(table -> table.button(new TextureRegionDrawable(NHContent.danger), Styles.clearNonei, () -> {
+                        ui.content.show(NHDatabaseEntries.raidThreat);
+                    }).size(54).pad(-8).expandX().left())
             ));
         });
     }
@@ -223,7 +225,7 @@ public class NHUI {
         if (player == null) return Core.bundle.get("mod.ui.raid-strength-bar-empty");
 
         float strength = DefaultRaidStrength.evaluate(player);
-        int tier = DefaultRaidStrength.toTier(player);
+        int tier = displayThreatTier(DefaultRaidStrength.toTier(player));
         float next = DefaultRaidStrength.nextTierMin(tier);
         String strengthText = Strings.fixed(strength, 0);
 
@@ -231,6 +233,10 @@ public class NHUI {
             return Core.bundle.format("mod.ui.raid-strength-bar-max", strengthText, tier);
         }
         return Core.bundle.format("mod.ui.raid-strength-bar", strengthText, Strings.fixed(next, 0), tier);
+    }
+
+    public static int displayThreatTier(int tier) {
+        return Math.min(Math.max(tier, 1), DefaultRaidStrength.maxTier());
     }
 
     public static float getRaidStrengthProgress() {
@@ -248,132 +254,98 @@ public class NHUI {
         return Mathf.clamp((strength - base) / range);
     }
 
+    public static CharSequence objectiveDisplayText(MapObjectives.MapObjective obj) {
+        String text = obj.text();
+        if (text == null || text.isEmpty()) return null;
+        return text.replace('\n', ' ');
+    }
+
+    public static boolean hasObjectiveUi(MapObjectives.MapObjective obj) {
+        return buildObjectiveStack(obj) != null;
+    }
+
+    public static Stack buildObjectiveStack(MapObjectives.MapObjective e) {
+        Prov<CharSequence> labelProv = () -> objectiveDisplayText(e);
+
+        if (e instanceof MapObjectives.ResearchObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.content.fullIcon, () -> Mathf.num(obj.isCompleted()), () -> 1, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.ProduceObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.content.fullIcon, () -> Mathf.num(obj.isCompleted()), () -> 1, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.ItemObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.item.fullIcon, () -> state.rules.defaultTeam.items().get(obj.item), () -> obj.amount, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.CoreItemObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.item.fullIcon, () -> state.stats.coreItemCount.get(obj.item), () -> obj.amount, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.BuildCountObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.block.fullIcon, () -> state.stats.placedBlockCount.get(obj.block, 0), () -> obj.count, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.UnitCountObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.unit.fullIcon, () -> state.rules.defaultTeam.data().countType(obj.unit), () -> obj.count, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.DestroyUnitsObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(Icon.units.getRegion(), () -> state.stats.enemyUnitsDestroyed, () -> obj.count, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.TimerObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            Floatp countup = () -> Reflect.get(obj, "countup");
+            Floatp realTime = () -> obj.duration * state.rules.objectiveTimerMultiplier;
+            return objectiveTable(Icon.refresh.getRegion(), () -> (int) countup.get(), () -> (int) realTime.get(), labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.DestroyBlockObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.block.fullIcon, () -> Mathf.num(obj.isCompleted()), () -> 1, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.DestroyBlocksObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(obj.block.fullIcon, obj::progress, () -> obj.positions.length, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.CommandModeObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(Icon.units.getRegion(), () -> Mathf.num(obj.isCompleted()), () -> 1, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.FlagObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(Icon.info.getRegion(), () -> Mathf.num(obj.isCompleted()), () -> 1, labelProv, obj::isCompleted, false);
+        }
+
+        if (e instanceof MapObjectives.DestroyCoreObjective obj) {
+            if (objectiveDisplayText(obj) == null) return null;
+            return objectiveTable(Icon.effect.getRegion(), () -> Mathf.num(obj.isCompleted()), () -> 1, labelProv, obj::isCompleted, false);
+        }
+
+        if (objectiveDisplayText(e) != null) {
+            return objectiveTable(Icon.info.getRegion(), () -> 0, () -> 1, () -> objectiveDisplayText(e), () -> false, false);
+        }
+
+        return null;
+    }
+
     public static Table getObjectiveTable(MapObjectives.MapObjective e) {
         return new Table(t -> {
             t.defaults().growX().fillY().padBottom(6f).pad(6f);
-
-            if (e instanceof MapObjectives.ResearchObjective obj) {
-                t.add(objectiveTable(
-                        obj.content.fullIcon,
-                        () -> Mathf.num(obj.isCompleted()),
-                        () -> 1,
-                        () -> "Research:",
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.ItemObjective obj) {
-                t.add(objectiveTable(
-                        obj.item.fullIcon,
-                        () -> state.rules.defaultTeam.items().get(obj.item),
-                        () -> obj.amount,
-                        () -> "Obtain:",
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.CoreItemObjective obj) {
-                t.add(objectiveTable(
-                        obj.item.fullIcon,
-                        () -> state.stats.coreItemCount.get(obj.item),
-                        () -> obj.amount,
-                        () -> "Collect:",
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.BuildCountObjective obj) {
-                t.add(objectiveTable(
-                        obj.block.fullIcon,
-                        () -> state.stats.placedBlockCount.get(obj.block, 0),
-                        () -> obj.count,
-                        () -> "Build:",
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.UnitCountObjective obj) {
-                t.add(objectiveTable(
-                        obj.unit.fullIcon,
-                        () -> state.rules.defaultTeam.data().countType(obj.unit),
-                        () -> obj.count,
-                        () -> "Build:",
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.DestroyUnitsObjective obj) {
-                t.add(objectiveTable(
-                        Icon.units.getRegion(),
-                        () -> state.stats.enemyUnitsDestroyed,
-                        () -> obj.count,
-                        () -> "Destroy:",
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.TimerObjective obj) {
-                Floatp countup = () -> Reflect.get(obj, "countup");
-                Floatp realTime = () -> obj.duration * state.rules.objectiveTimerMultiplier;
-                t.add(objectiveTable(
-                        Icon.refresh.getRegion(),
-                        () -> (int) countup.get(),
-                        () -> (int) realTime.get(),
-                        () -> UI.formatTime(countup.get()) + "/" + UI.formatTime(realTime.get()),
-                        obj::isCompleted,
-                        false
-                ));
-            }
-
-            if (e instanceof MapObjectives.DestroyBlockObjective obj) {
-                t.add(objectiveTable(
-                        obj.block.fullIcon,
-                        () -> Mathf.num(obj.isCompleted()),
-                        () -> 1,
-                        () -> "Destroy:" + obj.block.localizedName,
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.DestroyBlocksObjective obj) {
-                t.add(objectiveTable(
-                        obj.block.fullIcon,
-                        obj::progress,
-                        () -> obj.positions.length,
-                        () -> "Destroy:" + obj.block.localizedName,
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.CommandModeObjective obj) {
-                t.add(objectiveTable(
-                        Icon.units.getRegion(),
-                        () -> Mathf.num(obj.isCompleted()),
-                        () -> 1,
-                        obj::text,
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.FlagObjective obj) {
-                t.add(objectiveTable(
-                        Icon.info.getRegion(),
-                        () -> Mathf.num(obj.isCompleted()),
-                        () -> 1,
-                        obj::text,
-                        obj::isCompleted
-                ));
-            }
-
-            if (e instanceof MapObjectives.DestroyCoreObjective obj) {
-                t.add(objectiveTable(
-                        Icon.effect.getRegion(),
-                        () -> Mathf.num(obj.isCompleted()),
-                        () -> 1,
-                        obj::text,
-                        obj::isCompleted
-                ));
-            }
+            Stack stack = buildObjectiveStack(e);
+            if (stack != null) t.add(stack);
         });
     }
 

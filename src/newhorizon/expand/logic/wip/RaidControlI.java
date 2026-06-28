@@ -7,7 +7,6 @@ import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.Call;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LVar;
 import mindustry.ui.Styles;
@@ -88,8 +87,7 @@ public class RaidControlI implements LExecutor.LInstruction {
         float sx = sourceX.numf() * tilesize, sy = sourceY.numf() * tilesize, tx = targetX.numf() * tilesize, ty = targetY.numf() * tilesize;
         float dst = Mathf.dst(sx, sy, tx, ty);
         float ang = Angles.angle(sx, sy, tx, ty);
-        float lifetimeScl = dst / (bulletType().speed * bulletType().lifetime);
-        Call.createBullet(bulletType(), team.team(), sx + Tmp.v1.x, sy + Tmp.v1.y, ang, -1f, 1f, lifetimeScl);
+        RaidBulletUtil.spawn(bulletType(), team.team(), sx + Tmp.v1.x, sy + Tmp.v1.y, ang, -1f, 1f, dst, tx, ty);
     }
 
     public void showAlert() {

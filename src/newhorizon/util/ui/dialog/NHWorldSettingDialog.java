@@ -10,4 +10,4 @@ public class NHWorldSettingDialog extends BaseDialog {
         addCloseButton();
     }
 }
-
+

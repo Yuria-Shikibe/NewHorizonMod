@@ -31,7 +31,7 @@ import static newhorizon.NHVars.cutscene;
 
 public class DefaultRaid {
     private static final float PROTECTION_TIME = 3f;
-    private static final float COOLDOWN_MIN = 240f;
+    private static final float COOLDOWN_MIN = 60f;
     private static final float COOLDOWN_RANGE = 120f;
     private static final int OVERRIDE_CHECK_INTERVAL = 120;
 
@@ -106,26 +106,26 @@ public class DefaultRaid {
     }
 
     private static void registerRaidEvents() {
-        event(1, RaidBullets.defaultRaidBullet1, 60, 8, 1.0f, 60);
-        event(2, NHBullets.synchroZeta, 120, 10, 4f, 90);
+        event(1, RaidBullets.defaultRaidBullet1, 60, 8, 2.0f, 60);
+        event(2, NHBullets.synchroZeta, 120, 10, 8f, 90);
         event(3, RaidBullets.raidBullet_9, 180, 20, 3f, 75);
-        event(4, NHBullets.warperBullet, 180, 20, 4f, 120);
-        event(5, NHBullets.synchroFusionEnergy, 180, 10, 4f, 120);
-        event(6, NHBullets.laugraBullet, 180, 3, 1f, 60);
+        event(4, NHBullets.warperBullet, 180, 10, 12f, 120);
+        event(5, NHBullets.synchroFusionEnergy, 180, 10, 8f, 120);
+        event(6, NHBullets.laugraBullet, 180, 3, 2f, 60);
         event(7, NHBullets.saviourBullet, 240, 20, 3f, 90);
-        event(8, NHBullets.artilleryFusion, 180, 40, 0.4f, 72);
+        event(8, NHBullets.artilleryFusion, 180, 40, 1.2f, 72);
         event(9, RaidBullets.raidBullet_10, 30, 14, 3f, 80);
-        event(10, NHBullets.guardianBulletLightningBall, 180, 6, 1f, 60);
+        event(10, NHBullets.guardianBulletLightningBall, 180, 6, 2f, 60);
         event(11, NHBullets.railGun1, 120, 8, 3.0f, 30);
         event(12, RaidBullets.raidBullet_6, 120, 12, 2f, 180);
         event(13, NHBullets.saviourBullet, 240, 30, 4f, 180);
-        event(14, NHBullets.artilleryNgt, 180, 10, 4.0f, 120);
+        event(14, NHBullets.artilleryNgt, 180, 10, 8f, 120);
         event(15, NHBullets.blastEnergyNgt, 240, 4, 10f, 30);
-        event(16, NHBullets.collapserBullet, 240, 3, 2, 240);
-        event(17, NHBullets.shieldDestroyer, 240, 9, 2f, 120);
-        event(18, RaidBullets.raidBullet_8, 300, 6, 2f, 90);
-        event(19, NHBullets.airRaidBomb, 300, 20, 1.0f, 90);
-        event(20, NHBullets.arc_9000, 300, 1, 1f, 60);
+        event(16, NHBullets.collapserBullet, 240, 8, 6, 240);
+        event(17, NHBullets.shieldDestroyer, 60, 9, 2f, 120);
+        event(18, RaidBullets.raidBullet_8, 300, 6, 1f, 90);
+        event(19, NHBullets.airRaidBomb, 360, 20, 1f, 90);
+        event(20, NHBullets.arc_9000, 300, 3, 1f, 60);
     }
 
     private static void registerTierPools() {

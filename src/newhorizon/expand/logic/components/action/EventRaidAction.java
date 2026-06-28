@@ -9,7 +9,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.Call;
 import mindustry.ui.Styles;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.RaidBulletUtil;
@@ -166,8 +165,7 @@ public class EventRaidAction extends Action {
         Tmp.v1.trns(Mathf.random(360f), inaccuracy);
         float dst = Mathf.dst(sourceX, sourceY, targetX, targetY);
         float ang = Angles.angle(sourceX, sourceY, targetX, targetY);
-        float lifetimeScl = dst / (bt.speed * bt.lifetime);
-        Call.createBullet(bt, team, sourceX + Tmp.v1.x, sourceY + Tmp.v1.y, ang, -1, 1f, lifetimeScl);
+        RaidBulletUtil.spawn(bt, team, sourceX + Tmp.v1.x, sourceY + Tmp.v1.y, ang, -1, 1f, dst, targetX, targetY);
     }
 
     public String alertBundleKey() {

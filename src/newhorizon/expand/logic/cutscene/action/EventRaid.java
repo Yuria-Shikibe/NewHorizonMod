@@ -85,7 +85,7 @@ public class EventRaid extends ActionLStatement {
             buildRowTable(table, t -> {
                 t.add(" Raid Bullet Type: ").padLeft(20f);
                 fields(t, customBulletType, str -> customBulletType = str).width(180f);
-                t.add(" (0/1/10000+id)").padLeft(4f);
+                t.add(" (1-10 / 666=random / 10000+contentId)").padLeft(4f);
             });
         }
 

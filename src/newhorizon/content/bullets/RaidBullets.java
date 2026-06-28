@@ -28,6 +28,7 @@ import newhorizon.expand.bullets.adapt.TypedDamageBulletType;
 import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.bullets.raid.RailRaidBulletType;
+import newhorizon.expand.bullets.raid.RandomRaidBulletType;
 import newhorizon.expand.bullets.raid.TracerRaidBulletType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -46,7 +47,7 @@ public class RaidBullets {
             explosiveRaidBullet1, explosiveRaidBullet2, explosiveRaidBullet3,
             railRaidBullet1, railRaidBullet2, railRaidBullet3,
             raidBullet_3, raidBullet_4, raidBullet_5, raidBullet_6, raidBullet_7, raidBullet_8,
-            raidBullet_9, raidBullet_10;
+            raidBullet_9, raidBullet_10, raidBullet_11;
 
     public static void load() {
         defaultRaidBullet1 = new BasicRaidBulletType() {{
@@ -461,6 +462,9 @@ public class RaidBullets {
             trailWidth = 1f;
             trailLength = 15;
         }};
+
+        raidBullet_11 = new RandomRaidBulletType();
+        RandomRaidBulletType.initPool();
     }
 
     public static Effect circle(float lifetime, float radius) {

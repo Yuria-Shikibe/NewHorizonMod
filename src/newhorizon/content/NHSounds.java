@@ -21,6 +21,8 @@ public class NHSounds {
 
             loopLaser1, loopLaser2, loopLaser3,
 
+            hugeShoot,
+
             shootArc9000,
             shootBlaster1, shootBlaster2, shootBlaster3,
             shootCoil1, shootCoil2, shootCoil3,

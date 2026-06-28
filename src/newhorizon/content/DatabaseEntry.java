@@ -18,6 +18,7 @@ public class DatabaseEntry extends UnlockableContent {
         hideDetails = false;
         allDatabaseTabs = true;
         databaseCategory = "mechanic";
+        generateIcons = false;
     }
 
     @Override
@@ -26,10 +27,16 @@ public class DatabaseEntry extends UnlockableContent {
     }
 
     @Override
+    public void loadIcon() {
+        NHDatabaseEntries.refreshIcons();
+        if (uiIcon == null || !uiIcon.found()) {
+            super.loadIcon();
+        }
+    }
+
+    @Override
     public void load() {
         super.load();
-        if (NHContent.icon != null) {
-            fullIcon = uiIcon = NHContent.icon;
-        }
+        NHDatabaseEntries.refreshIcons();
     }
 }

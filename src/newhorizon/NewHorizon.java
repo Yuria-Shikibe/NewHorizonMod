@@ -240,6 +240,7 @@ public class NewHorizon extends Mod {
         EntityRegister.load();
         NHRegister.load();
         NHContent.loadPriority();
+        NHDatabaseEntries.load();
         NHSounds.load();
 
         if (!Vars.headless) NHShaders.init();
