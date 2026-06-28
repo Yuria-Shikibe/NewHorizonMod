@@ -61,7 +61,7 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
     public class AdaptDirectionalUnloaderBuild extends DirectionalUnloaderBuild {
         @Override
         public void updateTile() {
-            float inc = unloadItem == null ? edelta() : (edelta() / 2f);
+            float inc = unloadItem == null ? edelta() : (edelta() * 2f);
             if ((unloadTimer += inc) >= speed) {
                 Building front = front(), back = back();
 

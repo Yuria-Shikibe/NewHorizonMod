@@ -108,7 +108,7 @@ public class SpecialBlock {
 
             size = 6;
             armor = 40f;
-            health = 500000;
+            health = 300000;
             itemCapacity = 50000;
 
             unitCapModifier = 25;
