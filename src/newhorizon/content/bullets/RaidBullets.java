@@ -54,17 +54,17 @@ public class RaidBullets {
             speed = 12f;
             lifetime = 120f;
 
-            damage = 600;
+            damage = 200;
 
-            splashDamageRadius = 55f;
-            splashDamage = 400f;
+            splashDamageRadius = 15f;
+            splashDamage = 200f;
 
             splashDamagePierce = true;
             scaledSplashDamage = true;
-            collides = false;
-            collidesGround = true;
-            collideFloor = true;
-            collidesAir = true;
+            //collides = false;
+            //collidesGround = true;
+            //collideFloor = true;
+            //collidesAir = true;
 
             hittable = true;
             reflectable = false;
