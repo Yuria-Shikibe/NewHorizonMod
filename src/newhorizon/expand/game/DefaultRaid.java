@@ -156,7 +156,7 @@ public class DefaultRaid {
         event(5, NHBullets.synchroFusionEnergy, 180, 10, 10f, 120);
         event(6, NHBullets.laugraBullet, 180, 3, 3f, 60);
         event(7, NHBullets.saviourBullet, 240, 20, 4f, 90);
-        event(8, NHBullets.artilleryFusion, 180, 40, 6f, 72);
+        event(8, NHBullets.artilleryFusion, 180, 20, 6f, 72);
         event(9, NHBullets.artilleryNgt, 30, 10, 4f, 80);
         event(10, NHBullets.guardianBulletLightningBall, 180, 6, 2f, 60);
         event(11, NHBullets.railGun1, 120, 8, 3.0f, 30);

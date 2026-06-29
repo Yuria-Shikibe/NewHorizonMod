@@ -172,13 +172,13 @@ public class RaidMarker extends HudMarker {
     @Override
     public void drawArrow() {
         float f = arrowScale();
+        Color charge = chargeColor();
         float alpha = chargeAlpha();
         float scl = getScale();
         float outerWorld = outerRingWorldRadius();
 
-        Draw.color(markColor, Color.white, 0.075f);
         Draw.blend(Blending.additive);
-        Draw.alpha(alpha * 0.65f);
+        Draw.color(charge, alpha);
 
         for (int i = 0; i < 4; i++) {
             float s = (1 - ((Time.time + 25 * i) % 100) / 100) * f * scl * 1.75f;

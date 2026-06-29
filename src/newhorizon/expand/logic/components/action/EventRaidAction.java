@@ -205,9 +205,12 @@ public class EventRaidAction extends Action {
         Tmp.v1.trns(rand.random(360f), rand.random(spread));
         float tx = targetX + Tmp.v1.x;
         float ty = targetY + Tmp.v1.y;
-        float dst = Mathf.dst(sourceX, sourceY, tx, ty);
-        float ang = Angles.angle(sourceX, sourceY, tx, ty);
-        RaidBulletUtil.spawn(bt, team, sourceX, sourceY, ang, -1, 1f, dst, tx, ty);
+        Tmp.v2.trns(rand.random(360f), rand.random(spread));
+        float sx = sourceX + Tmp.v2.x;
+        float sy = sourceY + Tmp.v2.y;
+        float dst = Mathf.dst(sx, sy, tx, ty);
+        float ang = Angles.angle(sx, sy, tx, ty);
+        RaidBulletUtil.spawn(bt, team, sx, sy, ang, -1, 1f, dst, tx, ty);
     }
 
     public String alertBundleKey() {
