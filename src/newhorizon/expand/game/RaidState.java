@@ -14,12 +14,23 @@ public final class RaidState {
     }
 
     public static void init() {
+        float fromSetting = defaultScale();
+
         if (Vars.state.rules.tags.containsKey(TAG)) {
             scale = readTag();
         } else {
-            scale = defaultScale();
-            writeTag();
+            scale = fromSetting;
         }
+
+        if (!Vars.net.active()) {
+            if (fromSetting <= 0f) {
+                scale = 0f;
+            } else if (scale <= 0f) {
+                scale = fromSetting;
+            }
+        }
+
+        writeTag();
     }
 
     private static float defaultScale() {
