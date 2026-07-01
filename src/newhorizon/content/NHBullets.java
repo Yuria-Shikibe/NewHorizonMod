@@ -360,6 +360,9 @@ public class NHBullets {
         }};
 
         artilleryNgt = new TrailFadeBulletType(2f, 250) {{
+            velocityBegin = 2f;
+            velocityIncrease = 0f;
+
             tracers = 1;
             tracerStroke = 1.2f;
             tracerSpacing = 4f;

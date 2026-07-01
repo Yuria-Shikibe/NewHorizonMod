@@ -56,13 +56,16 @@ public class RaidBulletUtil {
 
     public static float lifetimeScl(BulletType type, float dst) {
         if (dst <= 0f) return 1f;
+        if (type.scaleLife && type.range > 0.001f) {
+            return dst / type.range;
+        }
         if (type instanceof AccelBulletType || type instanceof LightningLinkerBulletType) {
+            if (type instanceof AccelBulletType accel && accel.velocityIncrease < 0.001f && accel.velocityBegin > 0.001f
+                    && type.lifetime > 0.001f) {
+                return dst / (accel.velocityBegin * type.lifetime);
+            }
             if (type.speed > 0.001f && type.lifetime > 0.001f) return dst / (type.speed * type.lifetime);
             return 1f;
-        }
-        if (type.scaleLife) {
-            float range = raidRange(type);
-            if (range > 0.001f) return dst / range;
         }
         if (type.speed > 0.001f && type.lifetime > 0.001f) return dst / (type.speed * type.lifetime);
         return 1f;
