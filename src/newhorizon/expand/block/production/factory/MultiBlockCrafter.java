@@ -158,7 +158,7 @@ public class MultiBlockCrafter extends BasicMultiBlock {
 
         @Override
         public void drawLight() {
-            super.drawLight();
+            if (liquids != null) super.drawLight();
             drawer.drawLight(this);
         }
 

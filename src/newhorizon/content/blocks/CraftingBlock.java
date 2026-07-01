@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -1581,46 +1582,28 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawRegionFlip("-base"),
-                    new DrawRegion("-piston-1") {
+                    new DrawBlock() {
+                        TextureRegion piston1, piston2;
+                        final float[] angles = {90f, 270f, 135f, 45f, 225f, 315f};
+                        final float[] flipX = {1f, 1f, 1f, -1f, 1f, -1f};
+                        final float[] flipY = {1f, -1f, 1f, 1f, -1f, -1f};
+                        final boolean[] piston1Used = {true, true, false, false, false, false};
+
                         @Override
                         public void draw(Building build) {
-                            Tmp.v1.setAngle(90f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
+                            float len = Mathf.absin(build.totalProgress(), 12f, 3);
+                            float rot = build.rotdeg();
+                            for (int i = 0; i < angles.length; i++) {
+                                TextureRegion region = piston1Used[i] ? piston1 : piston2;
+                                Tmp.v1.trns(angles[i] + rot, len);
+                                Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, flipX[i] * region.width / 4f, flipY[i] * region.height / 4f, rot);
+                            }
                         }
-                    },
-                    new DrawRegion("-piston-1") {
+
                         @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(270f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(135f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(45f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(225f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
-                        }
-                    },
-                    new DrawRegion("-piston-2") {
-                        @Override
-                        public void draw(Building build) {
-                            Tmp.v1.setAngle(315f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
-                            Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, -region.height / 4f);
+                        public void load(Block block) {
+                            piston1 = Core.atlas.find(block.name + "-piston-1");
+                            piston2 = Core.atlas.find(block.name + "-piston-2");
                         }
                     },
                     new DrawRegionFlip("-top")

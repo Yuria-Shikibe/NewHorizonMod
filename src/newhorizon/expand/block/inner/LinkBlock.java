@@ -102,7 +102,7 @@ public class LinkBlock extends Block {
             if (link instanceof MultiBlockEntity) {
                 linkBuild = link;
                 items = link.items;
-                liquids = link.liquids;
+                if (link.liquids != null) liquids = link.liquids;
                 //might not a good idea if do so
                 //block = link.block;
             } else {
@@ -121,6 +121,10 @@ public class LinkBlock extends Block {
         //skip draw
         @Override
         public void draw() {
+        }
+
+        @Override
+        public void drawLight() {
         }
 
         @Override

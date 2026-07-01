@@ -30,13 +30,13 @@ public class DefaultRaidStrength {
     private static final float[] TIER_MIN = {
             0f,
             0f,
-            300f,
-            800f,
-            1200f,
+            500f,
+            1000f,
             1800f,
-            2800f,
-            3600f,
-            5600f
+            2400f,
+            3200f,
+            4800f,
+            6400f
     };
 
     public static int maxTier() {
