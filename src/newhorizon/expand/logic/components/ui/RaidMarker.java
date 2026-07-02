@@ -12,7 +12,6 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.core.UI;
 import mindustry.graphics.Pal;
 import newhorizon.content.NHContent;
 import newhorizon.util.graphic.DrawFunc;
@@ -29,6 +28,25 @@ public class RaidMarker extends HudMarker {
     private static final float ARROW_OUTER_PAD = 16f;
     private static final float ARROW_SPACING = 40f;
 
+    protected Prov<Float> alertTimeProv;
+
+    public RaidMarker bindAlertTime(Prov<Float> prov) {
+        alertTimeProv = prov;
+        return this;
+    }
+
+    protected float remainAlertTicks() {
+        float end = alertTimeProv != null ? alertTimeProv.get() : duration + 1f;
+        return Mathf.maxZero(end - elapsed());
+    }
+
+    public static String formatEta(float remainTicks) {
+        float remainSec = remainTicks / Time.toSeconds;
+        int min = (int) (remainSec / 60f);
+        int sec = (int) (remainSec % 60f);
+        return min + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+
     @Override
     public void drawOnWorld() {
         drawCrossHair();
@@ -37,11 +55,11 @@ public class RaidMarker extends HudMarker {
     }
 
     public Prov<String> displayText() {
-        return () -> "ETA: " + UI.formatTime(Mathf.maxZero(duration - lifeTimer));
+        return () -> "ETA: " + formatEta(remainAlertTicks());
     }
 
     public float progress() {
-        return Mathf.clamp(lifeTimer / duration);
+        return Mathf.clamp(elapsed() / duration);
     }
 
     public float arrowScale() {
@@ -80,7 +98,7 @@ public class RaidMarker extends HudMarker {
     }
 
     private float endFade() {
-        float remain = Mathf.maxZero(duration - lifeTimer);
+        float remain = Mathf.maxZero(duration - elapsed());
         if (remain >= END_FADE_TIME) return 1f;
         return Interp.pow2In.apply(Mathf.clamp(remain / END_FADE_TIME));
     }

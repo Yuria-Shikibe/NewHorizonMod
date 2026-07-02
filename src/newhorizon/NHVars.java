@@ -18,6 +18,8 @@ public class NHVars {
     public static CutsceneUI cutsceneUI;
 
     public static void init() {
+        if (core != null) return;
+
         worldData = new NHWorldData();
 
         UpdateProxy.init();
