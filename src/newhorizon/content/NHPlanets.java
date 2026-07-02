@@ -7,11 +7,17 @@ import mindustry.game.Rules;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.HexMesh;
+import mindustry.graphics.g3d.MeshBuilder;
 import mindustry.graphics.g3d.MultiMesh;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
+import mindustry.ui.dialogs.PlanetDialog;
+import mindustry.world.meta.Env;
 import newhorizon.expand.map.DysonRingMesh;
 import newhorizon.expand.map.MidanthaPlanetGenerator;
+
+import static mindustry.graphics.g3d.PlanetRenderer.outlineColor;
+import static mindustry.graphics.g3d.PlanetRenderer.outlineRad;
 
 public class NHPlanets {
     public static Planet midantha;
@@ -24,25 +30,7 @@ public class NHPlanets {
             iconColor = NHColor.darkEnrColor;
 
             meshLoader = () -> new HexMesh(this, 6);
-
-            //meshLoader = () -> new NHModMesh(
-            //        this, 6, 5, 0.3, 1.7, 1.2, 1.4, 1.1f,
-            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f).mul(1.05f).lerp(Color.black, 0.2f),
-            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f).mul(1.05f).lerp(Color.black, 0.2f),
-            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f).mul(1.05f).lerp(Color.black, 0.2f),
-            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f),
-            //        NHColor.darkEnrFront.cpy().lerp(ammonia, 0.75f).lerp(Color.white, 0.2f),
-
-            //        erode.cpy().lerp(Color.black, 0.3f),
-            //        erode.cpy().lerp(Color.black, 0.2f),
-            //        erode.cpy().lerp(Color.black, 0.1f),
-            //        erode.cpy().lerp(Color.white, 0.1f),
-            //        erode.cpy().lerp(Color.white, 0.2f),
-
-            //        snow.cpy().lerp(Color.black, 0.4f),
-            //        snow.cpy().lerp(Color.black, 0.3f),
-            //        snow.cpy().lerp(Color.black, 0.2f)
-            //);
+            gridMeshLoader = () -> MeshBuilder.buildPlanetGrid(grid, outlineColor, outlineRad * radius * 1.05f);
 
             ruleSetter = r -> {
                 r.waves = true;
@@ -60,23 +48,22 @@ public class NHPlanets {
                 teamRule.unitBuildSpeedMultiplier = 5f;
                 teamRule.buildSpeedMultiplier = 3f;
             };
-
             generator = new MidanthaPlanetGenerator();
 
             cloudMeshLoader = () -> new MultiMesh(
-                    //new DysonSphereMesh(this, 0.35f),
-                    new DysonRingMesh(this, 2.300f, 0.28f, 729, Pal.darkMetal, Pal.darkerMetal),
-                    new DysonRingMesh(this, 2.500f, 0.28f, 2941, Pal.darkMetal, Pal.darkerMetal),
-                    new DysonRingMesh(this, 2.700f, 0.28f, 3834, Pal.darkMetal, Pal.darkerMetal),
-                    new DysonRingMesh(this, 2.305f, 0.19f, 729, NHColor.darkEnrColor, NHColor.darkEnrColor),
-                    new DysonRingMesh(this, 2.505f, 0.19f, 2941, NHColor.darkEnrColor, NHColor.darkEnrColor),
-                    new DysonRingMesh(this, 2.705f, 0.19f, 3834, NHColor.darkEnrColor, NHColor.darkEnrColor)
+                    new DysonRingMesh(this, 2.30f, 0.20f, 729, NHColor.darkEnr, NHColor.darkEnr.cpy().lerp(Pal.darkerMetal, 0.5f)),
+                    new DysonRingMesh(this, 2.50f, 0.20f, 2941, NHColor.darkEnr, NHColor.darkEnr.cpy().lerp(Pal.darkerMetal, 0.5f)),
+                    new DysonRingMesh(this, 2.70f, 0.20f, 3834, NHColor.darkEnr, NHColor.darkEnr.cpy().lerp(Pal.darkerMetal, 0.5f)),
+                    new DysonRingMesh(this, 2.302f, 0.10f, 729, NHColor.darkEnrFront, NHColor.darkEnrColor, true),
+                    new DysonRingMesh(this, 2.502f, 0.10f, 2941, NHColor.darkEnrFront, NHColor.darkEnrColor, true),
+                    new DysonRingMesh(this, 2.702f, 0.10f, 3834, NHColor.darkEnrFront, NHColor.darkEnrColor, true)
             );
-
-            iconColor = NHColor.darkEnrColor;
             landCloudColor = atmosphereColor = Color.valueOf("3c1b8f");
             atmosphereRadIn = 0.12f;
             atmosphereRadOut = 0.45f;
+
+            startSector = 1;
+            defaultEnv = Env.terrestrial | NHContent.radioactive;
         }};
     }
 }

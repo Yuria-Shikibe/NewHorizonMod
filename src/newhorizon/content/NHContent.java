@@ -25,6 +25,8 @@ public class NHContent extends Content {
     public static final float POWER_AREA = Layer.power + 0.114f;
     public static final float POWER_DYNAMIC = Layer.power + 0.514f;
 
+    public static final int radioactive = 1 << 8;
+
     public static Texture smoothNoise, particleNoise, darkerNoise, noise;
 
     public static CacheLayer quantumLayer, armorLayer;

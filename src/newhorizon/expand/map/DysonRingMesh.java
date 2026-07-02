@@ -16,21 +16,40 @@ public class DysonRingMesh extends PlanetMesh {
     static Mat3D mat = new Mat3D();
     static Rand rand = new Rand();
 
+    public static final int ringSegments = 256;
+
+    public final int seed;
+    public final boolean glow;
+
     public Vec3 flipAngle = new Vec3();
     public float flipValue = 0;
     public float flipSpeed = 0f;
     public float rotateSpeed = 0.5f;
+    public float pulseSpeed = 1f;
+    public Color ambientTint;
 
     public DysonRingMesh(Planet planet, float radius, float height, int seed, Color color, Color color2) {
-        super(planet, CylinderRingMeshBuilder.build(radius, height, 120, color, color2), Shaders.clouds);
+        this(planet, radius, height, seed, color, color2, false);
+    }
+
+    public DysonRingMesh(Planet planet, float radius, float height, int seed, Color color, Color color2, boolean glow) {
+        super(planet, CylinderRingMeshBuilder.build(radius, height, ringSegments, color, color2, seed * 0.017f, glow), Shaders.clouds);
+        this.seed = seed;
+        this.glow = glow;
         rand.setSeed(seed);
         flipValue = rand.random(-180, 180);
         flipAngle.setToRandomDirection(rand);
-        flipSpeed = rand.random(0.3f, 0.7f);
-        rotateSpeed = rand.random(1f, 3f);
+        flipSpeed = rand.random(0.25f, 0.55f);
+        rotateSpeed = rand.random(0.6f, 2.2f);
+        if (glow) {
+            pulseSpeed = rand.random(0.7f, 1.4f);
+            ambientTint = color.cpy();
+        }
     }
 
     public DysonRingMesh() {
+        seed = 0;
+        glow = false;
     }
 
     public float flipRot() {
@@ -43,7 +62,6 @@ public class DysonRingMesh extends PlanetMesh {
 
     @Override
     public void render(PlanetParams params, Mat3D projection, Mat3D transform) {
-        //don't waste performance rendering 0-alpha clouds
         if (params.planet == planet && Mathf.zero(1f - params.uiAlpha, 0.01f)) return;
 
         preRender(params);
@@ -64,7 +82,15 @@ public class DysonRingMesh extends PlanetMesh {
                 .rotate(flipAngle, flipRot())
                 .rotate(Vec3.Y, planet.getRotation() + relRot())
                 .nor();
-        Shaders.clouds.ambientColor.set(planet.solarSystem.lightColor);
-        Shaders.clouds.alpha = params.planet == planet ? 1f - params.uiAlpha : 1f;
+
+        float alpha = params.planet == planet ? 1f - params.uiAlpha : 1f;
+        if (glow) {
+            alpha *= 0.62f + 0.38f * Mathf.sin(Time.globalTime * pulseSpeed / 32f + seed * 0.013f);
+            Shaders.clouds.ambientColor.set(planet.solarSystem.lightColor).lerp(ambientTint, 0.6f);
+        } else {
+            Shaders.clouds.ambientColor.set(planet.solarSystem.lightColor).lerp(planet.atmosphereColor, 0.12f);
+        }
+
+        Shaders.clouds.alpha = alpha;
     }
 }

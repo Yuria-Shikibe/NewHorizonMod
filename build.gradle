@@ -1,8 +1,6 @@
-def appDataRoaming = System.getProperty("user.home") + "/AppData/Roaming/Mindustry/mods"
-
 apply plugin: "java"
 
-version '1.0'
+version = '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -18,15 +16,18 @@ java{
 }
 
 ext{
-    //the build number that this mod is made for
     mindustryVersion = 'caf89c8fee'
     jabelVersion = "93fde537c7"
-    //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+
+    mindustryJar = "E:/project/MindustryModDevLib/Mindustry8.0.jar"
+    mindustryBEJar = "E:/project/MindustryModDevLib/Mindustry-BE.jar"
+    steamModsDir = "E:/Steam/steamapps/common/Mindustry/saves/mods"
+    appDataModsDir = "${System.getenv('APPDATA')}/Mindustry/mods"
+    modDeployName = "NewHorizonModJar.jar"
 }
 
-//java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile).tap {
         configureEach {
@@ -39,43 +40,39 @@ configurations.all {
     resolutionStrategy.eachDependency { details ->
         if (details.requested.group == 'com.github.Anuken.Arc') {
             details.useVersion 'v158.1'
-            details.because '强制所有 Arc 模块用 v158.1，绕开 core v158.1 POM 里失效的 commit 0e5679dc9c'
         }
     }
-
 }
 
 dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:v158.1"
     compileOnly "com.github.Anuken.Mindustry:core:v158.1"
-    //compileOnly 'com.github.EB-wilson:TooManyItems:3.1a'
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
-tasks.register('jarAndroid') {
+tasks.register('jarAndroid'){
     dependsOn "jar"
+    def projectName = project.name
 
-    doLast {
-        if (!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.");
+    doLast{
+        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
 
-        def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find { f -> new File(f, "android.jar").exists() }
+        def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find{ f -> new File(f, "android.jar").exists() }
 
-        if (!platformRoot) throw new GradleException("No android.jar found. Ensure that you have an Android platform installed.")
+        if(!platformRoot) throw new GradleException("No android.jar found. Ensure that you have an Android platform installed.")
 
-        //collect dependencies needed for desugaring
-        def dependencies = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File(platformRoot, "android.jar")]).collect { "--classpath $it.path" }.join(" ")
+        def dependencies = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File(platformRoot, "android.jar")]).collect{ "--classpath $it.path" }.join(" ")
 
         def d8 = isWindows ? "d8.bat" : "d8"
 
-        //dex and desugar files - this requires d8 in your PATH
-        "$d8 $dependencies --min-api 14 --output NewHorizonModAndroid.jar NewHorizonModDesktop.jar"
-                .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
+        "$d8 $dependencies --min-api 14 --output ${projectName}Android.jar ${projectName}Desktop.jar"
+                .execute(null, new File("build/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
 
 jar{
-    archiveFileName = "NewHorizonModDesktop.jar"
+    archiveFileName = "${project.name}Desktop.jar"
 
     from{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
@@ -90,63 +87,62 @@ jar{
     }
 }
 
-//paths are hardcoded
-tasks.register('copyTo', Copy) {
-    from jar
-    into 'E:/Steam/steamapps/common/Mindustry/saves/mods'
-    rename { 'NewHorizonModJar.jar' }
+tasks.register('deploy', Jar){
+    def projectName = project.name
+    dependsOn jarAndroid
+    dependsOn jar
+    archiveFileName = "${projectName}.jar"
 
-    from jar
-    into appDataRoaming
-    rename { 'NewHorizonModJar.jar' }
+    from{ [zipTree("build/libs/${projectName}Desktop.jar"), zipTree("build/libs/${projectName}Android.jar")] }
+
+    doLast{
+        delete{
+            delete "build/libs/${projectName}Android.jar"
+        }
+    }
+}
+
+tasks.register('copyTo') {
+    dependsOn jar
+
+    doLast {
+        [steamModsDir, appDataModsDir].each { dest ->
+            copy {
+                from jar.archiveFile
+                into dest
+                rename { modDeployName }
+            }
+        }
+    }
 }
 
 tasks.register('debugMobile', JavaExec) {
-    dependsOn classes
     dependsOn 'copyTo'
 
-    main = "-jar"
+    classpath = files(mindustryJar)
+    mainClass = 'mindustry.desktop.DesktopLauncher'
     args = [
-            "E:/project/MindustryModDevLib/Mindustry8.0.jar",
             //"-debug",
             "-testMobile"
     ]
 }
 
 tasks.register('debugDesktop', JavaExec) {
-    dependsOn classes
     dependsOn 'copyTo'
 
-    main = "-jar"
+    classpath = files(mindustryJar)
+    mainClass = 'mindustry.desktop.DesktopLauncher'
     args = [
-            "E:/project/MindustryModDevLib/Mindustry8.0.jar",
             //"-debug",
     ]
 }
 
 tasks.register('debugBE', JavaExec) {
-    dependsOn classes
     dependsOn 'copyTo'
 
-    main = "-jar"
+    classpath = files(mindustryBEJar)
+    mainClass = 'mindustry.desktop.DesktopLauncher'
     args = [
-            "E:/project/MindustryModDevLib/Mindustry-BE.jar",
             //"-debug",
     ]
-
-}
-
-tasks.register('deploy', Jar) {
-    dependsOn jarAndroid
-    dependsOn jar
-    archiveFileName = "NewHorizonMod.jar"
-
-    from { [zipTree("$buildDir/libs/NewHorizonModDesktop.jar"), zipTree("$buildDir/libs/NewHorizonModAndroid.jar")] }
-
-    doLast {
-        delete {
-            delete "$buildDir/libs/NewHorizonModDesktop.jar"
-            delete "$buildDir/libs/NewHorizonModAndroid.jar"
-        }
-    }
 }

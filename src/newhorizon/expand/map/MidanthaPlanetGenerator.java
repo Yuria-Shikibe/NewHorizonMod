@@ -124,6 +124,27 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
         return terrains[Mathf.round(scl * size)][Mathf.round(tScl * tSize)];
     }
 
+    public void sampleRowColor(Vec3 position, int row, Color out) {
+        Block[] terrainRow = terrains[row];
+        int tSize = terrainRow.length;
+        float colF = Mathf.clamp(getTerrainNoise(position) * tSize, 0, tSize - 1);
+        int col0 = (int) colF;
+        int col1 = Math.min(col0 + 1, tSize - 1);
+        float colT = Interp.smooth.apply(colF - col0);
+        out.set(terrainRow[col0].mapColor).lerp(terrainRow[col1].mapColor, colT);
+    }
+
+    public void getFloorColor(Vec3 position, Color out) {
+        int size = terrains.length;
+        float rowF = Mathf.clamp(getRawNoise(position) * size, 0, size - 1);
+        int row0 = (int) rowF;
+        int row1 = Math.min(row0 + 1, size - 1);
+        float rowT = Interp.smooth.apply(rowF - row0);
+        sampleRowColor(position, row0, Tmp.c1);
+        sampleRowColor(position, row1, Tmp.c2);
+        out.set(Tmp.c1).lerp(Tmp.c2, rowT);
+    }
+
     @Override
     public void genTile(Vec3 position, TileGen tile) {
         tile.floor = getFloor(position);
@@ -215,15 +236,14 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
 
     @Override
     public float getHeight(Vec3 position) {
-        //6, 5, 0.3, 1.7, 1.2, 1.4, 1.1f
-        //position = Tmp.v33.set(position).scl(4f);
         float height = getRawHeight(position);
-        return Math.max(height, waterOffset) - 0.2f;
+        return Math.max(height, waterOffset) - 0.1f * 1.15f + 0.18f;
     }
 
     @Override
     public void getColor(Vec3 position, Color out) {
-        out.set(getFloor(position).mapColor).mul(getColorNoise(position));
+        getFloorColor(position, out);
+        out.mul(getColorNoise(position));
     }
 
     @Override
@@ -233,7 +253,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
 
     @Override
     public boolean allowLanding(Sector sector) {
-        return super.allowLanding(sector) && isLandSector(sector);
+        return true;
     }
 
     public boolean isLandSector(Sector sector) {

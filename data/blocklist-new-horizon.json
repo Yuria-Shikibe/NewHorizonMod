@@ -1289,12 +1289,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-differential-reactor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
 "new-horizon-photon-panel": {
 	"synthetic": true,
 	"solid": true,
@@ -1457,7 +1451,7 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-Basic-jump-gate": {
+"new-horizon-basic-jump-gate": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
