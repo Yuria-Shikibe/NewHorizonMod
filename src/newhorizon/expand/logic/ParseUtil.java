@@ -41,9 +41,8 @@ public class ParseUtil {
         }
 
         try {
-            int teamID = Integer.parseInt(token);
-            return Team.get(teamID);
-        } catch (NumberFormatException e) {
+            return Team.get(parseIntToken(token, Team.derelict.id));
+        } catch (Exception e) {
             Log.err(e);
             return Team.derelict;
         }
@@ -77,14 +76,22 @@ public class ParseUtil {
         return Strings.parseFloat(getToken(tokens), 0f);
     }
 
+    public static int parseIntToken(String token, int defaultValue) {
+        int value = Strings.parseInt(token, Integer.MIN_VALUE);
+        if (value != Integer.MIN_VALUE) return value;
+        float f = Strings.parseFloat(token, Float.NaN);
+        if (!Float.isNaN(f)) return (int) f;
+        return defaultValue;
+    }
+
     public static int getFirstInt(String[] tokens) {
         tokenIndex = 0;
-        return Strings.parseInt(getToken(tokens), 0);
+        return parseIntToken(getToken(tokens), 0);
     }
 
     public static int getNextInt(String[] tokens) {
         tokenIndex++;
-        return Strings.parseInt(getToken(tokens), 0);
+        return parseIntToken(getToken(tokens), 0);
     }
 
     public static boolean getFirstBool(String[] tokens) {

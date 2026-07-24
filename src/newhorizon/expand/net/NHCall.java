@@ -6,12 +6,18 @@ import mindustry.entities.abilities.Ability;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import newhorizon.expand.ability.active.ActiveAbility;
+import newhorizon.expand.game.InterventionState;
 import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.RaidState;
+import newhorizon.expand.logic.components.action.EventInterventionAction;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
+import newhorizon.expand.net.packet.InterventionAlertPacket;
+import newhorizon.expand.net.packet.InterventionScalePacket;
+import newhorizon.expand.net.packet.InterventionScaleRequestPacket;
+import newhorizon.expand.net.packet.InterventionSyncRequestPacket;
 import newhorizon.expand.net.packet.RaidAlertPacket;
 import newhorizon.expand.net.packet.RaidBulletPacket;
 import newhorizon.expand.net.packet.RaidClearPacket;
@@ -98,5 +104,52 @@ public class NHCall {
         packet.aimX = aimX;
         packet.aimY = aimY;
         Vars.net.send(packet, true);
+    }
+
+    public static void setInterventionScale(float scale, Player player) {
+        if (player != null && !player.admin) {
+            player.sendMessage("[scarlet]Admin only.");
+            return;
+        }
+
+        if (Vars.net.client() && !Vars.net.server()) {
+            InterventionScaleRequestPacket packet = new InterventionScaleRequestPacket();
+            packet.scale = scale;
+            Vars.net.send(packet, true);
+            return;
+        }
+
+        applyInterventionScale(scale, player);
+    }
+
+    public static void applyInterventionScale(float scale, Player player) {
+        InterventionState.setScale(scale);
+        Log.info("Intervention scale set to @", scale);
+        if (player != null) {
+            player.sendMessage("[accent]Intervention scale: []" + scale + (scale > 0.001f ? " [green](on)" : " [lightgray](off)"));
+        }
+        if (Vars.net.server() && Vars.net.active()) {
+            InterventionScalePacket packet = new InterventionScalePacket();
+            packet.scale = scale;
+            Vars.net.send(packet, true);
+        }
+    }
+
+    public static void syncInterventionAlert(EventInterventionAction action) {
+        if (!Vars.net.server() || !Vars.net.active() || action == null) return;
+        InterventionAlertPacket packet = new InterventionAlertPacket(action);
+        Vars.net.send(packet, true);
+    }
+
+    public static void syncInterventionAlertTo(EventInterventionAction action, Player player) {
+        if (!Vars.net.server() || !Vars.net.active() || action == null || player == null) return;
+        var con = player.con();
+        if (con == null) return;
+        con.send(new InterventionAlertPacket(action), true);
+    }
+
+    public static void requestInterventionSync() {
+        if (!RaidLogic.isRemoteClient() || !Vars.net.active()) return;
+        Vars.net.send(new InterventionSyncRequestPacket(), true);
     }
 }

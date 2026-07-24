@@ -25,7 +25,9 @@ import newhorizon.expand.logic.cutscene.action.*;
 import newhorizon.expand.logic.cutscene.actionBus.*;
 import newhorizon.expand.logic.wip.NearestSpawn;
 import newhorizon.expand.logic.wip.RandomTarget;
+import newhorizon.expand.game.DefaultIntervention;
 import newhorizon.expand.game.DefaultRaid;
+import newhorizon.expand.game.DefaultSpecialEvent;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -41,6 +43,7 @@ public class NHLogic {
     public static LCategory actionCameraControl, actionInputControl, actionCurtainControl, actionFlowControl;
 
     private static boolean customRaidLogic;
+    private static boolean customInterventionLogic;
 
     public static void load() {
         loadLCategory();
@@ -49,6 +52,8 @@ public class NHLogic {
         loadActions();
 
         DefaultRaid.load();
+        DefaultIntervention.load();
+        DefaultSpecialEvent.load();
     }
 
     public static void loadLCategory() {
@@ -74,6 +79,8 @@ public class NHLogic {
 
     public static void loadWprocStatements() {
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultRaid.class, "defaultraid");
+        registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultIntervention.class, "defaultintervention");
+        registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultSpecialEvent.class, "defaultspecialevent");
         registerPrivilegedStatement(RandomTarget.class, "randtarget");
         registerPrivilegedStatement(NearestSpawn.class, "nearspawn");
     }
@@ -94,6 +101,7 @@ public class NHLogic {
         registerAction(InputUnlock.class, InputUnlockAction.class);
 
         registerAction(EventRaid.class, EventRaidAction.class);
+        registerAction(EventIntervention.class, EventInterventionAction.class);
 
         //registerAction(WarningIcon.class, WarningIconAction.class);
     }
@@ -231,6 +239,14 @@ public class NHLogic {
         customRaidLogic = scanCustomRaidLogic();
     }
 
+    public static boolean hasCustomInterventionLogic() {
+        return customInterventionLogic;
+    }
+
+    public static void refreshCustomInterventionLogic() {
+        customInterventionLogic = scanCustomInterventionLogic();
+    }
+
     private static boolean scanCustomRaidLogic() {
         boolean[] found = {false};
 
@@ -260,9 +276,47 @@ public class NHLogic {
         return found[0];
     }
 
+    private static boolean scanCustomInterventionLogic() {
+        boolean[] found = {false};
+
+        world.tiles.eachTile(t -> {
+            if (found[0]) return;
+            if (!t.isCenter() || t.block() != Blocks.worldProcessor) return;
+            if (!(t.build instanceof LogicBlock.LogicBuild proc)) return;
+
+            String tag = proc.tag;
+            if (tag != null) {
+                String lower = tag.toLowerCase();
+                if (lower.contains("intervention") || lower.contains("fleet") || lower.contains("specialevent")) {
+                    found[0] = true;
+                    return;
+                }
+            }
+
+            String code = proc.code;
+            if (code != null && !code.isEmpty() && codeContainsIntervention(code)) found[0] = true;
+        });
+
+        if (!found[0]) {
+            state.rules.tags.each((key, value) -> {
+                if (found[0]) return;
+                if (!key.startsWith(CutsceneControl.CSS_ACTION)) return;
+                if (value != null && value.contains("interventionevent")) found[0] = true;
+            });
+        }
+
+        return found[0];
+    }
+
     private static boolean codeContainsRaid(String code) {
         if (code.contains("defaultraid") || code.contains("raidevent") || code.contains("raidcontrol")) return true;
         return code.contains("randtarget") && code.contains("nearspawn");
+    }
+
+    private static boolean codeContainsIntervention(String code) {
+        return code.contains("defaultintervention")
+                || code.contains("interventionevent")
+                || code.contains("defaultspecialevent");
     }
 
     public static void registerReuseTimer(float time, String eventTrigger, String eventExecutor) {

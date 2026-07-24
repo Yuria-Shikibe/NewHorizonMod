@@ -40,6 +40,7 @@ public class NHSetting {
             OVERRIDE_TURRET = "nh-override-turret",
 
     EVENT_RAID = "nh-event-raid",
+            EVENT_INTERVENTION = "nh-event-intervention",
 
     DEBUGGING = "nh-debugging",
             DEBUG_PANEL = "nh-debug-panel";
@@ -83,7 +84,8 @@ public class NHSetting {
         ));
 
         allSettings.put("event", Seq.with(
-                new BoolSetting(EVENT_RAID, false, true)
+                new BoolSetting(EVENT_RAID, false, true),
+                new BoolSetting(EVENT_INTERVENTION, false, true)
         ));
 
         allSettings.put("debug", Seq.with(
