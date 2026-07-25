@@ -62,11 +62,14 @@ import newhorizon.expand.bullets.AccelBulletType;
 import newhorizon.expand.bullets.LightningLinkerBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
+import newhorizon.expand.game.RaidLogic;
+import newhorizon.expand.game.RaidSync;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
+import newhorizon.expand.net.packet.RaidClearPacket;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 import newhorizon.util.ui.TableFunc;
@@ -224,6 +227,7 @@ public class AirRaider extends CommandableBlock {
         public transient ActionBus raidBus;
         public transient EventRaidAction raidAction;
         public transient boolean raidActive;
+        public transient float raidExpectEnd;
 
         public AirRaiderBuild() {
             for (int i = 0; i < SLOT_COUNT; i++) {
@@ -253,7 +257,12 @@ public class AirRaider extends CommandableBlock {
         @Override
         public void updateTile() {
             super.updateTile();
-            if (raidActive && (raidBus == null || raidBus.complete())) {
+            if (!raidActive) return;
+            if (RaidLogic.isRemoteClient()) {
+                if (Time.time >= raidExpectEnd) clearRaidRefs();
+                return;
+            }
+            if (raidBus == null || raidBus.complete()) {
                 clearRaidRefs();
             }
         }
@@ -810,6 +819,11 @@ public class AirRaider extends CommandableBlock {
             BulletType raidBullet = buildRaidBullet(stats);
             if (!consumePayloadFromCore()) return;
 
+            raidActive = true;
+            raidExpectEnd = Time.time + (stats.alertSeconds + stats.raidSeconds) * Time.toSeconds;
+
+            if (RaidLogic.isRemoteClient()) return;
+
             EventRaidAction action = new EventRaidAction();
             action.raidType = RaidPreset.CUSTOM_RAID;
             action.customBullet = raidBullet;
@@ -832,11 +846,15 @@ public class AirRaider extends CommandableBlock {
             raidBus = new ActionBus();
             raidBus.add(action);
             cutscene.addSubActionBus(raidBus);
-            raidActive = true;
         }
 
         public void cancelRaidEvent() {
             if (!raidActive && raidBus == null && raidAction == null) return;
+            if (RaidLogic.isRemoteClient()) {
+                RaidSync.clearClientRaid();
+                clearRaidRefs();
+                return;
+            }
             if (raidAction != null) {
                 raidAction.lifeTimer = raidAction.duration;
                 removeRaidMarkers(raidAction);
@@ -844,6 +862,9 @@ public class AirRaider extends CommandableBlock {
             if (raidBus != null) {
                 raidBus.skip();
                 cutscene.subBuses.remove(raidBus);
+            }
+            if (net.server() && net.active()) {
+                net.send(new RaidClearPacket(), true);
             }
             clearRaidRefs();
         }
@@ -862,6 +883,7 @@ public class AirRaider extends CommandableBlock {
             raidBus = null;
             raidAction = null;
             raidActive = false;
+            raidExpectEnd = 0f;
         }
 
         @Override

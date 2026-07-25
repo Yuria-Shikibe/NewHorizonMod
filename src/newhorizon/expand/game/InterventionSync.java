@@ -1,5 +1,6 @@
 package newhorizon.expand.game;
 
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -70,7 +71,7 @@ public final class InterventionSync {
         action.statusDuration = read.f();
         action.flag = read.d();
         boolean spawned = read.bool();
-        action.duration = action.alertTime + 1f;
+        action.duration = action.alertTime + 10f * Time.toSeconds + 30f;
         action.applyNetworkState(read.f(), spawned);
         int size = read.i();
         action.units.clear();
@@ -84,7 +85,10 @@ public final class InterventionSync {
     }
 
     public static void applyClientAction(EventInterventionAction action) {
-        if (!Vars.headless) cutsceneUI.clearMarkers();
+        if (action == null) return;
+        if (action.spawned() || action.lifeTimer >= action.alertTime) return;
+
+        clearClientIntervention();
         ActionBus bus = new ActionBus();
         bus.add(action);
         cutscene.addSubActionBus(bus);
@@ -99,16 +103,28 @@ public final class InterventionSync {
         scalePacket.scale = InterventionState.scale();
         con.send(scalePacket, true);
 
-        EventInterventionAction active = DefaultIntervention.activeInterventionAction();
-        if (active != null) {
+        EventInterventionAction active = findActiveInterventionAction();
+        if (active != null && !active.spawned() && active.lifeTimer < active.alertTime) {
             NHCall.syncInterventionAlertTo(active, player);
         } else {
             con.send(new InterventionClearPacket(), true);
         }
     }
 
+    public static EventInterventionAction findActiveInterventionAction() {
+        EventInterventionAction fromDefault = DefaultIntervention.activeInterventionAction();
+        if (fromDefault != null) return fromDefault;
+
+        for (ActionBus bus : cutscene.subBuses) {
+            EventInterventionAction action = interventionFromBus(bus);
+            if (action != null) return action;
+        }
+        return null;
+    }
+
     public static void clearClientIntervention() {
         if (Vars.headless) return;
+        cutsceneUI.clearMarkers();
         for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
             ActionBus bus = cutscene.subBuses.get(i);
             if (isInterventionBus(bus)) {
@@ -118,13 +134,17 @@ public final class InterventionSync {
         }
     }
 
-    private static boolean isInterventionBus(ActionBus bus) {
-        if (bus == null) return false;
-        if (bus.current instanceof EventInterventionAction) return true;
-        for (Action action : bus.queue) {
-            if (action instanceof EventInterventionAction) return true;
+    private static EventInterventionAction interventionFromBus(ActionBus bus) {
+        if (bus == null) return null;
+        if (bus.current instanceof EventInterventionAction action) return action;
+        for (Action queued : bus.queue) {
+            if (queued instanceof EventInterventionAction action) return action;
         }
-        return false;
+        return null;
+    }
+
+    private static boolean isInterventionBus(ActionBus bus) {
+        return interventionFromBus(bus) != null;
     }
 
     private static int statusId(StatusEffect status) {

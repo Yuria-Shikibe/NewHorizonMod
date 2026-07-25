@@ -166,7 +166,7 @@ public class EventInterventionAction extends Action {
 
     @Override
     public void begin() {
-        if (!headless) {
+        if (!headless && !spawned && lifeTimer < alertTime) {
             showPresentation();
         }
         if (syncSeed == 0) syncSeed = (int) Time.time;

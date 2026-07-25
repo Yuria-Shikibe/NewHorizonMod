@@ -36,6 +36,7 @@ public final class RaidSync {
         write.b((byte) action.raidType.ordinal());
         write.i(action.customBulletType);
         write.i(bulletId(action.customBullet != null ? action.customBullet : action.bulletType()));
+        write.i(bulletId(action.keyBullet));
         write.f(action.lifeTimer);
         write.i(action.raidCounter());
     }
@@ -62,13 +63,18 @@ public final class RaidSync {
             BulletType bt = Vars.content.bullet(id);
             if (bt != null) action.customBullet = bt;
         }
+        int keyId = read.i();
+        if (keyId >= 0) {
+            BulletType key = Vars.content.bullet(keyId);
+            if (key != null) action.keyBullet = key;
+        }
         action.duration = action.alertTime + action.raidTime;
         action.applyNetworkState(read.f(), read.i());
         return action;
     }
 
     public static void applyClientAction(EventRaidAction action) {
-        if (!Vars.headless) cutsceneUI.clearMarkers();
+        clearClientRaid();
         ActionBus bus = new ActionBus();
         bus.add(action);
         cutscene.addSubActionBus(bus);
