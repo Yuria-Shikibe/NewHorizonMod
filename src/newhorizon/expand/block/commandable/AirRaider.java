@@ -50,7 +50,6 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.modules.ItemModule;
-import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
@@ -274,11 +273,7 @@ public class AirRaider extends CommandableBlock {
 
         @Override
         public void commandAll(Vec2 pos) {
-            for (CommandableBlockBuild build : NHGroups.commandableBuilds) {
-                if (build.team == team && sameGroup(build.block) && build.canCommand(pos)) {
-                    build.command(pos);
-                }
-            }
+            if (canCommand(pos)) command(pos);
         }
 
         @Override
@@ -300,16 +295,6 @@ public class AirRaider extends CommandableBlock {
 
         @Override
         public void drawConfigure() {
-            Seq<CommandableBlockBuild> builds = new Seq<>();
-            for (CommandableBlockBuild build : NHGroups.commandableBuilds) {
-                if (build != this && build != null && build.team == team && sameGroup(build.block) && build.canCommand(targetVec)) {
-                    builds.add(build);
-                    DrawFunc.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, targetVec.x, targetVec.y);
-                }
-            }
-            for (CommandableBlockBuild build : builds) {
-                DrawFunc.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, targetVec.x, targetVec.y);
-            }
             drawTargetPreview();
         }
 
