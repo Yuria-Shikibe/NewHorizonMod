@@ -109,7 +109,7 @@ public class NHCall {
         packet.lifetimeScl = lifetimeScl;
         packet.aimX = aimX;
         packet.aimY = aimY;
-        packet.tintRgba = Color.rgba8888(tint == null ? Color.white : tint);
+        packet.tintRgba = (tint == null ? Color.white : tint).rgba8888();
         Vars.net.send(packet, true);
     }
 
