@@ -185,7 +185,8 @@ public class DelaySlideBar extends Table {
 
         font.getCache().addText(info.get(), x + width * 0.035f, y + height * 0.8125f);
 
-        if (lay.width > maxW || scl < 0.325f) fontAlpha = Mathf.lerp(fontAlpha, 0, 0.2f);
+        boolean unreadable = maxW > 0f && scl <= 0.325f && lay.width > maxW + 1f;
+        if (unreadable) fontAlpha = Mathf.lerp(fontAlpha, 0, 0.2f);
         else fontAlpha = Mathf.lerp(fontAlpha, 1, 0.05f);
 
         font.getCache().draw(parentAlpha * color.a * fontAlpha);
