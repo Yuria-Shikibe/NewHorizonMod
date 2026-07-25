@@ -3,6 +3,7 @@ package newhorizon.expand.net.packet;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.net.Packet;
+import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.RaidState;
 
 public class RaidScalePacket extends Packet {
@@ -27,6 +28,7 @@ public class RaidScalePacket extends Packet {
 
     @Override
     public void handleClient() {
+        if (RaidLogic.isLogicSide()) return;
         RaidState.setScale(scale);
     }
 }

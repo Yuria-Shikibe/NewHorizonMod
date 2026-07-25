@@ -35,6 +35,8 @@ public class EventRaidAction extends Action {
     public BulletType keyBullet;
 
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
+    public boolean gatedByRaidState = true;
+    public boolean presentationOnly = false;
 
     public Team team = Team.crux;
     public float alertTime = 15f, raidTime = 5f, raidScale = 1, inaccuracy = 40f;
@@ -92,7 +94,9 @@ public class EventRaidAction extends Action {
         }
 
         duration = alertTime + raidTime;
-        raidScale *= RaidState.scale();
+        if (gatedByRaidState) {
+            raidScale *= RaidState.scale();
+        }
     }
 
     @Override
@@ -101,7 +105,7 @@ public class EventRaidAction extends Action {
             showRaidPresentation();
         }
         if (syncSeed == 0) syncSeed = (int) Time.time;
-        if (net.server() && net.active()) {
+        if (!presentationOnly && net.server() && net.active()) {
             NHCall.syncRaidAlert(this);
         }
     }
@@ -178,8 +182,8 @@ public class EventRaidAction extends Action {
     public void act() {
         updateRaidPopup();
 
-        if (RaidLogic.isRemoteClient()) return;
-        if (!RaidState.enabled()) return;
+        if (presentationOnly || RaidLogic.isRemoteClient()) return;
+        if (gatedByRaidState && !RaidState.enabled()) return;
 
         int raidCount = Mathf.round(Mathf.maxZero(lifeTimer - alertTime) / Time.toSeconds * raidScale);
         int raid = raidCount - raidCounter;

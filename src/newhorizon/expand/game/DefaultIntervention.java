@@ -265,7 +265,7 @@ public class DefaultIntervention {
         action.team = fleet.resolveTeam(team);
         action.overrideStats = true;
         action.overrideDefaultCoordinate = true;
-        action.syncSeed = interventionSeed();
+        action.syncSeed = InterventionSync.nextSyncSeed();
         action.targetX = targetX * tilesize;
         action.targetY = targetY * tilesize;
         action.postInit();

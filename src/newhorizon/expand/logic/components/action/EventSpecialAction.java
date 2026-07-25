@@ -16,6 +16,7 @@ import mindustry.ui.Styles;
 import mindustry.world.Block;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.game.InterventionSync;
 import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.SpecialEvent;
 import newhorizon.expand.logic.ParseUtil;
@@ -112,7 +113,7 @@ public class EventSpecialAction extends Action {
         if (!headless) {
             showPresentation();
         }
-        if (syncSeed == 0) syncSeed = (int) Time.time;
+        if (syncSeed == 0) syncSeed = InterventionSync.nextSyncSeed();
         if (net.server() && net.active()) {
             NHCall.syncInterventionAlert(toInterventionProxy());
         }

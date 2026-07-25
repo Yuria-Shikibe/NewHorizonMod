@@ -1,5 +1,7 @@
 package newhorizon.expand.game;
 
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -23,7 +25,14 @@ import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 
 public final class InterventionSync {
+    private static int seedSeq;
+
     private InterventionSync() {
+    }
+
+    public static int nextSyncSeed() {
+        seedSeq++;
+        return (int) (Time.millis() ^ (((long) seedSeq) << 16) ^ (long) (Time.time * 1000));
     }
 
     public static void writeAction(Writes write, EventInterventionAction action) {
@@ -92,7 +101,6 @@ public final class InterventionSync {
         if (action.spawned() || action.lifeTimer >= action.alertTime) return;
 
         removeInterventionBySeed(action.syncSeed);
-        clearFinishedInterventionBuses();
 
         ActionBus bus = new ActionBus();
         bus.add(action);
@@ -108,16 +116,20 @@ public final class InterventionSync {
         scalePacket.scale = InterventionState.scale();
         con.send(scalePacket, true);
 
-        con.send(new InterventionClearPacket(), true);
-        EventInterventionAction active = findActiveAlertAction();
-        if (active != null) {
-            NHCall.syncInterventionAlertTo(active, player);
+        Seq<EventInterventionAction> actives = findActiveAlertActions();
+        con.send(new InterventionClearPacket(0), true);
+        for (EventInterventionAction action : actives) {
+            NHCall.syncInterventionAlertTo(action, player);
         }
     }
 
     public static void broadcastClear() {
+        broadcastClear(0);
+    }
+
+    public static void broadcastClear(int syncSeed) {
         if (!Vars.net.server() || !Vars.net.active()) return;
-        Vars.net.send(new InterventionClearPacket(), true);
+        Vars.net.send(new InterventionClearPacket(syncSeed), true);
     }
 
     public static void broadcastState() {
@@ -131,19 +143,27 @@ public final class InterventionSync {
         if (action == null) return;
         removeInterventionMarkers(action);
         if (RaidLogic.isLogicSide() && Vars.net.server() && Vars.net.active()) {
-            broadcastClear();
+            broadcastClear(action.syncSeed);
         }
     }
 
-    public static EventInterventionAction findActiveAlertAction() {
+    public static Seq<EventInterventionAction> findActiveAlertActions() {
+        ObjectSet<EventInterventionAction> seen = new ObjectSet<>();
+        Seq<EventInterventionAction> out = new Seq<>();
+
         EventInterventionAction fromDefault = DefaultIntervention.activeInterventionAction();
-        if (isAlerting(fromDefault)) return fromDefault;
+        if (isAlerting(fromDefault) && seen.add(fromDefault)) out.add(fromDefault);
 
         for (ActionBus bus : cutscene.subBuses) {
             EventInterventionAction action = interventionFromBus(bus);
-            if (isAlerting(action)) return action;
+            if (isAlerting(action) && seen.add(action)) out.add(action);
         }
-        return null;
+        return out;
+    }
+
+    public static EventInterventionAction findActiveAlertAction() {
+        Seq<EventInterventionAction> actives = findActiveAlertActions();
+        return actives.isEmpty() ? null : actives.first();
     }
 
     public static EventInterventionAction findActiveInterventionAction() {
@@ -151,28 +171,23 @@ public final class InterventionSync {
     }
 
     public static void clearClientIntervention() {
-        if (Vars.headless) return;
-        cutsceneUI.clearMarkers(HudMarker.Kind.INTERVENTION);
-        for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
-            ActionBus bus = cutscene.subBuses.get(i);
-            if (isInterventionBus(bus)) {
-                bus.skip();
-                cutscene.subBuses.remove(i);
-            }
-        }
+        clearClientIntervention(0);
     }
 
-    private static void clearFinishedInterventionBuses() {
+    public static void clearClientIntervention(int syncSeed) {
         if (Vars.headless) return;
-        for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
-            ActionBus bus = cutscene.subBuses.get(i);
-            EventInterventionAction action = interventionFromBus(bus);
-            if (action == null) continue;
-            if (!action.complete() && !action.spawned() && action.lifeTimer < action.alertTime) continue;
-            removeInterventionMarkers(action);
-            bus.skip();
-            cutscene.subBuses.remove(i);
+        if (syncSeed == 0) {
+            cutsceneUI.clearMarkers(HudMarker.Kind.INTERVENTION);
+            for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
+                ActionBus bus = cutscene.subBuses.get(i);
+                if (isInterventionBus(bus)) {
+                    bus.skip();
+                    cutscene.subBuses.remove(i);
+                }
+            }
+            return;
         }
+        removeInterventionBySeed(syncSeed);
     }
 
     private static void removeInterventionBySeed(int syncSeed) {
@@ -185,6 +200,7 @@ public final class InterventionSync {
             bus.skip();
             cutscene.subBuses.remove(i);
         }
+        removeMarkersBySeed(syncSeed);
     }
 
     public static void removeInterventionMarkers(EventInterventionAction action) {
@@ -201,9 +217,15 @@ public final class InterventionSync {
         if (NHUI.eventList != null) NHUI.rebuildEventList();
     }
 
-    public static void clearLocalInterventionMarkers() {
-        if (Vars.headless || cutsceneUI == null) return;
-        cutsceneUI.clearMarkers(HudMarker.Kind.INTERVENTION);
+    private static void removeMarkersBySeed(int syncSeed) {
+        if (Vars.headless || cutsceneUI == null || syncSeed == 0) return;
+        for (int i = cutsceneUI.markers.size - 1; i >= 0; i--) {
+            HudMarker marker = cutsceneUI.markers.get(i);
+            if (marker.kind != HudMarker.Kind.INTERVENTION) continue;
+            if (marker.syncSeed != syncSeed) continue;
+            marker.removeMarkerNow();
+        }
+        if (NHUI.eventList != null) NHUI.rebuildEventList();
     }
 
     private static boolean isAlerting(EventInterventionAction action) {

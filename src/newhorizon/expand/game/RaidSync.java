@@ -41,6 +41,7 @@ public final class RaidSync {
         write.i(action.customBulletType);
         write.i(bulletId(action.customBullet != null ? action.customBullet : action.bulletType()));
         write.i(bulletId(action.keyBullet));
+        write.bool(action.gatedByRaidState);
         write.f(action.lifeTimer);
         write.i(action.raidCounter());
     }
@@ -72,13 +73,17 @@ public final class RaidSync {
             BulletType key = Vars.content.bullet(keyId);
             if (key != null) action.keyBullet = key;
         }
+        action.gatedByRaidState = read.bool();
+        action.presentationOnly = true;
         action.duration = action.alertTime + action.raidTime;
         action.applyNetworkState(read.f(), read.i());
         return action;
     }
 
     public static void applyClientAction(EventRaidAction action) {
+        if (!RaidLogic.isRemoteClient()) return;
         if (action == null || action.complete()) return;
+        action.presentationOnly = true;
         removeRaidBySeed(action.syncSeed);
         ActionBus bus = new ActionBus();
         bus.add(action);
@@ -104,6 +109,7 @@ public final class RaidSync {
     public static void broadcastState() {
         if (!Vars.net.server() || !Vars.net.active()) return;
         for (Player player : Groups.player) {
+            if (player.isLocal()) continue;
             pushStateTo(player);
         }
     }
@@ -112,32 +118,34 @@ public final class RaidSync {
         ObjectSet<EventRaidAction> seen = new ObjectSet<>();
         Seq<EventRaidAction> out = new Seq<>();
         EventRaidAction def = DefaultRaid.activeRaidAction();
-        if (def != null && !def.complete() && seen.add(def)) out.add(def);
+        if (def != null && !def.complete() && !def.presentationOnly && seen.add(def)) out.add(def);
         for (ActionBus bus : cutscene.subBuses) {
             EventRaidAction action = raidFromBus(bus);
-            if (action != null && !action.complete() && seen.add(action)) out.add(action);
+            if (action != null && !action.complete() && !action.presentationOnly && seen.add(action)) out.add(action);
         }
         return out;
     }
 
     public static void clearClientRaid() {
-        if (Vars.headless) return;
+        if (!RaidLogic.isRemoteClient()) return;
         cutsceneUI.clearMarkers(HudMarker.Kind.RAID);
         for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
             ActionBus bus = cutscene.subBuses.get(i);
-            if (isRaidBus(bus)) {
-                bus.skip();
-                cutscene.subBuses.remove(i);
-            }
+            EventRaidAction action = raidFromBus(bus);
+            if (action == null) continue;
+            if (!action.presentationOnly) continue;
+            bus.skip();
+            cutscene.subBuses.remove(i);
         }
     }
 
     private static void removeRaidBySeed(int syncSeed) {
-        if (Vars.headless) return;
+        if (!RaidLogic.isRemoteClient()) return;
         for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
             ActionBus bus = cutscene.subBuses.get(i);
             EventRaidAction action = raidFromBus(bus);
             if (action == null || action.syncSeed != syncSeed) continue;
+            if (!action.presentationOnly) continue;
             removeRaidMarkers(action);
             bus.skip();
             cutscene.subBuses.remove(i);
@@ -164,10 +172,6 @@ public final class RaidSync {
             if (queued instanceof EventRaidAction action) return action;
         }
         return null;
-    }
-
-    private static boolean isRaidBus(ActionBus bus) {
-        return raidFromBus(bus) != null;
     }
 
     private static int bulletId(BulletType type) {

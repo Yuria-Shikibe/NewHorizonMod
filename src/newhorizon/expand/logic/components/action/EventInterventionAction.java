@@ -168,9 +168,8 @@ public class EventInterventionAction extends Action {
 
     @Override
     public void begin() {
-        if (syncSeed == 0) syncSeed = (int) Time.time;
+        if (syncSeed == 0) syncSeed = InterventionSync.nextSyncSeed();
         if (!headless && !spawned && lifeTimer < alertTime) {
-            InterventionSync.clearLocalInterventionMarkers();
             showPresentation();
         }
         if (net.server() && net.active()) {

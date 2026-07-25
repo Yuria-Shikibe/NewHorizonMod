@@ -102,8 +102,8 @@ public class DefaultSpecialEvent {
             }
 
             float[] target = special.ally()
-                    ? DefaultIntervention.pickAllyTarget(player, seed() + special.id)
-                    : DefaultIntervention.pickHostileTarget(wave, player, seed() + special.id);
+                    ? DefaultIntervention.pickAllyTarget(player, InterventionSync.nextSyncSeed() + special.id)
+                    : DefaultIntervention.pickHostileTarget(wave, player, InterventionSync.nextSyncSeed() + special.id);
             if (target[0] == 0f && target[1] == 0f) {
                 if (special.looping) {
                     nextAt.put(special.id, Time.millis() + (long) (Math.max(special.loopInterval, 1f) * 1000f));
@@ -129,7 +129,7 @@ public class DefaultSpecialEvent {
         action.team = special.resolveTeam();
         action.overrideStats = true;
         action.overrideDefaultCoordinate = true;
-        action.syncSeed = seed();
+        action.syncSeed = InterventionSync.nextSyncSeed();
         action.targetX = tileX * tilesize;
         action.targetY = tileY * tilesize;
         action.postInit();
@@ -139,10 +139,6 @@ public class DefaultSpecialEvent {
     public static void runAt(SpecialEvent special, float worldX, float worldY, int syncSeed) {
         if (special == null) return;
         special.runEffects(special.resolveTeam(), worldX, worldY, syncSeed, special.toUnitEntries());
-    }
-
-    private static int seed() {
-        return (int) (Time.time + state.rules.waveTeam.id * 31L);
     }
 
     private static void registerEvents() {

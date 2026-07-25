@@ -828,6 +828,7 @@ public class AirRaider extends CommandableBlock {
             action.keyBullet = weapons[weaponIndex].bullet;
             action.team = team;
             action.overrideRaidStats = true;
+            action.gatedByRaidState = false;
             action.alertTime = stats.alertSeconds * Time.toSeconds;
             action.raidTime = stats.raidSeconds * Time.toSeconds;
             action.raidScale = stats.raidScale;
