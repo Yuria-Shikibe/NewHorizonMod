@@ -76,6 +76,9 @@ import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
+import static newhorizon.util.ui.TableFunc.dialogHeight;
+import static newhorizon.util.ui.TableFunc.dialogWidth;
+import static newhorizon.util.ui.TableFunc.ui;
 
 public class AirRaider extends CommandableBlock {
     public static final int SLOT_COUNT = 4;
@@ -900,15 +903,16 @@ public class AirRaider extends CommandableBlock {
                 return;
             }
             control.input.selectedBlock();
+            float len = ui(LEN);
             table.table(Tex.paneSolid, t -> {
-                t.button("@mod.ui.air-raid-settings", Icon.modeAttack, Styles.cleart, LEN, this::showRaidDialog)
-                        .size(LEN * 4, LEN).row();
-                t.button("@mod.ui.air-raid-select-pos", Icon.move, Styles.cleart, LEN, () ->
+                t.button("@mod.ui.air-raid-settings", Icon.modeAttack, Styles.cleart, len, this::showRaidDialog)
+                        .size(len * 4, len).row();
+                t.button("@mod.ui.air-raid-select-pos", Icon.move, Styles.cleart, len, () ->
                         TableFunc.selectPos(t, p -> {
                             configure(p);
                             command(new Vec2(World.unconv(p.x), World.unconv(p.y)));
                         })
-                ).size(LEN * 4, LEN).row();
+                ).size(len * 4, len).row();
             }).fill();
         }
 
@@ -917,8 +921,8 @@ public class AirRaider extends CommandableBlock {
             BaseDialog dialog = new BaseDialog("@mod.ui.air-raid-settings");
             dialog.addCloseListener();
 
-            float dialogW = Math.min(Core.graphics.getWidth() * 0.92f, 1280f);
-            float dialogH = Math.min(Core.graphics.getHeight() * 0.88f, 820f);
+            float dialogW = dialogWidth(1080f, 0.84f);
+            float dialogH = dialogHeight(680f, 0.78f);
             float leftW = dialogW / 3f;
             float rightW = dialogW - leftW;
             float topH = dialogH / 3f;
@@ -939,51 +943,48 @@ public class AirRaider extends CommandableBlock {
 
         private void buildRaidContent(BaseDialog dialog, float dialogW, float leftW, float rightW, float topH, float bottomH, float[] uiSlot, Runnable rebuild) {
             selectedSlot = (int) uiSlot[0];
+            float dialogH = topH + bottomH;
+            float len = Mathf.clamp(ui(LEN), 42f, dialogH * 0.085f);
+            float pad = ui(4f);
+            float iconSm = Mathf.clamp(ui(28f), 22f, dialogH * 0.045f);
 
             dialog.cont.table(main -> {
                 main.table(top -> {
                     top.table(Styles.black3, tl -> {
-                        tl.top().left().defaults().pad(4f);
-                        tl.add("@nh.air-raid.select-weapon").color(Pal.accent).left().pad(6f).padBottom(4f).growX().wrap().row();
+                        tl.top().left().defaults().pad(pad);
+                        tl.add("@nh.air-raid.select-weapon").color(Pal.accent).left().pad(ui(6f)).padBottom(pad).growX().wrap().row();
                         tl.pane(Styles.noBarPane, body -> {
                             body.top();
-                            body.defaults().pad(4f);
+                            body.defaults().pad(pad);
                             if (weaponIndex < 0) {
-                                body.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(12f);
+                                body.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(ui(12f));
                             } else {
                                 Image icon = new Image(weaponIcons[weaponIndex]);
                                 icon.setScaling(Scaling.fit);
-                                body.add(icon).size(72f).padBottom(6f).row();
-                                body.add(Core.bundle.get(weapons[weaponIndex].bundleKey + ".name")).padBottom(4f).row();
+                                body.add(icon).size(ui(72f)).padBottom(ui(6f)).row();
+                                body.add(Core.bundle.get(weapons[weaponIndex].bundleKey + ".name")).padBottom(pad).row();
                                 body.add(Core.bundle.get(weapons[weaponIndex].bundleKey + ".desc"))
-                                        .wrap().growX().pad(4f).padBottom(8f).color(Pal.lightishGray).labelAlign(Align.left);
+                                        .wrap().growX().pad(pad).padBottom(ui(8f)).color(Pal.lightishGray).labelAlign(Align.left);
                             }
-                        }).grow().pad(6f).padBottom(2f);
+                        }).grow().pad(ui(6f)).padBottom(ui(2f));
                         tl.row();
                         tl.button("@nh.air-raid.change-weapon", Icon.pencil, Styles.cleart, () -> showWeaponPicker(rebuild))
-                                .growX().height(LEN - 4f).pad(6f);
-                    }).size(leftW, topH).pad(2f);
+                                .growX().height(len - ui(4f)).pad(ui(6f));
+                    }).size(leftW, topH).pad(ui(2f));
 
                     top.table(Styles.black3, tr -> {
-                        tr.top().left().margin(8f);
-                        tr.add("@nh.air-raid.select-shell").color(Pal.accent).left().padBottom(8f).row();
+                        tr.top().left().margin(ui(8f));
+                        tr.add("@nh.air-raid.select-shell").color(Pal.accent).left().padBottom(ui(8f)).row();
                         if (weaponIndex < 0) {
-                            tr.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(16f);
+                            tr.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(ui(16f));
                         } else {
-                            // 弹药部件预览：s1–s4 画在同一 192x96 坐标系，必须同位置叠放。
-                            // 手工调参只改下面这几项即可。
                             tr.table(missile -> {
                                 missile.top().center();
 
-                                // ---- 手工调参开始 ----
-                                float partH = Math.min(168f, topH - 110f); // 整弹显示高度
-                                float partW = partH * (192f / 96f);          // 保持贴图宽高比 2:1
-                                // 若以后改成“横移拼接”而不是叠放：stepRatio>0，每段相对画布宽度的步进
-                                // 0 = 完全重叠（当前正确做法）；0.2 = 每段向右挪 20% 画布宽
+                                float partH = Math.min(Mathf.clamp(ui(140f), 64f, topH * 0.62f), Math.max(ui(64f), topH - ui(100f)));
+                                float partW = partH * (192f / 96f);
                                 float stepRatio = 0f;
-                                // 点击热区相对宽度（对应 s1..s4 不透明区域大致占比，可改）
                                 float[] hitWeights = {50f, 26f, 68f, 104f};
-                                // ---- 手工调参结束 ----
 
                                 float step = partW * stepRatio;
                                 float assembleW = partW + (SLOT_COUNT - 1) * step;
@@ -1013,7 +1014,7 @@ public class AirRaider extends CommandableBlock {
                                         hitOverlay.add(zone).growY().width(partW * (hitWeights[s] / weightSum));
                                     }
                                     stack.add(hitOverlay);
-                                    missile.add(stack).size(partW, partH).padBottom(10f).row();
+                                    missile.add(stack).size(partW, partH).padBottom(ui(10f)).row();
                                 } else {
                                     missile.table(icons -> {
                                         icons.left().top().defaults().pad(0f);
@@ -1033,33 +1034,33 @@ public class AirRaider extends CommandableBlock {
                                             var cell = icons.add(hit).size(partW, partH);
                                             if (s > 0) cell.padLeft(-(partW - step));
                                         }
-                                    }).width(assembleW).left().padBottom(10f).row();
+                                    }).width(assembleW).left().padBottom(ui(10f)).row();
                                 }
 
                                 missile.table(labels -> {
-                                    labels.defaults().pad(6f).uniformX().growX().height(LEN - 8f);
+                                    labels.defaults().pad(ui(6f)).uniformX().growX().height(len - ui(8f));
                                     for (int s = 0; s < SLOT_COUNT; s++) {
                                         int slot = s;
                                         labels.button(Core.bundle.get(slotDefs[slot].bundleKey), Styles.togglet, () -> {
                                             uiSlot[0] = slot;
                                             selectedSlot = slot;
                                             rebuild.run();
-                                        }).checked(b -> selectedSlot == slot).pad(6f);
+                                        }).checked(b -> selectedSlot == slot).pad(ui(6f));
                                     }
-                                }).growX().padTop(8f);
+                                }).growX().padTop(ui(8f));
                             }).grow().center();
                         }
-                    }).size(rightW, topH).pad(2f);
+                    }).size(rightW, topH).pad(ui(2f));
                 }).growX().height(topH).row();
 
                 main.table(bottom -> {
                     bottom.table(Styles.black3, bl -> {
-                        bl.top().left().margin(8f);
-                        bl.add("@nh.air-raid.loaded").color(Pal.accent).padBottom(6f).left().row();
+                        bl.top().left().margin(ui(8f));
+                        bl.add("@nh.air-raid.loaded").color(Pal.accent).padBottom(ui(6f)).left().row();
                         bl.pane(list -> {
                             list.top().left();
                             if (weaponIndex < 0) {
-                                list.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(8f);
+                                list.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(ui(8f));
                             } else {
                                 ItemModule module = slots[selectedSlot];
                                 boolean[] any = {false};
@@ -1067,31 +1068,31 @@ public class AirRaider extends CommandableBlock {
                                     any[0] = true;
                                     list.table(row -> {
                                         row.left();
-                                        row.image(item.uiIcon).size(32f).scaling(Scaling.fit).pad(4f);
-                                        row.add(item.localizedName + " x" + amount).growX().left().padLeft(6f);
+                                        row.image(item.uiIcon).size(iconSm).scaling(Scaling.fit).pad(pad);
+                                        row.add(item.localizedName + " x" + amount).growX().left().padLeft(ui(6f));
                                         row.button(Icon.cancel, Styles.clearNonei, () -> {
                                             configure(IntSeq.with(1, selectedSlot, item.id, 0));
                                             rebuild.run();
-                                        }).size(28f);
-                                    }).growX().pad(2f).row();
+                                        }).size(ui(28f));
+                                    }).growX().pad(ui(2f)).row();
                                 });
                                 if (!any[0]) {
-                                    list.add("@nh.air-raid.empty-slot").color(Pal.lightishGray).pad(8f);
+                                    list.add("@nh.air-raid.empty-slot").color(Pal.lightishGray).pad(ui(8f));
                                 }
                             }
-                        }).grow().pad(2f);
+                        }).grow().pad(ui(2f));
                         bl.row();
                         bl.button("@nh.air-raid.clear-slot", Icon.trash, Styles.cleart, () -> {
                             configure(IntSeq.with(4, selectedSlot));
                             rebuild.run();
-                        }).growX().height(LEN - 8f).padTop(4f).disabled(b -> weaponIndex < 0);
-                    }).size(leftW, bottomH).pad(2f);
+                        }).growX().height(len - ui(8f)).padTop(pad).disabled(b -> weaponIndex < 0);
+                    }).size(leftW, bottomH).pad(ui(2f));
 
                     bottom.table(Styles.black3, br -> {
-                        br.top().left().margin(8f);
-                        br.add("@nh.air-raid.select-items").color(Pal.accent).padBottom(6f).left().row();
+                        br.top().left().margin(ui(8f));
+                        br.add("@nh.air-raid.select-items").color(Pal.accent).padBottom(ui(6f)).left().row();
                         if (weaponIndex < 0) {
-                            br.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(16f);
+                            br.add("@nh.air-raid.no-weapon").color(Pal.lightishGray).pad(ui(16f));
                         } else {
                             SlotDef def = slotDefs[selectedSlot];
                             Building core = team.core();
@@ -1109,20 +1110,25 @@ public class AirRaider extends CommandableBlock {
 
                                     int max = Math.max(maxForItem, loaded);
                                     int[] val = {loaded};
-                                    int[] sent = {loaded};
                                     Label amountLabel = new Label(loaded + "/" + max);
                                     amountLabel.setAlignment(Align.right);
                                     Slider slider = new Slider(0, Math.max(max, 1), 1, false);
                                     slider.setValue(loaded);
                                     slider.setDisabled(max <= 0 && loaded <= 0);
+                                    Runnable commit = () -> {
+                                        int nv = Mathf.clamp(val[0], 0, max);
+                                        val[0] = nv;
+                                        amountLabel.setText(nv + "/" + max);
+                                        if (Math.abs(slider.getValue() - nv) > 0.01f) slider.setValue(nv);
+                                        if (nv != slots[selectedSlot].get(item)) {
+                                            configure(IntSeq.with(1, selectedSlot, item.id, nv));
+                                            Core.app.post(rebuild);
+                                        }
+                                    };
                                     slider.moved(v -> {
                                         int nv = (int) v;
                                         val[0] = nv;
                                         amountLabel.setText(nv + "/" + max);
-                                        if (nv != sent[0]) {
-                                            sent[0] = nv;
-                                            configure(IntSeq.with(1, selectedSlot, item.id, nv));
-                                        }
                                     });
                                     slider.addListener(new InputListener() {
                                         @Override
@@ -1132,24 +1138,29 @@ public class AirRaider extends CommandableBlock {
 
                                         @Override
                                         public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button) {
-                                            if (val[0] != slots[selectedSlot].get(item)) {
-                                                configure(IntSeq.with(1, selectedSlot, item.id, val[0]));
-                                            }
-                                            Core.app.post(rebuild);
+                                            commit.run();
                                         }
                                     });
 
                                     list.table(row -> {
                                         row.left();
-                                        row.image(item.uiIcon).size(32f).scaling(Scaling.fit).padRight(4f);
-                                        row.add(item.localizedName).left().width(88f).padRight(4f).ellipsis(true);
-                                        row.add(slider).growX().height(36f).padRight(4f);
-                                        row.add(amountLabel).minWidth(88f).right().padRight(2f);
-                                    }).growX().pad(2f).row();
+                                        row.image(item.uiIcon).size(iconSm).scaling(Scaling.fit).padRight(pad);
+                                        row.add(item.localizedName).left().width(ui(88f)).padRight(pad).ellipsis(true);
+                                        row.button("-", Styles.cleart, () -> {
+                                            val[0] = Math.max(0, val[0] - 1);
+                                            commit.run();
+                                        }).size(ui(28f)).padRight(ui(2f)).disabled(b -> max <= 0 && loaded <= 0);
+                                        row.add(slider).growX().height(ui(36f)).padRight(ui(2f));
+                                        row.button("+", Styles.cleart, () -> {
+                                            val[0] = Math.min(max, val[0] + 1);
+                                            commit.run();
+                                        }).size(ui(28f)).padRight(pad).disabled(b -> max <= 0 && loaded <= 0);
+                                        row.add(amountLabel).minWidth(ui(72f)).right().padRight(ui(2f));
+                                    }).growX().pad(ui(2f)).row();
                                 }
-                            }).grow().pad(2f);
+                            }).grow().pad(ui(2f));
                         }
-                    }).size(rightW, bottomH).pad(2f);
+                    }).size(rightW, bottomH).pad(ui(2f));
                 }).growX().height(bottomH).row();
 
                 main.table(Tex.pane, statsBar -> {
@@ -1173,23 +1184,23 @@ public class AirRaider extends CommandableBlock {
                                     Strings.fixed(stats.splash, 0)
                             );
                         }).left().growX().wrap().labelAlign(Align.left);
-                    }).growX().left().pad(6f);
+                    }).growX().left().pad(ui(6f));
                     statsBar.table(actions -> {
-                        actions.defaults().pad(3f);
-                        actions.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 2f, LEN);
+                        actions.defaults().pad(ui(3f));
+                        actions.button("@back", Icon.left, Styles.cleart, dialog::hide).size(len * 2f, len);
                         actions.button("@nh.air-raid.cancel-raid", Icon.cancel, Styles.cleart, () -> {
                             configure(false);
                             rebuild.run();
-                        }).size(LEN * 2.4f, LEN).disabled(b -> !raidActive);
+                        }).size(len * 2.4f, len).disabled(b -> !raidActive);
                         actions.button("@nh.air-raid.launch", Icon.ok, Styles.cleart, () -> {
                             configure(true);
                             Core.app.post(() -> {
                                 if (raidActive) dialog.hide();
                                 else rebuild.run();
                             });
-                        }).size(LEN * 2.6f, LEN).disabled(b -> raidActive || !isPowered() || weaponIndex < 0 || !hasPayload() || !canAffordPayload() || !hasTarget());
-                    }).right().pad(4f);
-                }).width(dialogW).minHeight(LEN * 2.2f).padTop(4f);
+                        }).size(len * 2.6f, len).disabled(b -> raidActive || !isPowered() || weaponIndex < 0 || !hasPayload() || !canAffordPayload() || !hasTarget());
+                    }).right().pad(pad);
+                }).width(dialogW).minHeight(len * 2.2f).padTop(pad);
             });
         }
 
@@ -1197,13 +1208,19 @@ public class AirRaider extends CommandableBlock {
             BaseDialog picker = new BaseDialog("@nh.air-raid.select-weapon");
             picker.addCloseListener();
 
+            float cardW = Mathf.clamp(ui(210f), 160f, Core.graphics.getWidth() * 0.2f);
+            float cardH = Mathf.clamp(ui(280f), 210f, Core.graphics.getHeight() * 0.42f);
+            float iconSize = Mathf.clamp(ui(84f), 56f, cardH * 0.28f);
+            float textW = cardW - ui(30f);
+            float descH = cardH * 0.36f;
+
             Table cards = new Table();
             cards.left().top();
             for (int i = 0; i < WEAPON_COUNT; i++) {
                 int idx = i;
                 WeaponMode mode = weapons[idx];
                 cards.table(Tex.pane, card -> {
-                    card.top().margin(8f);
+                    card.top().margin(ui(8f));
                     card.addListener(new HandCursorListener());
                     card.clicked(() -> {
                         configure(IntSeq.with(0, idx));
@@ -1212,25 +1229,25 @@ public class AirRaider extends CommandableBlock {
                     });
                     Image icon = new Image(weaponIcons[idx]);
                     icon.setScaling(Scaling.fit);
-                    card.add(icon).size(100f).padTop(8f).padBottom(8f).row();
-                    card.add(Core.bundle.get(mode.bundleKey + ".name")).padBottom(6f).wrap().width(210f).labelAlign(Align.center).row();
+                    card.add(icon).size(iconSize).padTop(ui(8f)).padBottom(ui(8f)).row();
+                    card.add(Core.bundle.get(mode.bundleKey + ".name")).padBottom(ui(6f)).wrap().width(textW).labelAlign(Align.center).row();
                     card.pane(Styles.noBarPane, desc -> {
                         desc.top();
                         desc.add(Core.bundle.get(mode.bundleKey + ".desc"))
-                                .wrap().width(200f).color(Pal.lightishGray).labelAlign(Align.left);
-                    }).size(210f, 120f).pad(6f);
+                                .wrap().width(textW - ui(10f)).color(Pal.lightishGray).labelAlign(Align.left);
+                    }).size(textW, descH).pad(ui(6f));
                     if (weaponIndex == idx) {
                         card.setColor(Pal.accent);
                     }
-                }).size(240f, 320f).pad(10f);
+                }).size(cardW, cardH).pad(ui(10f));
             }
 
             ScrollPane pane = new ScrollPane(cards);
             pane.setScrollingDisabledY(true);
             pane.setFadeScrollBars(false);
             picker.cont.top();
-            picker.cont.add(pane).grow().pad(12f);
-            picker.buttons.button("@back", Icon.left, picker::hide).size(210f, 64f);
+            picker.cont.add(pane).grow().pad(ui(12f));
+            picker.buttons.button("@back", Icon.left, picker::hide).size(Math.min(ui(200f), Core.graphics.getWidth() * 0.25f), ui(52f));
             picker.show();
         }
 

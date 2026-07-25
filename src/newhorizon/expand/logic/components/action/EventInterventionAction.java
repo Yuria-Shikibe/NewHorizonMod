@@ -234,6 +234,12 @@ public class EventInterventionAction extends Action {
                 .setDuration(alertTime)
                 .bindLifeTimer(() -> this.lifeTimer);
         marker.bindAlertTime(() -> this.alertTime);
+        for (UnitEntry entry : units) {
+            if (entry == null || entry.type == null) continue;
+            HudMarker.UnitPreview preview = new HudMarker.UnitPreview(entry.type, entry.count);
+            preview.status(status);
+            marker.addUnitPreview(preview);
+        }
         marker.setMarkColor(team.color)
                 .setRadius(spawnRange)
                 .setAngle(approachAngle())

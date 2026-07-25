@@ -70,27 +70,33 @@ public class MultTractorBeamTurret extends TractorBeamTurret {
         @Override
         public void updateTile() {
             super.updateTile();
-            for (Unit unit : targets.keys()) {
-                if (unit != null && Angles.within(rotation, angleTo(unit), shootCone) && within(unit, range + unit.hitSize / 2f) && unit.team() != team && unit.isValid() && unit.checkTarget(targetAir, targetGround)) {
-                    targets.get(unit).x = unit.x;
-                    targets.get(unit).y = unit.y;
-                    targets.get(unit).z = Mathf.lerpDelta(targets.get(unit).z, 1f, 0.1f);
+            var entries = targets.iterator();
+            while (entries.hasNext()) {
+                ObjectMap.Entry<Unit, Vec3> entry = entries.next();
+                Unit unit = entry.key;
+                Vec3 v = entry.value;
+                if (v == null) {
+                    entries.remove();
+                    continue;
+                }
+                if (unit != null && unit.isValid() && Angles.within(rotation, angleTo(unit), shootCone) && within(unit, range + unit.hitSize / 2f) && unit.team() != team && unit.checkTarget(targetAir, targetGround)) {
+                    v.x = unit.x;
+                    v.y = unit.y;
+                    v.z = Mathf.lerpDelta(v.z, 1f, 0.1f);
                     if (unit != target) {
                         if (damage > 0) unit.damageContinuous(damage * efficiency);
                         if (status != StatusEffects.none) unit.apply(status, statusDuration);
                         unit.impulseNet(Tmp.v1.set(this).sub(unit).limit((force + (1f - unit.dst(this) / range) * scaledForce) * edelta() * timeScale));
                     }
                 } else {
-                    Vec3 v = targets.get(unit);
-                    if (v == null) continue;
                     v.z = Mathf.lerpDelta(v.z, 0, 0.1f);
-                    if (Mathf.equal(targets.get(unit).z, 0, 0.001f)) targets.remove(unit);
+                    if (Mathf.equal(v.z, 0, 0.001f)) entries.remove();
                 }
             }
 
             if (target != null && target.within(this, range + target.hitSize / 2f) && target.team() != team && target.checkTarget(targetAir, targetGround) && efficiency > 0.02f) {
                 Units.nearbyEnemies(team, Tmp.r1.setSize((range + target.hitSize / 2f) * 2).setCenter(x, y), unit -> {
-                    if (targets.size < maxAttract && !targets.keys().toSeq().contains(unit) && Angles.within(rotation, angleTo(unit), shootCone)) {
+                    if (targets.size < maxAttract && !targets.containsKey(unit) && Angles.within(rotation, angleTo(unit), shootCone)) {
                         targets.put(unit, new Vec3(unit.x, unit.y, 0f));
                     }
                 });
@@ -103,16 +109,15 @@ public class MultTractorBeamTurret extends TractorBeamTurret {
             Drawf.shadow(region, x - (size / 2f), y - (size / 2f), rotation - 90);
             Draw.rect(region, x, y, rotation - 90);
             Draw.z(Layer.bullet);
-            //draw laser if applicable
-            for (Unit unit : targets.keys()) {
-                if (unit == null) continue;
-                float ang = angleTo(targets.get(unit).x, targets.get(unit).y);
+            for (ObjectMap.Entry<Unit, Vec3> entry : targets) {
+                Vec3 v = entry.value;
+                if (v == null) continue;
                 Draw.mixcol();
                 Draw.mixcol(laserColor, Mathf.absin(4f, 0.6f));
                 Tmp.v1.trns(rotation, shootLength).add(x, y);
                 Drawf.laser(
                         laser, laserEnd, Tmp.v1.x, Tmp.v1.y,
-                        targets.get(unit).x, targets.get(unit).y, targets.get(unit).z * efficiency * laserWidth
+                        v.x, v.y, v.z * efficiency * laserWidth
                 );
             }
         }

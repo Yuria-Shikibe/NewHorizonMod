@@ -89,6 +89,9 @@ import static mindustry.Vars.*;
 import static newhorizon.util.func.NHFunc.regSize;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
+import static newhorizon.util.ui.TableFunc.dialogHeight;
+import static newhorizon.util.ui.TableFunc.dialogWidth;
+import static newhorizon.util.ui.TableFunc.ui;
 
 public class JumpGate extends Block {
     public Seq<UnitRecipe> recipeList = Seq.with();
@@ -241,7 +244,7 @@ public class JumpGate extends Block {
                         Core.bundle.format("bar.unitcap",
                                 Fonts.getUnicodeStr(e.getType().name),
                                 e.team.data().countType(e.getType()),
-                                e.getType().useUnitCap ? Units.getStringCap(e.team) : "∞"
+                                e.getType().useUnitCap ? Units.getStringCap(e.team) : "\u221E"
                         ),
                 () -> Pal.power,
                 () -> e.getType() == null ? 0f : (e.getType().useUnitCap ? (float) e.team.data().countType(e.getType()) / Units.getCap(e.team) : 1f)
@@ -908,10 +911,11 @@ public class JumpGate extends Block {
             BaseDialog dialog = new BaseDialog("@spawn");
             dialog.addCloseListener();
 
-            float dialogW = Math.min(1100f, Core.graphics.getWidth() * 0.88f);
-            float dialogH = Math.min(720f, Core.graphics.getHeight() * 0.8f);
+            float dialogW = dialogWidth(960f, 0.82f);
+            float dialogH = dialogHeight(620f, 0.76f);
             float leftW = dialogW / 3f;
             float rightW = dialogW * 2f / 3f;
+            float len = Mathf.clamp(ui(LEN), 42f, dialogH * 0.09f);
 
             if (selectID < 0 || selectID >= recipeList.size || hideRecipe(recipeList.get(selectID).unitType)) {
                 for (int i = 0; i < recipeList.size; i++) {
@@ -928,7 +932,7 @@ public class JumpGate extends Block {
                     left.top();
                     left.table(Tex.pane, res -> {
                         res.top().left();
-                        res.add("@mod.ui.core-resources").color(Pal.accent).left().pad(6f).row();
+                        res.add("@mod.ui.core-resources").color(Pal.accent).left().pad(ui(6f)).row();
                         res.pane(list -> {
                             list.left().top();
                             tmpItems.clear();
@@ -939,15 +943,15 @@ public class JumpGate extends Block {
                             }
                             int col = 0;
                             for (Item item : tmpItems) {
-                                list.add(new ItemImageDynamic(item, () -> realItems().get(item), realItems())).pad(4);
+                                list.add(new ItemImageDynamic(item, () -> realItems().get(item), realItems())).pad(ui(4f));
                                 if (++col % 4 == 0) list.row();
                             }
-                        }).grow().pad(4f);
-                    }).growX().height(dialogH / 3f).pad(4f).row();
+                        }).grow().pad(ui(4f));
+                    }).growX().height(dialogH / 3f).pad(ui(4f)).row();
 
                     left.table(Tex.pane, queuePanel -> {
                         queuePanel.top();
-                        queuePanel.add("@mod.ui.build-queue").color(Pal.accent).left().pad(6f).row();
+                        queuePanel.add("@mod.ui.build-queue").color(Pal.accent).left().pad(ui(6f)).row();
                         Table queueList = new Table();
                         queueList.top();
                         int[] cache = {-999, -999, -999, -999};
@@ -957,7 +961,7 @@ public class JumpGate extends Block {
                         ObjectMap<Object, Integer> exitIndex = new ObjectMap<>();
                         Seq<Object> visualOrder = new Seq<>();
                         ObjectMap<Integer, int[]> activeModes = new ObjectMap<>();
-                        float border = 2f;
+                        float border = ui(2f);
 
                         Cons<Table> fillBuilding = host -> {
                             UnitRecipe cur = getRecipe();
@@ -972,9 +976,9 @@ public class JumpGate extends Block {
                                     ),
                                     new Table(row -> {
                                         row.left().marginLeft(8f).marginRight(8f);
-                                        row.image(cur.unitType.uiIcon).size(36f).scaling(Scaling.fit).padRight(8f);
+                                        row.image(cur.unitType.uiIcon).size(ui(36f)).scaling(Scaling.fit).padRight(ui(8f));
                                         row.add(cur.unitType.localizedName + " x" + count).growX().left();
-                                        if (loop) row.image(Icon.refresh).size(24f).padRight(6f);
+                                        if (loop) row.image(Icon.refresh).size(ui(24f)).padRight(ui(6f));
                                         row.add(new Label(() -> jammed ? "[red]" + Core.bundle.get("spawn-error") : "[accent]" + (int) Math.max((costTime(cur, true) - buildProgress) / Time.toSeconds, 0) + "s")).right();
                                     })
                             ).grow();
@@ -1002,9 +1006,9 @@ public class JumpGate extends Block {
                                     new Bar(() -> "", () -> jam ? Pal.redderDust : Pal.accent, () -> prog),
                                     new Table(row -> {
                                         row.left().marginLeft(8f).marginRight(8f);
-                                        row.image(type.uiIcon).size(36f).scaling(Scaling.fit).padRight(8f);
+                                        row.image(type.uiIcon).size(ui(36f)).scaling(Scaling.fit).padRight(ui(8f));
                                         row.add(type.localizedName + " x" + count).growX().left();
-                                        if (loop) row.image(Icon.refresh).size(24f).padRight(6f);
+                                        if (loop) row.image(Icon.refresh).size(ui(24f)).padRight(ui(6f));
                                         if (jam) row.add("[red]" + Core.bundle.get("spawn-error")).right();
                                         else row.add("[accent]0s").right();
                                     })
@@ -1024,11 +1028,11 @@ public class JumpGate extends Block {
                                         row.left().marginLeft(8f).marginRight(8f);
                                         Image handle = new Image(Icon.upOpen);
                                         handle.setColor(Pal.lightishGray);
-                                        row.add(handle).size(22f).padRight(6f);
-                                        row.image(set.unitType.uiIcon).size(36f).scaling(Scaling.fit).padRight(8f);
+                                        row.add(handle).size(ui(22f)).padRight(ui(6f));
+                                        row.image(set.unitType.uiIcon).size(ui(36f)).scaling(Scaling.fit).padRight(ui(8f));
                                         row.add(set.unitType.localizedName + " x" + count).growX().left();
-                                        if (loop) row.image(Icon.refresh).size(24f).padRight(6f);
-                                        row.button(Icon.cancel, Styles.clearNonei, () -> configure(IntSeq.with(2, indexRef[0]))).size(32f);
+                                        if (loop) row.image(Icon.refresh).size(ui(24f)).padRight(ui(6f));
+                                        row.button(Icon.cancel, Styles.clearNonei, () -> configure(IntSeq.with(2, indexRef[0]))).size(ui(32f));
                                     })
                             ).grow();
                             host.addListener(new HandCursorListener());
@@ -1165,18 +1169,18 @@ public class JumpGate extends Block {
                             for (Object key : visual) {
                                 Table row = rowMap.get(key);
                                 if (row == null) continue;
-                                queueList.add(row).growX().height(LEN).padBottom(4f).row();
+                                queueList.add(row).growX().height(len).padBottom(ui(4f)).row();
                                 visualOrder.add(key);
                                 if (created.contains(key)) animateQueueIn(row);
                             }
                             if (desired.isEmpty() && animatingOut.isEmpty()) {
-                                queueList.add("[lightgray]" + Core.bundle.get("none")).pad(8f);
+                                queueList.add("[lightgray]" + Core.bundle.get("none")).pad(ui(8f));
                             }
                         };
 
                         syncHold[0] = syncQueue;
                         syncHold[0].run();
-                        queuePanel.pane(queueList).grow().pad(4f).update(p -> {
+                        queuePanel.pane(queueList).grow().pad(ui(4f)).update(p -> {
                             if (dragging[0]) return;
                             int a = spawnID;
                             int b = buildQueue.size;
@@ -1195,15 +1199,15 @@ public class JumpGate extends Block {
                             }
                         });
                         queuePanel.row();
-                        queuePanel.button("@mod.ui.clear-wait-queue", Icon.trash, Styles.cleart, () -> configure(IntSeq.with(1, 0))).growX().height(LEN - 8f).pad(4f)
+                        queuePanel.button("@mod.ui.clear-wait-queue", Icon.trash, Styles.cleart, () -> configure(IntSeq.with(1, 0))).growX().height(len - ui(8f)).pad(ui(4f))
                                 .disabled(b -> buildQueue.isEmpty());
-                    }).grow().pad(4f);
-                }).size(leftW, dialogH).padRight(6f);
+                    }).grow().pad(ui(4f));
+                }).size(leftW, dialogH).padRight(ui(6f));
 
                 main.table(Styles.black3, right -> {
-                    float cardW = rightW - 48f;
-                    float cardH = 96f;
-                    float border = 2f;
+                    float cardW = rightW - ui(40f);
+                    float cardH = Mathf.clamp(ui(86f), 64f, dialogH * 0.16f);
+                    float border = ui(2f);
                     arc.scene.ui.layout.Cell<ScrollPane> paneCell = right.pane(grid -> {
                         grid.top().left();
                         for (int i = 0; i < recipeList.size; i++) {
@@ -1212,7 +1216,7 @@ public class JumpGate extends Block {
                             int idx = i;
                             grid.stack(
                                     new Table(Tex.pane, card -> {
-                                        card.margin(8f);
+                                        card.margin(ui(8f));
                                         card.touchable = Touchable.enabled;
                                         card.addListener(new HandCursorListener());
                                         card.clicked(() -> selectID = idx);
@@ -1221,26 +1225,26 @@ public class JumpGate extends Block {
                                                 info.left().top();
                                                 info.table(header -> {
                                                     header.left();
-                                                    header.image(set.unitType.uiIcon).size(40f).scaling(Scaling.fit).padRight(8f);
+                                                    header.image(set.unitType.uiIcon).size(ui(40f)).scaling(Scaling.fit).padRight(ui(8f));
                                                     header.add(set.unitType.localizedName).growX().left().wrap().labelAlign(Align.left);
                                                     header.add(new Label(() -> {
                                                         float sec = set.costTime() * selectNum / speedMultiplier(selectNum) / 60f / state.rules.unitBuildSpeedMultiplier;
                                                         return "[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + Strings.fixed(sec, 1) + "[]" + Core.bundle.get("unit.seconds");
-                                                    })).right().padLeft(8f);
+                                                    })).right().padLeft(ui(8f));
                                                 }).growX().left().row();
                                                 info.table(req -> {
                                                     req.left();
                                                     for (ItemStack stack : set.dynamicRequirements(team)) {
-                                                        req.add(new ItemImageDynamic(stack.item, () -> Math.round(stack.amount * selectNum), realItems())).padRight(4f);
+                                                        req.add(new ItemImageDynamic(stack.item, () -> Math.round(stack.amount * selectNum), realItems())).padRight(ui(4f));
                                                     }
                                                     for (PayloadStack stack : set.recipe.inputPayload) {
-                                                        req.add(StatValues.stack(stack.item, Math.round(stack.amount * selectNum * state.rules.unitCost(team)), true)).padRight(4f);
+                                                        req.add(StatValues.stack(stack.item, Math.round(stack.amount * selectNum * state.rules.unitCost(team)), true)).padRight(ui(4f));
                                                     }
-                                                }).growX().left().padTop(6f);
+                                                }).growX().left().padTop(ui(6f));
                                             }).grow().left();
 
-                                            body.image().width(border).color(Pal.gray).growY().padLeft(6f).padRight(6f);
-                                            body.button(Icon.info, Styles.clearNonei, () -> ui.content.show(set.unitType)).size(LEN).growY();
+                                            body.image().width(border).color(Pal.gray).growY().padLeft(ui(6f)).padRight(ui(6f));
+                                            body.button(Icon.info, Styles.clearNonei, () -> ui.content.show(set.unitType)).size(len).growY();
                                         }).grow();
                                     }),
                                     new Table(outline -> {
@@ -1255,9 +1259,9 @@ public class JumpGate extends Block {
                                         }).grow().row();
                                         outline.image().color(Pal.accent).height(border).growX();
                                     })
-                            ).size(cardW, cardH).pad(6f).padRight(28f).left().row();
+                            ).size(cardW, cardH).pad(ui(6f)).padRight(ui(28f)).left().row();
                         }
-                    }).grow().pad(4f);
+                    }).grow().pad(ui(4f));
                     ScrollPane unitPane = paneCell.get();
                     unitPane.setScrollingDisabled(true, false);
                     unitPane.setFadeScrollBars(false);
@@ -1280,28 +1284,28 @@ public class JumpGate extends Block {
                 bottom.add(new Stack(slider, new Table(t -> {
                     t.center();
                     t.add(amountLabel);
-                }))).growX().height(LEN).pad(6f).row();
+                }))).growX().height(len).pad(ui(6f)).row();
 
                 bottom.table(actions -> {
-                    actions.button("@back", Icon.left, Styles.cleart, dialog::hide).growX().height(LEN);
-                    actions.button("@mod.ui.force-abort", Icon.cancel, Styles.cleart, () -> configure(false)).growX().height(LEN)
+                    actions.button("@back", Icon.left, Styles.cleart, dialog::hide).growX().height(len);
+                    actions.button("@mod.ui.force-abort", Icon.cancel, Styles.cleart, () -> configure(false)).growX().height(len)
                             .disabled(b -> !isCalling());
                     actions.button("@mod.ui.infinite-prod", Icon.refresh, Styles.cleart, () -> {
                         if (selectID < 0) return;
                         configure(IntSeq.with(0, selectID, selectNum, 1));
-                    }).growX().height(LEN).disabled(b -> {
+                    }).growX().height(len).disabled(b -> {
                         UnitRecipe set = getRecipe(selectID);
                         return set == null || !canSpawn(set, selectNum) || !hasConsume(set, selectNum);
                     });
                     actions.button("@confirm", Icon.ok, Styles.cleart, () -> {
                         if (selectID < 0) return;
                         configure(IntSeq.with(0, selectID, selectNum));
-                    }).growX().height(LEN).disabled(b -> {
+                    }).growX().height(len).disabled(b -> {
                         UnitRecipe set = getRecipe(selectID);
                         return set == null || !canSpawn(set, selectNum) || !hasConsume(set, selectNum);
                     });
-                }).growX().height(LEN);
-            }).width(dialogW).padTop(6f);
+                }).growX().height(len);
+            }).width(dialogW).padTop(ui(6f));
 
             dialog.keyDown(c -> {
                 if (c == KeyCode.left) selectNum = Mathf.clamp(--selectNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnCount));
@@ -1310,9 +1314,9 @@ public class JumpGate extends Block {
             });
 
             table.table(Tex.paneSolid, t -> {
-                t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
-                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFunc.selectPos(table, this::configure)).size(LEN * 5, LEN).row();
-                t.button("@mod.ui.force-abort", Icon.cancel, Styles.cleart, () -> configure(false)).size(LEN * 5, LEN).disabled(b -> !isCalling());
+                t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(len * 5, len).row();
+                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFunc.selectPos(table, this::configure)).size(len * 5, len).row();
+                t.button("@mod.ui.force-abort", Icon.cancel, Styles.cleart, () -> configure(false)).size(len * 5, len).disabled(b -> !isCalling());
             }).fill();
         }
 

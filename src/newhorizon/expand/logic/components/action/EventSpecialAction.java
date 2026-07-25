@@ -10,6 +10,7 @@ import mindustry.content.StatusEffects;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.Item;
+import mindustry.type.ItemStack;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
@@ -200,10 +201,24 @@ public class EventSpecialAction extends Action {
 
         RaidMarker marker = new RaidMarker();
         marker.setKind(HudMarker.Kind.SPECIAL);
+        marker.setSyncSeed(syncSeed);
         marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)
                 .bindLifeTimer(() -> this.lifeTimer);
         marker.bindAlertTime(() -> this.alertTime);
+        for (SpecialEvent.UnitSpec spec : units) {
+            if (spec == null || spec.type == null) continue;
+            HudMarker.UnitPreview preview = new HudMarker.UnitPreview(spec.type, spec.count);
+            preview.status(spec.primaryStatus);
+            for (SpecialEvent.StatusSpec s : spec.statuses) {
+                if (s != null) preview.status(s.effect);
+            }
+            for (ItemStack stack : spec.items) {
+                preview.item(stack);
+            }
+            preview.payload(spec.payload);
+            marker.addUnitPreview(preview);
+        }
         marker.setMarkColor(team.color)
                 .setRadius(spawnRange)
                 .setAngle(approachAngle())
