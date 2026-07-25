@@ -1037,25 +1037,16 @@ public class AirRaider extends CommandableBlock {
                                 }
 
                                 missile.table(labels -> {
-                                    labels.defaults().pad(0f);
+                                    labels.defaults().pad(6f).uniformX().growX().height(LEN - 8f);
                                     for (int s = 0; s < SLOT_COUNT; s++) {
                                         int slot = s;
-                                        boolean selected = selectedSlot == slot;
-                                        Table hit = new Table();
-                                        hit.addListener(new HandCursorListener());
-                                        hit.clicked(() -> {
+                                        labels.button(Core.bundle.get(slotDefs[slot].bundleKey), Styles.togglet, () -> {
                                             uiSlot[0] = slot;
                                             selectedSlot = slot;
                                             rebuild.run();
-                                        });
-                                        Label name = new Label(Core.bundle.get(slotDefs[slot].bundleKey));
-                                        name.setAlignment(Align.center);
-                                        name.setColor(selected ? Pal.accent : Color.white);
-                                        name.setWrap(true);
-                                        hit.add(name).growX().labelAlign(Align.center);
-                                        labels.add(hit).growX().uniformX().top();
+                                        }).checked(b -> selectedSlot == slot).pad(6f);
                                     }
-                                }).width(Math.max(assembleW, partW));
+                                }).growX().padTop(8f);
                             }).grow().center();
                         }
                     }).size(rightW, topH).pad(2f);

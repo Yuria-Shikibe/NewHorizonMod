@@ -8,6 +8,7 @@ import mindustry.game.Team;
 import newhorizon.NewHorizon;
 import newhorizon.expand.net.NHCall;
 import newhorizon.content.NHBullets;
+import newhorizon.content.NHFx;
 import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.bullets.AccelBulletType;
 import newhorizon.expand.bullets.LightningLinkerBulletType;
@@ -153,6 +154,18 @@ public class RaidBulletUtil {
         copy.hitColor = back.cpy();
         copy.lightColor = back.cpy();
         copy.lightningColor = back.cpy();
+        if (copy instanceof AccelBulletType) {
+            Color fx = tint.cpy();
+            float blastSize = Math.max(72f, copy.splashDamageRadius * 0.65f);
+            if (NHBullets.blastEnergyPst != null && type.id == NHBullets.blastEnergyPst.id) {
+                copy.hitEffect = NHFx.crossBlast(fx, blastSize);
+                copy.despawnEffect = NHFx.hyperBlast(fx);
+            } else {
+                copy.hitEffect = NHFx.lightningHitLarge(fx);
+                copy.despawnEffect = NHFx.crossBlast(fx, blastSize);
+            }
+            copy.shootEffect = NHFx.shootCircleSmall(fx);
+        }
         if (copy.fragBullet != null) {
             BulletType frag = copy.fragBullet.copy();
             if (frag instanceof BasicBulletType fragBasic) {
