@@ -25,10 +25,12 @@ import newhorizon.expand.entities.Spawner;
 import newhorizon.expand.game.DefaultIntervention;
 import newhorizon.expand.game.DefaultSpecialEvent;
 import newhorizon.expand.game.InterventionState;
+import newhorizon.expand.game.InterventionSync;
 import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.SpecialEvent;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.net.NHCall;
 import newhorizon.util.func.NHFunc;
@@ -166,10 +168,11 @@ public class EventInterventionAction extends Action {
 
     @Override
     public void begin() {
+        if (syncSeed == 0) syncSeed = (int) Time.time;
         if (!headless && !spawned && lifeTimer < alertTime) {
+            InterventionSync.clearLocalInterventionMarkers();
             showPresentation();
         }
-        if (syncSeed == 0) syncSeed = (int) Time.time;
         if (net.server() && net.active()) {
             NHCall.syncInterventionAlert(this);
         }
@@ -177,6 +180,7 @@ public class EventInterventionAction extends Action {
 
     @Override
     public void end() {
+        InterventionSync.removeInterventionMarkers(this);
         if (!spawned && RaidLogic.isLogicSide()) {
             spawnUnits();
         }
@@ -211,6 +215,8 @@ public class EventInterventionAction extends Action {
         });
 
         RaidMarker marker = new RaidMarker();
+        marker.setKind(HudMarker.Kind.INTERVENTION);
+        marker.setSyncSeed(syncSeed);
         marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)
                 .bindLifeTimer(() -> this.lifeTimer);
@@ -241,6 +247,7 @@ public class EventInterventionAction extends Action {
     public void spawnUnits() {
         if (spawned) return;
         spawned = true;
+        InterventionSync.finishAlert(this);
         if (RaidLogic.isRemoteClient()) return;
 
         if (units.isEmpty()) {

@@ -225,12 +225,17 @@ public class CutsceneUI {
     }
 
     public void clearMarkers() {
+        clearMarkers(null);
+    }
+
+    public void clearMarkers(HudMarker.Kind kind) {
         for (int i = markers.size - 1; i >= 0; i--) {
             HudMarker marker = markers.get(i);
+            if (kind != null && marker.kind != kind) continue;
             marker.clearActions();
             root.removeChild(marker);
+            markers.remove(i);
         }
-        markers.clear();
         if (NHUI.eventList != null) NHUI.rebuildEventList();
     }
 

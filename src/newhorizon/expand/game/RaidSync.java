@@ -1,19 +1,23 @@
 package newhorizon.expand.game;
 
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
+import mindustry.gen.Groups;
 import mindustry.gen.Player;
+import newhorizon.NHUI;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
+import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
 import newhorizon.expand.net.NHCall;
 import newhorizon.expand.net.packet.RaidClearPacket;
 import newhorizon.expand.net.packet.RaidScalePacket;
-import newhorizon.expand.net.packet.RaidSyncRequestPacket;
 
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
@@ -74,7 +78,8 @@ public final class RaidSync {
     }
 
     public static void applyClientAction(EventRaidAction action) {
-        clearClientRaid();
+        if (action == null || action.complete()) return;
+        removeRaidBySeed(action.syncSeed);
         ActionBus bus = new ActionBus();
         bus.add(action);
         cutscene.addSubActionBus(bus);
@@ -89,36 +94,84 @@ public final class RaidSync {
         scalePacket.scale = RaidState.scale();
         con.send(scalePacket, true);
 
-        EventRaidAction active = DefaultRaid.activeRaidAction();
-        if (active != null) {
-            NHCall.syncRaidAlertTo(active, player);
-        } else {
-            con.send(new RaidClearPacket(), true);
+        Seq<EventRaidAction> actives = findActiveRaidActions();
+        con.send(new RaidClearPacket(), true);
+        for (EventRaidAction action : actives) {
+            NHCall.syncRaidAlertTo(action, player);
         }
+    }
+
+    public static void broadcastState() {
+        if (!Vars.net.server() || !Vars.net.active()) return;
+        for (Player player : Groups.player) {
+            pushStateTo(player);
+        }
+    }
+
+    public static Seq<EventRaidAction> findActiveRaidActions() {
+        ObjectSet<EventRaidAction> seen = new ObjectSet<>();
+        Seq<EventRaidAction> out = new Seq<>();
+        EventRaidAction def = DefaultRaid.activeRaidAction();
+        if (def != null && !def.complete() && seen.add(def)) out.add(def);
+        for (ActionBus bus : cutscene.subBuses) {
+            EventRaidAction action = raidFromBus(bus);
+            if (action != null && !action.complete() && seen.add(action)) out.add(action);
+        }
+        return out;
     }
 
     public static void clearClientRaid() {
         if (Vars.headless) return;
-        cutsceneUI.clearMarkers();
+        cutsceneUI.clearMarkers(HudMarker.Kind.RAID);
         for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
             ActionBus bus = cutscene.subBuses.get(i);
             if (isRaidBus(bus)) {
-                bus.clear();
+                bus.skip();
                 cutscene.subBuses.remove(i);
             }
         }
     }
 
-    private static boolean isRaidBus(ActionBus bus) {
-        if (bus == null) return false;
-        if (bus.current instanceof EventRaidAction) return true;
-        for (Action action : bus.queue) {
-            if (action instanceof EventRaidAction) return true;
+    private static void removeRaidBySeed(int syncSeed) {
+        if (Vars.headless) return;
+        for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
+            ActionBus bus = cutscene.subBuses.get(i);
+            EventRaidAction action = raidFromBus(bus);
+            if (action == null || action.syncSeed != syncSeed) continue;
+            removeRaidMarkers(action);
+            bus.skip();
+            cutscene.subBuses.remove(i);
         }
-        return false;
+    }
+
+    private static void removeRaidMarkers(EventRaidAction action) {
+        if (cutsceneUI == null) return;
+        for (int i = cutsceneUI.markers.size - 1; i >= 0; i--) {
+            HudMarker marker = cutsceneUI.markers.get(i);
+            if (marker.kind != HudMarker.Kind.RAID) continue;
+            if (Math.abs(marker.markPoint.x - action.targetX) > 8f || Math.abs(marker.markPoint.y - action.targetY) > 8f) continue;
+            marker.clearActions();
+            cutsceneUI.root.removeChild(marker);
+            cutsceneUI.markers.remove(i);
+        }
+        if (NHUI.eventList != null) NHUI.rebuildEventList();
+    }
+
+    private static EventRaidAction raidFromBus(ActionBus bus) {
+        if (bus == null) return null;
+        if (bus.current instanceof EventRaidAction action) return action;
+        for (Action queued : bus.queue) {
+            if (queued instanceof EventRaidAction action) return action;
+        }
+        return null;
+    }
+
+    private static boolean isRaidBus(ActionBus bus) {
+        return raidFromBus(bus) != null;
     }
 
     private static int bulletId(BulletType type) {
         return type == null ? -1 : type.id;
     }
 }
+

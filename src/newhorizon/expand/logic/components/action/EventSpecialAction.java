@@ -20,6 +20,7 @@ import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.SpecialEvent;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
+import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.net.NHCall;
 import newhorizon.util.ui.NHUIFunc;
@@ -192,6 +193,7 @@ public class EventSpecialAction extends Action {
         });
 
         RaidMarker marker = new RaidMarker();
+        marker.setKind(HudMarker.Kind.SPECIAL);
         marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)
                 .bindLifeTimer(() -> this.lifeTimer);

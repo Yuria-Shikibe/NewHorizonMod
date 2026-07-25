@@ -31,10 +31,16 @@ import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class HudMarker extends Table {
+    public enum Kind {
+        RAID, INTERVENTION, SPECIAL, OTHER
+    }
+
     protected static final Vec2 screenVec = new Vec2(), originVec = new Vec2();
     protected static final float padding = 0.05f;
     protected static final float strokeInner = 3f, strokeOuter = 9f;
     protected static final float iconSize = 80f;
+    public Kind kind = Kind.OTHER;
+    public int syncSeed;
     public Color markColor = Pal.accent;
     public Vec2 markPoint = new Vec2();
     public TextureRegion icon = NHContent.icon2;
@@ -45,6 +51,7 @@ public class HudMarker extends Table {
     protected float lifeTimer = 0;
     protected float displayAlpha = 30f;
     protected Prov<Float> lifeTimerProv;
+    protected boolean removing;
 
     public HudMarker() {
         touchable = Touchable.childrenOnly;
@@ -92,6 +99,16 @@ public class HudMarker extends Table {
         return this;
     }
 
+    public HudMarker setKind(Kind kind) {
+        this.kind = kind == null ? Kind.OTHER : kind;
+        return this;
+    }
+
+    public HudMarker setSyncSeed(int syncSeed) {
+        this.syncSeed = syncSeed;
+        return this;
+    }
+
     public HudMarker setIcon(TextureRegion icon) {
         this.icon = icon;
         return this;
@@ -105,13 +122,24 @@ public class HudMarker extends Table {
     }
 
     public void addMarker() {
+        removing = false;
         cutsceneUI.addMarker(this);
         actions(Actions.alpha(1, 0.45f, NHInterp.bounce5Out));
         setZIndex(0);
     }
 
     public void removeMarker() {
-        actions(Actions.delay(delay), Actions.fadeOut(0.5f), Actions.remove());
+        if (removing) return;
+        removing = true;
+        clearActions();
+        actions(Actions.fadeOut(0.35f), Actions.remove());
+    }
+
+    public void removeMarkerNow() {
+        removing = true;
+        clearActions();
+        cutsceneUI.removeMarker(this);
+        remove();
     }
 
     @Override

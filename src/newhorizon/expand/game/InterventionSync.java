@@ -6,12 +6,15 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.game.Team;
+import mindustry.gen.Groups;
 import mindustry.gen.Player;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
+import newhorizon.NHUI;
 import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventInterventionAction;
+import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.net.NHCall;
 import newhorizon.expand.net.packet.InterventionClearPacket;
 import newhorizon.expand.net.packet.InterventionScalePacket;
@@ -71,7 +74,7 @@ public final class InterventionSync {
         action.statusDuration = read.f();
         action.flag = read.d();
         boolean spawned = read.bool();
-        action.duration = action.alertTime + 10f * Time.toSeconds + 30f;
+        action.duration = Math.max(action.alertTime + 30f, action.alertTime + 10f * Time.toSeconds + 30f);
         action.applyNetworkState(read.f(), spawned);
         int size = read.i();
         action.units.clear();
@@ -85,10 +88,12 @@ public final class InterventionSync {
     }
 
     public static void applyClientAction(EventInterventionAction action) {
-        if (action == null) return;
+        if (action == null || action.complete()) return;
         if (action.spawned() || action.lifeTimer >= action.alertTime) return;
 
-        clearClientIntervention();
+        removeInterventionBySeed(action.syncSeed);
+        clearFinishedInterventionBuses();
+
         ActionBus bus = new ActionBus();
         bus.add(action);
         cutscene.addSubActionBus(bus);
@@ -103,35 +108,106 @@ public final class InterventionSync {
         scalePacket.scale = InterventionState.scale();
         con.send(scalePacket, true);
 
-        EventInterventionAction active = findActiveInterventionAction();
-        if (active != null && !active.spawned() && active.lifeTimer < active.alertTime) {
+        con.send(new InterventionClearPacket(), true);
+        EventInterventionAction active = findActiveAlertAction();
+        if (active != null) {
             NHCall.syncInterventionAlertTo(active, player);
-        } else {
-            con.send(new InterventionClearPacket(), true);
         }
     }
 
-    public static EventInterventionAction findActiveInterventionAction() {
+    public static void broadcastClear() {
+        if (!Vars.net.server() || !Vars.net.active()) return;
+        Vars.net.send(new InterventionClearPacket(), true);
+    }
+
+    public static void broadcastState() {
+        if (!Vars.net.server() || !Vars.net.active()) return;
+        for (Player player : Groups.player) {
+            pushStateTo(player);
+        }
+    }
+
+    public static void finishAlert(EventInterventionAction action) {
+        if (action == null) return;
+        removeInterventionMarkers(action);
+        if (RaidLogic.isLogicSide() && Vars.net.server() && Vars.net.active()) {
+            broadcastClear();
+        }
+    }
+
+    public static EventInterventionAction findActiveAlertAction() {
         EventInterventionAction fromDefault = DefaultIntervention.activeInterventionAction();
-        if (fromDefault != null) return fromDefault;
+        if (isAlerting(fromDefault)) return fromDefault;
 
         for (ActionBus bus : cutscene.subBuses) {
             EventInterventionAction action = interventionFromBus(bus);
-            if (action != null) return action;
+            if (isAlerting(action)) return action;
         }
         return null;
     }
 
+    public static EventInterventionAction findActiveInterventionAction() {
+        return findActiveAlertAction();
+    }
+
     public static void clearClientIntervention() {
         if (Vars.headless) return;
-        cutsceneUI.clearMarkers();
+        cutsceneUI.clearMarkers(HudMarker.Kind.INTERVENTION);
         for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
             ActionBus bus = cutscene.subBuses.get(i);
             if (isInterventionBus(bus)) {
-                bus.clear();
+                bus.skip();
                 cutscene.subBuses.remove(i);
             }
         }
+    }
+
+    private static void clearFinishedInterventionBuses() {
+        if (Vars.headless) return;
+        for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
+            ActionBus bus = cutscene.subBuses.get(i);
+            EventInterventionAction action = interventionFromBus(bus);
+            if (action == null) continue;
+            if (!action.complete() && !action.spawned() && action.lifeTimer < action.alertTime) continue;
+            removeInterventionMarkers(action);
+            bus.skip();
+            cutscene.subBuses.remove(i);
+        }
+    }
+
+    private static void removeInterventionBySeed(int syncSeed) {
+        if (Vars.headless) return;
+        for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
+            ActionBus bus = cutscene.subBuses.get(i);
+            EventInterventionAction action = interventionFromBus(bus);
+            if (action == null || action.syncSeed != syncSeed) continue;
+            removeInterventionMarkers(action);
+            bus.skip();
+            cutscene.subBuses.remove(i);
+        }
+    }
+
+    public static void removeInterventionMarkers(EventInterventionAction action) {
+        if (Vars.headless || cutsceneUI == null || action == null) return;
+        for (int i = cutsceneUI.markers.size - 1; i >= 0; i--) {
+            HudMarker marker = cutsceneUI.markers.get(i);
+            if (marker.kind != HudMarker.Kind.INTERVENTION) continue;
+            boolean sameSeed = marker.syncSeed != 0 && marker.syncSeed == action.syncSeed;
+            boolean samePos = Math.abs(marker.markPoint.x - action.targetX) <= 8f
+                    && Math.abs(marker.markPoint.y - action.targetY) <= 8f;
+            if (!sameSeed && !samePos) continue;
+            marker.removeMarkerNow();
+        }
+        if (NHUI.eventList != null) NHUI.rebuildEventList();
+    }
+
+    public static void clearLocalInterventionMarkers() {
+        if (Vars.headless || cutsceneUI == null) return;
+        cutsceneUI.clearMarkers(HudMarker.Kind.INTERVENTION);
+    }
+
+    private static boolean isAlerting(EventInterventionAction action) {
+        return action != null && !action.complete() && !action.spawned() && action.lifeTimer < action.alertTime;
     }
 
     private static EventInterventionAction interventionFromBus(ActionBus bus) {

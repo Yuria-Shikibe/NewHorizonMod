@@ -67,9 +67,7 @@ import newhorizon.expand.game.RaidSync;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.components.ui.HudMarker;
-import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
-import newhorizon.expand.net.packet.RaidClearPacket;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 import newhorizon.util.ui.TableFunc;
@@ -851,7 +849,6 @@ public class AirRaider extends CommandableBlock {
         public void cancelRaidEvent() {
             if (!raidActive && raidBus == null && raidAction == null) return;
             if (RaidLogic.isRemoteClient()) {
-                RaidSync.clearClientRaid();
                 clearRaidRefs();
                 return;
             }
@@ -863,17 +860,18 @@ public class AirRaider extends CommandableBlock {
                 raidBus.skip();
                 cutscene.subBuses.remove(raidBus);
             }
-            if (net.server() && net.active()) {
-                net.send(new RaidClearPacket(), true);
-            }
             clearRaidRefs();
+            if (net.server() && net.active()) {
+                RaidSync.broadcastState();
+            }
         }
 
         private void removeRaidMarkers(EventRaidAction action) {
             if (headless || cutsceneUI == null) return;
             for (int i = cutsceneUI.markers.size - 1; i >= 0; i--) {
                 HudMarker marker = cutsceneUI.markers.get(i);
-                if (marker instanceof RaidMarker && Mathf.dst(marker.markPoint.x, marker.markPoint.y, action.targetX, action.targetY) < 8f) {
+                if (marker.kind != HudMarker.Kind.RAID) continue;
+                if (Mathf.dst(marker.markPoint.x, marker.markPoint.y, action.targetX, action.targetY) < 8f) {
                     marker.remove();
                 }
             }
