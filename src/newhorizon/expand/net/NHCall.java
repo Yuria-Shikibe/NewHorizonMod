@@ -1,5 +1,6 @@
 package newhorizon.expand.net;
 
+import arc.graphics.Color;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
@@ -92,6 +93,10 @@ public class NHCall {
     }
 
     public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY) {
+        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null);
+    }
+
+    public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint) {
         if (!Vars.net.server() || !Vars.net.active() || type == null || team == null) return;
         RaidBulletPacket packet = new RaidBulletPacket();
         packet.bulletId = type.id;
@@ -104,6 +109,7 @@ public class NHCall {
         packet.lifetimeScl = lifetimeScl;
         packet.aimX = aimX;
         packet.aimY = aimY;
+        packet.tintRgba = Color.rgba8888(tint == null ? Color.white : tint);
         Vars.net.send(packet, true);
     }
 

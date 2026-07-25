@@ -62,6 +62,8 @@ public class EventInterventionAction extends Action {
     public float targetX, targetY;
     public boolean overrideStats, overrideDefaultCoordinate;
     public boolean presentationOnly;
+    /** Remote CSS stub: logic runs on server; do not touch shared client markers. */
+    public boolean presentationSuppressed;
     public StatusEffect status = StatusEffects.none;
     public float statusDuration = 600f;
     public double flag = Double.NaN;
@@ -173,6 +175,7 @@ public class EventInterventionAction extends Action {
         // World processors also run on remote clients. CSS-created interventions must not
         // present locally there — the server alert packet owns client UI (seeds would differ).
         if (RaidLogic.isRemoteClient() && !presentationOnly) {
+            presentationSuppressed = true;
             lifeTimer = duration;
             spawned = true;
             return;
@@ -189,7 +192,9 @@ public class EventInterventionAction extends Action {
 
     @Override
     public void end() {
-        InterventionSync.removeInterventionMarkers(this);
+        if (!presentationSuppressed) {
+            InterventionSync.removeInterventionMarkers(this);
+        }
         if (!presentationOnly && !spawned && RaidLogic.isLogicSide()) {
             spawnUnits();
         }

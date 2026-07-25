@@ -213,13 +213,18 @@ public final class InterventionSync {
 
     public static void removeInterventionMarkers(EventInterventionAction action) {
         if (Vars.headless || cutsceneUI == null || action == null) return;
+        if (action.presentationSuppressed) return;
         for (int i = cutsceneUI.markers.size - 1; i >= 0; i--) {
             HudMarker marker = cutsceneUI.markers.get(i);
             if (marker.kind != HudMarker.Kind.INTERVENTION) continue;
-            boolean sameSeed = marker.syncSeed != 0 && marker.syncSeed == action.syncSeed;
-            boolean samePos = Math.abs(marker.markPoint.x - action.targetX) <= 8f
-                    && Math.abs(marker.markPoint.y - action.targetY) <= 8f;
-            if (!sameSeed && !samePos) continue;
+            // Prefer syncSeed. Never wipe another event's marker just because the tile matches.
+            if (action.syncSeed != 0 && marker.syncSeed != 0) {
+                if (marker.syncSeed != action.syncSeed) continue;
+            } else {
+                boolean samePos = Math.abs(marker.markPoint.x - action.targetX) <= 8f
+                        && Math.abs(marker.markPoint.y - action.targetY) <= 8f;
+                if (!samePos) continue;
+            }
             marker.removeMarkerNow();
         }
         if (NHUI.eventList != null) NHUI.rebuildEventList();

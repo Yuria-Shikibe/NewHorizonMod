@@ -1,6 +1,8 @@
 package newhorizon.expand.logic;
 
+import arc.graphics.Color;
 import arc.math.Mathf;
+import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import newhorizon.NewHorizon;
@@ -95,14 +97,22 @@ public class RaidBulletUtil {
             return;
         }
         float lifetimeScl = lifetimeScl(type, dst);
-        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY);
+        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null);
         if (net.server() && net.active()) {
             BulletType syncType = resolveSyncType(type, syncAs);
             if (syncType != null) {
                 float syncLifeScl = lifetimeScl(syncType, dst);
-                NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, syncLifeScl, aimX, aimY);
+                NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, syncLifeScl, aimX, aimY, raidTint(type));
             }
         }
+    }
+
+    private static Color raidTint(BulletType type) {
+        if (type == null) return Color.white;
+        if (type.hitColor != null && !type.hitColor.equals(Color.white)) return type.hitColor;
+        if (type.trailColor != null && !type.trailColor.equals(Color.white)) return type.trailColor;
+        if (type instanceof BasicBulletType basic && basic.backColor != null) return basic.backColor;
+        return Color.white;
     }
 
     private static BulletType resolveSyncType(BulletType type, BulletType syncAs) {
@@ -118,9 +128,46 @@ public class RaidBulletUtil {
     }
 
     public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY) {
+        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null);
+    }
+
+    public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint) {
         if (type == null || team == null) return;
         BulletType bt = prepareForRaid(type);
+        if (tint != null && !tint.equals(Color.white)) {
+            bt = applyRaidTint(bt, tint);
+        }
         bt.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null, null, aimX, aimY);
+    }
+
+    public static BulletType applyRaidTint(BulletType type, Color tint) {
+        if (type == null || tint == null) return type;
+        BulletType copy = type.copy();
+        Color back = tint.cpy();
+        Color front = tint.cpy().lerp(Color.white, 0.3f);
+        if (copy instanceof BasicBulletType basic) {
+            basic.backColor = back;
+            basic.frontColor = front;
+        }
+        copy.trailColor = back.cpy();
+        copy.hitColor = back.cpy();
+        copy.lightColor = back.cpy();
+        copy.lightningColor = back.cpy();
+        if (copy.fragBullet != null) {
+            BulletType frag = copy.fragBullet.copy();
+            if (frag instanceof BasicBulletType fragBasic) {
+                fragBasic.backColor = back.cpy();
+                fragBasic.frontColor = front.cpy();
+            }
+            frag.trailColor = back.cpy();
+            frag.hitColor = back.cpy();
+            frag.lightColor = back.cpy();
+            frag.lightningColor = back.cpy();
+            boolean shareInterval = copy.intervalBullet == copy.fragBullet;
+            copy.fragBullet = frag;
+            if (shareInterval) copy.intervalBullet = frag;
+        }
+        return copy;
     }
 
     public static String alertKey(BulletType type) {
