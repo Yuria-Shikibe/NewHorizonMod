@@ -57,11 +57,40 @@ public class RaidBulletUtil {
         return type.speed * type.lifetime;
     }
 
+    public static float estimateTravel(BulletType type) {
+        if (type == null) return 1f;
+        if (type instanceof AccelBulletType accel) {
+            return estimateAccelTravel(accel);
+        }
+        if (type.speed > 0.001f && type.lifetime > 0.001f) {
+            return type.speed * type.lifetime;
+        }
+        if (type instanceof LightningLinkerBulletType linker && linker.range > 0f) {
+            return linker.range;
+        }
+        return Math.max(type.range, 1f);
+    }
+
+    private static float estimateAccelTravel(AccelBulletType accel) {
+        if (accel.lifetime <= 0.001f) return 1f;
+        if (accel.accelerateBegin >= 1f || Math.abs(accel.velocityIncrease) < 0.001f) {
+            float v = accel.velocityBegin > 0.001f ? accel.velocityBegin : Math.max(accel.speed, 0.1f);
+            return v * accel.lifetime;
+        }
+        float cal = 0f;
+        for (float i = 0f; i <= 1f; i += 0.05f) {
+            float s = accel.velocityBegin
+                    + accel.accelInterp.apply(Mathf.curve(i, accel.accelerateBegin, accel.accelerateEnd)) * accel.velocityIncrease;
+            cal += Math.max(s, 0f) * accel.lifetime * 0.05f;
+        }
+        return Math.max(cal, 0.1f);
+    }
+
     public static float lifetimeScl(BulletType type, float dst) {
         if (type == null || dst <= 0f) return 1f;
-        float travel = raidRange(type);
+        float travel = estimateTravel(type);
         if (travel <= 0.001f) return 1f;
-        return Mathf.clamp(dst / travel, 0.05f, 8f);
+        return dst / travel;
     }
 
     public static BulletType prepareForRaid(BulletType type) {
@@ -97,12 +126,13 @@ public class RaidBulletUtil {
             RandomRaidBulletType.fire(team, x, y, angle, damage, velocityScl, dst, aimX, aimY);
             return;
         }
-        float lifetimeScl = lifetimeScl(type, dst);
-        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null);
+        BulletType prepared = prepareForRaid(type);
+        float lifeScl = lifetimeScl(prepared, dst);
+        prepared.create(null, team, x, y, angle, damage, velocityScl, lifeScl, null, null, aimX, aimY);
         if (net.server() && net.active()) {
             BulletType syncType = resolveSyncType(type, syncAs);
             if (syncType != null) {
-                float syncLifeScl = lifetimeScl(syncType, dst);
+                float syncLifeScl = lifetimeScl(prepareForRaid(syncType), dst);
                 NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, syncLifeScl, aimX, aimY, raidTint(type));
             }
         }
