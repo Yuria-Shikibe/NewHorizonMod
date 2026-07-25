@@ -192,7 +192,7 @@ public class DefaultSpecialEvent {
                 .alert(200f)
                 .trigger(Triggers.and(
                         Triggers.afterMinutes(120f),
-                        Triggers.coreItems(NHItems.darkEnergy, 10000)
+                        Triggers.coreItemsAll(NHItems.darkEnergy, 10000,NHItems.hyperProcessor,10000,NHItems.hadronicomp,10000)
                 ))
                 .once()
                 .unit(NHUnitTypes.nucleoid, 1, u -> u

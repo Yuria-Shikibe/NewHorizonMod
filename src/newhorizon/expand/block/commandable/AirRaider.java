@@ -115,12 +115,12 @@ public class AirRaider extends CommandableBlock {
     }
 
     private void initDefs() {
-        weapons[0] = new WeaponMode("nh.air-raid.weapon-1", RaidBullets.defaultRaidBullet1, 1f, 1f, 1f, 40f, 10);
-        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.9f, 0.4f, 50f, 3);
-        weapons[2] = new WeaponMode("nh.air-raid.weapon-3", RaidBullets.raidBullet_9, 0.4f, 0.5f, 2f, 80f, 4,20);
-        weapons[3] = new WeaponMode("nh.air-raid.weapon-4", NHBullets.blastEnergyNgt, 0.1f, 0.2f, 4f, 25f, 40,120);
-        weapons[4] = new WeaponMode("nh.air-raid.weapon-5", NHBullets.railGun1, 3f, 0.4f, 8f, 5f, 1);
-        weapons[5] = new WeaponMode("nh.air-raid.weapon-6", NHBullets.airRaidBomb, 1.2f, 1.3f, 2f, 48f, 2, 20);
+        weapons[0] = new WeaponMode("nh.air-raid.weapon-1", RaidBullets.defaultRaidBullet1, 1f, 0.01f, 1f, 1f, 40f, 0.5f, 10);
+        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.4f, 0.9f, 0.4f, 50f, 2f, 3);
+        weapons[2] = new WeaponMode("nh.air-raid.weapon-3", RaidBullets.raidBullet_9, 0.4f, 0.2f, 0.5f, 2f, 80f, 1f, 4, 20);
+        weapons[3] = new WeaponMode("nh.air-raid.weapon-4", NHBullets.blastEnergyNgt, 0.1f, 0.05f, 0.2f, 4f, 25f, 2f, 40, 120);
+        weapons[4] = new WeaponMode("nh.air-raid.weapon-5", NHBullets.railGun1, 3f, 1f, 0.4f, 8f, 5f, 5f, 1);
+        weapons[5] = new WeaponMode("nh.air-raid.weapon-6", NHBullets.airRaidBomb, 1.2f, 0.8f, 1.3f, 2f, 48f, 10f, 2, 20);
 
         slotDefs[0] = new SlotDef("nh.air-raid.slot-charge", 280, new Seq<>());
         slotDefs[1] = new SlotDef("nh.air-raid.slot-control", 240, new Seq<>());
@@ -387,6 +387,7 @@ public class AirRaider extends CommandableBlock {
                     if (idx >= -1 && idx < WEAPON_COUNT) {
                         weaponIndex = idx;
                         selectedSlot = 0;
+                        clampSlotsToCapacity();
                     }
                 }
                 case 1 -> {
@@ -417,7 +418,7 @@ public class AirRaider extends CommandableBlock {
             ItemModule module = slots[slot];
             int current = module.get(item);
             int others = module.total() - current;
-            int maxForItem = Math.max(0, slotDefs[slot].capacity - others);
+            int maxForItem = Math.max(0, slotCapacity(slot) - others);
             boolean infinite = state.rules.infiniteResources || team.rules().cheat;
             if (!infinite) {
                 Building core = team.core();
@@ -429,8 +430,36 @@ public class AirRaider extends CommandableBlock {
             module.set(item, targetAmt);
         }
 
+        public void clampSlotsToCapacity() {
+            for (int slot = 0; slot < SLOT_COUNT; slot++) {
+                int cap = slotCapacity(slot);
+                ItemModule module = slots[slot];
+                if (module.total() <= cap) continue;
+                int[] remain = {cap};
+                ItemModule next = new ItemModule();
+                module.each((item, amount) -> {
+                    int keep = Math.min(amount, Math.max(remain[0], 0));
+                    if (keep > 0) {
+                        next.add(item, keep);
+                        remain[0] -= keep;
+                    }
+                });
+                module.clear();
+                next.each(module::add);
+            }
+        }
+
         public void clearAllSlots() {
             for (ItemModule slot : slots) slot.clear();
+        }
+
+        private float currentCostMul() {
+            if (weaponIndex < 0 || weaponIndex >= WEAPON_COUNT) return 1f;
+            return Math.max(weapons[weaponIndex].costMul, 0.0001f);
+        }
+
+        private int slotCapacity(int slot) {
+            return Math.max(1, Mathf.round(slotDefs[slot].capacity * currentCostMul()));
         }
 
         public RaidStats calcStats() {
@@ -496,17 +525,16 @@ public class AirRaider extends CommandableBlock {
 
             if (mode.bullet instanceof LightningLinkerBulletType) {
                 float load = Mathf.clamp(0.4f + payloadFill() * 0.9f, 0.4f, 1.35f);
-                float mul = mode.damageMul * load;
                 BulletType src = mode.bullet;
-                stats.damage = src.damage * mul;
-                stats.splash = src.splashDamage * mul;
+                stats.damage = src.damage * mode.damageMul * load;
+                stats.splash = src.splashDamage * mode.splashDamageMul * load;
                 stats.splashRadius = Math.max(src.splashDamageRadius, Mathf.clamp(40f + stats.size * 1.55f + chargeExplosiveness * 0.55f, 40f, 220f) * 0.65f);
                 stats.lightning = src.lightning;
                 stats.lightningLength = src.lightningLength;
-                stats.lightningDamage = (src.lightningDamage > 0f ? src.lightningDamage : src.damage) * mul;
+                stats.lightningDamage = (src.lightningDamage > 0f ? src.lightningDamage : src.damage) * mode.damageMul * load;
             } else {
                 stats.damage = mode.damageMul * approachMax(damageScore, MAX_DAMAGE, 85f);
-                stats.splash = mode.damageMul * approachMax(splashScore, MAX_SPLASH, 18f);
+                stats.splash = mode.splashDamageMul * approachMax(splashScore, MAX_SPLASH, 18f);
                 stats.splashRadius = Mathf.clamp(40f + stats.size * 1.55f + chargeExplosiveness * 0.55f, 40f, 220f);
                 stats.lightning = Mathf.clamp(Mathf.round(approachMax(chargeElectric * 0.12f, 6f, 9f)), 0, 6);
                 stats.lightningLength = Mathf.clamp(Mathf.round(approachMax(chargeElectric * 0.18f, 10f, 11f)), 0, 10);
@@ -543,7 +571,7 @@ public class AirRaider extends CommandableBlock {
         }
 
         private float amountFactor(float amount) {
-            return softAttr(amount * 0.1f, 36f);
+            return softAttr(amount * 0.1f, 36f) / currentCostMul();
         }
 
         private float softAttr(float value, float soft) {
@@ -569,13 +597,12 @@ public class AirRaider extends CommandableBlock {
 
             if (linker) {
                 float load = Mathf.clamp(0.4f + payloadFill() * 0.9f, 0.4f, 1.35f);
-                float mul = mode.damageMul * load;
                 BulletType src = mode.bullet;
-                copy.damage = src.damage * mul;
-                copy.splashDamage = src.splashDamage * mul;
+                copy.damage = src.damage * mode.damageMul * load;
+                copy.splashDamage = src.splashDamage * mode.splashDamageMul * load;
                 copy.splashDamageRadius = Math.max(src.splashDamageRadius, stats.splashRadius * 0.65f);
                 float srcLightning = src.lightningDamage > 0f ? src.lightningDamage : src.damage;
-                copy.lightningDamage = srcLightning * mul;
+                copy.lightningDamage = srcLightning * mode.damageMul * load;
                 copy.lightning = src.lightning;
                 copy.lightningLength = src.lightningLength;
                 copy.lightningLengthRand = src.lightningLengthRand;
@@ -727,7 +754,7 @@ public class AirRaider extends CommandableBlock {
         private float payloadFill() {
             float sum = 0f;
             for (int i = 0; i < SLOT_COUNT; i++) {
-                int cap = Math.max(slotDefs[i].capacity, 1);
+                int cap = Math.max(slotCapacity(i), 1);
                 sum += Mathf.clamp(slots[i].total() / (float) cap);
             }
             return sum / SLOT_COUNT;
@@ -1066,6 +1093,7 @@ public class AirRaider extends CommandableBlock {
                             SlotDef def = slotDefs[selectedSlot];
                             Building core = team.core();
                             boolean infinite = state.rules.infiniteResources || team.rules().cheat;
+                            int capacity = slotCapacity(selectedSlot);
 
                             br.pane(list -> {
                                 list.top().left();
@@ -1073,7 +1101,7 @@ public class AirRaider extends CommandableBlock {
                                     int have = core == null ? 0 : core.items.get(item);
                                     int loaded = slots[selectedSlot].get(item);
                                     int others = slots[selectedSlot].total() - loaded;
-                                    int maxForItem = Math.max(0, def.capacity - others);
+                                    int maxForItem = Math.max(0, capacity - others);
                                     if (!infinite) maxForItem = Math.min(maxForItem, have);
 
                                     int max = Math.max(maxForItem, loaded);
@@ -1239,20 +1267,22 @@ public class AirRaider extends CommandableBlock {
     public static class WeaponMode {
         public final String bundleKey;
         public final BulletType bullet;
-        public final float damageMul, sizeMul, speedMul, inaccuracy;
+        public final float damageMul, splashDamageMul, sizeMul, speedMul, inaccuracy, costMul;
         public final int shotCountMin, shotCountMax;
 
-        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float sizeMul, float speedMul, float inaccuracy, int shotCount) {
-            this(bundleKey, bullet, damageMul, sizeMul, speedMul, inaccuracy, shotCount, shotCount);
+        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float sizeMul, float speedMul, float inaccuracy, float costMul, int shotCount) {
+            this(bundleKey, bullet, damageMul, splashDamageMul, sizeMul, speedMul, inaccuracy, costMul, shotCount, shotCount);
         }
 
-        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float sizeMul, float speedMul, float inaccuracy, int shotCountMin, int shotCountMax) {
+        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float sizeMul, float speedMul, float inaccuracy, float costMul, int shotCountMin, int shotCountMax) {
             this.bundleKey = bundleKey;
             this.bullet = bullet;
             this.damageMul = damageMul;
+            this.splashDamageMul = splashDamageMul;
             this.sizeMul = sizeMul;
             this.speedMul = speedMul;
             this.inaccuracy = inaccuracy;
+            this.costMul = Math.max(costMul, 0.0001f);
             this.shotCountMin = Math.min(shotCountMin, shotCountMax);
             this.shotCountMax = Math.max(shotCountMin, shotCountMax);
         }
