@@ -116,7 +116,7 @@ public class EventSpecialAction extends Action {
             spawned = true;
             return;
         }
-        if (!headless && !InterventionSync.hasMarker(syncSeed) && !InterventionSync.hasMarkerAt(targetX, targetY)) {
+        if (!headless && !InterventionSync.hasMarker(syncSeed)) {
             showPresentation();
         }
         if (net.server() && net.active()) {

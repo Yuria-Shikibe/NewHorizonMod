@@ -181,8 +181,7 @@ public class EventInterventionAction extends Action {
             return;
         }
         if (!headless && !spawned && lifeTimer < alertTime
-                && !InterventionSync.hasMarker(syncSeed)
-                && !InterventionSync.hasMarkerAt(targetX, targetY)) {
+                && !InterventionSync.hasMarker(syncSeed)) {
             showPresentation();
         }
         if (!presentationOnly && net.server() && net.active()) {

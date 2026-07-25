@@ -102,7 +102,7 @@ public final class InterventionSync {
         if (action == null || action.complete()) return;
         if (action.spawned() || action.lifeTimer >= action.alertTime) return;
         if (findLogicBySeed(action.syncSeed) != null) return;
-        if (hasMarker(action.syncSeed) || hasMarkerAt(action.targetX, action.targetY)) return;
+        if (hasMarker(action.syncSeed)) return;
 
         action.presentationOnly = true;
         removeInterventionBySeed(action.syncSeed);
@@ -245,15 +245,6 @@ public final class InterventionSync {
         if (Vars.headless || cutsceneUI == null || syncSeed == 0) return false;
         for (HudMarker marker : cutsceneUI.markers) {
             if (marker.kind == HudMarker.Kind.INTERVENTION && marker.syncSeed == syncSeed) return true;
-        }
-        return false;
-    }
-
-    public static boolean hasMarkerAt(float x, float y) {
-        if (Vars.headless || cutsceneUI == null) return false;
-        for (HudMarker marker : cutsceneUI.markers) {
-            if (marker.kind != HudMarker.Kind.INTERVENTION) continue;
-            if (Math.abs(marker.markPoint.x - x) <= 8f && Math.abs(marker.markPoint.y - y) <= 8f) return true;
         }
         return false;
     }
