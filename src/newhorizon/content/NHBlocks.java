@@ -1981,12 +1981,7 @@ public class NHBlocks {
         }};
 
         airRaider = new AirRaider("air-raider") {{
-            requirements(Category.defense, with(NHItems.nodexPlate, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
-
-            shoot = new ShootSummon(0, 0, 120, 0) {{
-                shots = 4;
-                shotDelay = 8f;
-            }};
+            requirements(Category.defense, with(NHItems.multipleSteel, 160, NHItems.presstanium, 260, NHItems.juniorProcessor, 200, Items.phaseFabric, 150));
 
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawCrucibleFlame() {{
                 alpha = 0.375f;
@@ -1998,18 +1993,8 @@ public class NHBlocks {
             }}, new DrawDefault());
 
             size = 3;
-            consumePowerCond(6f, AirRaiderBuild::isCharging);
-            consumeItem(NHItems.darkEnergy, 4);
-            itemCapacity = 16;
+            consumePower(6f);
             health = 4500;
-
-            triggeredEffect = new Effect(45f, e -> {
-                Draw.color(NHColor.darkEnrColor);
-                Lines.stroke(e.fout() * 2f);
-                Lines.square(e.x, e.y, size * tilesize / 2f + tilesize * 1.5f * e.fin(Interp.pow2In));
-            });
-
-            bullet = NHBullets.airRaidBomb;
         }};
 
 
@@ -2183,3 +2168,5 @@ public class NHBlocks {
         PayloadBlock.load();
     }
 }
+
+

@@ -31,6 +31,7 @@ public class EventRaidAction extends Action {
 
     public int customBulletType = 1;
     public BulletType customBullet;
+    public BulletType keyBullet;
 
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
 
@@ -214,19 +215,22 @@ public class EventRaidAction extends Action {
     }
 
     public String alertBundleKey() {
-        if (customBullet != null) return RaidBulletUtil.alertKey(customBullet);
+        BulletType key = keyBullet != null ? keyBullet : customBullet;
+        if (key != null) return RaidBulletUtil.alertKey(key);
         if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.alertKey(customBulletType);
         return "css-raid." + raidType.name().replace("_", "-").toLowerCase() + ".alert";
     }
 
     public String popupBundleKey() {
-        if (customBullet != null) return RaidBulletUtil.popupKey(customBullet);
+        BulletType key = keyBullet != null ? keyBullet : customBullet;
+        if (key != null) return RaidBulletUtil.popupKey(key);
         if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.popupKey(customBulletType);
         return "css-raid." + raidType.name().replace("_", "-").toLowerCase() + ".popup";
     }
 
     public String warningIconName() {
-        if (customBullet != null) return RaidBulletUtil.warningIcon(customBullet);
+        BulletType key = keyBullet != null ? keyBullet : customBullet;
+        if (key != null) return RaidBulletUtil.warningIcon(key);
         if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.warningIcon(customBulletType);
         return raidType.warningIcon;
     }
@@ -240,3 +244,4 @@ public class EventRaidAction extends Action {
         );
     }
 }
+

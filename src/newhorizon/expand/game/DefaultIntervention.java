@@ -19,6 +19,7 @@ import mindustry.gen.Building;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.meta.BlockFlag;
+import newhorizon.content.NHBullets;
 import newhorizon.content.NHLogic;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.content.NHUnitTypes;
@@ -35,7 +36,7 @@ import static mindustry.Vars.*;
 import static newhorizon.NHVars.cutscene;
 
 public class DefaultIntervention {
-    private static final float PROTECTION_TIME = 420f;
+    private static final float PROTECTION_TIME = 240f;
     private static final float COOLDOWN_MIN = 180f;
     private static final float COOLDOWN_RANGE = 300f;
     private static final int OVERRIDE_CHECK_INTERVAL = 120;
@@ -177,33 +178,31 @@ public class DefaultIntervention {
     }
 
     private static void registerFleetEvents() {
-        event(1, 15f, NHUnitTypes.branch, 4, NHUnitTypes.sharp, 4);
-        event(2, 20f, UnitTypes.horizon, 16, NHUnitTypes.sharp, 4);
-        event(3, 20f, NHUnitTypes.warper, 6, NHUnitTypes.assaulter, 3, NHUnitTypes.branch, 4);
-        event(4, 25f, NHUnitTypes.warper, 4, NHUnitTypes.sharp, 6);
-        event(5, 25f, NHUnitTypes.naxos, 2, NHUnitTypes.branch, 4, NHUnitTypes.warper, 8, NHUnitTypes.assaulter, 3);
-        event(6, 30f, NHUnitTypes.macrophage, 3);
-        event(7, 30f, NHUnitTypes.saviour, 1, NHUnitTypes.naxos, 2);
-        event(8, 30f, NHUnitTypes.destruction, 2, NHUnitTypes.naxos, 2);
-        event(9, 35f, NHUnitTypes.guardian, 1);
-        event(10, 35f, NHUnitTypes.longinus, 2, NHUnitTypes.naxos, 4, NHUnitTypes.saviour, 1);
-        event(11, 40f, NHUnitTypes.anvil, 1);
-        event(12, 40f, NHUnitTypes.pester, 1);
-        eventWithStatus(13, 45f, StatusEffects.overdrive, 600f, NHUnitTypes.collapser, 1);
-        eventWithStatus(14, 45f, NHStatusEffects.overphased, 900f, NHUnitTypes.nucleoid, 1, NHUnitTypes.pester, 1, NHUnitTypes.guardian, 3);
-        event(15, 30f, NHUnitTypes.warper, 10, NHUnitTypes.assaulter, 4, NHUnitTypes.branch, 6);
-        event(16, 35f, NHUnitTypes.destruction, 3, NHUnitTypes.naxos, 3, NHUnitTypes.saviour, 1);
+        event(1, 60f, NHUnitTypes.branch, 4, NHUnitTypes.sharp, 4);
+        event(2, 60f, UnitTypes.horizon, 16, NHUnitTypes.sharp, 4);
+        event(3, 180f, NHUnitTypes.warper, 1, NHUnitTypes.assaulter, 6, NHUnitTypes.branch, 4);
+        event(4, 90f, NHUnitTypes.warper, 4, NHUnitTypes.histone, 6);
+        event(5, 180f, NHUnitTypes.naxos, 2, NHUnitTypes.branch, 4, NHUnitTypes.warper, 8, NHUnitTypes.assaulter, 9);
+        event(6, 240f, NHUnitTypes.macrophage, 3);
+        eventWithStatus(7, 180f,NHStatusEffects.emp1,600, NHUnitTypes.saviour, 1, NHUnitTypes.naxos, 2);
+        eventWithStatus(8, 180f,NHStatusEffects.emp1,600, NHUnitTypes.destruction, 2, NHUnitTypes.naxos, 4);
+        event(9, 120f, NHUnitTypes.warper, 10, NHUnitTypes.assaulter, 4, NHUnitTypes.branch, 6);
+        event(10, 240f, NHUnitTypes.guardian, 1,NHUnitTypes.naxos,4);
+        event(11, 180f, NHUnitTypes.longinus, 2, NHUnitTypes.naxos, 4, NHUnitTypes.saviour, 1);
+        eventWithStatus(12, 180f,NHStatusEffects.phased,600,NHUnitTypes.anvil, 1);
+        event(13, 120f, NHUnitTypes.lymph, 3,NHUnitTypes.restrictionEnzyme, 6);
+        eventWithStatus(14, 120f, NHStatusEffects.overphased,600,NHUnitTypes.destruction, 3, NHUnitTypes.naxos, 4, NHUnitTypes.saviour, 1);
     }
 
     private static void registerTierPools() {
         tier(1, 2, 3);
         tier(2, 3, 4);
-        tier(3, 4, 5, 6);
+        tier(3, 4, 5);
         tier(5, 6, 7, 8);
-        tier(7, 8, 9, 10);
-        tier(9, 10, 11, 15);
-        tier(11, 12, 13, 16);
-        tier(12, 13, 14, 16);
+        tier(7, 8, 9, 10, 12);
+        tier(9, 10, 11, 12);
+        tier(11, 12, 13);
+        tier(11, 12, 13, 14);
     }
 
     public static void reset() {

@@ -102,6 +102,7 @@ public class NHLogic {
 
         registerAction(EventRaid.class, EventRaidAction.class);
         registerAction(EventIntervention.class, EventInterventionAction.class);
+        registerAction(EventSpecial.class, EventSpecialAction.class);
 
         //registerAction(WarningIcon.class, WarningIconAction.class);
     }
@@ -301,7 +302,7 @@ public class NHLogic {
             state.rules.tags.each((key, value) -> {
                 if (found[0]) return;
                 if (!key.startsWith(CutsceneControl.CSS_ACTION)) return;
-                if (value != null && value.contains("interventionevent")) found[0] = true;
+                if (value != null && (value.contains("interventionevent") || value.contains("specialevent") || value.contains("event-special"))) found[0] = true;
             });
         }
 
@@ -316,7 +317,8 @@ public class NHLogic {
     private static boolean codeContainsIntervention(String code) {
         return code.contains("defaultintervention")
                 || code.contains("interventionevent")
-                || code.contains("defaultspecialevent");
+                || code.contains("defaultspecialevent")
+                || code.contains("specialevent");
     }
 
     public static void registerReuseTimer(float time, String eventTrigger, String eventExecutor) {

@@ -12,9 +12,8 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
-import mindustry.content.Blocks;
+import newhorizon.content.NHBlocks;
 import newhorizon.content.NHContent;
-import newhorizon.content.blocks.UnitBlock;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -34,9 +33,8 @@ public class NewFeatureDialog extends BaseDialog {
 
     private FeatureLog[] getUpdateContent() {
         return new FeatureLog[]{
-                new FeatureLog(0, FeatureLog.featureType.IMPORTANT, NHContent.icon2),
-                new FeatureLog(0, FeatureLog.featureType.IMPROVE, UnitBlock.jumpGatePrimary),
-                new FeatureLog(0, FeatureLog.featureType.BALANCE, Blocks.coreNucleus),
+                new FeatureLog(0, FeatureLog.featureType.FIX, NHContent.fleet),
+                new FeatureLog(0, FeatureLog.featureType.IMPROVE, NHBlocks.airRaider),
         };
     }
 

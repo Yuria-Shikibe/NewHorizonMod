@@ -151,24 +151,26 @@ public class DefaultSpecialEvent {
         register(100, new SpecialEvent.Builder()
                 .ally()
                 .alert(20f)
+                .spawnRange(80f)
                 .requireAll()
                 .trigger(
-                        Triggers.afterMinutes(8f),
-                        Triggers.coreItems(Items.silicon, 200)
+                        Triggers.afterMinutes(3f),
+                        Triggers.coreItemsAll(NHItems.presstanium, 200,NHItems.juniorProcessor, 200)
                 )
-                .once()
+                .loop(300)
                 .unit(NHUnitTypes.rhino, 1, u -> u
-                        .item(NHItems.fusionEnergy, 20)
+                        .item(NHItems.zeta, 200)
                         .status(StatusEffects.overdrive, 600f))
-                .unit(NHUnitTypes.gather, 2, u -> u.item(Items.silicon, 40)));
+                .unit(NHUnitTypes.gather, 2, u -> u.status(StatusEffects.overdrive, 600f)));
 
         register(101, new SpecialEvent.Builder()
                 .ally()
                 .alert(25f)
+                .spawnRange(80f)
                 .requireAny()
                 .trigger(
-                        Triggers.teamUnits(NHUnitTypes.naxos, 2),
-                        Triggers.coreItemsAll(Items.thorium, 300, NHItems.zeta, 150)
+                        Triggers.afterMinutes(20f),
+                        Triggers.coreItemsAll(NHItems.multipleSteel, 500, NHItems.zeta, 1000)
                 )
                 .once()
                 .unit(NHUnitTypes.saviour, 1, u -> u.status(NHStatusEffects.overphased, 480f))
@@ -177,34 +179,26 @@ public class DefaultSpecialEvent {
         register(102, new SpecialEvent.Builder()
                 .ally()
                 .alert(30f)
+                .spawnRange(160f)
                 .trigger(Triggers.and(
-                        Triggers.waveAtLeast(20),
-                        Triggers.teamUnitTotal(12)
+                        Triggers.waveAtLeast(100)
                 ))
                 .once()
                 .unit(NHUnitTypes.hurricane, 1, u -> u.status(StatusEffects.overdrive, 600f))
                 .unit(NHUnitTypes.longinus, 2, u -> u.status(StatusEffects.overdrive, 600f)));
 
-        register(110, new SpecialEvent.Builder()
-                .ally()
-                .alert(20f)
-                .spawnRange(160f)
-                .loop(900f)
-                .unit(NHUnitTypes.gather, 2)
-                .unit(NHUnitTypes.sharp, 2));
-
         register(200, new SpecialEvent.Builder()
                 .enemy()
-                .alert(45f)
-                .trigger(Triggers.or(
-                        Triggers.afterMinutes(25f),
-                        Triggers.coreItems(NHItems.darkEnergy, 50)
+                .alert(200f)
+                .trigger(Triggers.and(
+                        Triggers.afterMinutes(120f),
+                        Triggers.coreItems(NHItems.darkEnergy, 10000)
                 ))
                 .once()
                 .unit(NHUnitTypes.nucleoid, 1, u -> u
-                        .status(NHStatusEffects.overphased, 900f)
-                        .flag(1))
-                .unit(NHUnitTypes.pester, 2)
-                .unit(NHUnitTypes.guardian, 3, u -> u.status(StatusEffects.overdrive, 600f)));
+                        .status(NHStatusEffects.overphased, 900f))
+                .unit(NHUnitTypes.pester, 2,u -> u
+                        .status(NHStatusEffects.overphased, 900f))
+                .unit(NHUnitTypes.guardian, 4, u -> u.status(NHStatusEffects.overphased, 600f)));
     }
 }

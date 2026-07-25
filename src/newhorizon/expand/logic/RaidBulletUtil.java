@@ -77,13 +77,18 @@ public class RaidBulletUtil {
             copy = type.copy();
             copy.collidesTiles = false;
             copy.collideFloor = false;
-            copy.collidesGround = false;
             copy.drag = 0f;
             copy.scaleLife = false;
-        } else if (type instanceof AccelBulletType accel && accel.collidesTiles) {
+        } else if (type instanceof AccelBulletType) {
             copy = type.copy();
-            copy.collidesTiles = false;
-            copy.collideFloor = false;
+            AccelBulletType accel = (AccelBulletType) copy;
+            if (accel.velocityIncrease > 0.001f) {
+                float begin = accel.velocityBegin > 0.001f ? accel.velocityBegin : Math.max(copy.speed, 0.1f);
+                accel.velocityBegin = begin + accel.velocityIncrease * 0.5f;
+                accel.velocityIncrease = 0f;
+                accel.disableAccel();
+                copy.speed = accel.velocityBegin;
+            }
         }
         return copy != null ? copy : type;
     }
@@ -227,7 +232,7 @@ public class RaidBulletUtil {
             return "bullet-artillery-light";
         }
 
-        return "bullet-content-" + type.id;
+        return "custom-raid";
     }
 
     public static String bundleCategory(int type) {
@@ -270,3 +275,7 @@ public class RaidBulletUtil {
         return false;
     }
 }
+
+
+
+

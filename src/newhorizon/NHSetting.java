@@ -84,8 +84,8 @@ public class NHSetting {
         ));
 
         allSettings.put("event", Seq.with(
-                new BoolSetting(EVENT_RAID, false, true),
-                new BoolSetting(EVENT_INTERVENTION, false, true)
+                new BoolSetting(EVENT_RAID, true, true),
+                new BoolSetting(EVENT_INTERVENTION, true, true)
         ));
 
         allSettings.put("debug", Seq.with(

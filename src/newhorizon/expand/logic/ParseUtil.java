@@ -3,9 +3,14 @@ package newhorizon.expand.logic;
 import arc.util.Log;
 import arc.util.Strings;
 import mindustry.Vars;
+import mindustry.content.Blocks;
+import mindustry.content.StatusEffects;
 import mindustry.content.UnitTypes;
 import mindustry.game.Team;
+import mindustry.type.Item;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
+import mindustry.world.Block;
 
 import static mindustry.Vars.state;
 
@@ -49,11 +54,55 @@ public class ParseUtil {
     }
 
     public static UnitType getUnitType(String[] tokens) {
-        String token = getToken(tokens);
+        return resolveUnitType(getToken(tokens));
+    }
+
+    public static UnitType resolveUnitType(String token) {
+        if (token == null || isNone(token)) return UnitTypes.dagger;
         UnitType unitType = null;
         if (token.startsWith("@")) unitType = Vars.content.unit(token.substring(1));
+        if (unitType == null) unitType = Vars.content.unit(token);
         if (unitType == null) unitType = UnitTypes.dagger;
         return unitType;
+    }
+
+    public static StatusEffect getStatusEffect(String[] tokens) {
+        return resolveStatusEffect(getToken(tokens));
+    }
+
+    public static StatusEffect resolveStatusEffect(String token) {
+        if (token == null || isNone(token)) return StatusEffects.none;
+        String name = token.startsWith("@") ? token.substring(1) : token;
+        StatusEffect effect = Vars.content.statusEffect(name);
+        return effect != null ? effect : StatusEffects.none;
+    }
+
+    public static Item resolveItem(String token) {
+        if (token == null || isNone(token)) return null;
+        String name = token.startsWith("@") ? token.substring(1) : token;
+        return Vars.content.item(name);
+    }
+
+    public static Block resolveBlock(String token) {
+        if (token == null || isNone(token)) return null;
+        String name = token.startsWith("@") ? token.substring(1) : token;
+        Block block = Vars.content.block(name);
+        if (block == null || block == Blocks.air) return null;
+        return block;
+    }
+
+    public static double resolveFlag(String token) {
+        if (token == null || isNone(token) || token.equalsIgnoreCase("nan")) return Double.NaN;
+        return Strings.parseDouble(token, Double.NaN);
+    }
+
+    public static boolean isNone(String token) {
+        return token.isEmpty() || token.equals("-") || token.equalsIgnoreCase("none") || token.equals("null");
+    }
+
+    public static String contentToken(String name) {
+        if (name == null || name.isEmpty() || isNone(name)) return "none";
+        return name.startsWith("@") ? name : "@" + name;
     }
 
     public static String getFirstToken(String[] tokens) {
@@ -132,5 +181,25 @@ public class ParseUtil {
     public static UnitType getNextUnitType(String[] tokens) {
         tokenIndex++;
         return getUnitType(tokens);
+    }
+
+    public static StatusEffect getNextStatusEffect(String[] tokens) {
+        tokenIndex++;
+        return getStatusEffect(tokens);
+    }
+
+    public static Item getNextItem(String[] tokens) {
+        tokenIndex++;
+        return resolveItem(getToken(tokens));
+    }
+
+    public static Block getNextBlock(String[] tokens) {
+        tokenIndex++;
+        return resolveBlock(getToken(tokens));
+    }
+
+    public static double getNextFlag(String[] tokens) {
+        tokenIndex++;
+        return resolveFlag(getToken(tokens));
     }
 }
