@@ -110,10 +110,15 @@ public class EventSpecialAction extends Action {
 
     @Override
     public void begin() {
-        if (!headless) {
+        if (syncSeed == 0) syncSeed = InterventionSync.nextSyncSeed();
+        if (RaidLogic.isRemoteClient()) {
+            lifeTimer = duration;
+            spawned = true;
+            return;
+        }
+        if (!headless && !InterventionSync.hasMarker(syncSeed) && !InterventionSync.hasMarkerAt(targetX, targetY)) {
             showPresentation();
         }
-        if (syncSeed == 0) syncSeed = InterventionSync.nextSyncSeed();
         if (net.server() && net.active()) {
             NHCall.syncInterventionAlert(toInterventionProxy());
         }

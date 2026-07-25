@@ -102,6 +102,12 @@ public class EventRaidAction extends Action {
 
     @Override
     public void begin() {
+        // World processors also run on remote clients; CSS-created raids must not present
+        // locally there — RaidAlertPacket owns client UI.
+        if (RaidLogic.isRemoteClient() && !presentationOnly) {
+            lifeTimer = duration;
+            return;
+        }
         if (!headless) {
             showRaidPresentation();
         }

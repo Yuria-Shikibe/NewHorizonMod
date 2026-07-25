@@ -170,7 +170,16 @@ public class EventInterventionAction extends Action {
     @Override
     public void begin() {
         if (syncSeed == 0) syncSeed = InterventionSync.nextSyncSeed();
-        if (!headless && !spawned && lifeTimer < alertTime) {
+        // World processors also run on remote clients. CSS-created interventions must not
+        // present locally there — the server alert packet owns client UI (seeds would differ).
+        if (RaidLogic.isRemoteClient() && !presentationOnly) {
+            lifeTimer = duration;
+            spawned = true;
+            return;
+        }
+        if (!headless && !spawned && lifeTimer < alertTime
+                && !InterventionSync.hasMarker(syncSeed)
+                && !InterventionSync.hasMarkerAt(targetX, targetY)) {
             showPresentation();
         }
         if (!presentationOnly && net.server() && net.active()) {

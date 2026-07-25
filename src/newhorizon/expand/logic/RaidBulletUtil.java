@@ -55,20 +55,10 @@ public class RaidBulletUtil {
     }
 
     public static float lifetimeScl(BulletType type, float dst) {
-        if (dst <= 0f) return 1f;
-        if (type.scaleLife && type.range > 0.001f) {
-            return dst / type.range;
-        }
-        if (type instanceof AccelBulletType || type instanceof LightningLinkerBulletType) {
-            if (type instanceof AccelBulletType accel && accel.velocityIncrease < 0.001f && accel.velocityBegin > 0.001f
-                    && type.lifetime > 0.001f) {
-                return dst / (accel.velocityBegin * type.lifetime);
-            }
-            if (type.speed > 0.001f && type.lifetime > 0.001f) return dst / (type.speed * type.lifetime);
-            return 1f;
-        }
-        if (type.speed > 0.001f && type.lifetime > 0.001f) return dst / (type.speed * type.lifetime);
-        return 1f;
+        if (type == null || dst <= 0f) return 1f;
+        float travel = raidRange(type);
+        if (travel <= 0.001f) return 1f;
+        return Mathf.clamp(dst / travel, 0.05f, 8f);
     }
 
     public static BulletType prepareForRaid(BulletType type) {
@@ -109,14 +99,21 @@ public class RaidBulletUtil {
         if (net.server() && net.active()) {
             BulletType syncType = resolveSyncType(type, syncAs);
             if (syncType != null) {
-                NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY);
+                float syncLifeScl = lifetimeScl(syncType, dst);
+                NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, syncLifeScl, aimX, aimY);
             }
         }
     }
 
     private static BulletType resolveSyncType(BulletType type, BulletType syncAs) {
-        if (syncAs != null && content.bullet(syncAs.id) != null) return content.bullet(syncAs.id);
-        if (type != null && content.bullet(type.id) != null) return content.bullet(type.id);
+        if (syncAs != null) {
+            BulletType fromKey = content.bullet(syncAs.id);
+            if (fromKey != null) return fromKey;
+        }
+        if (type != null) {
+            BulletType fromType = content.bullet(type.id);
+            if (fromType != null) return fromType;
+        }
         return syncAs != null ? syncAs : type;
     }
 

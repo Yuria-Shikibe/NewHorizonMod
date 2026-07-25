@@ -64,6 +64,7 @@ import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.RaidSync;
+import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
@@ -72,6 +73,7 @@ import newhorizon.util.graphic.OptionalMultiEffect;
 import newhorizon.util.ui.TableFunc;
 
 import static mindustry.Vars.*;
+import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -220,12 +222,10 @@ public class AirRaider extends CommandableBlock {
         public int weaponIndex = -1;
         public int selectedSlot = 0;
         public final ItemModule[] slots = new ItemModule[SLOT_COUNT];
+        public transient ActionBus raidBus;
         public transient EventRaidAction raidAction;
         public transient boolean raidActive;
         public transient float raidExpectEnd;
-        public transient BulletType activeRaidBullet;
-        public transient float raidLife, raidAlertTicks, raidDurationTicks, raidFireScale, raidSpread;
-        public transient int raidShotCounter, raidSyncSeed;
 
         public AirRaiderBuild() {
             for (int i = 0; i < SLOT_COUNT; i++) {
@@ -256,38 +256,11 @@ public class AirRaider extends CommandableBlock {
         public void updateTile() {
             super.updateTile();
             if (!raidActive) return;
-
-            if (RaidLogic.isLogicSide()) {
-                updateLogicRaid();
+            if (!RaidLogic.isLogicSide()) {
+                if (Time.time >= raidExpectEnd) clearRaidRefs();
                 return;
             }
-
-            if (Time.time >= raidExpectEnd) clearRaidRefs();
-        }
-
-        private void updateLogicRaid() {
-            if (activeRaidBullet == null || raidAction == null) {
-                clearRaidRefs();
-                return;
-            }
-
-            raidLife += Time.delta;
-            raidAction.lifeTimer = raidLife;
-            raidAction.act();
-
-            if (raidLife > raidAlertTicks) {
-                int raidCount = Mathf.round(Mathf.maxZero(raidLife - raidAlertTicks) / Time.toSeconds * raidFireScale);
-                int toFire = raidCount - raidShotCounter;
-                int base = raidShotCounter;
-                raidShotCounter = raidCount;
-                arc.math.Rand rand = new arc.math.Rand(raidSyncSeed);
-                for (int i = 0; i < toFire; i++) {
-                    raidAction.createBullet(rand, base + i);
-                }
-            }
-
-            if (raidLife >= raidDurationTicks) {
-                raidAction.lifeTimer = raidAction.duration;
+            if (raidBus == null || raidBus.complete()) {
                 clearRaidRefs();
             }
         }
@@ -697,6 +670,7 @@ public class AirRaider extends CommandableBlock {
             copy.scaleLife = !linker;
             copy.scaledSplashDamage = false;
             copy.splashDamagePierce = true;
+            copy.collidesTiles = false;
 
             if (copy instanceof AccelBulletType accel) {
                 accel.velocityBegin = copy.speed;
@@ -708,7 +682,7 @@ public class AirRaider extends CommandableBlock {
                 copy.scaleLife = true;
             }
 
-            float maxDist = Math.max(Math.min(range, world.unitWidth() + world.unitHeight()), 64f);
+            float maxDist = Math.max(world.unitWidth() + world.unitHeight(), 64f);
             copy.lifetime = maxDist / copy.speed + 45f;
             if (!(copy instanceof LightningLinkerBulletType)) {
                 copy.range = copy.speed * copy.lifetime;
@@ -848,15 +822,6 @@ public class AirRaider extends CommandableBlock {
 
             if (!RaidLogic.isLogicSide()) return;
 
-            raidAlertTicks = stats.alertSeconds * Time.toSeconds;
-            raidDurationTicks = (stats.alertSeconds + stats.raidSeconds) * Time.toSeconds;
-            raidFireScale = stats.raidScale;
-            raidSpread = stats.inaccuracy;
-            raidLife = 0f;
-            raidShotCounter = 0;
-            raidSyncSeed = tileX() * 31 + tileY() * 17 + (int) Time.time;
-            activeRaidBullet = raidBullet;
-
             EventRaidAction action = new EventRaidAction();
             action.raidType = RaidPreset.CUSTOM_RAID;
             action.customBullet = raidBullet;
@@ -864,26 +829,28 @@ public class AirRaider extends CommandableBlock {
             action.team = team;
             action.overrideRaidStats = true;
             action.gatedByRaidState = false;
-            action.spawnBullets = false;
-            action.alertTime = raidAlertTicks;
+            action.spawnBullets = true;
+            action.alertTime = stats.alertSeconds * Time.toSeconds;
             action.raidTime = stats.raidSeconds * Time.toSeconds;
-            action.raidScale = raidFireScale;
-            action.inaccuracy = raidSpread;
+            action.raidScale = stats.raidScale;
+            action.inaccuracy = stats.inaccuracy;
             action.overrideDefaultCoordinate = true;
             action.sourceX = x;
             action.sourceY = y;
             action.targetX = lastConfirmedTarget.x;
             action.targetY = lastConfirmedTarget.y;
-            action.syncSeed = raidSyncSeed;
+            action.syncSeed = tileX() * 31 + tileY() * 17 + (int) Time.time;
             action.postInit();
-            action.begin();
 
             raidAction = action;
+            raidBus = new ActionBus();
+            raidBus.add(action);
+            cutscene.addSubActionBus(raidBus);
             RaidSync.registerLogicAction(action);
         }
 
         public void cancelRaidEvent() {
-            if (!raidActive && raidAction == null) return;
+            if (!raidActive && raidBus == null && raidAction == null) return;
             if (!RaidLogic.isLogicSide()) {
                 clearRaidRefs();
                 return;
@@ -892,6 +859,10 @@ public class AirRaider extends CommandableBlock {
                 raidAction.lifeTimer = raidAction.duration;
                 removeRaidMarkers(raidAction);
                 RaidSync.unregisterLogicAction(raidAction);
+            }
+            if (raidBus != null) {
+                raidBus.skip();
+                cutscene.subBuses.remove(raidBus);
             }
             clearRaidRefs();
             if (net.server() && net.active()) {
@@ -914,12 +885,10 @@ public class AirRaider extends CommandableBlock {
             if (raidAction != null) {
                 RaidSync.unregisterLogicAction(raidAction);
             }
+            raidBus = null;
             raidAction = null;
-            activeRaidBullet = null;
             raidActive = false;
             raidExpectEnd = 0f;
-            raidLife = 0f;
-            raidShotCounter = 0;
         }
 
         @Override

@@ -3,6 +3,7 @@ package newhorizon.expand.net;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
+import mindustry.gen.Groups;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import newhorizon.expand.ability.active.ActiveAbility;
@@ -137,8 +138,10 @@ public class NHCall {
 
     public static void syncInterventionAlert(EventInterventionAction action) {
         if (!Vars.net.server() || !Vars.net.active() || action == null) return;
-        InterventionAlertPacket packet = new InterventionAlertPacket(action);
-        Vars.net.send(packet, true);
+        for (Player player : Groups.player) {
+            if (player == null || player.isLocal()) continue;
+            syncInterventionAlertTo(action, player);
+        }
     }
 
     public static void syncInterventionAlertTo(EventInterventionAction action, Player player) {
