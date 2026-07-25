@@ -83,6 +83,7 @@ public final class InterventionSync {
         action.statusDuration = read.f();
         action.flag = read.d();
         boolean spawned = read.bool();
+        action.presentationOnly = true;
         action.duration = Math.max(action.alertTime + 30f, action.alertTime + 10f * Time.toSeconds + 30f);
         action.applyNetworkState(read.f(), spawned);
         int size = read.i();
@@ -97,9 +98,11 @@ public final class InterventionSync {
     }
 
     public static void applyClientAction(EventInterventionAction action) {
+        if (!RaidLogic.isRemoteClient()) return;
         if (action == null || action.complete()) return;
         if (action.spawned() || action.lifeTimer >= action.alertTime) return;
 
+        action.presentationOnly = true;
         removeInterventionBySeed(action.syncSeed);
 
         ActionBus bus = new ActionBus();
@@ -109,6 +112,7 @@ public final class InterventionSync {
 
     public static void pushStateTo(Player player) {
         if (!Vars.net.server() || !Vars.net.active() || player == null) return;
+        if (player.isLocal()) return;
         var con = player.con();
         if (con == null) return;
 
@@ -135,12 +139,13 @@ public final class InterventionSync {
     public static void broadcastState() {
         if (!Vars.net.server() || !Vars.net.active()) return;
         for (Player player : Groups.player) {
+            if (player.isLocal()) continue;
             pushStateTo(player);
         }
     }
 
     public static void finishAlert(EventInterventionAction action) {
-        if (action == null) return;
+        if (action == null || action.presentationOnly) return;
         removeInterventionMarkers(action);
         if (RaidLogic.isLogicSide() && Vars.net.server() && Vars.net.active()) {
             broadcastClear(action.syncSeed);
@@ -175,15 +180,15 @@ public final class InterventionSync {
     }
 
     public static void clearClientIntervention(int syncSeed) {
-        if (Vars.headless) return;
+        if (!RaidLogic.isRemoteClient()) return;
         if (syncSeed == 0) {
             cutsceneUI.clearMarkers(HudMarker.Kind.INTERVENTION);
             for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
                 ActionBus bus = cutscene.subBuses.get(i);
-                if (isInterventionBus(bus)) {
-                    bus.skip();
-                    cutscene.subBuses.remove(i);
-                }
+                EventInterventionAction action = interventionFromBus(bus);
+                if (action == null || !action.presentationOnly) continue;
+                bus.skip();
+                cutscene.subBuses.remove(i);
             }
             return;
         }
@@ -191,11 +196,12 @@ public final class InterventionSync {
     }
 
     private static void removeInterventionBySeed(int syncSeed) {
-        if (Vars.headless) return;
+        if (!RaidLogic.isRemoteClient()) return;
         for (int i = cutscene.subBuses.size - 1; i >= 0; i--) {
             ActionBus bus = cutscene.subBuses.get(i);
             EventInterventionAction action = interventionFromBus(bus);
             if (action == null || action.syncSeed != syncSeed) continue;
+            if (!action.presentationOnly) continue;
             removeInterventionMarkers(action);
             bus.skip();
             cutscene.subBuses.remove(i);
@@ -229,7 +235,8 @@ public final class InterventionSync {
     }
 
     private static boolean isAlerting(EventInterventionAction action) {
-        return action != null && !action.complete() && !action.spawned() && action.lifeTimer < action.alertTime;
+        return action != null && !action.presentationOnly && !action.complete()
+                && !action.spawned() && action.lifeTimer < action.alertTime;
     }
 
     private static EventInterventionAction interventionFromBus(ActionBus bus) {
@@ -239,10 +246,6 @@ public final class InterventionSync {
             if (queued instanceof EventInterventionAction action) return action;
         }
         return null;
-    }
-
-    private static boolean isInterventionBus(ActionBus bus) {
-        return interventionFromBus(bus) != null;
     }
 
     private static int statusId(StatusEffect status) {

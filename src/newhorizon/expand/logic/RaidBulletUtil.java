@@ -94,7 +94,12 @@ public class RaidBulletUtil {
     }
 
     public static void spawn(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float dst, float aimX, float aimY) {
+        spawn(type, team, x, y, angle, damage, velocityScl, dst, aimX, aimY, null);
+    }
+
+    public static void spawn(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float dst, float aimX, float aimY, BulletType syncAs) {
         if (RaidLogic.isRemoteClient()) return;
+        if (type == null || team == null) return;
         if (isRandomType(type)) {
             RandomRaidBulletType.fire(team, x, y, angle, damage, velocityScl, dst, aimX, aimY);
             return;
@@ -102,8 +107,17 @@ public class RaidBulletUtil {
         float lifetimeScl = lifetimeScl(type, dst);
         createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY);
         if (net.server() && net.active()) {
-            NHCall.syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY);
+            BulletType syncType = resolveSyncType(type, syncAs);
+            if (syncType != null) {
+                NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY);
+            }
         }
+    }
+
+    private static BulletType resolveSyncType(BulletType type, BulletType syncAs) {
+        if (syncAs != null && content.bullet(syncAs.id) != null) return content.bullet(syncAs.id);
+        if (type != null && content.bullet(type.id) != null) return content.bullet(type.id);
+        return syncAs != null ? syncAs : type;
     }
 
     public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY) {

@@ -23,7 +23,19 @@ import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 
 public final class RaidSync {
+    private static final Seq<EventRaidAction> logicActions = new Seq<>();
+
     private RaidSync() {
+    }
+
+    public static void registerLogicAction(EventRaidAction action) {
+        if (action == null) return;
+        logicActions.addUnique(action);
+    }
+
+    public static void unregisterLogicAction(EventRaidAction action) {
+        if (action == null) return;
+        logicActions.remove(action);
     }
 
     public static void writeAction(Writes write, EventRaidAction action) {
@@ -117,6 +129,16 @@ public final class RaidSync {
     public static Seq<EventRaidAction> findActiveRaidActions() {
         ObjectSet<EventRaidAction> seen = new ObjectSet<>();
         Seq<EventRaidAction> out = new Seq<>();
+
+        for (int i = logicActions.size - 1; i >= 0; i--) {
+            EventRaidAction action = logicActions.get(i);
+            if (action == null || action.complete()) {
+                logicActions.remove(i);
+                continue;
+            }
+            if (seen.add(action)) out.add(action);
+        }
+
         EventRaidAction def = DefaultRaid.activeRaidAction();
         if (def != null && !def.complete() && !def.presentationOnly && seen.add(def)) out.add(def);
         for (ActionBus bus : cutscene.subBuses) {

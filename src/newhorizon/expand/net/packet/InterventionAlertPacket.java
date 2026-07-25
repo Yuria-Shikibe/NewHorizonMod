@@ -37,7 +37,7 @@ public class InterventionAlertPacket extends Packet {
 
     @Override
     public void handleClient() {
-        if (RaidLogic.isLogicSide()) return;
+        if (!RaidLogic.isRemoteClient()) return;
         if (action != null) InterventionSync.applyClientAction(action);
     }
 }

@@ -37,6 +37,7 @@ public class EventRaidAction extends Action {
     public boolean overrideRaidStats = false, overrideDefaultCoordinate = false;
     public boolean gatedByRaidState = true;
     public boolean presentationOnly = false;
+    public boolean spawnBullets = true;
 
     public Team team = Team.crux;
     public float alertTime = 15f, raidTime = 5f, raidScale = 1, inaccuracy = 40f;
@@ -183,6 +184,7 @@ public class EventRaidAction extends Action {
         updateRaidPopup();
 
         if (presentationOnly || RaidLogic.isRemoteClient()) return;
+        if (!spawnBullets) return;
         if (gatedByRaidState && !RaidState.enabled()) return;
 
         int raidCount = Mathf.round(Mathf.maxZero(lifeTimer - alertTime) / Time.toSeconds * raidScale);
@@ -212,6 +214,7 @@ public class EventRaidAction extends Action {
 
     public void createBullet(Rand rand, int index) {
         BulletType bt = bulletType();
+        if (bt == null) return;
         rand.setSeed(syncSeed + index * 7919);
         float spread = inaccuracy;
         Tmp.v1.trns(rand.random(360f), rand.random(spread));
@@ -222,7 +225,7 @@ public class EventRaidAction extends Action {
         float sy = sourceY + Tmp.v2.y;
         float dst = Mathf.dst(sx, sy, tx, ty);
         float ang = Angles.angle(sx, sy, tx, ty);
-        RaidBulletUtil.spawn(bt, team, sx, sy, ang, -1, 1f, dst, tx, ty);
+        RaidBulletUtil.spawn(bt, team, sx, sy, ang, -1, 1f, dst, tx, ty, keyBullet);
     }
 
     public String alertBundleKey() {

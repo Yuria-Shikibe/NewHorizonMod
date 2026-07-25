@@ -35,7 +35,7 @@ public class InterventionClearPacket extends Packet {
 
     @Override
     public void handleClient() {
-        if (RaidLogic.isLogicSide()) return;
+        if (!RaidLogic.isRemoteClient()) return;
         if (syncSeed == 0) {
             InterventionSync.clearClientIntervention();
         } else {

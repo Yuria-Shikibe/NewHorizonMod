@@ -61,6 +61,7 @@ public class EventInterventionAction extends Action {
     public float spawnDelay = 15f;
     public float targetX, targetY;
     public boolean overrideStats, overrideDefaultCoordinate;
+    public boolean presentationOnly;
     public StatusEffect status = StatusEffects.none;
     public float statusDuration = 600f;
     public double flag = Double.NaN;
@@ -172,7 +173,7 @@ public class EventInterventionAction extends Action {
         if (!headless && !spawned && lifeTimer < alertTime) {
             showPresentation();
         }
-        if (net.server() && net.active()) {
+        if (!presentationOnly && net.server() && net.active()) {
             NHCall.syncInterventionAlert(this);
         }
     }
@@ -180,7 +181,7 @@ public class EventInterventionAction extends Action {
     @Override
     public void end() {
         InterventionSync.removeInterventionMarkers(this);
-        if (!spawned && RaidLogic.isLogicSide()) {
+        if (!presentationOnly && !spawned && RaidLogic.isLogicSide()) {
             spawnUnits();
         }
     }
@@ -230,7 +231,7 @@ public class EventInterventionAction extends Action {
     @Override
     public void act() {
         updatePopup();
-        if (RaidLogic.isRemoteClient()) return;
+        if (presentationOnly || RaidLogic.isRemoteClient()) return;
         if (spawned || lifeTimer < alertTime) return;
         spawnUnits();
     }
@@ -247,7 +248,7 @@ public class EventInterventionAction extends Action {
         if (spawned) return;
         spawned = true;
         InterventionSync.finishAlert(this);
-        if (RaidLogic.isRemoteClient()) return;
+        if (presentationOnly || RaidLogic.isRemoteClient()) return;
 
         if (units.isEmpty()) {
             SpecialEvent specialPreset = DefaultSpecialEvent.get(eventId);
