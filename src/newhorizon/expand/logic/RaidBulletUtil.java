@@ -94,15 +94,22 @@ public class RaidBulletUtil {
     }
 
     public static BulletType prepareForRaid(BulletType type) {
-        BulletType copy = null;
+        if (type == null) return null;
         if (type instanceof LightningLinkerBulletType) {
-            copy = type.copy();
+            BulletType copy = type.copy();
             copy.collidesTiles = false;
             copy.collideFloor = false;
             copy.drag = 0f;
             copy.scaleLife = false;
-        } else if (type instanceof AccelBulletType) {
-            copy = type.copy();
+            return copy;
+        }
+
+        BulletType copy = type.copy();
+        copy.collideFloor = false;
+        if (!(copy instanceof LightningLinkerBulletType)) {
+            copy.scaleLife = true;
+        }
+        if (copy instanceof AccelBulletType) {
             AccelBulletType accel = (AccelBulletType) copy;
             if (accel.velocityIncrease > 0.001f) {
                 float begin = accel.velocityBegin > 0.001f ? accel.velocityBegin : Math.max(copy.speed, 0.1f);
@@ -112,7 +119,7 @@ public class RaidBulletUtil {
                 copy.speed = accel.velocityBegin;
             }
         }
-        return copy != null ? copy : type;
+        return copy;
     }
 
     public static void spawn(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float dst, float aimX, float aimY) {

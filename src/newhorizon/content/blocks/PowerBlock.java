@@ -550,7 +550,7 @@ public class PowerBlock {
             );
 
             consumeItems(ItemStack.with(NHItems.fusionEnergy, 12));
-            consumeLiquids(LiquidStack.with(NHLiquids.irdryonFluid, 12 / 60f));
+            consumeLiquids(LiquidStack.with(NHLiquids.irdryonFluid, 11.6 / 60f));
             powerProduction = 22000f / 60f;
         }};
 
