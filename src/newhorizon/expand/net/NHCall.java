@@ -93,10 +93,18 @@ public class NHCall {
     }
 
     public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY) {
-        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null);
+        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null, 0, 0, 0f, 0f, 0f);
     }
 
     public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint) {
+        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, tint, 0, 0, 0f, 0f, 0f);
+    }
+
+    public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint, int lightning, int lightningLength, float lightningDamage) {
+        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, tint, lightning, lightningLength, lightningDamage, 0f, 0f);
+    }
+
+    public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint, int lightning, int lightningLength, float lightningDamage, float bulletSpeed, float bulletLifetime) {
         if (!Vars.net.server() || !Vars.net.active() || type == null || team == null) return;
         RaidBulletPacket packet = new RaidBulletPacket();
         packet.bulletId = type.id;
@@ -110,6 +118,11 @@ public class NHCall {
         packet.aimX = aimX;
         packet.aimY = aimY;
         packet.tintRgba = (tint == null ? Color.white : tint).rgba8888();
+        packet.lightning = Math.max(lightning, 0);
+        packet.lightningLength = Math.max(lightningLength, 0);
+        packet.lightningDamage = Math.max(lightningDamage, 0f);
+        packet.bulletSpeed = Math.max(bulletSpeed, 0f);
+        packet.bulletLifetime = Math.max(bulletLifetime, 0f);
         Vars.net.send(packet, true);
     }
 

@@ -132,7 +132,7 @@ public class AirRaider extends CommandableBlock {
 
     private void initDefs() {
         weapons[0] = new WeaponMode("nh.air-raid.weapon-1", RaidBullets.defaultRaidBullet1, 1f, 0.01f, 0.2f, 1f, 1f, 40f, 0.5f, 80f, 10);
-        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.2f, 1f, 1.2f, 0.4f, 50f, 2f, 250f, 3);
+        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.2f, 1f, 1.2f, 0.4f, 50f, 4f, 250f, 1);
         weapons[2] = new WeaponMode("nh.air-raid.weapon-3", RaidBullets.raidBullet_9, 0.6f, 0.2f, 0.5f, 0.5f, 2f, 80f, 1f, 100f, 4, 40);
         weapons[3] = new WeaponMode("nh.air-raid.weapon-4", NHBullets.blastEnergyNgt, 0.1f, 0.05f, 0.4f, 0.2f, 4f, 25f, 2f, 80f, 40, 120);
         weapons[4] = new WeaponMode("nh.air-raid.weapon-5", NHBullets.railGun1, 3f, 1f, 1.2f, 0.4f, 8f, 5f, 5f, 640f, 1);
@@ -620,6 +620,11 @@ public class AirRaider extends CommandableBlock {
             } else {
                 stats.lightning = Mathf.clamp(Mathf.round(riseToMaxSoft(chargeElectric * 0.18f, 6f, 1.6f)), 0, 6);
                 stats.lightningLength = Mathf.clamp(Mathf.round(riseToMaxSoft(chargeElectric * 0.25f, 10f, 1.8f)), 0, 10);
+                if (stats.lightning <= 0 || stats.lightningLength <= 0) {
+                    stats.lightning = 0;
+                    stats.lightningLength = 0;
+                    stats.lightningDamage = 0f;
+                }
             }
 
             stats.flamePercent = riseToMaxSoft(chargeFlame * 3.2f, 300f, 5.5f);
@@ -759,11 +764,9 @@ public class AirRaider extends CommandableBlock {
                 if (copy instanceof BasicRaidBulletType) {
                     copy.damage = Math.max(stats.damage, stats.splash);
                 }
-                copy.lightning = stats.lightning;
-                copy.lightningLength = stats.lightningLength;
-                copy.lightningLengthRand = Math.max(0, stats.lightningLength / 3);
-                copy.lightningDamage = stats.lightningDamage;
+                applyRaidLightning(copy, stats.lightning, stats.lightningLength, stats.lightningDamage);
                 copy.lightningCone = 360f;
+                clearChildLightning(copy);
             }
 
             copy.speed = Math.max(stats.speed, 2.5f);
@@ -868,6 +871,39 @@ public class AirRaider extends CommandableBlock {
                 copy.hitShake = copy.despawnShake = 8f + stats.size * 0.15f;
             }
             return copy;
+        }
+
+        private void applyRaidLightning(BulletType type, int lightning, int lightningLength, float lightningDamage) {
+            if (type == null) return;
+            if (lightning <= 0 || lightningLength <= 0) {
+                type.lightning = 0;
+                type.lightningLength = 0;
+                type.lightningLengthRand = 0;
+                type.lightningDamage = 0f;
+                return;
+            }
+            type.lightning = lightning;
+            type.lightningLength = lightningLength;
+            type.lightningLengthRand = Math.max(0, lightningLength / 3);
+            type.lightningDamage = Math.max(lightningDamage, 0f);
+        }
+
+        private void clearChildLightning(BulletType type) {
+            if (type == null) return;
+            if (type.fragBullet != null) {
+                BulletType frag = type.fragBullet.copy();
+                applyRaidLightning(frag, 0, 0, 0f);
+                boolean shareInterval = type.intervalBullet == type.fragBullet;
+                type.fragBullet = frag;
+                if (shareInterval) {
+                    type.intervalBullet = frag;
+                }
+            }
+            if (type.intervalBullet != null && type.intervalBullet != type.fragBullet) {
+                BulletType interval = type.intervalBullet.copy();
+                applyRaidLightning(interval, 0, 0, 0f);
+                type.intervalBullet = interval;
+            }
         }
 
         private float payloadFill() {

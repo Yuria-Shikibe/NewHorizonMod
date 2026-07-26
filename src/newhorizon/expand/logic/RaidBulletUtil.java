@@ -139,8 +139,15 @@ public class RaidBulletUtil {
         if (net.server() && net.active()) {
             BulletType syncType = resolveSyncType(type, syncAs);
             if (syncType != null) {
-                float syncLifeScl = lifetimeScl(prepareForRaid(syncType), dst);
-                NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, syncLifeScl, aimX, aimY, raidTint(type));
+                int lightning = prepared.lightning;
+                int lightningLength = prepared.lightningLength;
+                float lightningDamage = prepared.lightningDamage;
+                if (lightning <= 0 || lightningLength <= 0) {
+                    lightning = 0;
+                    lightningLength = 0;
+                    lightningDamage = 0f;
+                }
+                NHCall.syncRaidBullet(syncType, team, x, y, angle, damage, velocityScl, lifeScl, aimX, aimY, raidTint(type), lightning, lightningLength, lightningDamage, prepared.speed, prepared.lifetime);
             }
         }
     }
@@ -166,16 +173,78 @@ public class RaidBulletUtil {
     }
 
     public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY) {
-        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null);
+        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null, 0, 0, 0f, 0f, 0f);
     }
 
     public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint) {
+        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, tint, 0, 0, 0f, 0f, 0f);
+    }
+
+    public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint, int lightning, int lightningLength, float lightningDamage) {
+        createSynced(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, tint, lightning, lightningLength, lightningDamage, 0f, 0f);
+    }
+
+    public static void createSynced(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint, int lightning, int lightningLength, float lightningDamage, float bulletSpeed, float bulletLifetime) {
         if (type == null || team == null) return;
         BulletType bt = prepareForRaid(type);
         if (tint != null && !tint.equals(Color.white)) {
             bt = applyRaidTint(bt, tint);
         }
+        applySyncedMotion(bt, bulletSpeed, bulletLifetime);
+        applySyncedLightning(bt, lightning, lightningLength, lightningDamage);
         bt.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null, null, aimX, aimY);
+    }
+
+    private static void applySyncedMotion(BulletType type, float bulletSpeed, float bulletLifetime) {
+        if (type == null) return;
+        if (bulletSpeed > 0.001f) {
+            type.speed = bulletSpeed;
+        }
+        if (bulletLifetime > 0.001f) {
+            type.lifetime = bulletLifetime;
+        }
+        if (type instanceof AccelBulletType accel) {
+            accel.velocityBegin = type.speed;
+            accel.velocityIncrease = 0f;
+            accel.disableAccel();
+        }
+        if (!(type instanceof LightningLinkerBulletType)) {
+            type.scaleLife = true;
+            type.range = type.speed * type.lifetime;
+        }
+    }
+
+    private static void applySyncedLightning(BulletType type, int lightning, int lightningLength, float lightningDamage) {
+        if (type == null) return;
+        if (lightning <= 0 || lightningLength <= 0) {
+            type.lightning = 0;
+            type.lightningLength = 0;
+            type.lightningLengthRand = 0;
+            type.lightningDamage = 0f;
+        } else {
+            type.lightning = lightning;
+            type.lightningLength = lightningLength;
+            type.lightningLengthRand = Math.max(0, lightningLength / 3);
+            type.lightningDamage = Math.max(lightningDamage, 0f);
+        }
+        if (type.fragBullet != null) {
+            BulletType frag = type.fragBullet.copy();
+            frag.lightning = 0;
+            frag.lightningLength = 0;
+            frag.lightningLengthRand = 0;
+            frag.lightningDamage = 0f;
+            boolean shareInterval = type.intervalBullet == type.fragBullet;
+            type.fragBullet = frag;
+            if (shareInterval) type.intervalBullet = frag;
+        }
+        if (type.intervalBullet != null && type.intervalBullet != type.fragBullet) {
+            BulletType interval = type.intervalBullet.copy();
+            interval.lightning = 0;
+            interval.lightningLength = 0;
+            interval.lightningLengthRand = 0;
+            interval.lightningDamage = 0f;
+            type.intervalBullet = interval;
+        }
     }
 
     public static BulletType applyRaidTint(BulletType type, Color tint) {
