@@ -103,6 +103,7 @@ public class NHLogic {
         registerAction(EventRaid.class, EventRaidAction.class);
         registerAction(EventIntervention.class, EventInterventionAction.class);
         registerAction(EventSpecial.class, EventSpecialAction.class);
+        registerStatement(EventSpecialUnit.class);
 
         //registerAction(WarningIcon.class, WarningIconAction.class);
     }
@@ -288,7 +289,7 @@ public class NHLogic {
             String tag = proc.tag;
             if (tag != null) {
                 String lower = tag.toLowerCase();
-                if (lower.contains("intervention") || lower.contains("fleet") || lower.contains("specialevent")) {
+                if (lower.contains("intervention") || lower.contains("fleet") || lower.contains("specialevent") || lower.contains("specialunit")) {
                     found[0] = true;
                     return;
                 }
@@ -302,7 +303,7 @@ public class NHLogic {
             state.rules.tags.each((key, value) -> {
                 if (found[0]) return;
                 if (!key.startsWith(CutsceneControl.CSS_ACTION)) return;
-                if (value != null && (value.contains("interventionevent") || value.contains("specialevent") || value.contains("event-special"))) found[0] = true;
+                if (value != null && (value.contains("interventionevent") || value.contains("specialevent") || value.contains("specialunit") || value.contains("event-special"))) found[0] = true;
             });
         }
 
@@ -318,7 +319,8 @@ public class NHLogic {
         return code.contains("defaultintervention")
                 || code.contains("interventionevent")
                 || code.contains("defaultspecialevent")
-                || code.contains("specialevent");
+                || code.contains("specialevent")
+                || code.contains("specialunit");
     }
 
     public static void registerReuseTimer(float time, String eventTrigger, String eventExecutor) {

@@ -197,7 +197,7 @@ public class DefaultRaid {
         if (!RaidState.enabled()) return;
         if (!RaidLogic.isLogicSide()) return;
         if (!state.isPlaying()) return;
-        if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
+        if (state.rules.editor || state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
 
         if (overrideCheck.get(0, OVERRIDE_CHECK_INTERVAL)) {
             NHLogic.refreshCustomRaidLogic();

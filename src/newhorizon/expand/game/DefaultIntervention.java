@@ -199,7 +199,7 @@ public class DefaultIntervention {
         tier(2, 3, 4);
         tier(3, 4, 5);
         tier(5, 6, 7, 8);
-        tier(7, 8, 9, 10, 12);
+        tier(7, 8, 9, 10);
         tier(9, 10, 11, 12);
         tier(11, 12, 13);
         tier(11, 12, 13, 14);
@@ -220,7 +220,7 @@ public class DefaultIntervention {
         if (!InterventionState.enabled()) return;
         if (!RaidLogic.isLogicSide()) return;
         if (!state.isPlaying()) return;
-        if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
+        if (state.rules.editor || state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
 
         if (overrideCheck.get(0, OVERRIDE_CHECK_INTERVAL)) {
             NHLogic.refreshCustomInterventionLogic();
