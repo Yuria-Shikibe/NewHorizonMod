@@ -63,6 +63,7 @@ import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.RaidSync;
+import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.components.ui.HudMarker;
@@ -85,9 +86,21 @@ public class AirRaider extends CommandableBlock {
     public static final int WEAPON_COUNT = 6;
     public static final float MAX_ALERT_SECONDS = 240f;
     public static final float BASE_ALERT_SECONDS = 120f;
-    public static final float MAX_SPREAD = 240f;
+    public static final float MIN_ALERT_SECONDS = 12f;
+    public static final float MAX_SPREAD = 360f;
+    public static final float MIN_SPREAD = 8f;
+    public static final float MAX_BULLET_SPEED = 36f;
+    public static final float MIN_BULLET_SPEED = 2.5f;
+    public static final float MAX_BULLET_SIZE = 48f;
+    public static final float MIN_BULLET_SIZE = 8f;
     public static final float MAX_DAMAGE = 10000f;
     public static final float MAX_SPLASH = 5000f;
+    public static final float MIN_SPLASH_RADIUS = 20f;
+    public static final float MAX_SPLASH_RADIUS = 220f;
+    public static final int MAX_ITEM_THREAT = 12;
+    public static final float DAMAGE_QUALITY_REF = 5.2f;
+    public static final float SPLASH_QUALITY_REF = 4.5f;
+    public static final float ACCEL_POWER = 1.55f;
 
     private static final ObjectMap<Item, Integer> itemTechDepth = new ObjectMap<>();
 
@@ -118,12 +131,12 @@ public class AirRaider extends CommandableBlock {
     }
 
     private void initDefs() {
-        weapons[0] = new WeaponMode("nh.air-raid.weapon-1", RaidBullets.defaultRaidBullet1, 1f, 0.01f, 1f, 1f, 40f, 0.5f, 10);
-        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.4f, 0.9f, 0.4f, 50f, 2f, 3);
-        weapons[2] = new WeaponMode("nh.air-raid.weapon-3", RaidBullets.raidBullet_9, 0.4f, 0.2f, 0.5f, 2f, 80f, 1f, 4, 20);
-        weapons[3] = new WeaponMode("nh.air-raid.weapon-4", NHBullets.blastEnergyNgt, 0.1f, 0.05f, 0.2f, 4f, 25f, 2f, 40, 120);
-        weapons[4] = new WeaponMode("nh.air-raid.weapon-5", NHBullets.railGun1, 3f, 1f, 0.4f, 8f, 5f, 5f, 1);
-        weapons[5] = new WeaponMode("nh.air-raid.weapon-6", NHBullets.airRaidBomb, 1.2f, 0.8f, 1.3f, 2f, 48f, 10f, 2, 20);
+        weapons[0] = new WeaponMode("nh.air-raid.weapon-1", RaidBullets.defaultRaidBullet1, 1f, 0.01f, 0.2f, 1f, 1f, 40f, 0.5f, 80f, 10);
+        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.2f, 1f, 1.2f, 0.4f, 50f, 2f, 250f, 3);
+        weapons[2] = new WeaponMode("nh.air-raid.weapon-3", RaidBullets.raidBullet_9, 0.6f, 0.2f, 0.5f, 0.5f, 2f, 80f, 1f, 100f, 4, 40);
+        weapons[3] = new WeaponMode("nh.air-raid.weapon-4", NHBullets.blastEnergyNgt, 0.1f, 0.05f, 0.4f, 0.2f, 4f, 25f, 2f, 80f, 40, 120);
+        weapons[4] = new WeaponMode("nh.air-raid.weapon-5", NHBullets.railGun1, 3f, 1f, 1.2f, 0.4f, 8f, 5f, 5f, 640f, 1);
+        weapons[5] = new WeaponMode("nh.air-raid.weapon-6", NHBullets.airRaidBomb, 1.2f, 0.8f, 0.8f, 1.3f, 2f, 48f, 10f, 120f, 2, 20);
 
         slotDefs[0] = new SlotDef("nh.air-raid.slot-charge", 280, new Seq<>());
         slotDefs[1] = new SlotDef("nh.air-raid.slot-control", 240, new Seq<>());
@@ -205,8 +218,37 @@ public class AirRaider extends CommandableBlock {
         return itemTechDepth.get(item, 0);
     }
 
+    public static int itemThreat(Item item) {
+        if (item == null) return 0;
+        int threat = 0;
+        for (var entry : ThreatLevel.threatMap) {
+            if (entry.value.contains(item)) {
+                threat = Math.max(threat, entry.key);
+            }
+        }
+        if (threat > 0) return Mathf.clamp(threat, 0, MAX_ITEM_THREAT);
+        return Mathf.clamp(techDepth(item), 0, MAX_ITEM_THREAT);
+    }
+
+    public static float accel01(float x) {
+        return Mathf.pow(Mathf.clamp(x, 0f, 1f), ACCEL_POWER);
+    }
+
+    public static float utilAccel01(float x) {
+        x = Mathf.clamp(x, 0f, 1f);
+        return Mathf.lerp(x, x * x, 0.38f);
+    }
+
+    public static float threatFactor(Item item) {
+        return accel01(itemThreat(item) / (float) MAX_ITEM_THREAT);
+    }
+
+    public static float utilThreatFactor(Item item) {
+        return utilAccel01(itemThreat(item) / (float) MAX_ITEM_THREAT);
+    }
+
     public static float techMul(Item item) {
-        return (float) Math.pow(1.36f, techDepth(item));
+        return threatFactor(item);
     }
 
     @Override
@@ -463,42 +505,65 @@ public class AirRaider extends CommandableBlock {
             WeaponMode mode = weapons[weaponIndex];
 
             float chargePower = slotContribution(0, (item, amt) ->
-                    amountFactor(amt) * techMul(item) * (
+                    itemWeight(item, amt, 0) * (
                             0.4f
                                     + softAttr(item.explosiveness, 1.45f) * 0.9f
                                     + softAttr(item.flammability, 1.6f) * 0.25f
                                     + softAttr(item.charge, 3.2f) * 0.38f
                     ));
             float controlPower = slotContribution(1, (item, amt) ->
-                    amountFactor(amt) * techMul(item) * (
+                    itemWeight(item, amt, 1) * (
                             0.45f
                                     + softAttr(item.charge, 3.2f) * 0.28f
                                     + softAttr(item.radioactivity, 3f) * 0.35f
-                                    + techDepth(item) * 0.08f
+                                    + itemThreat(item) * 0.04f
                     ));
             float fuelPower = slotContribution(2, (item, amt) ->
-                    amountFactor(amt) * techMul(item) * (
+                    itemWeight(item, amt, 2) * (
                             0.38f
                                     + softAttr(item.flammability, 1.6f) * 0.95f
                                     + softAttr(item.explosiveness, 1.45f) * 0.22f
                                     + softAttr(item.charge, 3.2f) * 0.2f
                     ));
             float shellPower = slotContribution(3, (item, amt) ->
-                    amountFactor(amt) * techMul(item) * (
+                    itemWeight(item, amt, 3) * (
                             0.32f + softAttr((float) Math.log1p(Math.max(item.hardness, 0)), 3.8f) * 0.95f
                     ));
 
-            float chargeExplosiveness = slotContribution(0, (item, amt) ->
-                    amountFactor(amt) * techMul(item) * softAttr(item.explosiveness, 1.45f));
-            float chargeElectric = slotContribution(0, (item, amt) ->
-                    amountFactor(amt) * techMul(item) * softAttr(item.charge, 3.2f));
-            float chargeFlame = slotContribution(0, (item, amt) ->
-                    amountFactor(amt) * techMul(item) * softAttr(item.flammability, 1.6f));
+            float chargeUtil = slotContribution(0, (item, amt) ->
+                    utilWeight(item, amt, 0) * (
+                            0.45f
+                                    + softAttr(item.explosiveness, 1.45f) * 0.85f
+                                    + softAttr(item.flammability, 1.6f) * 0.3f
+                                    + softAttr(item.charge, 3.2f) * 0.4f
+                    ));
+            float controlUtil = slotContribution(1, (item, amt) ->
+                    utilWeight(item, amt, 1) * (
+                            0.5f
+                                    + softAttr(item.charge, 3.2f) * 0.32f
+                                    + softAttr(item.radioactivity, 3f) * 0.38f
+                                    + itemThreat(item) * 0.05f
+                    ));
+            float fuelUtil = slotContribution(2, (item, amt) ->
+                    utilWeight(item, amt, 2) * (
+                            0.42f
+                                    + softAttr(item.flammability, 1.6f) * 1.05f
+                                    + softAttr(item.explosiveness, 1.45f) * 0.25f
+                                    + softAttr(item.charge, 3.2f) * 0.22f
+                    ));
+            float shellUtil = slotContribution(3, (item, amt) ->
+                    utilWeight(item, amt, 3) * (
+                            0.4f + softAttr((float) Math.log1p(Math.max(item.hardness, 0)), 3.8f) * 1.05f
+                    ));
 
-            float piercePower = slotContribution(3, (item, amt) -> {
-                float hard = softAttr((float) Math.log1p(Math.max(item.hardness - 4f, 0f)), 3.2f);
-                return amountFactor(amt) * hard * (0.35f + techDepth(item) * 0.12f);
-            });
+            float chargeExplosiveness = slotContribution(0, (item, amt) ->
+                    itemWeight(item, amt, 0) * softAttr(item.explosiveness, 1.45f));
+            float chargeExplosivenessUtil = slotContribution(0, (item, amt) ->
+                    utilWeight(item, amt, 0) * softAttr(item.explosiveness, 1.45f));
+            float chargeElectric = slotContribution(0, (item, amt) ->
+                    itemWeight(item, amt, 0) * softAttr(item.charge, 3.2f));
+            float chargeFlame = slotContribution(0, (item, amt) ->
+                    itemWeight(item, amt, 0) * softAttr(item.flammability, 1.6f));
 
             stats.chargeScore = chargePower;
             stats.controlScore = controlPower;
@@ -507,50 +572,95 @@ public class AirRaider extends CommandableBlock {
             stats.explosiveness = chargeExplosiveness;
 
             float damageScore = chargePower * 0.22f + shellPower * 0.14f + fuelPower * 0.08f + controlPower * 0.07f;
-            float sizeScore = shellPower * 0.12f + chargePower * 0.035f;
-            float speedScore = fuelPower * 0.14f + controlPower * 0.05f;
-            stats.size = Mathf.clamp(mode.sizeMul * (10f + approachMax(sizeScore, 54f, 28f)), 8f, 64f);
-            stats.speed = Mathf.clamp(mode.speedMul * (3.2f + approachMax(speedScore, 26f, 22f)), 2.5f, 30f);
+            float sizeScore = shellUtil * 0.62f + chargeUtil * 0.28f;
+            float speedScore = fuelUtil * 0.72f + controlUtil * 0.32f;
+            float sizeT = Mathf.clamp(sizeScore / 3.2f, 0f, 1f);
+            float speedT = Mathf.clamp(speedScore / 3.0f, 0f, 1f);
+            float sizeMax = MAX_BULLET_SIZE * Math.max(mode.sizeMul, 0.0001f);
+            stats.size = Mathf.lerp(MIN_BULLET_SIZE, sizeMax, sizeT);
+            float speedMax = MAX_BULLET_SPEED * Math.max(mode.speedMul, 0.0001f);
+            stats.speed = Mathf.lerp(MIN_BULLET_SPEED, speedMax, speedT);
             stats.shotCount = scaledShotCount(mode);
-            stats.pierce = Mathf.clamp((int) Math.floor(approachMax(piercePower, 10f, 14f)), 0, 10);
+            float shellFill = Mathf.clamp(slots[3].total() / (float) Math.max(slotCapacity(3), 1), 0f, 1f);
+            stats.pierce = Mathf.clamp(Math.round(maxThreatInSlot(3) / (float) MAX_ITEM_THREAT * 8f * shellFill), 0, 8);
 
             float splashScore = 3.5f + chargePower * 0.08f + chargeExplosiveness * 0.12f + shellPower * 0.015f;
-            float spreadFromExpl = chargeExplosiveness * 1.15f;
-            stats.inaccuracy = Mathf.clamp(mode.inaccuracy + spreadFromExpl, 8f, MAX_SPREAD);
+            float spreadScore = chargeExplosivenessUtil * 1.15f + chargeUtil * 0.35f + shellUtil * 0.12f;
+            float spreadT = Mathf.clamp(spreadScore / 3.0f, 0f, 1f);
+            float spreadMul = Math.max(mode.inaccuracy, 0.0001f) / 40f;
+            float spreadMax = MAX_SPREAD * spreadMul;
+            stats.inaccuracy = Mathf.lerp(MIN_SPREAD, spreadMax, spreadT);
+
+            float tierGate = accel01(maxThreatLoaded() / (float) MAX_ITEM_THREAT);
+            float amountGate = accel01(payloadFill());
+            float damageQuality = accel01(Mathf.clamp(damageScore / DAMAGE_QUALITY_REF, 0f, 1f));
+            float splashQuality = accel01(Mathf.clamp(splashScore / SPLASH_QUALITY_REF, 0f, 1f));
+            float damageScale = tierGate * amountGate * Mathf.lerp(0.48f, 1f, damageQuality);
+            float splashScale = tierGate * amountGate * Mathf.lerp(0.48f, 1f, splashQuality);
+
+            float radiusT = Mathf.clamp(tierGate * 0.55f + amountGate * 0.45f, 0f, 1f) * Mathf.lerp(0.55f, 1f, splashQuality);
+            float radiusMul = Math.max(mode.splashRangeMul, 0.0001f);
+            float radiusMax = MAX_SPLASH_RADIUS * radiusMul;
+            float radiusMin = MIN_SPLASH_RADIUS * radiusMul;
+            stats.splashRadius = Mathf.lerp(radiusMin, radiusMax, radiusT);
+
+            stats.damage = mode.damageMul * MAX_DAMAGE * damageScale;
+            stats.splash = mode.splashDamageMul * MAX_SPLASH * splashScale;
+
+            float electric01 = accel01(Mathf.clamp(chargeElectric / 2.8f, 0f, 1f));
+            float lightningScale = Mathf.clamp(tierGate * 0.4f + amountGate * 0.4f + electric01 * 0.2f, 0f, 1f);
+            stats.lightningDamage = mode.maxLightningDmg * lightningScale;
 
             if (mode.bullet instanceof LightningLinkerBulletType) {
-                float load = Mathf.clamp(0.4f + payloadFill() * 0.9f, 0.4f, 1.35f);
                 BulletType src = mode.bullet;
-                stats.damage = src.damage * mode.damageMul * load;
-                stats.splash = src.splashDamage * mode.splashDamageMul * load;
-                stats.splashRadius = Math.max(src.splashDamageRadius, Mathf.clamp(40f + stats.size * 1.55f + chargeExplosiveness * 0.55f, 40f, 220f) * 0.65f);
+                float radiusCap = Math.max(src.splashDamageRadius, MIN_SPLASH_RADIUS) * radiusMul;
+                stats.splashRadius = Math.min(stats.splashRadius, radiusCap);
                 stats.lightning = src.lightning;
                 stats.lightningLength = src.lightningLength;
-                stats.lightningDamage = (src.lightningDamage > 0f ? src.lightningDamage : src.damage) * mode.damageMul * load;
             } else {
-                stats.damage = mode.damageMul * approachMax(damageScore, MAX_DAMAGE, 85f);
-                stats.splash = mode.splashDamageMul * approachMax(splashScore, MAX_SPLASH, 18f);
-                stats.splashRadius = Mathf.clamp(40f + stats.size * 1.55f + chargeExplosiveness * 0.55f, 40f, 220f);
-                stats.lightning = Mathf.clamp(Mathf.round(approachMax(chargeElectric * 0.12f, 6f, 9f)), 0, 6);
-                stats.lightningLength = Mathf.clamp(Mathf.round(approachMax(chargeElectric * 0.18f, 10f, 11f)), 0, 10);
-                stats.lightningDamage = Mathf.clamp(approachMax(chargeElectric * 1.4f, 100f, 55f), 0f, 100f);
+                stats.lightning = Mathf.clamp(Mathf.round(riseToMaxSoft(chargeElectric * 0.18f, 6f, 1.6f)), 0, 6);
+                stats.lightningLength = Mathf.clamp(Mathf.round(riseToMaxSoft(chargeElectric * 0.25f, 10f, 1.8f)), 0, 10);
             }
 
-            stats.flamePercent = approachMax(chargeFlame * 3.2f, 300f, 55f);
+            stats.flamePercent = riseToMaxSoft(chargeFlame * 3.2f, 300f, 5.5f);
             stats.plasmaFlame = stats.flamePercent >= 150f;
 
             stats.ammoColor.set(dominantChargeColor());
 
-            float alertDelta =
-                    -controlPower * 0.55f
-                            + chargePower * 0.12f
-                            + fuelPower * 0.1f
-                            + shellPower * 0.08f;
-            stats.alertSeconds = Mathf.clamp(BASE_ALERT_SECONDS + alertDelta, 12f, MAX_ALERT_SECONDS);
+            float alertDown = Mathf.clamp(controlUtil / 2.6f, 0f, 1f);
+            float alertUp = Mathf.clamp((chargeUtil * 0.45f + fuelUtil * 0.35f + shellUtil * 0.25f) / 2.8f, 0f, 1f);
+            float alertT = Mathf.clamp(0.5f - alertDown * 0.5f + alertUp * 0.5f, 0f, 1f);
+            stats.alertSeconds = Mathf.clamp(Mathf.lerp(MIN_ALERT_SECONDS, MAX_ALERT_SECONDS, alertT), MIN_ALERT_SECONDS, MAX_ALERT_SECONDS);
             float shotInterval = 0.065f;
             stats.raidSeconds = Math.max(stats.shotCount * shotInterval, 0.4f);
             stats.raidScale = stats.shotCount / stats.raidSeconds;
             return stats;
+        }
+
+        private int maxThreatLoaded() {
+            int best = 0;
+            for (int s = 0; s < SLOT_COUNT; s++) {
+                best = Math.max(best, maxThreatInSlot(s));
+            }
+            return best;
+        }
+
+        private int maxThreatInSlot(int slot) {
+            int[] best = {0};
+            slots[slot].each((item, amount) -> {
+                if (amount > 0) best[0] = Math.max(best[0], itemThreat(item));
+            });
+            return best[0];
+        }
+
+        private float itemWeight(Item item, float amount, int slot) {
+            return threatFactor(item) * amountFactor(amount, slot);
+        }
+
+        private float utilWeight(Item item, float amount, int slot) {
+            float cap = Math.max(slotCapacity(slot), 1f);
+            float fill = Mathf.clamp(amount / cap, 0f, 1f);
+            return utilThreatFactor(item) * utilAccel01(fill) / currentCostMul();
         }
 
         private Color dominantChargeColor() {
@@ -565,17 +675,23 @@ public class AirRaider extends CommandableBlock {
             return best[0] != null ? best[0].color : Color.white;
         }
 
-        private float amountFactor(float amount) {
-            return softAttr(amount * 0.1f, 36f) / currentCostMul();
+        private float amountFactor(float amount, int slot) {
+            float cap = Math.max(slotCapacity(slot), 1f);
+            return accel01(Mathf.clamp(amount / cap, 0f, 1f)) / currentCostMul();
         }
 
         private float softAttr(float value, float soft) {
             return soft * (1f - (float) Math.exp(-Math.max(value, 0f) / soft));
         }
 
-        private float approachMax(float score, float max, float halfLife) {
-            if (halfLife <= 0.001f) return 0f;
-            return max * (1f - (float) Math.exp(-Math.max(score, 0f) / halfLife));
+        private float riseToMax(float score, float max, float refScore) {
+            if (refScore <= 0.001f || max <= 0f) return 0f;
+            return max * accel01(score / refScore);
+        }
+
+        private float riseToMaxSoft(float score, float max, float refScore) {
+            if (refScore <= 0.001f || max <= 0f) return 0f;
+            return max * utilAccel01(score / refScore);
         }
 
         private float slotContribution(int slot, ItemScore score) {
@@ -591,13 +707,11 @@ public class AirRaider extends CommandableBlock {
             boolean linker = copy instanceof LightningLinkerBulletType;
 
             if (linker) {
-                float load = Mathf.clamp(0.4f + payloadFill() * 0.9f, 0.4f, 1.35f);
                 BulletType src = mode.bullet;
-                copy.damage = src.damage * mode.damageMul * load;
-                copy.splashDamage = src.splashDamage * mode.splashDamageMul * load;
-                copy.splashDamageRadius = Math.max(src.splashDamageRadius, stats.splashRadius * 0.65f);
-                float srcLightning = src.lightningDamage > 0f ? src.lightningDamage : src.damage;
-                copy.lightningDamage = srcLightning * mode.damageMul * load;
+                copy.damage = stats.damage;
+                copy.splashDamage = stats.splash;
+                copy.splashDamageRadius = stats.splashRadius;
+                copy.lightningDamage = stats.lightningDamage;
                 copy.lightning = src.lightning;
                 copy.lightningLength = src.lightningLength;
                 copy.lightningLengthRand = src.lightningLengthRand;
@@ -658,7 +772,16 @@ public class AirRaider extends CommandableBlock {
             copy.scaleLife = !linker;
             copy.scaledSplashDamage = false;
             copy.splashDamagePierce = true;
-            copy.collidesTiles = false;
+            if (linker) {
+                copy.collidesTiles = false;
+                copy.collideFloor = false;
+            } else {
+                copy.collides = true;
+                copy.collidesAir = true;
+                copy.collidesGround = true;
+                copy.collidesTiles = true;
+                copy.collideFloor = false;
+            }
 
             if (copy instanceof AccelBulletType accel) {
                 accel.velocityBegin = copy.speed;
@@ -760,8 +883,7 @@ public class AirRaider extends CommandableBlock {
             if (mode.shotCountMin >= mode.shotCountMax) {
                 return mode.shotCountMax;
             }
-            float fill = payloadFill();
-            float t = 1f - (float) Math.exp(-fill * 2.35f);
+            float t = accel01(payloadFill());
             return Mathf.clamp(Math.round(Mathf.lerp(mode.shotCountMin, mode.shotCountMax, t)), mode.shotCountMin, mode.shotCountMax);
         }
 
@@ -968,7 +1090,7 @@ public class AirRaider extends CommandableBlock {
                             }
                         }).grow().pad(ui(6f)).padBottom(ui(2f));
                         tl.row();
-                        tl.button("@nh.air-raid.change-weapon", Icon.pencil, Styles.cleart, () -> showWeaponPicker(rebuild))
+                        tl.button("@nh.air-raid.change-weapon", Icon.pencil, Styles.cleart, () -> showWeaponPicker(uiSlot, rebuild))
                                 .growX().height(len - ui(4f)).pad(ui(6f));
                     }).size(leftW, topH).pad(ui(2f));
 
@@ -995,7 +1117,7 @@ public class AirRaider extends CommandableBlock {
                                         int slot = s;
                                         Image icon = new Image(shellIcons[weaponIndex][slot]);
                                         icon.setScaling(Scaling.fit);
-                                        icon.update(() -> icon.setColor(selectedSlot == slot ? Pal.accent : Color.white));
+                                        icon.update(() -> icon.setColor((int) uiSlot[0] == slot ? Pal.accent : Color.white));
                                         stack.add(icon);
                                     }
                                     Table hitOverlay = new Table();
@@ -1006,11 +1128,7 @@ public class AirRaider extends CommandableBlock {
                                         int slot = s;
                                         Table zone = new Table();
                                         zone.addListener(new HandCursorListener());
-                                        zone.clicked(() -> {
-                                            uiSlot[0] = slot;
-                                            selectedSlot = slot;
-                                            rebuild.run();
-                                        });
+                                        zone.clicked(() -> selectRaidSlot(uiSlot, slot, rebuild));
                                         hitOverlay.add(zone).growY().width(partW * (hitWeights[s] / weightSum));
                                     }
                                     stack.add(hitOverlay);
@@ -1022,14 +1140,10 @@ public class AirRaider extends CommandableBlock {
                                             int slot = s;
                                             Table hit = new Table();
                                             hit.addListener(new HandCursorListener());
-                                            hit.clicked(() -> {
-                                                uiSlot[0] = slot;
-                                                selectedSlot = slot;
-                                                rebuild.run();
-                                            });
+                                            hit.clicked(() -> selectRaidSlot(uiSlot, slot, rebuild));
                                             Image icon = new Image(shellIcons[weaponIndex][slot]);
                                             icon.setScaling(Scaling.fit);
-                                            icon.update(() -> icon.setColor(selectedSlot == slot ? Pal.accent : Color.white));
+                                            icon.update(() -> icon.setColor((int) uiSlot[0] == slot ? Pal.accent : Color.white));
                                             hit.add(icon).size(partW, partH).scaling(Scaling.fit);
                                             var cell = icons.add(hit).size(partW, partH);
                                             if (s > 0) cell.padLeft(-(partW - step));
@@ -1041,11 +1155,8 @@ public class AirRaider extends CommandableBlock {
                                     labels.defaults().pad(ui(6f)).uniformX().growX().height(len - ui(8f));
                                     for (int s = 0; s < SLOT_COUNT; s++) {
                                         int slot = s;
-                                        labels.button(Core.bundle.get(slotDefs[slot].bundleKey), Styles.togglet, () -> {
-                                            uiSlot[0] = slot;
-                                            selectedSlot = slot;
-                                            rebuild.run();
-                                        }).checked(b -> selectedSlot == slot).pad(ui(6f));
+                                        labels.button(Core.bundle.get(slotDefs[slot].bundleKey), Styles.togglet, () -> selectRaidSlot(uiSlot, slot, rebuild))
+                                                .checked(b -> (int) uiSlot[0] == slot).pad(ui(6f));
                                     }
                                 }).growX().padTop(ui(8f));
                             }).grow().center();
@@ -1204,7 +1315,16 @@ public class AirRaider extends CommandableBlock {
             });
         }
 
-        private void showWeaponPicker(Runnable parentRebuild) {
+        private void selectRaidSlot(float[] uiSlot, int slot, Runnable rebuild) {
+            int next = Mathf.clamp(slot, 0, SLOT_COUNT - 1);
+            if ((int) uiSlot[0] == next && selectedSlot == next) return;
+            uiSlot[0] = next;
+            selectedSlot = next;
+            configure(IntSeq.with(5, next));
+            rebuild.run();
+        }
+
+        private void showWeaponPicker(float[] uiSlot, Runnable parentRebuild) {
             BaseDialog picker = new BaseDialog("@nh.air-raid.select-weapon");
             picker.addCloseListener();
 
@@ -1223,6 +1343,7 @@ public class AirRaider extends CommandableBlock {
                     card.top().margin(ui(8f));
                     card.addListener(new HandCursorListener());
                     card.clicked(() -> {
+                        uiSlot[0] = 0;
                         configure(IntSeq.with(0, idx));
                         picker.hide();
                         parentRebuild.run();
@@ -1287,22 +1408,24 @@ public class AirRaider extends CommandableBlock {
     public static class WeaponMode {
         public final String bundleKey;
         public final BulletType bullet;
-        public final float damageMul, splashDamageMul, sizeMul, speedMul, inaccuracy, costMul;
+        public final float damageMul, splashDamageMul, splashRangeMul, sizeMul, speedMul, inaccuracy, costMul, maxLightningDmg;
         public final int shotCountMin, shotCountMax;
 
-        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float sizeMul, float speedMul, float inaccuracy, float costMul, int shotCount) {
-            this(bundleKey, bullet, damageMul, splashDamageMul, sizeMul, speedMul, inaccuracy, costMul, shotCount, shotCount);
+        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float splashRangeMul, float sizeMul, float speedMul, float inaccuracy, float costMul, float maxLightningDmg, int shotCount) {
+            this(bundleKey, bullet, damageMul, splashDamageMul, splashRangeMul, sizeMul, speedMul, inaccuracy, costMul, maxLightningDmg, shotCount, shotCount);
         }
 
-        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float sizeMul, float speedMul, float inaccuracy, float costMul, int shotCountMin, int shotCountMax) {
+        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float splashRangeMul, float sizeMul, float speedMul, float inaccuracy, float costMul, float maxLightningDmg, int shotCountMin, int shotCountMax) {
             this.bundleKey = bundleKey;
             this.bullet = bullet;
             this.damageMul = damageMul;
             this.splashDamageMul = splashDamageMul;
+            this.splashRangeMul = splashRangeMul;
             this.sizeMul = sizeMul;
             this.speedMul = speedMul;
             this.inaccuracy = inaccuracy;
             this.costMul = Math.max(costMul, 0.0001f);
+            this.maxLightningDmg = Math.max(maxLightningDmg, 0f);
             this.shotCountMin = Math.min(shotCountMin, shotCountMax);
             this.shotCountMax = Math.max(shotCountMin, shotCountMax);
         }

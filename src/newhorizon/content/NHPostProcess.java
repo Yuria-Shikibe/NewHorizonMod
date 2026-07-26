@@ -355,7 +355,8 @@ public class NHPostProcess {
                 NHItems.presstanium, NHItems.juniorProcessor, NHItems.carbide, NHItems.metalOxhydrigen,
                 NHItems.surgeAlloy, NHItems.phaseFabric, NHItems.multipleSteel, NHItems.seniorProcessor,
                 NHItems.irayrondPanel, NHItems.setonAlloy, NHItems.nodexPlate, NHItems.ancimembrane,
-                NHItems.fusionEnergy, NHItems.thermoCorePositive, NHItems.thermoCoreNegative, NHItems.darkEnergy
+                NHItems.fusionEnergy, NHItems.thermoCorePositive, NHItems.thermoCoreNegative, NHItems.darkEnergy,
+                NHItems.hadronicomp,NHItems.hyperProcessor
         );
 
         Seq<Liquid> liquids = Seq.with(NHLiquids.quantumLiquid, NHLiquids.xenFluid, NHLiquids.zetaFluidPositive, NHLiquids.zetaFluidNegative, NHLiquids.irdryonFluid);
