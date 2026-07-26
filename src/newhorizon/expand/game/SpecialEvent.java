@@ -375,37 +375,64 @@ public class SpecialEvent {
             return check::get;
         }
 
+        public static int coreItemAmount(Team team, Item item) {
+            if (team == null || item == null) return 0;
+            return team.items().get(item);
+        }
+
         public static Trigger coreItems(Item item, int amount) {
             return coreItems(() -> state.rules.defaultTeam, item, amount);
         }
 
         public static Trigger coreItems(Prov<Team> team, Item item, int amount) {
-            return () -> {
-                Team t = team.get();
-                if (t == null || item == null) return false;
-                int[] total = {0};
-                t.cores().each(c -> total[0] += c.items.get(item));
-                return total[0] >= amount;
-            };
+            return () -> coreItemAmount(team == null ? null : team.get(), item) >= amount;
         }
 
         public static Trigger coreItemsAll(Object... itemAmountPairs) {
-            return coreItemsAll(() -> state.rules.defaultTeam, itemAmountPairs);
+            return coreItemsAllStacks(() -> state.rules.defaultTeam, toStacks(itemAmountPairs));
+        }
+
+        public static Trigger coreItemsAll(ItemStack... stacks) {
+            return coreItemsAllStacks(() -> state.rules.defaultTeam, stacks);
         }
 
         public static Trigger coreItemsAll(Prov<Team> team, Object... itemAmountPairs) {
+            return coreItemsAllStacks(team, toStacks(itemAmountPairs));
+        }
+
+        public static Trigger coreItemsAll(Prov<Team> team, ItemStack... stacks) {
+            return coreItemsAllStacks(team, stacks);
+        }
+
+        private static Trigger coreItemsAllStacks(Prov<Team> team, ItemStack[] stacks) {
+            ItemStack[] req = stacks == null ? new ItemStack[0] : stacks;
             return () -> {
-                Team t = team.get();
+                Team t = team == null ? null : team.get();
                 if (t == null) return false;
-                for (int i = 0; i < itemAmountPairs.length; i += 2) {
-                    Item item = (Item) itemAmountPairs[i];
-                    int amount = ((Number) itemAmountPairs[i + 1]).intValue();
-                    int[] total = {0};
-                    t.cores().each(c -> total[0] += c.items.get(item));
-                    if (total[0] < amount) return false;
+                if (req.length == 0) return false;
+                for (ItemStack stack : req) {
+                    if (stack == null || stack.item == null) return false;
+                    if (coreItemAmount(t, stack.item) < Math.max(stack.amount, 0)) return false;
                 }
                 return true;
             };
+        }
+
+        private static ItemStack[] toStacks(Object... itemAmountPairs) {
+            if (itemAmountPairs == null || itemAmountPairs.length < 2) return new ItemStack[0];
+            if ((itemAmountPairs.length & 1) != 0) return new ItemStack[0];
+
+            int pairs = itemAmountPairs.length / 2;
+            ItemStack[] stacks = new ItemStack[pairs];
+            for (int i = 0; i < pairs; i++) {
+                Object itemObj = itemAmountPairs[i * 2];
+                Object amountObj = itemAmountPairs[i * 2 + 1];
+                if (!(itemObj instanceof Item) || !(amountObj instanceof Number)) {
+                    return new ItemStack[0];
+                }
+                stacks[i] = new ItemStack((Item) itemObj, ((Number) amountObj).intValue());
+            }
+            return stacks;
         }
 
         public static Trigger teamUnits(UnitType type, int count) {
@@ -414,7 +441,7 @@ public class SpecialEvent {
 
         public static Trigger teamUnits(Prov<Team> team, UnitType type, int count) {
             return () -> {
-                Team t = team.get();
+                Team t = team == null ? null : team.get();
                 if (t == null || type == null) return false;
                 return t.data().countType(type) >= count;
             };
@@ -426,7 +453,7 @@ public class SpecialEvent {
 
         public static Trigger teamUnitTotal(Prov<Team> team, int count) {
             return () -> {
-                Team t = team.get();
+                Team t = team == null ? null : team.get();
                 if (t == null) return false;
                 int[] total = {0};
                 Groups.unit.each(u -> {
@@ -437,7 +464,8 @@ public class SpecialEvent {
         }
 
         public static Trigger afterSeconds(float seconds) {
-            return () -> state.tick >= seconds * Time.toSeconds;
+            float ticks = Math.max(seconds, 0f) * Time.toSeconds;
+            return () -> state.tick >= ticks;
         }
 
         public static Trigger afterMinutes(float minutes) {
@@ -454,8 +482,9 @@ public class SpecialEvent {
 
         public static Trigger and(Trigger... triggers) {
             return () -> {
+                if (triggers == null || triggers.length == 0) return false;
                 for (Trigger t : triggers) {
-                    if (!t.valid()) return false;
+                    if (t == null || !t.valid()) return false;
                 }
                 return true;
             };
@@ -463,15 +492,16 @@ public class SpecialEvent {
 
         public static Trigger or(Trigger... triggers) {
             return () -> {
+                if (triggers == null || triggers.length == 0) return false;
                 for (Trigger t : triggers) {
-                    if (t.valid()) return true;
+                    if (t != null && t.valid()) return true;
                 }
                 return false;
             };
         }
 
         public static Trigger not(Trigger trigger) {
-            return () -> !trigger.valid();
+            return () -> trigger == null || !trigger.valid();
         }
     }
 }
