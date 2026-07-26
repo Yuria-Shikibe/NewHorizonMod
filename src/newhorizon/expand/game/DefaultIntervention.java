@@ -36,7 +36,7 @@ import static mindustry.Vars.*;
 import static newhorizon.NHVars.cutscene;
 
 public class DefaultIntervention {
-    private static final float PROTECTION_TIME = 240f;
+    private static final float PROTECTION_TIME = 600f;
     private static final float COOLDOWN_MIN = 180f;
     private static final float COOLDOWN_RANGE = 300f;
     private static final int OVERRIDE_CHECK_INTERVAL = 120;

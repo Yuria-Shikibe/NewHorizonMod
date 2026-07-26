@@ -3,6 +3,7 @@ package newhorizon.expand.game;
 import arc.math.Mathf;
 import arc.struct.IntMap;
 import arc.struct.Seq;
+import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.type.Item;
@@ -10,12 +11,20 @@ import mindustry.type.UnitType;
 import newhorizon.expand.logic.ThreatLevel;
 
 import static mindustry.Vars.content;
+import static mindustry.Vars.state;
 
 public class DefaultRaidStrength {
     private static final int MAX_TIER = 8;
 
     public static final int ITEM_AMOUNT_CAP = 10000;
     public static final int UNIT_COUNT_CAP = 100;
+
+    public static final float
+            TIME_FACTOR_START = 0.6f,
+            TIME_FACTOR_END = 1f,
+            TIME_FACTOR_MINUTES = 20f;
+
+    private static final float TIME_FACTOR_TICKS = TIME_FACTOR_MINUTES * 60f * Time.toSeconds;
 
     private static final float
             ITEM_WEIGHT = 0.55f,
@@ -45,7 +54,13 @@ public class DefaultRaidStrength {
 
     public static float evaluate(Team team) {
         if (team == null) return 0f;
-        return evaluateCoreItems(team) * ITEM_WEIGHT + evaluateUnits(team) * UNIT_WEIGHT;
+        return (evaluateCoreItems(team) * ITEM_WEIGHT + evaluateUnits(team) * UNIT_WEIGHT) * timeFactor();
+    }
+
+    public static float timeFactor() {
+        if (state == null || !state.isGame()) return TIME_FACTOR_END;
+        float t = Mathf.clamp((float) state.tick / TIME_FACTOR_TICKS, 0f, 1f);
+        return Mathf.lerp(TIME_FACTOR_START, TIME_FACTOR_END, t);
     }
 
     public static float evaluateCoreItems(Team team) {
@@ -56,12 +71,11 @@ public class DefaultRaidStrength {
         for (Item item : content.items()) {
             if (item == null) continue;
 
-            int[] total = {0};
-            team.cores().each(core -> total[0] += core.items.get(item));
-            if (total[0] <= 0) continue;
+            int total = team.items().get(item);
+            if (total <= 0) continue;
 
             varieties++;
-            sum += Mathf.sqrt(cappedAmount(total[0])) * itemWeight(item);
+            sum += Mathf.sqrt(cappedAmount(total)) * itemWeight(item);
         }
 
         if (varieties > 1) sum += Mathf.sqrt(varieties) * ITEM_VARIETY_BONUS;

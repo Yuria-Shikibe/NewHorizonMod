@@ -315,7 +315,7 @@ public class RecipeGenericCrafter extends MultiBlockCrafter {
 
             progress %= 1f;
 
-            if (wasVisible) craftEffect.at(x, y);
+            if (wasVisible) craftEffect.at(x, y, rotdeg());
             updateRecipe();
         }
 

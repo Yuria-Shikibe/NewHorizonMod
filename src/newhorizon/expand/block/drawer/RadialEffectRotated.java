@@ -1,6 +1,7 @@
 package newhorizon.expand.block.drawer;
 
 import arc.graphics.Color;
+import arc.math.Angles;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.RadialEffect;
@@ -25,12 +26,19 @@ public class RadialEffectRotated extends RadialEffect {
         if (!shouldCreate()) return;
 
         rotation += rotationOffset;
-        Tmp.v2.trns(rotation, lengthOffset);
-        Tmp.v1.set(createX, createY).add(Tmp.v2);
+        Tmp.v1.set(createX, createY).rotate(rotation);
 
         for (int i = 0; i < amount; i++) {
-            effect.create(x + Tmp.v1.x, y + Tmp.v1.y, rotation + effectRotationOffset, color, data);
+            effect.create(
+                    x + Tmp.v1.x + Angles.trnsx(rotation, lengthOffset),
+                    y + Tmp.v1.y + Angles.trnsy(rotation, lengthOffset),
+                    rotation + effectRotationOffset,
+                    color,
+                    data
+            );
             rotation += rotationSpacing;
         }
     }
 }
+
+
