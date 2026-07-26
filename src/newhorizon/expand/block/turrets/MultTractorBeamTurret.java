@@ -75,11 +75,11 @@ public class MultTractorBeamTurret extends TractorBeamTurret {
                 ObjectMap.Entry<Unit, Vec3> entry = entries.next();
                 Unit unit = entry.key;
                 Vec3 v = entry.value;
-                if (v == null) {
+                if (unit == null || v == null) {
                     entries.remove();
                     continue;
                 }
-                if (unit != null && unit.isValid() && Angles.within(rotation, angleTo(unit), shootCone) && within(unit, range + unit.hitSize / 2f) && unit.team() != team && unit.checkTarget(targetAir, targetGround)) {
+                if (unit.isValid() && Angles.within(rotation, angleTo(unit), shootCone) && within(unit, range + unit.hitSize / 2f) && unit.team() != team && unit.checkTarget(targetAir, targetGround)) {
                     v.x = unit.x;
                     v.y = unit.y;
                     v.z = Mathf.lerpDelta(v.z, 1f, 0.1f);
@@ -96,9 +96,8 @@ public class MultTractorBeamTurret extends TractorBeamTurret {
 
             if (target != null && target.within(this, range + target.hitSize / 2f) && target.team() != team && target.checkTarget(targetAir, targetGround) && efficiency > 0.02f) {
                 Units.nearbyEnemies(team, Tmp.r1.setSize((range + target.hitSize / 2f) * 2).setCenter(x, y), unit -> {
-                    if (targets.size < maxAttract && !targets.containsKey(unit) && Angles.within(rotation, angleTo(unit), shootCone)) {
-                        targets.put(unit, new Vec3(unit.x, unit.y, 0f));
-                    }
+                    if (unit == null || targets.size >= maxAttract || targets.containsKey(unit) || !Angles.within(rotation, angleTo(unit), shootCone)) return;
+                    targets.put(unit, new Vec3(unit.x, unit.y, 0f));
                 });
             }
         }
@@ -110,6 +109,7 @@ public class MultTractorBeamTurret extends TractorBeamTurret {
             Draw.rect(region, x, y, rotation - 90);
             Draw.z(Layer.bullet);
             for (ObjectMap.Entry<Unit, Vec3> entry : targets) {
+                if (entry.key == null) continue;
                 Vec3 v = entry.value;
                 if (v == null) continue;
                 Draw.mixcol();
