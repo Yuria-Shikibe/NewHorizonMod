@@ -10,6 +10,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
@@ -35,13 +36,20 @@ public class CutsceneUI {
     public final float OVERLAY_SPEED = 0.0065f;
     public final Seq<HudMarker> markers = new Seq<>();
     public WidgetGroup root, overlay, curtain;
-    public Table textTable, textArea, infoTable, skip;
+    public Table textTable, textArea, infoTable, skip, letterboxTextTable;
     public FLabel textLabel, infoLabel;
+    public Label letterboxTextLabel;
     public boolean controlOverride = false;
     public Interp curtainInterp = Interp.pow2Out;
     public float curtainProgress = 0;
     public float targetOverlayAlpha;
     public float overlayAlphaShiftSpeed = OVERLAY_SPEED;
+    public String letterboxFullText = "";
+    public int letterboxVisibleChars = 0;
+    public int letterboxTextAlign = Align.top;
+    public boolean forceCameraZoom;
+    public float forceCameraZoomScale = 1f;
+    public float savedMinZoom = -1f, savedMaxZoom = -1f;
 
     public CutsceneUI() {
         if (headless) return;
@@ -51,6 +59,14 @@ public class CutsceneUI {
 
     public float curtainScl() {
         return Core.graphics.isPortrait() ? 0.22f : 0.1185f;
+    }
+
+    public float curtainTopScl() {
+        return Core.graphics.isPortrait() ? 0.14f : 0.08f;
+    }
+
+    public float curtainBottomScl() {
+        return Core.graphics.isPortrait() ? 0.28f : 0.16f;
     }
 
     public float textTableScl() {
@@ -68,6 +84,8 @@ public class CutsceneUI {
         buildOverlay();
         //curtain ui, for cutscene curtain and fade in/fade out effect
         buildCurtain();
+        //letterbox dialogue text over the thicker bottom bar
+        buildLetterboxText();
         //text signal cut-in/cut-out ui, used for dialogs.
         buildTextTable();
         //COD styled info dialog.
@@ -108,18 +126,38 @@ public class CutsceneUI {
             public void draw() {
                 super.draw();
 
-                float heightC = height * curtainScl() * curtainInterp.apply(curtainProgress);
+                float progress = curtainInterp.apply(curtainProgress);
+                float topH = height * curtainTopScl() * progress;
+                float bottomH = height * curtainBottomScl() * progress;
+                float barAlpha = Interp.pow3Out.apply(Mathf.curve(curtainProgress, 0, 0.75f));
 
                 Draw.color(Color.black);
-                Draw.alpha(Interp.pow3Out.apply(Mathf.curve(curtainProgress, 0, 0.75f)));
-                Fill.quad(0, 0, 0, heightC, width, heightC, width, 0);
-                Fill.quad(0, height, 0, height - heightC, width, height - heightC, width, height);
+                Draw.alpha(barAlpha);
+                Fill.quad(0, 0, 0, bottomH, width, bottomH, width, 0);
+                Fill.quad(0, height, 0, height - topH, width, height - topH, width, height);
                 Draw.reset();
 
                 Draw.color(0, 0, 0, color.a);
                 Fill.quad(0, 0, 0, height, width, height, width, 0);
             }
         };
+    }
+
+    private void buildLetterboxText() {
+        letterboxTextLabel = new Label("");
+        letterboxTextLabel.setAlignment(Align.left);
+        letterboxTextLabel.setWrap(true);
+        letterboxTextLabel.setColor(Color.white);
+
+        letterboxTextTable = new Table() {{
+            touchable = Touchable.disabled;
+            visible(() -> Vars.state.isGame() && curtainProgress > 0.01f && letterboxFullText != null && !letterboxFullText.isEmpty());
+            align(Align.topLeft);
+            defaults().left();
+            add(letterboxTextLabel).left().growX();
+        }};
+
+        Events.run(mindustry.game.EventType.Trigger.preDraw, this::applyForcedCameraZoom);
     }
 
     private void buildTextTable() {
@@ -162,6 +200,8 @@ public class CutsceneUI {
     }
 
     private void updatePosition() {
+        letterboxTextTable.update(this::updateLetterboxTextPosition);
+
         if (Vars.mobile) {
             textTable.update(() -> {
                 textTable.setHeight(height * textTableScl());
@@ -191,6 +231,7 @@ public class CutsceneUI {
             Core.scene.root.addChildAt(0, root);
             root.addChild(overlay);
             root.addChild(curtain);
+            root.addChild(letterboxTextTable);
             root.addChild(textTable);
             root.addChild(infoTable);
             root.addChild(skip);
@@ -208,6 +249,9 @@ public class CutsceneUI {
         curtainProgress = 0;
         targetOverlayAlpha = 0;
         overlayAlphaShiftSpeed = OVERLAY_SPEED;
+        letterboxTextAlign = Align.top;
+        clearLetterboxText();
+        clearForcedCameraZoom();
 
         overlay.clear();
 
@@ -222,6 +266,137 @@ public class CutsceneUI {
         textTable.actions(Actions.alpha(0));
 
         clearMarkers();
+    }
+
+    public void clearLetterboxText() {
+        letterboxFullText = "";
+        letterboxVisibleChars = 0;
+        if (letterboxTextLabel != null) {
+            letterboxTextLabel.setText("");
+        }
+    }
+
+    public void setLetterboxTextAlign(int align) {
+        letterboxTextAlign = align == 0 ? Align.top : align;
+        updateLetterboxTextPosition();
+    }
+
+    public void setLetterboxText(String text, int visibleChars) {
+        if (headless) return;
+        letterboxFullText = text == null ? "" : text;
+        letterboxVisibleChars = Mathf.clamp(visibleChars, 0, visibleLength(letterboxFullText));
+        if (letterboxTextLabel != null) {
+            letterboxTextLabel.setAlignment(Align.left);
+            letterboxTextLabel.setText(takeVisibleChars(letterboxFullText, letterboxVisibleChars));
+        }
+        updateLetterboxTextPosition();
+    }
+
+    public void updateLetterboxTextPosition() {
+        if (headless || letterboxTextTable == null) return;
+
+        float progress = curtainInterp.apply(curtainProgress);
+        float bottomH = height * curtainBottomScl() * progress;
+        float padX = width * 0.06f;
+        float padY = Math.max(8f, bottomH * 0.18f);
+        float areaW = Math.max(1f, width - padX * 2f);
+        float areaH = Math.max(1f, bottomH - padY * 2f);
+        float areaX = padX;
+        float areaY = padY;
+
+        float textW = Math.min(areaW, Math.max(areaW * 0.72f, letterboxTextLabel == null ? areaW : letterboxTextLabel.getPrefWidth()));
+        float textH = letterboxTextLabel == null ? areaH : Math.min(areaH, Math.max(letterboxTextLabel.getPrefHeight() + 8f, areaH * 0.45f));
+        letterboxTextTable.setSize(textW, textH);
+
+        float x;
+        float y;
+        if (Align.isLeft(letterboxTextAlign)) x = areaX;
+        else if (Align.isRight(letterboxTextAlign)) x = areaX + areaW - textW;
+        else x = areaX + (areaW - textW) / 2f;
+
+        if (Align.isBottom(letterboxTextAlign)) y = areaY;
+        else if (Align.isTop(letterboxTextAlign)) y = areaY + areaH - textH;
+        else y = areaY + (areaH - textH) / 2f;
+
+        letterboxTextTable.setPosition(x, y);
+    }
+
+    public void setForcedCameraZoom(float scale) {
+        if (headless || Vars.renderer == null) return;
+        if (savedMinZoom < 0f) {
+            savedMinZoom = Vars.renderer.minZoom;
+            savedMaxZoom = Vars.renderer.maxZoom;
+        }
+        forceCameraZoom = true;
+        forceCameraZoomScale = Math.max(scale, 0.01f);
+        Vars.renderer.minZoom = Math.min(Vars.renderer.minZoom, forceCameraZoomScale);
+        Vars.renderer.maxZoom = Math.max(Vars.renderer.maxZoom, forceCameraZoomScale);
+        applyForcedCameraZoom();
+    }
+
+    public void clearForcedCameraZoom() {
+        forceCameraZoom = false;
+        if (Vars.renderer != null && savedMinZoom >= 0f) {
+            Vars.renderer.minZoom = savedMinZoom;
+            Vars.renderer.maxZoom = savedMaxZoom;
+        }
+        savedMinZoom = -1f;
+        savedMaxZoom = -1f;
+    }
+
+    private void applyForcedCameraZoom() {
+        if (headless || !forceCameraZoom || Vars.renderer == null) return;
+
+        float scale = forceCameraZoomScale;
+        Vars.renderer.minZoom = Math.min(Vars.renderer.minZoom, scale);
+        Vars.renderer.maxZoom = Math.max(Vars.renderer.maxZoom, scale);
+        mindustry.Vars.control.input.logicCutscene = true;
+        float span = Vars.renderer.maxZoom - Vars.renderer.minZoom;
+        mindustry.Vars.control.input.logicCutsceneZoom = span <= 0.0001f ? 0f : (scale - Vars.renderer.minZoom) / span;
+
+        Vars.renderer.camerascale = scale;
+        Vars.renderer.targetscale = scale;
+        Core.camera.width = Core.graphics.getWidth() / scale;
+        Core.camera.height = Core.graphics.getHeight() / scale;
+    }
+
+    public static int visibleLength(String text) {
+        if (text == null || text.isEmpty()) return 0;
+        int visible = 0;
+        for (int i = 0; i < text.length(); ) {
+            char c = text.charAt(i);
+            if (c == '[') {
+                int close = text.indexOf(']', i + 1);
+                if (close != -1) {
+                    i = close + 1;
+                    continue;
+                }
+            }
+            visible++;
+            i++;
+        }
+        return visible;
+    }
+
+    public static String takeVisibleChars(String text, int count) {
+        if (text == null || text.isEmpty() || count <= 0) return "";
+        if (count >= visibleLength(text)) return text;
+
+        int visible = 0;
+        int i = 0;
+        while (i < text.length() && visible < count) {
+            char c = text.charAt(i);
+            if (c == '[') {
+                int close = text.indexOf(']', i + 1);
+                if (close != -1) {
+                    i = close + 1;
+                    continue;
+                }
+            }
+            visible++;
+            i++;
+        }
+        return text.substring(0, i);
     }
 
     public void clearMarkers() {

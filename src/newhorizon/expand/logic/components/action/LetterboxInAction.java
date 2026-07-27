@@ -1,20 +1,19 @@
 package newhorizon.expand.logic.components.action;
 
-import arc.Core;
+import arc.math.Mathf;
 import arc.util.Time;
-import arc.util.Tmp;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
 
-import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
-import static mindustry.Vars.player;
 import static newhorizon.NHVars.cutsceneUI;
 
-public class CameraResetAction extends Action {
+public class LetterboxInAction extends Action {
+    public float startProgress;
+
     @Override
     public String actionName() {
-        return "camera_reset";
+        return "letterbox_in";
     }
 
     @Override
@@ -23,22 +22,25 @@ public class CameraResetAction extends Action {
     }
 
     @Override
-    public void act() {
-        if (headless) return;
+    public void begin() {
+        if (headless || cutsceneUI == null) return;
+        startProgress = cutsceneUI.curtainProgress;
+    }
 
-        Tmp.v1.set(Core.camera.position).lerpDelta(player, progress());
-        control.input.logicCamSpeed = 1000f;
-        control.input.logicCamPan.set(Tmp.v1);
+    @Override
+    public void act() {
+        if (headless || cutsceneUI == null) return;
+        cutsceneUI.curtainProgress = Mathf.lerp(startProgress, 1f, progress());
     }
 
     @Override
     public void end() {
-        skip();
+        if (headless || cutsceneUI == null) return;
+        cutsceneUI.curtainProgress = 1f;
     }
 
     @Override
     public void skip() {
-        control.input.logicCutscene = false;
-        if (cutsceneUI != null) cutsceneUI.clearForcedCameraZoom();
+        end();
     }
 }

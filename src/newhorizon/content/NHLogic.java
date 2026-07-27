@@ -23,6 +23,10 @@ import newhorizon.expand.logic.components.CutsceneControl;
 import newhorizon.expand.logic.components.action.*;
 import newhorizon.expand.logic.cutscene.action.*;
 import newhorizon.expand.logic.cutscene.actionBus.*;
+import newhorizon.expand.logic.cutscene.letterbox.FreeZoom;
+import newhorizon.expand.logic.cutscene.letterbox.LetterboxIn;
+import newhorizon.expand.logic.cutscene.letterbox.LetterboxOut;
+import newhorizon.expand.logic.cutscene.letterbox.LetterboxText;
 import newhorizon.expand.logic.wip.NearestSpawn;
 import newhorizon.expand.logic.wip.RandomTarget;
 import newhorizon.expand.game.DefaultIntervention;
@@ -83,6 +87,8 @@ public class NHLogic {
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultSpecialEvent.class, "defaultspecialevent");
         registerPrivilegedStatement(RandomTarget.class, "randtarget");
         registerPrivilegedStatement(NearestSpawn.class, "nearspawn");
+
+        registerPrivilegedStatement(FreeZoom.class, "freezoom");
     }
 
     public static void loadActions() {
@@ -92,6 +98,10 @@ public class NHLogic {
 
         registerAction(CurtainFadeIn.class, CurtainFadeInAction.class);
         registerAction(CurtainFadeOut.class, CurtainFadeOutAction.class);
+
+        registerAction(LetterboxIn.class, LetterboxInAction.class);
+        registerAction(LetterboxOut.class, LetterboxOutAction.class);
+        registerAction(LetterboxText.class, LetterboxTextAction.class);
 
         registerAction(CameraControl.class, CameraControlAction.class);
         registerAction(CameraZoom.class, CameraZoomAction.class);

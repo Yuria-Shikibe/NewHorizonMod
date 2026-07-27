@@ -387,7 +387,7 @@ public class JumpGate extends Block {
         }
 
         public float costTimeVar() {
-            return craftTime / state.rules.unitBuildSpeedMultiplier;
+            return craftTime / state.rules.unitBuildSpeed(teamFallback());
         }
 
         public ItemStack[] baseRequirements() {
@@ -533,7 +533,7 @@ public class JumpGate extends Block {
 
         public boolean hasConsume(UnitRecipe set, int num) {
             if (set == null || cheating() || (!state.rules.pvp && team == state.rules.waveTeam)) return true;
-            float mult = num * state.rules.teams.get(team).unitCostMultiplier;
+            float mult = num * state.rules.unitCost(team);
             if (!realItems().has(ItemStack.mult(set.baseRequirements(), mult))) return false;
             for (PayloadStack stack : set.recipe.inputPayload) {
                 if (getPayloads().get(stack.item) < Math.round(stack.amount * mult)) return false;
@@ -543,7 +543,7 @@ public class JumpGate extends Block {
 
         public void consumeItems() {
             if (cheating() || getRecipe() == null) return;
-            float mult = buildingSpawnNum * state.rules.teams.get(team).unitCostMultiplier;
+            float mult = buildingSpawnNum * state.rules.unitCost(team);
             realItems().remove(ItemStack.mult(getRecipe().baseRequirements(), mult));
             for (PayloadStack stack : getRecipe().recipe.inputPayload) {
                 getPayloads().remove(stack.item, Math.round(stack.amount * mult));
@@ -798,7 +798,7 @@ public class JumpGate extends Block {
                 if (isCalling() && getRecipe() != null) {
                     captureQueueSnap();
                     float remain = (costTime(getRecipe(), true) - buildProgress) / costTime(getRecipe(), true);
-                    float mult = buildingSpawnNum * remain * state.rules.teams.get(team).unitCostMultiplier;
+                    float mult = buildingSpawnNum * remain * state.rules.unitCost(team);
                     Building target = usesCoreItems() && team.data().hasCore() ? team.core() : self();
                     for (ItemStack stack : ItemStack.mult(getRecipe().baseRequirements(), mult)) {
                         realItems().add(stack.item, Math.min(stack.amount, target.getMaximumAccepted(stack.item) - realItems().get(stack.item)));
@@ -979,7 +979,7 @@ public class JumpGate extends Block {
                                         row.image(cur.unitType.uiIcon).size(ui(36f)).scaling(Scaling.fit).padRight(ui(8f));
                                         row.add(cur.unitType.localizedName + " x" + count).growX().left();
                                         if (loop) row.image(Icon.refresh).size(ui(24f)).padRight(ui(6f));
-                                        row.add(new Label(() -> jammed ? "[red]" + Core.bundle.get("spawn-error") : "[accent]" + (int) Math.max((costTime(cur, true) - buildProgress) / Time.toSeconds, 0) + "s")).right();
+                                        row.add(new Label(() -> jammed ? "[red]" + Core.bundle.get("spawn-error") : "[accent]" + (int) Math.max((costTime(cur, true) - buildProgress) / Math.max(state.rules.unitBuildSpeed(team), 0.0001f) / Time.toSeconds, 0) + "s")).right();
                                     })
                             ).grow();
                         };
@@ -1228,7 +1228,7 @@ public class JumpGate extends Block {
                                                     header.image(set.unitType.uiIcon).size(ui(40f)).scaling(Scaling.fit).padRight(ui(8f));
                                                     header.add(set.unitType.localizedName).growX().left().wrap().labelAlign(Align.left);
                                                     header.add(new Label(() -> {
-                                                        float sec = set.costTime() * selectNum / speedMultiplier(selectNum) / 60f / state.rules.unitBuildSpeedMultiplier;
+                                                        float sec = set.costTime() * selectNum / speedMultiplier(selectNum) / 60f / Math.max(state.rules.unitBuildSpeed(team), 0.0001f);
                                                         return "[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + Strings.fixed(sec, 1) + "[]" + Core.bundle.get("unit.seconds");
                                                     })).right().padLeft(ui(8f));
                                                 }).growX().left().row();
