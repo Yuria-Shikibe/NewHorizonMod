@@ -416,6 +416,7 @@ public class CutsceneUI {
 
     public void resetSave() {
         reset();
+        NHUI.clearCustomProgressBars();
         curtain.color.a = 1;
     }
 

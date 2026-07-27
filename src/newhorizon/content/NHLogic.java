@@ -27,6 +27,7 @@ import newhorizon.expand.logic.cutscene.letterbox.FreeZoom;
 import newhorizon.expand.logic.cutscene.letterbox.LetterboxIn;
 import newhorizon.expand.logic.cutscene.letterbox.LetterboxOut;
 import newhorizon.expand.logic.cutscene.letterbox.LetterboxText;
+import newhorizon.expand.logic.wproc.CustomProgressBar;
 import newhorizon.expand.logic.wip.NearestSpawn;
 import newhorizon.expand.logic.wip.RandomTarget;
 import newhorizon.expand.game.DefaultIntervention;
@@ -82,6 +83,7 @@ public class NHLogic {
     }
 
     public static void loadWprocStatements() {
+        registerPrivilegedStatement(CustomProgressBar.class, "customprogress");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultRaid.class, "defaultraid");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultIntervention.class, "defaultintervention");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultSpecialEvent.class, "defaultspecialevent");
