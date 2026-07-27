@@ -306,6 +306,7 @@ public class HudMarker extends Table {
             }
         }).width(dialogW).maxHeight(Core.graphics.getHeight() * 0.55f);
         dialog.addCloseButton();
+        Core.scene.setScrollFocus(null);
         dialog.show();
     }
 
