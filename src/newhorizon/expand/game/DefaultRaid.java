@@ -126,6 +126,12 @@ public class DefaultRaid {
         return null;
     }
 
+    public static void restoreAction(ActionBus bus, EventRaidAction action) {
+        if (bus == null || action == null) return;
+        currentRaidBus = bus;
+        raidRunning = true;
+    }
+
     public static void register(int id, BulletType bullet, float alertTime, float raidTime, float raidScale, float inaccuracy) {
         raids.put(id, new RaidEvent(id, bullet, alertTime, raidTime, raidScale, inaccuracy));
     }

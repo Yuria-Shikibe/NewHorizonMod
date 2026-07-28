@@ -89,16 +89,41 @@ public class RaidMarker extends HudMarker {
         if (headless || state == null || state.markers == null
                 || (kind != Kind.RAID && kind != Kind.INTERVENTION && kind != Kind.SPECIAL)) return;
 
-        minimapId = nextMinimapId++;
+        if (syncSeed != 0) {
+            for (var marker : state.markers) {
+                if (!(marker instanceof RaidIndicator existing) || existing.eventSeed != syncSeed) continue;
+                minimapMarker = existing;
+                minimapId = existing.markerId;
+                configureMinimapMarker(existing);
+                return;
+            }
+        }
+
+        do {
+            minimapId = nextMinimapId++;
+        } while (state.markers.has(minimapId));
         minimapMarker = new RaidIndicator()
                 .init(markerTeam.id,
                         kind == Kind.RAID ? 1 : 2, radius, "")
                 .setPosition(markPoint, markPoint)
                 .setProgress(progress())
-                .setIconName(minimapIconName);
-        minimapMarker.world = false;
-        minimapMarker.minimap = true;
+                .setIconName(minimapIconName)
+                .setEventSeed(syncSeed)
+                .setMarkerId(minimapId);
+        configureMinimapMarker(minimapMarker);
         state.markers.add(minimapId, minimapMarker);
+    }
+
+    private void configureMinimapMarker(RaidIndicator marker) {
+        marker.teamID = markerTeam.id;
+        marker.icon = kind == Kind.RAID ? 1 : 2;
+        marker.radius = radius;
+        marker.setPosition(markPoint, markPoint)
+                .setProgress(progress())
+                .setIconName(minimapIconName)
+                .setEventSeed(syncSeed);
+        marker.world = false;
+        marker.minimap = true;
     }
 
     private void removeMinimapMarker() {

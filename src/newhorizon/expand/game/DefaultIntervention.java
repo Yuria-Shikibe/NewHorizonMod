@@ -155,6 +155,12 @@ public class DefaultIntervention {
         return null;
     }
 
+    public static void restoreAction(ActionBus bus, EventInterventionAction action) {
+        if (bus == null || action == null) return;
+        currentBus = bus;
+        interventionRunning = true;
+    }
+
     public static FleetEvent get(int id) {
         return fleets.get(id);
     }

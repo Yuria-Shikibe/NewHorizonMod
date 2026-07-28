@@ -163,6 +163,9 @@ public class DefaultIntervention extends LStatement {
         public boolean labelShown;
         public boolean spawned;
         public newhorizon.expand.game.DefaultIntervention.FleetEvent fleet;
+        /** Stable save key: processor building position + instruction index. */
+        public int saveProcessorPos = -1;
+        public int saveInstructionIndex = -1;
 
         public DefaultInterventionInstruction(LVar flag, LVar timer, LVar alertTime, LVar eventId) {
             this.flag = flag;
@@ -171,8 +174,30 @@ public class DefaultIntervention extends LStatement {
             this.eventId = eventId;
         }
 
+        public float saveTargetX() {
+            return target.x;
+        }
+
+        public float saveTargetY() {
+            return target.y;
+        }
+
+        public void restoreTarget(float x, float y) {
+            target.set(x, y);
+        }
+
         @Override
         public void run(LExecutor exec) {
+            if (exec.build != null && exec.counter != null) {
+                int instructionIndex = Math.max(0, (int) exec.counter.numval - 1);
+                if (saveProcessorPos < 0) {
+                    saveProcessorPos = exec.build.pos();
+                    saveInstructionIndex = instructionIndex;
+                }
+                if (newhorizon.NHVars.worldData != null) {
+                    newhorizon.NHVars.worldData.eventSaveData.restoreProcessorState(this, saveProcessorPos, saveInstructionIndex);
+                }
+            }
             if (!state.rules.objectiveFlags.contains(flag.name)) {
                 exec.counter.numval--;
                 exec.yield = true;
@@ -225,6 +250,9 @@ public class DefaultIntervention extends LStatement {
         }
 
         public void reset() {
+            if (newhorizon.NHVars.worldData != null) {
+                newhorizon.NHVars.worldData.eventSaveData.untrack(this);
+            }
             curTime = 0f;
             iconShown = false;
             labelShown = false;
@@ -261,6 +289,9 @@ public class DefaultIntervention extends LStatement {
 
             iconShown = true;
             spawned = false;
+            if (newhorizon.NHVars.worldData != null) {
+                newhorizon.NHVars.worldData.eventSaveData.track(this);
+            }
 
             float range = fleet != null ? fleet.spawnRange / tilesize : 12f;
             if (!headless) {

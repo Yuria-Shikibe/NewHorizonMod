@@ -31,6 +31,8 @@ public class RaidIndicator extends MapObjectives.PosMarker {
     public float radius = 50;
     public String timerName = "event-timer";
     public String iconName = "";
+    public int eventSeed;
+    public int markerId;
     /** Used by runtime event markers that are not backed by a map objective timer. */
     public float progressOverride = Float.NaN;
 
@@ -72,6 +74,16 @@ public class RaidIndicator extends MapObjectives.PosMarker {
 
     public RaidIndicator setIconName(String iconName) {
         this.iconName = iconName == null ? "" : iconName;
+        return this;
+    }
+
+    public RaidIndicator setEventSeed(int eventSeed) {
+        this.eventSeed = eventSeed;
+        return this;
+    }
+
+    public RaidIndicator setMarkerId(int markerId) {
+        this.markerId = markerId;
         return this;
     }
 

@@ -180,6 +180,9 @@ public class EventInterventionAction extends Action {
             spawned = true;
             return;
         }
+        if (newhorizon.NHVars.worldData != null) {
+            newhorizon.NHVars.worldData.eventSaveData.track(this);
+        }
         if (!headless && !spawned && lifeTimer < alertTime
                 && !InterventionSync.hasMarker(syncSeed)) {
             showPresentation();
@@ -191,6 +194,9 @@ public class EventInterventionAction extends Action {
 
     @Override
     public void end() {
+        if (newhorizon.NHVars.worldData != null) {
+            newhorizon.NHVars.worldData.eventSaveData.untrack(this);
+        }
         if (!presentationSuppressed) {
             InterventionSync.removeInterventionMarkers(this);
         }

@@ -31,6 +31,7 @@ import static mindustry.Vars.headless;
 import static mindustry.Vars.net;
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
+import static newhorizon.NHVars.worldData;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class EventSpecialAction extends Action {
@@ -117,6 +118,9 @@ public class EventSpecialAction extends Action {
             spawned = true;
             return;
         }
+        if (worldData != null) {
+            worldData.eventSaveData.track(this);
+        }
         if (!headless && !InterventionSync.hasMarker(syncSeed)) {
             showPresentation();
         }
@@ -127,6 +131,9 @@ public class EventSpecialAction extends Action {
 
     @Override
     public void end() {
+        if (worldData != null) {
+            worldData.eventSaveData.untrack(this);
+        }
         if (!spawned && RaidLogic.isLogicSide()) {
             spawnUnits();
         }
@@ -159,6 +166,16 @@ public class EventSpecialAction extends Action {
         event.teamProv = () -> team;
         event.units.addAll(units);
         event.runEffects(team, targetX, targetY, syncSeed);
+    }
+
+    public boolean spawned() {
+        return spawned;
+    }
+
+    public void applyNetworkState(float lifeTimer, boolean spawned) {
+        this.lifeTimer = lifeTimer;
+        this.spawned = spawned;
+        if (lifeTimer > alertTime) popupDisplayed = true;
     }
 
     private EventInterventionAction toInterventionProxy() {

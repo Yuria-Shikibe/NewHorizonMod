@@ -9,6 +9,7 @@ import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.editor.EditorTool;
+import mindustry.game.MapObjectives;
 import mindustry.gen.Icon;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
@@ -16,6 +17,7 @@ import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.platform.FloatPlatformDrawer;
 import newhorizon.expand.entities.UltFire;
+import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.logic.ThreatLevel;
 
 public class NHContent extends Content {
@@ -64,7 +66,7 @@ public class NHContent extends Content {
         //registerStatement("raidcontrol", RaidControl::new, RaidControl::new);
         //registerStatement("defaultraid", DefaultRaid::new, DefaultRaid::new);
 
-        //MapObjectives.registerMarker(RaidIndicator::new);
+        MapObjectives.registerMarker(RaidIndicator::new);
     }
 
     @Override

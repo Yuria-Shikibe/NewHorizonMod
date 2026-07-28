@@ -102,16 +102,19 @@ public class EventRaidAction extends Action {
 
     @Override
     public void begin() {
+        if (syncSeed == 0) syncSeed = (int) Time.time;
         // World processors also run on remote clients; CSS-created raids must not present
         // locally there — RaidAlertPacket owns client UI.
         if (RaidLogic.isRemoteClient() && !presentationOnly) {
             lifeTimer = duration;
             return;
         }
+        if (newhorizon.NHVars.worldData != null) {
+            newhorizon.NHVars.worldData.eventSaveData.track(this);
+        }
         if (!headless) {
             showRaidPresentation();
         }
-        if (syncSeed == 0) syncSeed = (int) Time.time;
         if (!presentationOnly && net.server() && net.active()) {
             NHCall.syncRaidAlert(this);
         }
@@ -125,6 +128,13 @@ public class EventRaidAction extends Action {
 
     public int raidCounter() {
         return raidCounter;
+    }
+
+    @Override
+    public void end() {
+        if (newhorizon.NHVars.worldData != null) {
+            newhorizon.NHVars.worldData.eventSaveData.untrack(this);
+        }
     }
 
     private void showRaidPresentation() {
@@ -176,6 +186,7 @@ public class EventRaidAction extends Action {
         marker.setKind(HudMarker.Kind.RAID);
         marker.setMarkerTeam(team);
         marker.setMinimapIcon(warningIconName());
+        marker.setSyncSeed(syncSeed);
         marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)
                 .bindLifeTimer(() -> this.lifeTimer);
