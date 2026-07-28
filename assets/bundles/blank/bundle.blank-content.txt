@@ -1183,6 +1183,9 @@ planet.new-horizon-midantha.description =
 
 #[[REGION SECTOR]]
 
+sector.new-horizon-primary-base.name =
+sector.new-horizon-primary-base.description =
+
 
 
 

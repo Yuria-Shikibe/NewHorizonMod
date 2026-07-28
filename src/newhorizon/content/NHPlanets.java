@@ -42,6 +42,7 @@ public class NHPlanets {
                 r.hideBannedBlocks = true;
                 r.spawns = NHPostProcess.generate(0.8f, false);
                 r.loadout = ItemStack.list(NHItems.titanium, 1000, NHItems.tungsten, 1000, NHItems.silicon, 1000, NHItems.zeta, 1000);
+                NHSectorPresents.applyPrimaryBaseStartingLoadout(r);
 
                 Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
                 teamRule.rtsAi = false;

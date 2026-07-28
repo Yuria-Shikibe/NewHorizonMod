@@ -1,16 +1,21 @@
 package newhorizon.content;
 
+import arc.Core;
+import arc.Events;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.content.TechTree.TechNode;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
+import mindustry.game.EventType;
 import mindustry.type.ItemStack;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
 import newhorizon.content.units.AirUnitTypes;
 import newhorizon.content.units.GroundUnitTypes;
@@ -22,11 +27,14 @@ public class NHTechTree {
     public static final ObjectMap<UnitType, ItemStack[]> unitBuildCost = new ObjectMap<>();
     private static final ObjectSet<UnlockableContent> addedProductionContents = new ObjectSet<>();
     private static final int defaultResearchCostMultiplier = 5;
+    private static final String progressionResetKey = "new-horizon-primary-base-tech-reset";
 
     public static Seq<ProductionNode> itemProductionTree = new Seq<>();
     public static Seq<ProductionNode> liquidProductionTree = new Seq<>();
     public static Seq<ProductionNode> blockTechTree = new Seq<>();
     public static TechNode root;
+    private static final ObjectSet<UnlockableContent> initiallyAlwaysUnlocked = new ObjectSet<>();
+    private static boolean progressionEventsRegistered;
 
     public static void load() {
         unitBuildCost.each((u, is) -> {
@@ -55,6 +63,107 @@ public class NHTechTree {
                 addBlockTechNode(node);
             }
         });
+
+        registerProgressionEvents();
+    }
+
+    private static void registerProgressionEvents() {
+        initiallyAlwaysUnlocked.clear();
+        root.each(node -> {
+            if (isModTechNode(node) && node.content.alwaysUnlocked) {
+                initiallyAlwaysUnlocked.add(node.content);
+            }
+        });
+
+        if (progressionEventsRegistered) return;
+        progressionEventsRegistered = true;
+
+        Events.on(EventType.ContentInitEvent.class, event -> syncProgressionState());
+        Events.run(EventType.Trigger.update, NHTechTree::checkCampaignReset);
+        Events.on(EventType.SectorCaptureEvent.class, event -> {
+            if (event.initialCapture && NHSectorPresents.primaryBase != null
+                    && event.sector == NHSectorPresents.primaryBase.sector) {
+                resetModTechProgress();
+            }
+        });
+    }
+
+    private static void syncProgressionState() {
+        if (NHSectorPresents.primaryBase == null || NHSectorPresents.primaryBase.sector == null) return;
+
+        NHSectorPresents.primaryBase.sector.loadInfo();
+        if (NHSectorPresents.primaryBase.sector.info.wasCaptured) {
+            if (Core.settings.getBool(progressionResetKey, false)) {
+                enableModTechProgression();
+            } else {
+                resetModTechProgress();
+            }
+        } else {
+            unlockModTech();
+        }
+    }
+
+    private static void checkCampaignReset() {
+        if (NHSectorPresents.primaryBase == null || NHSectorPresents.primaryBase.sector == null) return;
+        if (!NHSectorPresents.primaryBase.sector.info.wasCaptured
+                && Core.settings.getBool(progressionResetKey, false)) {
+            unlockModTech();
+        }
+    }
+
+    private static void unlockModTech() {
+        root.each(node -> {
+            if (!isModTechNode(node)) return;
+
+            node.content.alwaysUnlocked = initiallyAlwaysUnlocked.contains(node.content);
+            node.content.quietUnlock();
+        });
+        Core.settings.put(progressionResetKey, false);
+    }
+
+    private static void enableModTechProgression() {
+        root.each(node -> {
+            if (isResettableModTechNode(node)) {
+                node.content.alwaysUnlocked = false;
+            }
+        });
+    }
+
+    private static void resetModTechProgress() {
+        root.each(node -> {
+            if (!isResettableModTechNode(node)) return;
+
+            node.content.alwaysUnlocked = false;
+            node.content.clearUnlock();
+            node.reset();
+
+            if (Vars.state != null && Vars.state.rules != null) {
+                Vars.state.rules.researched.remove(node.content);
+            }
+        });
+        clearPrimaryBaseCoreResources();
+        Core.settings.put(progressionResetKey, true);
+        Core.settings.manualSave();
+    }
+
+    private static void clearPrimaryBaseCoreResources() {
+        if (NHSectorPresents.primaryBase == null || NHSectorPresents.primaryBase.sector == null) return;
+
+        var sector = NHSectorPresents.primaryBase.sector;
+        if (Vars.state != null && Vars.state.rules != null && Vars.state.rules.sector == sector) {
+            Vars.state.rules.defaultTeam.cores().each(core -> core.items.clear());
+        }
+
+        sector.info.items.clear();
+        sector.saveInfo();
+    }
+
+    private static boolean isModTechNode(TechNode node) {
+        return node != root && node.content != null && node.content.minfo.mod == NewHorizon.MOD;
+    }
+
+    private static boolean isResettableModTechNode(TechNode node) {
+        return isModTechNode(node) && node.content != SpecialBlock.coreConflux;
     }
 
     private static void addProductionNode(ProductionNode productionNode) {
