@@ -36,6 +36,7 @@ import newhorizon.NHSetting;
 import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
+import newhorizon.expand.logic.cutscene.ExtendedCutsceneZoom;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -339,6 +340,7 @@ public class NHPostProcess {
     }
 
     public static void postProcessOverride() {
+        ExtendedCutsceneZoom.load();
         overrideStats();
     }
 
