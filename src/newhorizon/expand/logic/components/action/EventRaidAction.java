@@ -174,6 +174,8 @@ public class EventRaidAction extends Action {
 
         RaidMarker marker = new RaidMarker();
         marker.setKind(HudMarker.Kind.RAID);
+        marker.setMarkerTeam(team);
+        marker.setMinimapIcon(warningIconName());
         marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)
                 .bindLifeTimer(() -> this.lifeTimer);

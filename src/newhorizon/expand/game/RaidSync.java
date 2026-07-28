@@ -14,6 +14,7 @@ import newhorizon.expand.logic.components.Action;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.components.ui.HudMarker;
+import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
 import newhorizon.expand.net.NHCall;
 import newhorizon.expand.net.packet.RaidClearPacket;
@@ -180,6 +181,7 @@ public final class RaidSync {
             HudMarker marker = cutsceneUI.markers.get(i);
             if (marker.kind != HudMarker.Kind.RAID) continue;
             if (Math.abs(marker.markPoint.x - action.targetX) > 8f || Math.abs(marker.markPoint.y - action.targetY) > 8f) continue;
+            if (marker instanceof RaidMarker raidMarker) raidMarker.clearMinimapMarker();
             marker.clearActions();
             cutsceneUI.root.removeChild(marker);
             cutsceneUI.markers.remove(i);

@@ -229,6 +229,7 @@ public class EventInterventionAction extends Action {
 
         RaidMarker marker = new RaidMarker();
         marker.setKind(HudMarker.Kind.INTERVENTION);
+        marker.setMarkerTeam(team);
         marker.setSyncSeed(syncSeed);
         marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)

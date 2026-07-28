@@ -13,10 +13,31 @@ import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.graphics.Pal;
+import mindustry.game.Team;
 import newhorizon.content.NHContent;
+import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.util.graphic.DrawFunc;
 
+import static mindustry.Vars.headless;
+import static mindustry.Vars.state;
+
 public class RaidMarker extends HudMarker {
+
+    private static int nextMinimapId = Integer.MIN_VALUE;
+    private RaidIndicator minimapMarker;
+    private int minimapId;
+    private Team markerTeam = Team.crux;
+    private String minimapIconName = "";
+
+    public RaidMarker setMarkerTeam(Team team) {
+        markerTeam = team == null ? Team.crux : team;
+        return this;
+    }
+
+    public RaidMarker setMinimapIcon(String iconName) {
+        minimapIconName = iconName == null ? "" : iconName;
+        return this;
+    }
 
     private static final float LINE_BOOST = 1.35f;
     private static final float BREATHE_SPEED = 4f;
@@ -52,6 +73,49 @@ public class RaidMarker extends HudMarker {
         drawCrossHair();
         drawProcessBar();
         drawArrow();
+    }
+
+    @Override
+    public void act(float delta) {
+        if (minimapMarker != null) {
+            minimapMarker.setProgress(progress());
+        }
+        super.act(delta);
+    }
+
+    @Override
+    public void addMarker() {
+        super.addMarker();
+        if (headless || state == null || state.markers == null
+                || (kind != Kind.RAID && kind != Kind.INTERVENTION && kind != Kind.SPECIAL)) return;
+
+        minimapId = nextMinimapId++;
+        minimapMarker = new RaidIndicator()
+                .init(markerTeam.id,
+                        kind == Kind.RAID ? 1 : 2, radius, "")
+                .setPosition(markPoint, markPoint)
+                .setProgress(progress())
+                .setIconName(minimapIconName);
+        minimapMarker.world = false;
+        minimapMarker.minimap = true;
+        state.markers.add(minimapId, minimapMarker);
+    }
+
+    private void removeMinimapMarker() {
+        if (minimapMarker != null && state != null && state.markers != null) {
+            state.markers.remove(minimapId);
+        }
+        minimapMarker = null;
+    }
+
+    public void clearMinimapMarker() {
+        removeMinimapMarker();
+    }
+
+    @Override
+    public boolean remove() {
+        removeMinimapMarker();
+        return super.remove();
     }
 
     public Prov<String> displayText() {

@@ -201,6 +201,7 @@ public class EventSpecialAction extends Action {
 
         RaidMarker marker = new RaidMarker();
         marker.setKind(HudMarker.Kind.SPECIAL);
+        marker.setMarkerTeam(team);
         marker.setSyncSeed(syncSeed);
         marker.setMarkPosition(targetX, targetY)
                 .setDuration(alertTime)

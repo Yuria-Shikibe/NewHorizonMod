@@ -92,7 +92,7 @@ public class NHContent extends Content {
         icon = Core.atlas.find(NewHorizon.name("icon-white"));
         icon2 = Core.atlas.find(NewHorizon.name("icon-2"));
 
-        raid = Core.atlas.find(NewHorizon.name("raid"));
+        raid = Core.atlas.find(NewHorizon.name("event-default-raid-t1"));
         objective = Core.atlas.find(NewHorizon.name("objective"));
         fleet = Core.atlas.find(NewHorizon.name("fleet"));
         capture = Core.atlas.find(NewHorizon.name("capture"));

@@ -23,6 +23,7 @@ import mindustry.gen.Tex;
 import mindustry.ui.Styles;
 import newhorizon.NHUI;
 import newhorizon.expand.logic.components.ui.HudMarker;
+import newhorizon.expand.logic.components.ui.RaidMarker;
 import newhorizon.util.annotation.HeadlessDisabled;
 
 import static mindustry.Vars.headless;
@@ -407,6 +408,7 @@ public class CutsceneUI {
         for (int i = markers.size - 1; i >= 0; i--) {
             HudMarker marker = markers.get(i);
             if (kind != null && marker.kind != kind) continue;
+            if (marker instanceof RaidMarker raidMarker) raidMarker.clearMinimapMarker();
             marker.clearActions();
             root.removeChild(marker);
             markers.remove(i);

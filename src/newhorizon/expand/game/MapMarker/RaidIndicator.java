@@ -1,5 +1,6 @@
 package newhorizon.expand.game.MapMarker;
 
+import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -29,6 +30,9 @@ public class RaidIndicator extends MapObjectives.PosMarker {
     public int icon = 0;
     public float radius = 50;
     public String timerName = "event-timer";
+    public String iconName = "";
+    /** Used by runtime event markers that are not backed by a map objective timer. */
+    public float progressOverride = Float.NaN;
 
     public RaidIndicator(String name) {
         timerName = name;
@@ -38,6 +42,7 @@ public class RaidIndicator extends MapObjectives.PosMarker {
     }
 
     public TextureRegion icon() {
+        if (iconName != null && !iconName.isEmpty()) return Core.atlas.find(iconName);
         return switch (icon) {
             case 1 -> NHContent.raid;
             case 2 -> NHContent.fleet;
@@ -60,6 +65,16 @@ public class RaidIndicator extends MapObjectives.PosMarker {
         return this;
     }
 
+    public RaidIndicator setProgress(float progress) {
+        progressOverride = progress;
+        return this;
+    }
+
+    public RaidIndicator setIconName(String iconName) {
+        this.iconName = iconName == null ? "" : iconName;
+        return this;
+    }
+
     @Override
     public void draw(float scaleFactor) {
         draw();
@@ -68,6 +83,7 @@ public class RaidIndicator extends MapObjectives.PosMarker {
 
     public void draw() {
         Team team = Team.get(teamID);
+        TextureRegion markerIcon = icon();
 
         float fin = progress();
 
@@ -78,7 +94,9 @@ public class RaidIndicator extends MapObjectives.PosMarker {
 
         float f = Interp.pow3Out.apply(Mathf.curve(1 - fin, 0, 0.01f));
 
-        Draw.rect(icon(), target, NHContent.fleet.width * f * Draw.scl, NHContent.fleet.height * f * Draw.scl, 0);
+        float iconScale = NHContent.fleet.width * f * Draw.scl
+                / Math.max(Math.max(markerIcon.width, markerIcon.height), 1f);
+        Draw.rect(markerIcon, target, markerIcon.width * iconScale, markerIcon.height * iconScale, 0);
         Lines.stroke(5f * f);
         Lines.circle(target.x, target.y, radius * (1 + Mathf.absin(4f, 0.055f)));
 
@@ -106,6 +124,8 @@ public class RaidIndicator extends MapObjectives.PosMarker {
     }
 
     public float progress() {
+        if (!Float.isNaN(progressOverride)) return Mathf.clamp(progressOverride);
+
         AtomicReference<Float> progress = new AtomicReference<>(0f);
         state.rules.objectives.each(mapObjective -> {
             if (mapObjective instanceof TriggerObjective obj && Objects.equals(obj.timer, timerName)) {
