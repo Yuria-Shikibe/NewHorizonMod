@@ -1364,14 +1364,17 @@ public class AirRaider extends CommandableBlock {
             BaseDialog picker = new BaseDialog("@nh.air-raid.select-weapon");
             picker.addCloseListener();
 
-            float cardW = Mathf.clamp(ui(210f), 160f, Core.graphics.getWidth() * 0.2f);
-            float cardH = Mathf.clamp(ui(280f), 210f, Core.graphics.getHeight() * 0.42f);
+            float sceneW = Core.scene.getWidth();
+            float sceneH = Core.scene.getHeight();
+            float cardW = Math.min(ui(210f), Math.max(ui(150f), sceneW * 0.22f));
+            float cardH = Math.min(ui(280f), Math.max(ui(200f), sceneH * 0.52f));
             float iconSize = Mathf.clamp(ui(84f), 56f, cardH * 0.28f);
             float textW = cardW - ui(30f);
             float descH = cardH * 0.36f;
+            float cardPad = Mathf.clamp(ui(10f), 4f, 12f);
 
             Table cards = new Table();
-            cards.left().top();
+            cards.center();
             for (int i = 0; i < WEAPON_COUNT; i++) {
                 int idx = i;
                 WeaponMode mode = weapons[idx];
@@ -1396,15 +1399,31 @@ public class AirRaider extends CommandableBlock {
                     if (weaponIndex == idx) {
                         card.setColor(Pal.accent);
                     }
-                }).size(cardW, cardH).pad(ui(10f));
+                }).size(cardW, cardH).pad(cardPad);
             }
 
-            ScrollPane pane = new ScrollPane(cards);
+            Table centeredCards = new Table();
+            centeredCards.center();
+            centeredCards.add(cards);
+
+            ScrollPane pane = new ScrollPane(centeredCards) {
+                private boolean initialCenterApplied;
+
+                @Override
+                public void layout() {
+                    super.layout();
+                    if (!initialCenterApplied && getWidth() > 0f) {
+                        setScrollPercentX(0.5f);
+                        updateVisualScroll();
+                        initialCenterApplied = true;
+                    }
+                }
+            };
             pane.setScrollingDisabledY(true);
             pane.setFadeScrollBars(false);
             picker.cont.top();
             picker.cont.add(pane).grow().pad(ui(12f));
-            picker.buttons.button("@back", Icon.left, picker::hide).size(Math.min(ui(200f), Core.graphics.getWidth() * 0.25f), ui(52f));
+            picker.buttons.button("@back", Icon.left, picker::hide).size(Math.min(ui(200f), sceneW * 0.25f), ui(52f));
             picker.show();
         }
 
@@ -1496,8 +1515,6 @@ public class AirRaider extends CommandableBlock {
         float get(Item item, float amount);
     }
 }
-
-
 
 
 

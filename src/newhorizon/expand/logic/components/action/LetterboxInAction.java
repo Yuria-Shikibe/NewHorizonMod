@@ -24,6 +24,7 @@ public class LetterboxInAction extends Action {
     @Override
     public void begin() {
         if (headless || cutsceneUI == null) return;
+        cutsceneUI.hideHudForLetterbox();
         startProgress = cutsceneUI.curtainProgress;
     }
 

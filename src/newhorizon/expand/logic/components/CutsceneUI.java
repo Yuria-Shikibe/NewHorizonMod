@@ -41,6 +41,7 @@ public class CutsceneUI {
     public FLabel textLabel, infoLabel;
     public Label letterboxTextLabel;
     public boolean controlOverride = false;
+    public boolean letterboxHudHidden = false;
     public Interp curtainInterp = Interp.pow2Out;
     public float curtainProgress = 0;
     public float targetOverlayAlpha;
@@ -56,6 +57,7 @@ public class CutsceneUI {
         if (headless) return;
         init();
         Events.on(EventType.WorldLoadEvent.class, e -> resetSave());
+        Events.run(EventType.Trigger.preDraw, this::enforceLetterboxHudHidden);
     }
 
     public float curtainScl() {
@@ -247,6 +249,7 @@ public class CutsceneUI {
     public void reset() {
         if (headless) return;
         controlOverride = false;
+        showHudAfterLetterbox();
         curtainProgress = 0;
         targetOverlayAlpha = 0;
         overlayAlphaShiftSpeed = OVERLAY_SPEED;
@@ -274,6 +277,25 @@ public class CutsceneUI {
         letterboxVisibleChars = 0;
         if (letterboxTextLabel != null) {
             letterboxTextLabel.setText("");
+        }
+    }
+
+    public void hideHudForLetterbox() {
+        if (headless) return;
+        letterboxHudHidden = true;
+        Vars.control.input.config.forceHide();
+        enforceLetterboxHudHidden();
+    }
+
+    public void showHudAfterLetterbox() {
+        if (headless) return;
+        letterboxHudHidden = false;
+        Vars.ui.hudfrag.shown = true;
+    }
+
+    private void enforceLetterboxHudHidden() {
+        if (!headless && letterboxHudHidden) {
+            Vars.ui.hudfrag.shown = false;
         }
     }
 
