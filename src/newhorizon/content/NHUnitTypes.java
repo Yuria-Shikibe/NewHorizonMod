@@ -3093,7 +3093,9 @@ public class NHUnitTypes {
                 shootCone = 360;
                 baseRotation = 90;
                 recoil = 2f;
-                mirror = rotate = false;
+                mirror = true;
+                alternate = true;
+                rotate = false;
                 /*parts.add(new RegionPart("-cooler") {{
                     under = outline = true;
                     rotation = -90;
