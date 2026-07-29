@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
+import arc.util.Scaling;
 import arc.util.Strings;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
@@ -45,7 +46,12 @@ public class CustomProgressBarEntry {
                         () -> current,
                         () -> Math.max(maximum, Mathf.FLOAT_ROUNDING_ERROR)
                 )).padLeft(20f).height(40f).expandX().fillX()),
-                new Table(iconTable -> iconTable.image(() -> icon).size(54f).pad(-8f).expandX().left())
+                new Table(iconTable -> iconTable.image(() -> icon)
+                        .scaling(Scaling.fit)
+                        .size(32f)
+                        .pad(4f)
+                        .expandX()
+                        .left())
         )).growX());
     }
 
