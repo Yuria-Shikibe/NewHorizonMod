@@ -26,6 +26,7 @@ import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHBlocks;
+import newhorizon.content.NHSectorPresents;
 import newhorizon.content.blocks.EnvironmentBlock;
 
 import static mindustry.Vars.content;
@@ -325,6 +326,10 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
 
     @Override
     public boolean allowLanding(Sector sector) {
+        if (NHSectorPresents.primaryBase != null && sector == NHSectorPresents.primaryBase.sector
+                && !NHSectorPresents.primaryBase.unlocked()) {
+            return false;
+        }
         return true;
     }
 

@@ -46,8 +46,9 @@ public class NHPlanets {
 
                 Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
                 teamRule.rtsAi = false;
-                teamRule.unitBuildSpeedMultiplier = 5f;
-                teamRule.buildSpeedMultiplier = 3f;
+                teamRule.unitBuildSpeedMultiplier = 1f;
+                teamRule.buildSpeedMultiplier = 1f;
+                NHSectorPresents.applyLandingPointMapRules(r);
             };
             generator = new MidanthaPlanetGenerator();
 

@@ -1,5 +1,6 @@
 package newhorizon.content;
 
+import arc.Core;
 import arc.Events;
 import mindustry.Vars;
 import mindustry.content.Blocks;
@@ -11,7 +12,9 @@ import mindustry.world.blocks.campaign.LandingPad;
 
 public class NHSectorPresents {
     public static SectorPreset primaryBase;
+    public static SectorPreset landingPoint;
     private static boolean campaignEventsRegistered;
+    private static boolean landingPointTransitionPending;
 
     public static void load() {
         primaryBase = new SectorPreset("primary-base", NHPlanets.midantha, 1) {{
@@ -22,7 +25,13 @@ public class NHSectorPresents {
             difficulty = 1;
         }};
 
-        NHPlanets.midantha.startSector = primaryBase.sector.id;
+        landingPoint = new SectorPreset("landing-point", "new-horizon-LandingPoint", NHPlanets.midantha, 2) {{
+            showHidden = true;
+            captureWave = 2;
+            difficulty = 1;
+        }};
+
+        unlockPrimaryBase();
         registerCampaignEvents();
     }
 
@@ -35,11 +44,70 @@ public class NHSectorPresents {
         }
     }
 
+    public static void applyLandingPointMapRules(Rules rules) {
+        if (landingPoint == null || landingPoint.generator.map == null || rules.sector != landingPoint.sector) return;
+
+        landingPoint.generator.map.rules(rules);
+        rules.sector = landingPoint.sector;
+        rules.planet = NHPlanets.midantha;
+    }
+
     private static void registerCampaignEvents() {
         if (campaignEventsRegistered) return;
         campaignEventsRegistered = true;
 
         Events.run(EventType.Trigger.update, NHSectorPresents::updatePrimaryBaseLandingPads);
+        Events.run(EventType.Trigger.update, NHSectorPresents::finishLandingPointTransition);
+    }
+
+    public static void launchLandingPointFromPrimaryBase() {
+        if (landingPointTransitionPending || Vars.headless || Vars.net.client()
+                || primaryBase == null || landingPoint == null) return;
+
+        landingPointTransitionPending = true;
+        Core.app.post(() -> {
+            if (!Vars.state.isCampaign() || Vars.state.rules.sector != primaryBase.sector) {
+                landingPointTransitionPending = false;
+                return;
+            }
+
+            Vars.control.playSector(primaryBase.sector, landingPoint.sector);
+        });
+    }
+
+    private static void deletePrimaryBaseSave() {
+        if (primaryBase.sector.save != null) {
+            primaryBase.sector.save.delete();
+            primaryBase.sector.save = null;
+        }
+
+        lockPrimaryBase();
+        Core.settings.manualSave();
+    }
+
+    public static void unlockPrimaryBase() {
+        if (primaryBase == null || primaryBase.sector == null) return;
+
+        primaryBase.alwaysUnlocked = true;
+        primaryBase.requireUnlock = true;
+        NHPlanets.midantha.startSector = primaryBase.sector.id;
+    }
+
+    public static void lockPrimaryBase() {
+        if (primaryBase == null || primaryBase.sector == null || landingPoint == null) return;
+
+        primaryBase.alwaysUnlocked = false;
+        primaryBase.requireUnlock = false;
+        primaryBase.clearUnlock();
+        NHPlanets.midantha.startSector = landingPoint.sector.id;
+    }
+
+    private static void finishLandingPointTransition() {
+        if (!landingPointTransitionPending || !Vars.state.isCampaign()
+                || Vars.state.rules.sector != landingPoint.sector) return;
+
+        landingPointTransitionPending = false;
+        deletePrimaryBaseSave();
     }
 
     private static void updatePrimaryBaseLandingPads() {

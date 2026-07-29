@@ -84,6 +84,7 @@ public class NHTechTree {
             if (event.initialCapture && NHSectorPresents.primaryBase != null
                     && event.sector == NHSectorPresents.primaryBase.sector) {
                 resetModTechProgress();
+                NHSectorPresents.launchLandingPointFromPrimaryBase();
             }
         });
     }
@@ -98,6 +99,7 @@ public class NHTechTree {
             } else {
                 resetModTechProgress();
             }
+            NHSectorPresents.lockPrimaryBase();
         } else {
             unlockModTech();
         }
@@ -118,6 +120,8 @@ public class NHTechTree {
             node.content.alwaysUnlocked = initiallyAlwaysUnlocked.contains(node.content);
             node.content.quietUnlock();
         });
+        lockLandingPoint();
+        NHSectorPresents.unlockPrimaryBase();
         Core.settings.put(progressionResetKey, false);
     }
 
@@ -127,6 +131,7 @@ public class NHTechTree {
                 node.content.alwaysUnlocked = false;
             }
         });
+        unlockLandingPoint();
     }
 
     private static void resetModTechProgress() {
@@ -142,8 +147,21 @@ public class NHTechTree {
             }
         });
         clearPrimaryBaseCoreResources();
+        unlockLandingPoint();
         Core.settings.put(progressionResetKey, true);
         Core.settings.manualSave();
+    }
+
+    private static void unlockLandingPoint() {
+        if (NHSectorPresents.landingPoint != null) {
+            NHSectorPresents.landingPoint.quietUnlock();
+        }
+    }
+
+    private static void lockLandingPoint() {
+        if (NHSectorPresents.landingPoint != null) {
+            NHSectorPresents.landingPoint.clearUnlock();
+        }
     }
 
     private static void clearPrimaryBaseCoreResources() {

@@ -14,6 +14,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHSectorPresents;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -33,6 +34,7 @@ public class NewFeatureDialog extends BaseDialog {
 
     private FeatureLog[] getUpdateContent() {
         return new FeatureLog[]{
+                new FeatureLog(0, FeatureLog.featureType.FEATURE, NHSectorPresents.primaryBase),
                 new FeatureLog(0, FeatureLog.featureType.FIX, NHContent.fleet),
                 new FeatureLog(0, FeatureLog.featureType.IMPROVE, NHBlocks.airRaider),
         };
