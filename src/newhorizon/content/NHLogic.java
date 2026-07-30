@@ -27,6 +27,7 @@ import newhorizon.expand.logic.cutscene.letterbox.FreeZoom;
 import newhorizon.expand.logic.cutscene.letterbox.LetterboxIn;
 import newhorizon.expand.logic.cutscene.letterbox.LetterboxOut;
 import newhorizon.expand.logic.cutscene.letterbox.LetterboxText;
+import newhorizon.expand.logic.wproc.CaptureSector;
 import newhorizon.expand.logic.wproc.CustomProgressBar;
 import newhorizon.expand.logic.wip.NearestSpawn;
 import newhorizon.expand.logic.wip.RandomTarget;
@@ -89,6 +90,7 @@ public class NHLogic {
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultSpecialEvent.class, "defaultspecialevent");
         registerPrivilegedStatement(RandomTarget.class, "randtarget");
         registerPrivilegedStatement(NearestSpawn.class, "nearspawn");
+        registerPrivilegedStatement(CaptureSector.class, "capturesector");
 
         registerPrivilegedStatement(FreeZoom.class, "freezoom");
     }

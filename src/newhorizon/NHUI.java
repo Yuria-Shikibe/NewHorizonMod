@@ -179,15 +179,16 @@ public class NHUI {
         if (eventList == null) return;
         eventList.clear();
         eventList.align(Align.topLeft).defaults().growX().fillY().row();
+        // Keep custom bars directly below the raid-strength bar in their creation order.
+        for (CustomProgressBarEntry progressBar : customProgressBars) {
+            DelayCollapser col = new DelayCollapser(progressBar.getDisplayStack(), progressBar.completed());
+            col.setCollapsed(true, progressBar::completed);
+            eventList.add(col).row();
+        }
         for (var eventHudMarker : cutsceneUI.markers) {
             Boolp shown = eventHudMarker::completed;
             DelayCollapser col = new DelayCollapser(eventHudMarker.getDisplayStack(), shown.get());
             col.setCollapsed(true, shown);
-            eventList.add(col).row();
-        }
-        for (CustomProgressBarEntry progressBar : customProgressBars) {
-            DelayCollapser col = new DelayCollapser(progressBar.getDisplayStack(), progressBar.completed());
-            col.setCollapsed(true, progressBar::completed);
             eventList.add(col).row();
         }
     }
