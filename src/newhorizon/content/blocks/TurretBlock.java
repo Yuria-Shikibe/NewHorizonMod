@@ -316,7 +316,7 @@ public class TurretBlock {
                 shotDelay = 0f;
             }};
 
-            consumeLiquid(NHLiquids.xenFluid, 4 / 60f);
+            //consumeLiquid(NHLiquids.xenFluid, 4 / 60f);
             consumePower(100f / 60f);
         }};
         pulse = new ItemTurret("pulse") {{

@@ -57,7 +57,18 @@ public class NHSectorPresents {
         campaignEventsRegistered = true;
 
         Events.run(EventType.Trigger.update, NHSectorPresents::updatePrimaryBaseLandingPads);
+        Events.run(EventType.Trigger.update, NHSectorPresents::resetAbandonedPrimaryBase);
         Events.run(EventType.Trigger.update, NHSectorPresents::finishLandingPointTransition);
+        Events.on(EventType.GameOverEvent.class, event -> {
+            if (Vars.state.isCampaign() && Vars.state.rules.sector == primaryBase.sector) {
+                resetPrimaryBase();
+            }
+        });
+        Events.on(EventType.SectorLoseEvent.class, event -> {
+            if (event.sector == primaryBase.sector) {
+                resetPrimaryBase();
+            }
+        });
     }
 
     public static void launchLandingPointFromPrimaryBase() {
@@ -85,6 +96,18 @@ public class NHSectorPresents {
         Core.settings.manualSave();
     }
 
+    private static void resetPrimaryBase() {
+        if (primaryBase == null || primaryBase.sector == null || primaryBase.sector.info.wasCaptured) return;
+
+        if (primaryBase.sector.save != null) {
+            primaryBase.sector.save.delete();
+            primaryBase.sector.save = null;
+        }
+
+        primaryBase.sector.clearInfo();
+        Core.settings.manualSave();
+    }
+
     public static void unlockPrimaryBase() {
         if (primaryBase == null || primaryBase.sector == null) return;
 
@@ -108,6 +131,13 @@ public class NHSectorPresents {
 
         landingPointTransitionPending = false;
         deletePrimaryBaseSave();
+    }
+
+    private static void resetAbandonedPrimaryBase() {
+        if (primaryBase == null || primaryBase.sector == null || primaryBase.sector.info.wasCaptured
+                || primaryBase.sector.isBeingPlayed() || primaryBase.sector.info.hasCore) return;
+
+        resetPrimaryBase();
     }
 
     private static void updatePrimaryBaseLandingPads() {

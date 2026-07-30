@@ -17,7 +17,6 @@ import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventInterventionAction;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.logic.components.action.EventSpecialAction;
-import newhorizon.expand.logic.wproc.DefaultIntervention.DefaultInterventionInstruction;
 import newhorizon.expand.logic.cutscene.types.RaidPreset;
 
 import java.io.DataInput;
@@ -32,6 +31,7 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
     private static final short VERSION = 3;
     private static final byte RAID = 1;
     private static final byte INTERVENTION = 2;
+    /** Retained only to read saves written before processor interventions became switches. */
     private static final byte PROCESSOR_INTERVENTION = 3;
     private static final byte SPECIAL = 4;
 
@@ -40,20 +40,16 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
     private final Seq<EventRaidAction> activeRaids = new Seq<>();
     private final Seq<EventInterventionAction> activeInterventions = new Seq<>();
     private final Seq<EventSpecialAction> activeSpecials = new Seq<>();
-    private final Seq<DefaultInterventionInstruction> activeProcessorInterventions = new Seq<>();
-    private final Seq<SavedEvent> pendingProcessorInterventions = new Seq<>();
     private boolean writePrepared;
 
     public EventSaveData() {
         Events.on(EventType.WorldLoadBeginEvent.class, event -> {
             pending.clear();
-            pendingProcessorInterventions.clear();
             preparedWrite.clear();
             writePrepared = false;
             activeRaids.clear();
             activeInterventions.clear();
             activeSpecials.clear();
-            activeProcessorInterventions.clear();
         });
         Events.on(EventType.SaveWriteEvent.class, event -> prepareWrite());
         Events.on(EventType.SaveLoadEvent.class, event -> restore());
@@ -83,37 +79,6 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
         activeSpecials.remove(action, true);
     }
 
-    public void track(DefaultInterventionInstruction instruction) {
-        if (instruction != null) activeProcessorInterventions.addUnique(instruction);
-    }
-
-    public void untrack(DefaultInterventionInstruction instruction) {
-        activeProcessorInterventions.remove(instruction, true);
-    }
-
-    /** Applies a saved world-processor intervention when its rebuilt instruction first executes. */
-    public void restoreProcessorState(DefaultInterventionInstruction instruction, int processorPos, int instructionIndex) {
-        if (instruction == null || processorPos < 0 || instructionIndex < 0) return;
-        for (int i = pendingProcessorInterventions.size - 1; i >= 0; i--) {
-            SavedEvent saved = pendingProcessorInterventions.get(i);
-            if (saved.processorPos != processorPos || saved.processorInstructionIndex != instructionIndex) continue;
-
-            instruction.saveProcessorPos = processorPos;
-            instruction.saveInstructionIndex = instructionIndex;
-            instruction.curTime = saved.processorCurTime;
-            instruction.iconShown = saved.processorIconShown;
-            instruction.labelShown = saved.processorLabelShown;
-            instruction.spawned = saved.processorSpawned;
-            instruction.restoreTarget(saved.processorTargetX, saved.processorTargetY);
-            instruction.fleet = saved.processorFleetId > 0 ? DefaultIntervention.get(saved.processorFleetId) : null;
-            if (instruction.fleet == null) instruction.resolveFleet();
-            pendingProcessorInterventions.remove(i);
-            track(instruction);
-            Log.info("[New Horizon] Restored intervention processor state at @/@.", processorPos, instructionIndex);
-            return;
-        }
-    }
-
     @Override
     public boolean shouldWrite() {
         // Event state is embedded in the established nh-world-data chunk.
@@ -130,16 +95,15 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
         try {
             stream.writeShort(VERSION);
             stream.writeInt(events.size);
-            int raids = 0, interventions = 0, specials = 0, processors = 0;
+            int raids = 0, interventions = 0, specials = 0;
             for (SavedEvent event : events) {
                 event.write(stream);
                 if (event.type == RAID) raids++;
                 else if (event.type == INTERVENTION) interventions++;
                 else if (event.type == SPECIAL) specials++;
-                else if (event.type == PROCESSOR_INTERVENTION) processors++;
             }
-            Log.info("[New Horizon] Saved @ active local event(s): raid @, intervention @, special @, processor @.",
-                    events.size, raids, interventions, specials, processors);
+            Log.info("[New Horizon] Saved @ active local event(s): raid @, intervention @, special @.",
+                    events.size, raids, interventions, specials);
         } finally {
             preparedWrite.clear();
             writePrepared = false;
@@ -174,9 +138,6 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
         for (EventRaidAction action : activeRaids) collectAction(action, events);
         for (EventInterventionAction action : activeInterventions) collectAction(action, events);
         for (EventSpecialAction action : activeSpecials) collectAction(action, events);
-        for (DefaultInterventionInstruction instruction : activeProcessorInterventions) {
-            collectProcessorIntervention(instruction, events);
-        }
         collectBus(cutscene.mainBus, events);
         for (ActionBus bus : cutscene.subBuses) collectBus(bus, events);
         for (ActionBus bus : cutscene.waitingBuses) collectBus(bus, events);
@@ -209,23 +170,9 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
         }
     }
 
-    private void collectProcessorIntervention(DefaultInterventionInstruction instruction, Seq<SavedEvent> events) {
-        if (instruction == null || instruction.saveProcessorPos < 0 || instruction.saveInstructionIndex < 0) return;
-        if (contains(events, instruction)) return;
-        SavedEvent saved = SavedEvent.from(instruction);
-        if (saved != null) events.add(saved);
-    }
-
     private boolean contains(Seq<SavedEvent> events, Action action) {
         for (SavedEvent event : events) {
             if (event.action == action || event.special == action) return true;
-        }
-        return false;
-    }
-
-    private boolean contains(Seq<SavedEvent> events, DefaultInterventionInstruction instruction) {
-        for (SavedEvent event : events) {
-            if (event.processor == instruction) return true;
         }
         return false;
     }
@@ -237,13 +184,9 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
         }
 
         int restored = 0;
-        int restoredProcessors = 0;
         for (SavedEvent saved : pending) {
-            if (saved.type == PROCESSOR_INTERVENTION) {
-                pendingProcessorInterventions.add(saved);
-                restoredProcessors++;
-                continue;
-            }
+            // Processor interventions were removed in favor of simple state switches.
+            if (saved.type == 3) continue;
             Action action = saved.create();
             if (action == null || action.complete()) continue;
 
@@ -258,7 +201,7 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
                 DefaultIntervention.restoreAction(bus, intervention);
             }
         }
-        Log.info("[New Horizon] Restored @ local event action(s), @ processor intervention state(s).", restored, restoredProcessors);
+        Log.info("[New Horizon] Restored @ local event action(s).", restored);
         pending.clear();
     }
 
@@ -267,7 +210,6 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
         private byte type;
         private Action action;
         private EventSpecialAction special;
-        private DefaultInterventionInstruction processor;
         private boolean managedDefault;
 
         private RaidPreset raidType;
@@ -356,22 +298,6 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
             for (EventInterventionAction.UnitEntry entry : action.units) {
                 if (entry != null && entry.type != null) saved.units.add(new int[]{entry.type.id, entry.count});
             }
-            return saved;
-        }
-
-        private static SavedEvent from(DefaultInterventionInstruction instruction) {
-            SavedEvent saved = new SavedEvent();
-            saved.type = PROCESSOR_INTERVENTION;
-            saved.processor = instruction;
-            saved.processorPos = instruction.saveProcessorPos;
-            saved.processorInstructionIndex = instruction.saveInstructionIndex;
-            saved.processorFleetId = instruction.fleet == null ? -1 : instruction.fleet.id;
-            saved.processorCurTime = instruction.curTime;
-            saved.processorIconShown = instruction.iconShown;
-            saved.processorLabelShown = instruction.labelShown;
-            saved.processorSpawned = instruction.spawned;
-            saved.processorTargetX = instruction.saveTargetX();
-            saved.processorTargetY = instruction.saveTargetY();
             return saved;
         }
 

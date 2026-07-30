@@ -6,6 +6,7 @@ import arc.struct.IntSet;
 import arc.util.Interval;
 import arc.util.Time;
 import mindustry.content.StatusEffects;
+import mindustry.game.Difficulty;
 import mindustry.game.EventType;
 import mindustry.game.Gamemode;
 import mindustry.game.Team;
@@ -31,8 +32,14 @@ public class DefaultSpecialEvent {
     public static void load() {
         registerEvents();
 
-        Events.on(EventType.PlayEvent.class, e -> reset());
-        Events.on(EventType.WorldLoadEvent.class, e -> reset());
+        Events.on(EventType.PlayEvent.class, e -> {
+            SpecialEventState.init();
+            reset();
+        });
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+            SpecialEventState.init();
+            reset();
+        });
     }
 
     public static void register(int id, SpecialEvent.Builder builder) {
@@ -68,7 +75,7 @@ public class DefaultSpecialEvent {
     }
 
     public static void update() {
-        if (!InterventionState.enabled()) return;
+        if (!SpecialEventState.enabled()) return;
         if (!RaidLogic.isLogicSide()) return;
         if (!state.isPlaying()) return;
         if (state.rules.editor || state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
@@ -89,6 +96,7 @@ public class DefaultSpecialEvent {
         for (SpecialEvent special : events.values()) {
             boolean auto = special.looping || special.triggers.any();
             if (!auto) continue;
+            if (!special.difficultyMet()) continue;
             if (!special.triggersMet()) continue;
 
             if (special.looping) {
@@ -134,8 +142,8 @@ public class DefaultSpecialEvent {
     }
 
     public static void runAt(SpecialEvent special, float worldX, float worldY, int syncSeed) {
-        if (special == null) return;
-        special.runEffects(special.resolveTeam(), worldX, worldY, syncSeed, special.toUnitEntries());
+        if (special == null || !special.difficultyMet()) return;
+        special.runEffects(special.resolveTeam(), worldX, worldY, syncSeed);
     }
 
     private static void registerEvents() {
@@ -143,6 +151,7 @@ public class DefaultSpecialEvent {
 
         register(100, new SpecialEvent.Builder()
                 .ally()
+                .difficulty(Difficulty.casual, Difficulty.easy, Difficulty.normal, Difficulty.hard)
                 .alert(20f)
                 .spawnRange(80f)
                 .requireAll()
@@ -158,6 +167,7 @@ public class DefaultSpecialEvent {
 
         register(101, new SpecialEvent.Builder()
                 .ally()
+                .difficulty(Difficulty.casual, Difficulty.easy, Difficulty.normal, Difficulty.hard)
                 .alert(25f)
                 .spawnRange(80f)
                 .requireAll()
@@ -171,6 +181,7 @@ public class DefaultSpecialEvent {
 
         register(102, new SpecialEvent.Builder()
                 .ally()
+                .difficulty(Difficulty.casual, Difficulty.easy, Difficulty.normal, Difficulty.hard)
                 .alert(30f)
                 .spawnRange(160f)
                 .trigger(Triggers.waveAtLeast(100))

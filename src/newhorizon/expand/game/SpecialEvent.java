@@ -12,6 +12,7 @@ import arc.util.Tmp;
 import mindustry.content.Blocks;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Units;
+import mindustry.game.Difficulty;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
@@ -41,6 +42,7 @@ public class SpecialEvent {
     public boolean disposable = true;
     public boolean looping;
     public float loopInterval;
+    public DifficultyRequirement difficultyRequirement = difficulty -> true;
     public final Seq<Trigger> triggers = new Seq<>();
     public final Seq<UnitSpec> units = new Seq<>();
     public final Seq<WorldChange> worldChanges = new Seq<>();
@@ -66,6 +68,15 @@ public class SpecialEvent {
             if (t.valid()) return true;
         }
         return false;
+    }
+
+    /**
+     * Difficulty restrictions are campaign-only so events remain usable on custom maps and servers.
+     */
+    public boolean difficultyMet() {
+        return !NHDifficulty.appliesToCurrentGame()
+                || difficultyRequirement == null
+                || difficultyRequirement.allows(NHDifficulty.current());
     }
 
     public Seq<EventInterventionAction.UnitEntry> toUnitEntries() {
@@ -94,9 +105,9 @@ public class SpecialEvent {
             UnitSpec spec = units.get(i);
             if (spec.type == null) continue;
             int count = spec.count;
-            if (countOverrides != null && i < countOverrides.size && countOverrides.get(i) != null) {
-                count = countOverrides.get(i).count;
-            }
+            boolean overridden = countOverrides != null && i < countOverrides.size && countOverrides.get(i) != null;
+            if (overridden) count = countOverrides.get(i).count;
+            if (!overridden) count = NHDifficulty.scaleEnemySpawnCount(spawnTeam, count);
             if (count <= 0) continue;
             if (spawnTeam != state.rules.waveTeam) {
                 count = Math.min(count, Math.max(0, Units.getCap(spawnTeam) - spawnTeam.data().countType(spec.type)));
@@ -161,6 +172,11 @@ public class SpecialEvent {
 
     public interface Trigger {
         boolean valid();
+    }
+
+    @FunctionalInterface
+    public interface DifficultyRequirement {
+        boolean allows(Difficulty difficulty);
     }
 
     public static class UnitSpec {
@@ -263,6 +279,29 @@ public class SpecialEvent {
 
         public Builder enemy() {
             event.teamProv = () -> state.rules.waveTeam;
+            return this;
+        }
+
+        /** Limits this event to the supplied campaign difficulties. Empty input permits all difficulties. */
+        public Builder difficulty(Difficulty... difficulties) {
+            if (difficulties == null || difficulties.length == 0) {
+                event.difficultyRequirement = difficulty -> true;
+                return this;
+            }
+
+            Difficulty[] allowed = difficulties.clone();
+            event.difficultyRequirement = difficulty -> {
+                for (Difficulty allowedDifficulty : allowed) {
+                    if (allowedDifficulty == difficulty) return true;
+                }
+                return false;
+            };
+            return this;
+        }
+
+        /** Supplies a custom campaign-difficulty condition for this event. */
+        public Builder difficulty(DifficultyRequirement requirement) {
+            event.difficultyRequirement = requirement == null ? difficulty -> true : requirement;
             return this;
         }
 

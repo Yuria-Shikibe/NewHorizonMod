@@ -26,6 +26,7 @@ import newhorizon.expand.game.DefaultIntervention;
 import newhorizon.expand.game.DefaultSpecialEvent;
 import newhorizon.expand.game.InterventionState;
 import newhorizon.expand.game.InterventionSync;
+import newhorizon.expand.game.NHDifficulty;
 import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.SpecialEvent;
 import newhorizon.expand.logic.ParseUtil;
@@ -72,6 +73,7 @@ public class EventInterventionAction extends Action {
 
     private boolean spawned;
     private boolean popupDisplayed;
+    private boolean campaignDifficultyApplied;
 
     @Override
     public String actionName() {
@@ -113,6 +115,7 @@ public class EventInterventionAction extends Action {
 
     public void applyPreset(SpecialEvent event) {
         if (event == null) return;
+        campaignDifficultyApplied = false;
         eventId = event.id;
         spawnReloadTime = 50f;
         spawnDelay = 15f;
@@ -138,6 +141,7 @@ public class EventInterventionAction extends Action {
 
     public void applyPreset(DefaultIntervention.FleetEvent event) {
         if (event == null) return;
+        campaignDifficultyApplied = false;
         eventId = event.id;
         spawnReloadTime = event.spawnReloadTime;
         spawnDelay = event.spawnDelay;
@@ -159,6 +163,7 @@ public class EventInterventionAction extends Action {
         super.postInit();
         duration = alertTime + 10f * Time.toSeconds + 30f;
         applyScale(InterventionState.scale());
+        applyCampaignDifficulty();
     }
 
     public void applyScale(float scale) {
@@ -169,9 +174,25 @@ public class EventInterventionAction extends Action {
         }
     }
 
+    /** Applies the same enemy-count multiplier that vanilla waves use in campaign. */
+    public void applyCampaignDifficulty() {
+        if (campaignDifficultyApplied) return;
+        campaignDifficultyApplied = true;
+        for (UnitEntry entry : units) {
+            if (entry == null) continue;
+            entry.count = NHDifficulty.scaleEnemySpawnCount(team, entry.count);
+        }
+    }
+
     @Override
     public void begin() {
         if (syncSeed == 0) syncSeed = InterventionSync.nextSyncSeed();
+        if (!specialEventAllowed()) {
+            presentationSuppressed = true;
+            lifeTimer = duration;
+            spawned = true;
+            return;
+        }
         // World processors also run on remote clients. CSS-created interventions must not
         // present locally there — the server alert packet owns client UI (seeds would differ).
         if (RaidLogic.isRemoteClient() && !presentationOnly) {
@@ -280,15 +301,22 @@ public class EventInterventionAction extends Action {
             SpecialEvent specialPreset = DefaultSpecialEvent.get(eventId);
             if (specialPreset != null) applyPreset(specialPreset);
             else applyPreset(DefaultIntervention.get(eventId));
+            applyCampaignDifficulty();
         }
 
         SpecialEvent special = DefaultSpecialEvent.get(eventId);
         if (special != null) {
+            if (!special.difficultyMet()) return;
             special.runEffects(team, targetX, targetY, syncSeed, units);
             return;
         }
 
         spawnJumpIn(team, targetX, targetY, spawnRange, spawnReloadTime, spawnDelay, status, statusDuration, flag, units, syncSeed);
+    }
+
+    private boolean specialEventAllowed() {
+        SpecialEvent special = DefaultSpecialEvent.get(eventId);
+        return special == null || special.difficultyMet();
     }
 
     public static void spawnJumpIn(Team team, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay,

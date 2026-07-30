@@ -1,7 +1,10 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
+import arc.graphics.g3d.VertexBatch3D;
+import arc.math.Mathf;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
 import mindustry.game.Team;
@@ -9,9 +12,10 @@ import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.HexMesh;
 import mindustry.graphics.g3d.MeshBuilder;
 import mindustry.graphics.g3d.MultiMesh;
+import mindustry.graphics.g3d.PlanetGrid.Corner;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
-import mindustry.ui.dialogs.PlanetDialog;
+import mindustry.type.Sector;
 import mindustry.world.meta.Env;
 import newhorizon.expand.map.DysonRingMesh;
 import newhorizon.expand.map.MidanthaPlanetGenerator;
@@ -21,16 +25,18 @@ import static mindustry.graphics.g3d.PlanetRenderer.outlineRad;
 
 public class NHPlanets {
     public static Planet midantha;
+    private static final float sectorGridScale = 1.05f;
 
     public static void load() {
-        midantha = new Planet("midantha", Planets.sun, 1f, 2) {{
+        midantha = new MidanthaPlanet("midantha", Planets.sun, 1f, 2) {{
             visible = true;
             accessible = true;
             alwaysUnlocked = true;
+            allowCampaignRules = true;
             iconColor = NHColor.darkEnrColor;
 
             meshLoader = () -> new HexMesh(this, 6);
-            gridMeshLoader = () -> MeshBuilder.buildPlanetGrid(grid, outlineColor, outlineRad * radius * 1.05f);
+            gridMeshLoader = () -> MeshBuilder.buildPlanetGrid(grid, outlineColor, outlineRad * radius * sectorGridScale);
 
             ruleSetter = r -> {
                 r.waves = true;
@@ -67,5 +73,70 @@ public class NHPlanets {
             startSector = 1;
             defaultEnv = Env.terrestrial | NHContent.radioactive;
         }};
+    }
+
+    /** Keeps sector overlays on the raised grid surface used by Midantha. */
+    private static class MidanthaPlanet extends Planet {
+        MidanthaPlanet(String name, Planet parent, float radius, int sectorSize) {
+            super(name, parent, radius, sectorSize);
+        }
+
+        private float sectorSurfaceRadius(float offset) {
+            return outlineRad * radius * sectorGridScale + offset * radius;
+        }
+
+        @Override
+        public void fill(VertexBatch3D batch, Sector sector, Color color, float offset) {
+            float radius = sectorSurfaceRadius(offset);
+            for (int i = 0; i < sector.tile.corners.length; i++) {
+                Corner corner = sector.tile.corners[i];
+                Corner next = sector.tile.corners[(i + 1) % sector.tile.corners.length];
+                batch.tri(Tmp.v31.set(corner.v).setLength(radius), Tmp.v32.set(next.v).setLength(radius), Tmp.v33.set(sector.tile.v).setLength(radius), color);
+            }
+        }
+
+        @Override
+        public void drawBorders(VertexBatch3D batch, Sector sector, Color base, float alpha) {
+            Color color = Tmp.c1.set(base).a((base.a + 0.3f + Mathf.absin(Time.globalTime, 5f, 0.3f)) * alpha);
+            float innerRadius = radius;
+            float outerRadius = sectorSurfaceRadius(0.001f);
+
+            for (int i = 0; i < sector.tile.corners.length; i++) {
+                Corner corner = sector.tile.corners[i];
+                Corner next = sector.tile.corners[(i + 1) % sector.tile.corners.length];
+
+                Tmp.v31.set(corner.v).setLength(outerRadius);
+                Tmp.v32.set(next.v).setLength(outerRadius);
+                Tmp.v33.set(corner.v).setLength(innerRadius);
+                batch.tri2(Tmp.v31, Tmp.v32, Tmp.v33, color);
+
+                Tmp.v31.set(next.v).setLength(outerRadius);
+                Tmp.v32.set(next.v).setLength(innerRadius);
+                Tmp.v33.set(corner.v).setLength(innerRadius);
+                batch.tri2(Tmp.v31, Tmp.v32, Tmp.v33, color);
+            }
+        }
+
+        @Override
+        public void drawSelection(VertexBatch3D batch, Sector sector, Color color, float stroke, float length) {
+            float radius = sectorSurfaceRadius(length);
+
+            for (int i = 0; i < sector.tile.corners.length; i++) {
+                Corner next = sector.tile.corners[(i + 1) % sector.tile.corners.length];
+                Corner corner = sector.tile.corners[i];
+
+                next.v.scl(radius);
+                corner.v.scl(radius);
+                sector.tile.v.scl(radius);
+
+                Tmp.v31.set(corner.v).sub(sector.tile.v).setLength(corner.v.dst(sector.tile.v) - stroke).add(sector.tile.v);
+                Tmp.v32.set(next.v).sub(sector.tile.v).setLength(next.v.dst(sector.tile.v) - stroke).add(sector.tile.v);
+                batch.quad(corner.v, next.v, Tmp.v32, Tmp.v31, color);
+
+                sector.tile.v.scl(1f / radius);
+                next.v.scl(1f / radius);
+                corner.v.scl(1f / radius);
+            }
+        }
     }
 }
