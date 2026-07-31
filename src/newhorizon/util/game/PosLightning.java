@@ -166,7 +166,10 @@ public class PosLightning {
                     Lightning.create(team, color, damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360f), subLightningLength);
             }
 
-            hitter.create(owner, team, sureTarget.getX(), sureTarget.getY(), 1).damage(damage);
+            Bullet hitterBullet = hitter.create(owner, team, sureTarget.getX(), sureTarget.getY(), 1);
+            if (hitterBullet != null) {
+                hitterBullet.damage(damage);
+            }
         }
 
         createEffect(from, sureTarget, color, lightningNum, lightningWidth);

@@ -77,8 +77,6 @@ import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.cutsceneUI;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
-import static newhorizon.util.ui.TableFunc.dialogHeight;
-import static newhorizon.util.ui.TableFunc.dialogWidth;
 import static newhorizon.util.ui.TableFunc.ui;
 
 public class AirRaider extends CommandableBlock {
@@ -1079,8 +1077,12 @@ public class AirRaider extends CommandableBlock {
             BaseDialog dialog = new BaseDialog("@mod.ui.air-raid-settings");
             dialog.addCloseListener();
 
-            float dialogW = dialogWidth(1080f, 0.84f);
-            float dialogH = dialogHeight(680f, 0.78f);
+            // The stats/action bar is part of the dialog canvas, not extra height below it.
+            // This keeps the whole configuration UI in bounds when UI scale is increased.
+            TableFunc.DialogSize layout = TableFunc.dialogSize(1080f, 820f, 0.84f, 0.88f);
+            float dialogW = layout.width();
+            float statsH = Math.max(ui(LEN) * 2.2f + ui(12f), layout.height() * 0.18f);
+            float dialogH = Math.max(layout.height() - statsH, ui(LEN) * 5f);
             float leftW = dialogW / 3f;
             float rightW = dialogW - leftW;
             float topH = dialogH / 3f;
@@ -1515,7 +1517,6 @@ public class AirRaider extends CommandableBlock {
         float get(Item item, float amount);
     }
 }
-
 
 
 

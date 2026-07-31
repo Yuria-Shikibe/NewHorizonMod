@@ -89,8 +89,6 @@ import static mindustry.Vars.*;
 import static newhorizon.util.func.NHFunc.regSize;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
-import static newhorizon.util.ui.TableFunc.dialogHeight;
-import static newhorizon.util.ui.TableFunc.dialogWidth;
 import static newhorizon.util.ui.TableFunc.ui;
 
 public class JumpGate extends Block {
@@ -911,8 +909,12 @@ public class JumpGate extends Block {
             BaseDialog dialog = new BaseDialog("@spawn");
             dialog.addCloseListener();
 
-            float dialogW = dialogWidth(960f, 0.82f);
-            float dialogH = dialogHeight(620f, 0.76f);
+            // Include the amount selector and action row in the fitted canvas.  They used to
+            // be appended after dialogH had been calculated, which pushed the dialog off-screen.
+            TableFunc.DialogSize layout = TableFunc.dialogSize(960f, 760f, 0.82f, 0.88f);
+            float dialogW = layout.width();
+            float footerH = Math.max(ui(LEN) * 2f + ui(12f), layout.height() * 0.15f);
+            float dialogH = Math.max(layout.height() - footerH, ui(LEN) * 4f);
             float leftW = dialogW / 3f;
             float rightW = dialogW * 2f / 3f;
             float len = Mathf.clamp(ui(LEN), 42f, dialogH * 0.09f);
