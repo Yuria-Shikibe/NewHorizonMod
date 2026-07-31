@@ -42,6 +42,11 @@ ext{
     mindustryVersion = "v159.7"
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+
+    mindustryJar = "E:/project/MindustryModDevLib/Mindustry8.0.jar"
+    steamModsDir = "E:/Steam/steamapps/common/Mindustry/saves/mods"
+    appDataModsDir = "${System.getenv('APPDATA')}/Mindustry/mods"
+    modDeployName = "SpaceIndustryModJar.jar"
 }
 
 dependencies{
