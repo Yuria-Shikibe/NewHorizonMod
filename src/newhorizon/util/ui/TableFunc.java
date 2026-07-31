@@ -109,7 +109,22 @@ public class TableFunc {
         return new DialogSize(designWidth * fit, designHeight * fit);
     }
 
-    public record DialogSize(float width, float height) {
+    public static class DialogSize {
+        private final float width;
+        private final float height;
+
+        public DialogSize(float width, float height) {
+            this.width = width;
+            this.height = height;
+        }
+
+        public float width() {
+            return width;
+        }
+
+        public float height() {
+            return height;
+        }
     }
 
     public static float dialogWidth(float design, float screenFrac) {
