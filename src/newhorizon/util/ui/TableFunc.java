@@ -90,13 +90,35 @@ public class TableFunc {
         return value * softUiScale();
     }
 
+    /**
+     * A dialog content size that remains inside the usable viewport at every UI scale.
+     * <p>
+     * Scene coordinates are physical pixels, while the contents of a dialog (fonts, paddings
+     * and controls) are enlarged by {@link Scl}.  Sizing a dialog straight from
+     * {@link Core#graphics} therefore works at the default scale but allows the enlarged
+     * contents to leave the screen at higher scales.  Fit the design canvas into the viewport
+     * after converting it to UI units, keeping its aspect ratio intact.
+     */
+    public static DialogSize dialogSize(float designWidth, float designHeight, float widthFraction, float heightFraction) {
+        float uiScale = Math.max(Scl.scl(), 0.01f);
+        float viewportWidth = Core.graphics.getWidth() / uiScale;
+        float viewportHeight = Core.graphics.getHeight() / uiScale;
+        float maxWidth = viewportWidth * Mathf.clamp(widthFraction, 0.5f, 0.95f);
+        float maxHeight = viewportHeight * Mathf.clamp(heightFraction, 0.5f, 0.95f);
+        float fit = Math.min(1f, Math.min(maxWidth / designWidth, maxHeight / designHeight));
+        return new DialogSize(designWidth * fit, designHeight * fit);
+    }
+
+    public record DialogSize(float width, float height) {
+    }
+
     public static float dialogWidth(float design, float screenFrac) {
-        float max = Core.graphics.getWidth() * Mathf.clamp(screenFrac, 0.5f, 0.95f);
+        float max = Core.graphics.getWidth() / Math.max(Scl.scl(), 0.01f) * Mathf.clamp(screenFrac, 0.5f, 0.95f);
         return Math.min(design, max);
     }
 
     public static float dialogHeight(float design, float screenFrac) {
-        float max = Core.graphics.getHeight() * Mathf.clamp(screenFrac, 0.5f, 0.95f);
+        float max = Core.graphics.getHeight() / Math.max(Scl.scl(), 0.01f) * Mathf.clamp(screenFrac, 0.5f, 0.95f);
         return Math.min(design, max);
     }
 

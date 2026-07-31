@@ -5198,6 +5198,7 @@ public class NHUnitTypes {
                                 Tmp.v1.set(mount.aimX, mount.aimY).sub(unit).nor().scl(Math.min(Tmp.v6.len(), rangeWeapon)).add(unit);
 
                                 Bullet b = bullet.create(unit, unit.team, Tmp.v1.x, Tmp.v1.y, 0);
+                                if (b == null) return;
                                 b.vel.setZero();
                                 b.set(Tmp.v1);
                                 unit.apply(shootStatus, shootStatusDuration);
