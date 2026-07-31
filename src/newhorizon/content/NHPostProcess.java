@@ -36,6 +36,7 @@ import newhorizon.NHSetting;
 import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
+import newhorizon.expand.logic.cutscene.ExtendedCutsceneZoom;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -339,6 +340,7 @@ public class NHPostProcess {
     }
 
     public static void postProcessOverride() {
+        ExtendedCutsceneZoom.load();
         overrideStats();
     }
 
@@ -355,7 +357,8 @@ public class NHPostProcess {
                 NHItems.presstanium, NHItems.juniorProcessor, NHItems.carbide, NHItems.metalOxhydrigen,
                 NHItems.surgeAlloy, NHItems.phaseFabric, NHItems.multipleSteel, NHItems.seniorProcessor,
                 NHItems.irayrondPanel, NHItems.setonAlloy, NHItems.nodexPlate, NHItems.ancimembrane,
-                NHItems.fusionEnergy, NHItems.thermoCorePositive, NHItems.thermoCoreNegative, NHItems.darkEnergy
+                NHItems.fusionEnergy, NHItems.thermoCorePositive, NHItems.thermoCoreNegative, NHItems.darkEnergy,
+                NHItems.hadronicomp,NHItems.hyperProcessor
         );
 
         Seq<Liquid> liquids = Seq.with(NHLiquids.quantumLiquid, NHLiquids.xenFluid, NHLiquids.zetaFluidPositive, NHLiquids.zetaFluidNegative, NHLiquids.irdryonFluid);
@@ -1299,35 +1302,38 @@ public class NHPostProcess {
         adjustContent(Blocks.coreShard, content -> {
             CoreBlock core = (CoreBlock) content;
             core.buildVisibility = BuildVisibility.shown;
-            //core.health *= 5;
+            core.health *= 5;
             core.armor = 5;
         });
 
         adjustContent(Blocks.coreFoundation, content -> {
             CoreBlock core = (CoreBlock) content;
-            //core.health *= 5;
+            core.health *= 5;
             core.armor = 10;
         });
 
         adjustContent(Blocks.coreNucleus, content -> {
             CoreBlock core = (CoreBlock) content;
-            //core.health *= 5;
+            core.health *= 5;
             core.armor = 15;
         });
 
 
         adjustContent(Blocks.coreBastion, content -> {
             CoreBlock core = (CoreBlock) content;
+            core.health *= 2;
             core.incinerateNonBuildable = false;
             core.requiresCoreZone = false;
         });
         adjustContent(Blocks.coreCitadel, content -> {
             CoreBlock core = (CoreBlock) content;
+            core.health *= 2;
             core.incinerateNonBuildable = false;
             core.requiresCoreZone = false;
         });
         adjustContent(Blocks.coreAcropolis, content -> {
             CoreBlock core = (CoreBlock) content;
+            core.health *= 2;
             core.incinerateNonBuildable = false;
             core.requiresCoreZone = false;
         });

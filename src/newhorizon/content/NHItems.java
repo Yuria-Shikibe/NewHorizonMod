@@ -27,7 +27,7 @@ public class NHItems {
             frameTime = 3f;
         }};
         silicar = new Item("silicar", Color.valueOf("5e7b9d")) {{
-            hardness = 3;
+            hardness = 2;
         }};
         presstanium = new Item("presstanium", Color.valueOf("90a0e4")) {{
             hardness = 8;

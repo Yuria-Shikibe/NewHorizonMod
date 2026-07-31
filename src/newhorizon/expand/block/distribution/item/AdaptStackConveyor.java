@@ -29,6 +29,7 @@ public class AdaptStackConveyor extends StackConveyor {
 
         canOverdrive = false;
         placeableLiquid = true;
+        drawCached = false;
     }
 
     @Override

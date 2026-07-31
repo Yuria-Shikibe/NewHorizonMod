@@ -5,6 +5,11 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.net.Net;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
+import newhorizon.expand.net.packet.InterventionAlertPacket;
+import newhorizon.expand.net.packet.InterventionClearPacket;
+import newhorizon.expand.net.packet.InterventionScalePacket;
+import newhorizon.expand.net.packet.InterventionScaleRequestPacket;
+import newhorizon.expand.net.packet.InterventionSyncRequestPacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
 import newhorizon.expand.net.packet.RaidAlertPacket;
 import newhorizon.expand.net.packet.RaidBulletPacket;
@@ -23,6 +28,11 @@ public class NHRegister {
         Net.registerPacket(RaidBulletPacket::new);
         Net.registerPacket(RaidSyncRequestPacket::new);
         Net.registerPacket(RaidClearPacket::new);
+        Net.registerPacket(InterventionScalePacket::new);
+        Net.registerPacket(InterventionScaleRequestPacket::new);
+        Net.registerPacket(InterventionAlertPacket::new);
+        Net.registerPacket(InterventionSyncRequestPacket::new);
+        Net.registerPacket(InterventionClearPacket::new);
     }
 
     public static void load() {

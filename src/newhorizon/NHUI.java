@@ -16,11 +16,13 @@ import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
+import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Log;
 import arc.util.Reflect;
 import arc.util.Scaling;
 import arc.util.Strings;
+import arc.util.Time;
 import mindustry.editor.MapEditorDialog;
 import mindustry.game.Gamemode;
 import mindustry.game.MapObjectives;
@@ -37,6 +39,7 @@ import newhorizon.expand.game.DefaultRaidStrength;
 import newhorizon.expand.game.RaidState;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
+import newhorizon.util.ui.CustomProgressBarEntry;
 import newhorizon.util.ui.ObjectiveSign;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 
@@ -52,6 +55,7 @@ public class NHUI {
     public static Element infoTable;
 
     public static Table objectiveList, eventList;
+    public static final Seq<CustomProgressBarEntry> customProgressBars = new Seq<>();
 
     public static NHWorldSettingDialog nhWorldSettingDialog;
 
@@ -172,14 +176,40 @@ public class NHUI {
     }
 
     public static void rebuildEventList() {
+        if (eventList == null) return;
         eventList.clear();
         eventList.align(Align.topLeft).defaults().growX().fillY().row();
+        // Keep custom bars directly below the raid-strength bar in their creation order.
+        for (CustomProgressBarEntry progressBar : customProgressBars) {
+            DelayCollapser col = new DelayCollapser(progressBar.getDisplayStack(), progressBar.completed());
+            col.setCollapsed(true, progressBar::completed);
+            eventList.add(col).row();
+        }
         for (var eventHudMarker : cutsceneUI.markers) {
             Boolp shown = eventHudMarker::completed;
             DelayCollapser col = new DelayCollapser(eventHudMarker.getDisplayStack(), shown.get());
             col.setCollapsed(true, shown);
             eventList.add(col).row();
         }
+    }
+
+    public static CustomProgressBarEntry addCustomProgressBar() {
+        CustomProgressBarEntry entry = new CustomProgressBarEntry();
+        customProgressBars.add(entry);
+        rebuildEventList();
+        return entry;
+    }
+
+    public static void completeCustomProgressBar(CustomProgressBarEntry entry) {
+        entry.complete();
+        Time.run(30f, () -> {
+            if (customProgressBars.remove(entry)) rebuildEventList();
+        });
+    }
+
+    public static void clearCustomProgressBars() {
+        customProgressBars.clear();
+        rebuildEventList();
     }
 
     public static String getDisplayObjectiveCount() {
@@ -193,7 +223,7 @@ public class NHUI {
     }
 
     public static String getDisplayEventCount() {
-        int eventCount = cutsceneUI.markers.size;
+        int eventCount = cutsceneUI.markers.size + customProgressBars.size;
         return eventCount == 0 ? Core.bundle.get("mod.ui.no-event") : Core.bundle.format("mod.ui.event-count", eventCount);
     }
 

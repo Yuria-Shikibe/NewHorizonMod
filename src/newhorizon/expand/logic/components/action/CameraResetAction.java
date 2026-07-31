@@ -9,6 +9,7 @@ import newhorizon.expand.logic.components.Action;
 import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 import static mindustry.Vars.player;
+import static newhorizon.NHVars.cutsceneUI;
 
 public class CameraResetAction extends Action {
     @Override
@@ -38,5 +39,6 @@ public class CameraResetAction extends Action {
     @Override
     public void skip() {
         control.input.logicCutscene = false;
+        if (cutsceneUI != null) cutsceneUI.clearForcedCameraZoom();
     }
 }

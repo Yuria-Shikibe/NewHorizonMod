@@ -71,7 +71,7 @@ public class NHBullets {
     private static void loadPriority() {
         arc_9000_frag = new FlakBulletType(3.75f, 200) {
             {
-                trailColor = lightColor = lightningColor = NHColor.darkEnrColor;
+                trailColor = lightColor = lightningColor = hitColor = NHColor.darkEnrColor;
                 backColor = NHColor.darkEnrColor;
                 frontColor = NHColor.darkEnrFront;
 
@@ -80,7 +80,7 @@ public class NHBullets {
                 trailRotation = true;
                 trailInterval = 3;
 
-                trailEffect = NHFx.polyTrail(backColor, frontColor, 4.65f, 22f);
+                trailEffect = NHFx.polyTrail(4.65f, 22f);
                 trailChance = 0f;
                 despawnEffect = hitEffect = NHFx.darkErnExplosion;
                 knockback = 12f;
@@ -94,7 +94,6 @@ public class NHBullets {
                 lightningLength = 8;
                 smokeEffect = Fx.shootBigSmoke2;
                 hitShake = 8f;
-                //hitSound = Sounds.beamPlasma;
                 status = StatusEffects.sapped;
 
                 statusDuration = 60f * 10;
@@ -2054,7 +2053,7 @@ public class NHBullets {
                 collides = false;
                 ammoMultiplier = 1f;
                 lifetime = 300;
-                despawnEffect = NHFx.circleOut(hitColor, splashDamageRadius * 1.5f);
+                despawnEffect = NHFx.energyCircleOut(splashDamageRadius * 1.5f);
                 hitEffect = NHFx.largeDarkEnergyHit;
                 shootEffect = NHFx.darkEnergyShootBig;
                 smokeEffect = NHFx.darkEnergySmokeBig;
@@ -2856,3 +2855,4 @@ public class NHBullets {
         RaidBullets.load();
     }
 }
+

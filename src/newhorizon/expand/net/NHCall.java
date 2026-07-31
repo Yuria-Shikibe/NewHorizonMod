@@ -1,17 +1,25 @@
 package newhorizon.expand.net;
 
+import arc.graphics.Color;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
+import mindustry.gen.Groups;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import newhorizon.expand.ability.active.ActiveAbility;
+import newhorizon.expand.game.InterventionState;
 import newhorizon.expand.game.RaidLogic;
 import newhorizon.expand.game.RaidState;
+import newhorizon.expand.logic.components.action.EventInterventionAction;
 import newhorizon.expand.logic.components.action.EventRaidAction;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
+import newhorizon.expand.net.packet.InterventionAlertPacket;
+import newhorizon.expand.net.packet.InterventionScalePacket;
+import newhorizon.expand.net.packet.InterventionScaleRequestPacket;
+import newhorizon.expand.net.packet.InterventionSyncRequestPacket;
 import newhorizon.expand.net.packet.RaidAlertPacket;
 import newhorizon.expand.net.packet.RaidBulletPacket;
 import newhorizon.expand.net.packet.RaidClearPacket;
@@ -85,6 +93,18 @@ public class NHCall {
     }
 
     public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY) {
+        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, null, 0, 0, 0f, 0f, 0f);
+    }
+
+    public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint) {
+        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, tint, 0, 0, 0f, 0f, 0f);
+    }
+
+    public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint, int lightning, int lightningLength, float lightningDamage) {
+        syncRaidBullet(type, team, x, y, angle, damage, velocityScl, lifetimeScl, aimX, aimY, tint, lightning, lightningLength, lightningDamage, 0f, 0f);
+    }
+
+    public static void syncRaidBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, float aimX, float aimY, Color tint, int lightning, int lightningLength, float lightningDamage, float bulletSpeed, float bulletLifetime) {
         if (!Vars.net.server() || !Vars.net.active() || type == null || team == null) return;
         RaidBulletPacket packet = new RaidBulletPacket();
         packet.bulletId = type.id;
@@ -97,6 +117,61 @@ public class NHCall {
         packet.lifetimeScl = lifetimeScl;
         packet.aimX = aimX;
         packet.aimY = aimY;
+        packet.tintRgba = (tint == null ? Color.white : tint).rgba8888();
+        packet.lightning = Math.max(lightning, 0);
+        packet.lightningLength = Math.max(lightningLength, 0);
+        packet.lightningDamage = Math.max(lightningDamage, 0f);
+        packet.bulletSpeed = Math.max(bulletSpeed, 0f);
+        packet.bulletLifetime = Math.max(bulletLifetime, 0f);
         Vars.net.send(packet, true);
+    }
+
+    public static void setInterventionScale(float scale, Player player) {
+        if (player != null && !player.admin) {
+            player.sendMessage("[scarlet]Admin only.");
+            return;
+        }
+
+        if (Vars.net.client() && !Vars.net.server()) {
+            InterventionScaleRequestPacket packet = new InterventionScaleRequestPacket();
+            packet.scale = scale;
+            Vars.net.send(packet, true);
+            return;
+        }
+
+        applyInterventionScale(scale, player);
+    }
+
+    public static void applyInterventionScale(float scale, Player player) {
+        InterventionState.setScale(scale);
+        Log.info("Intervention scale set to @", scale);
+        if (player != null) {
+            player.sendMessage("[accent]Intervention scale: []" + scale + (scale > 0.001f ? " [green](on)" : " [lightgray](off)"));
+        }
+        if (Vars.net.server() && Vars.net.active()) {
+            InterventionScalePacket packet = new InterventionScalePacket();
+            packet.scale = scale;
+            Vars.net.send(packet, true);
+        }
+    }
+
+    public static void syncInterventionAlert(EventInterventionAction action) {
+        if (!Vars.net.server() || !Vars.net.active() || action == null) return;
+        for (Player player : Groups.player) {
+            if (player == null || player.isLocal()) continue;
+            syncInterventionAlertTo(action, player);
+        }
+    }
+
+    public static void syncInterventionAlertTo(EventInterventionAction action, Player player) {
+        if (!Vars.net.server() || !Vars.net.active() || action == null || player == null) return;
+        var con = player.con();
+        if (con == null) return;
+        con.send(new InterventionAlertPacket(action), true);
+    }
+
+    public static void requestInterventionSync() {
+        if (!RaidLogic.isRemoteClient() || !Vars.net.active()) return;
+        Vars.net.send(new InterventionSyncRequestPacket(), true);
     }
 }

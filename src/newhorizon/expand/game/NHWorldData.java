@@ -3,9 +3,10 @@ package newhorizon.expand.game;
 import mindustry.io.SaveVersion;
 
 public class NHWorldData {
-    public static short CURRENT_VER = 1;
+    public static short CURRENT_VER = 2;
 
-    public WorldData worldData = new WorldData();
+    public EventSaveData eventSaveData = new EventSaveData();
+    public WorldData worldData = new WorldData(eventSaveData);
     public TeamPayloadData teamPayloadData = new TeamPayloadData();
 
     public NHWorldData() {

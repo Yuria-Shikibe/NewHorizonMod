@@ -24,6 +24,7 @@ import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
+import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
 import arc.util.Log;
@@ -78,6 +79,26 @@ public class TableFunc {
     private static UnitType selected = UnitTypes.alpha;
     private static long lastToast;
     private static Table pTable = new Table(), floatTable = new Table();
+
+    public static float softUiScale() {
+        float s = Scl.scl(1f);
+        if (s <= 1f) return Mathf.clamp(s, 0.75f, 1f);
+        return Mathf.clamp(1f + (s - 1f) * 0.32f, 1f, 1.28f);
+    }
+
+    public static float ui(float value) {
+        return value * softUiScale();
+    }
+
+    public static float dialogWidth(float design, float screenFrac) {
+        float max = Core.graphics.getWidth() * Mathf.clamp(screenFrac, 0.5f, 0.95f);
+        return Math.min(design, max);
+    }
+
+    public static float dialogHeight(float design, float screenFrac) {
+        float max = Core.graphics.getHeight() * Mathf.clamp(screenFrac, 0.5f, 0.95f);
+        return Math.min(design, max);
+    }
 
     public static String format(float value) {
         return df.format(value);

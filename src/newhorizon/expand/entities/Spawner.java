@@ -1,6 +1,7 @@
 package newhorizon.expand.entities;
 
 import arc.Events;
+import arc.func.Cons;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
@@ -61,6 +62,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc {
     public Unit toSpawn;
     public Vec2 commandPos = new Vec2(Float.NaN, Float.NaN);
     public float trailWidth = 3f;
+    public Cons<Unit> afterSpawn;
 
     @Override
     public float clipSize() {
@@ -173,6 +175,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc {
         if (!Vars.net.client()) toSpawn.add();
         toSpawn.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
         toSpawn.apply(statusEntry.effect, statusEntry.time);
+        if (afterSpawn != null) afterSpawn.get(toSpawn);
         if (commandPos != null && !commandPos.isNaN()) {
             if (toSpawn.isCommandable()) {
                 CommandAI ai = new CommandAI();

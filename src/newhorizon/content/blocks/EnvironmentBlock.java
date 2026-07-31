@@ -26,7 +26,7 @@ public class EnvironmentBlock {
             oreBerylliumDense, oreTungstenDense, oreCrystalThoriumDense,
             oreZeta, oreSilicar,
             oreZetaDense, oreSilicarDense,
-            oreClusterTitanium, oreClusterZeta,
+            oreClusterSlicar,oreClusterTitanium, oreClusterZeta,
             oreWallTitanium, oreWallZeta,
 
     armorFloor0, armorFloor1, armorFloor2, armorFloor3, armorFloor4, armorFloor5, armorFloor6, armorFloor7,
@@ -90,6 +90,13 @@ public class EnvironmentBlock {
             attributes.set(NHContent.density, 1f);
         }};
 
+        oreClusterSlicar = new TallBlock("ore-cluster-silicar") {{
+            itemDrop = NHItems.silicar;
+            shadowOffset = -1f;
+
+            attributes.set(NHContent.density, 1f);
+        }};
+
         oreClusterTitanium = new TallBlock("ore-cluster-titanium") {{
             itemDrop = NHItems.titanium;
             shadowOffset = -1f;
@@ -108,11 +115,13 @@ public class EnvironmentBlock {
 
         oreWallTitanium = new StaticWall("ore-wall-titanium") {{
             itemDrop = NHItems.titanium;
+            attributes.set(NHContent.density, 0.5f);
             variants = 3;
         }};
 
         oreWallZeta = new StaticWall("ore-wall-zeta") {{
             itemDrop = NHItems.zeta;
+            attributes.set(NHContent.density, 0.5f);
             variants = 3;
         }};
 

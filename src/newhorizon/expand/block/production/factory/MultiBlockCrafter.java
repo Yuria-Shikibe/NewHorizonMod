@@ -263,7 +263,7 @@ public class MultiBlockCrafter extends BasicMultiBlock {
             }
 
             if (wasVisible) {
-                craftEffect.at(x, y);
+                craftEffect.at(x, y, rotdeg());
             }
             progress %= 1f;
         }

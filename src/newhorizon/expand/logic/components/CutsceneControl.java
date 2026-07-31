@@ -60,7 +60,27 @@ public class CutsceneControl {
 
     public static ActionBus parseCode(String code) {
         ActionBus bus = new ActionBus();
-        parseLine(code).each(line -> bus.add(parseAction(line)));
+        Seq<String> lines = parseLine(code);
+        for (int i = 0; i < lines.size; i++) {
+            String line = lines.get(i).trim();
+            if (line.isEmpty()) continue;
+
+            if (line.startsWith("event-special ") || line.equals("event-special")) {
+                Seq<String> unitLines = new Seq<>();
+                while (i + 1 < lines.size) {
+                    String next = lines.get(i + 1).trim();
+                    if (!next.startsWith("event-special-unit")) break;
+                    i++;
+                    unitLines.add(next);
+                }
+                bus.add(parseSpecialEvent(line, unitLines));
+                continue;
+            }
+
+            if (line.startsWith("event-special-unit")) continue;
+
+            bus.add(parseAction(line));
+        }
         return bus;
     }
 
@@ -76,6 +96,35 @@ public class CutsceneControl {
             result.add(matcher.group(1) != null ? matcher.group(1) : matcher.group());
         }
         return result;
+    }
+
+    public static Action parseSpecialEvent(String headerLine, Seq<String> unitLines) {
+        try {
+            Log.info("Parsing String: " + headerLine);
+            Seq<String> tokens = parseToken(headerLine);
+            if (tokens.isEmpty()) return new NullAction();
+            tokens.remove(0);
+
+            // new header is at most team/alert/range/override/[x/y] (4 or 6 tokens);
+            // larger payloads are legacy single-line event-special with inline units
+            if (tokens.size <= 6) {
+                tokens.add(String.valueOf(unitLines.size));
+                for (String unitLine : unitLines) {
+                    Seq<String> unitTokens = parseToken(unitLine);
+                    if (unitTokens.isEmpty()) continue;
+                    unitTokens.remove(0);
+                    tokens.addAll(unitTokens);
+                }
+            }
+
+            Func<String[], ? extends Action> parser = actionParser.get("event-special");
+            if (parser == null) return new NullAction();
+            return parser.get(tokens.toArray(String.class));
+        } catch (Exception e) {
+            Log.err("Error when parsing special event: " + headerLine);
+            Log.err(e);
+            return new NullAction();
+        }
     }
 
     public static Action parseAction(String tokens) {

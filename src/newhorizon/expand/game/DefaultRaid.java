@@ -34,7 +34,7 @@ import static mindustry.Vars.*;
 import static newhorizon.NHVars.cutscene;
 
 public class DefaultRaid {
-    private static final float PROTECTION_TIME = 300f;
+    private static final float PROTECTION_TIME = 600f;
     private static final float COOLDOWN_MIN = 60f;
     private static final float COOLDOWN_RANGE = 120f;
     private static final int OVERRIDE_CHECK_INTERVAL = 120;
@@ -126,6 +126,12 @@ public class DefaultRaid {
         return null;
     }
 
+    public static void restoreAction(ActionBus bus, EventRaidAction action) {
+        if (bus == null || action == null) return;
+        currentRaidBus = bus;
+        raidRunning = true;
+    }
+
     public static void register(int id, BulletType bullet, float alertTime, float raidTime, float raidScale, float inaccuracy) {
         raids.put(id, new RaidEvent(id, bullet, alertTime, raidTime, raidScale, inaccuracy));
     }
@@ -197,7 +203,7 @@ public class DefaultRaid {
         if (!RaidState.enabled()) return;
         if (!RaidLogic.isLogicSide()) return;
         if (!state.isPlaying()) return;
-        if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
+        if (state.rules.editor || state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
 
         if (overrideCheck.get(0, OVERRIDE_CHECK_INTERVAL)) {
             NHLogic.refreshCustomRaidLogic();

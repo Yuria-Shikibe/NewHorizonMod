@@ -764,16 +764,20 @@ public class NHFx {
     })),
 
     largeDarkEnergyHitCircle = new Effect(20f, e -> {
-        color(NHColor.darkEnrColor);
+        Color base = energyColor(e.color);
+        Color dark = energyDark(base);
+        color(base);
         Fill.circle(e.x, e.y, e.fout() * 44);
         randLenVectors(e.id, 5, 60f * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 8));
-        color(NHColor.darkEnr);
+        color(dark);
         Fill.circle(e.x, e.y, e.fout() * 30);
-        Drawf.light(e.x, e.y, e.fout() * 55f, NHColor.darkEnrColor, 0.7f);
+        Drawf.light(e.x, e.y, e.fout() * 55f, base, 0.7f);
     }),
 
     largeDarkEnergyHit = new Effect(50, e -> {
-        color(NHColor.darkEnrColor);
+        Color base = energyColor(e.color);
+        Color dark = energyDark(base);
+        color(base);
         Fill.circle(e.x, e.y, e.fout() * 44);
         stroke(e.fout() * 3.2f);
         circle(e.x, e.y, e.fin() * 80);
@@ -785,9 +789,9 @@ public class NHFx {
         });
 
         Draw.z(EFFECT_MASK);
-        color(NHColor.darkEnr);
+        color(dark);
         Fill.circle(e.x, e.y, e.fout() * 30);
-        Drawf.light(e.x, e.y, e.fout() * 80f, NHColor.darkEnrColor, 0.7f);
+        Drawf.light(e.x, e.y, e.fout() * 80f, base, 0.7f);
 
         Draw.z(EFFECT_BOTTOM);
         Fill.circle(e.x, e.y, e.fout() * 31);
@@ -795,7 +799,9 @@ public class NHFx {
     }).layer(Layer.effect - 0.0001f),
 
     mediumDarkEnergyHit = new Effect(23, e -> {
-        color(NHColor.darkEnrColor);
+        Color base = energyColor(e.color);
+        Color dark = energyDark(base);
+        color(base);
         stroke(e.fout() * 2.8f);
         circle(e.x, e.y, e.fin() * 60);
         stroke(e.fout() * 2.12f);
@@ -805,27 +811,30 @@ public class NHFx {
         randLenVectors(e.id, 9, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 12f));
 
         Fill.circle(e.x, e.y, e.fout() * 22);
-        color(NHColor.darkEnr);
+        color(dark);
         Fill.circle(e.x, e.y, e.fout() * 14);
-        Drawf.light(e.x, e.y, e.fout() * 80f, NHColor.darkEnrColor, 0.7f);
+        Drawf.light(e.x, e.y, e.fout() * 80f, base, 0.7f);
     }),
 
     darkEnergySmokeBig = new Effect(30f, e -> {
-        color(NHColor.darkEnrColor);
+        Color base = energyColor(e.color);
+        Color dark = energyDark(base);
+        color(base);
         Fill.circle(e.x, e.y, e.fout() * 32);
-        color(NHColor.darkEnr);
+        color(dark);
         Fill.circle(e.x, e.y, e.fout() * 20);
-        Drawf.light(e.x, e.y, e.fout() * 36f, NHColor.darkEnrColor, 0.7f);
+        Drawf.light(e.x, e.y, e.fout() * 36f, base, 0.7f);
     }),
 
     darkEnergyShootBig = new Effect(40f, 100, e -> {
-        color(NHColor.darkEnrColor);
+        Color base = energyColor(e.color);
+        color(base);
         stroke(e.fout() * 3.7f);
         circle(e.x, e.y, e.fin() * 100 + 15);
         stroke(e.fout() * 2.5f);
         circle(e.x, e.y, e.fin() * 60 + 15);
         randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f));
-        Drawf.light(e.x, e.y, e.fout() * 120f, NHColor.darkEnrColor, 0.7f);
+        Drawf.light(e.x, e.y, e.fout() * 120f, base, 0.7f);
     }),
 
     polyTrail = new Effect(25f, e -> {
@@ -867,20 +876,22 @@ public class NHFx {
     }),
 
     darkEnergyCharge = new Effect(130f, e -> {
+        Color base = energyColor(e.color);
+        Color dark = energyDark(base);
         rand.setSeed(e.id);
         randLenVectors(e.id, 12, 140f * e.fout(Interp.pow3Out), (x, y) -> {
-            color(NHColor.darkEnrColor);
+            color(base);
             float rad = rand.random(9f, 18f);
             float scl = rand.random(0.6f, 1f);
             float dx = e.x + scl * x, dy = e.y + scl * y;
             Fill.circle(dx, dy, e.fin() * rad);
-            color(NHColor.darkEnr);
+            color(dark);
             Draw.z(EFFECT_MASK);
             Fill.circle(dx, dy, e.fin() * rad / 1.8f);
             Draw.z(EFFECT_BOTTOM);
             Fill.circle(dx, dy, e.fin() * rad / 1.8f);
             Draw.z(Layer.effect);
-            Drawf.light(dx, dy, e.fin() * rad * 1.5f, NHColor.darkEnrColor, 0.7f);
+            Drawf.light(dx, dy, e.fin() * rad * 1.5f, base, 0.7f);
         });
     }),
 
@@ -911,18 +922,20 @@ public class NHFx {
     }),
 
     darkEnergyChargeBegin = new Effect(130f, e -> {
-        color(NHColor.darkEnrColor);
+        Color base = energyColor(e.color);
+        Color dark = energyDark(base);
+        color(base);
         Fill.circle(e.x, e.y, e.fin() * 32);
         stroke(e.fin() * 3.7f);
         circle(e.x, e.y, e.fout() * 80);
         Draw.z(EFFECT_MASK);
-        color(NHColor.darkEnr);
+        color(dark);
         Fill.circle(e.x, e.y, e.fin() * 20);
 
         Draw.z(EFFECT_BOTTOM);
-        color(NHColor.darkEnr);
+        color(dark);
         Fill.circle(e.x, e.y, e.fin() * 22);
-        Drawf.light(e.x, e.y, e.fin() * 35f, NHColor.darkEnrColor, 0.7f);
+        Drawf.light(e.x, e.y, e.fin() * 35f, base, 0.7f);
     }),
 
     upgrading = new Effect(30, e -> {
@@ -932,7 +945,8 @@ public class NHFx {
     }),
 
     darkErnExplosion = new Effect(40, e -> {
-        color(NHColor.darkEnrColor);
+        Color base = energyColor(e.color);
+        color(base);
         e.scaled(20, i -> {
             stroke(3f * i.foutpow());
             circle(e.x, e.y, 3f + i.finpow() * 80f);
@@ -945,7 +959,7 @@ public class NHFx {
 
         randLenVectors(e.id, 5, 2f + 70 * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f));
 
-        Drawf.light(e.x, e.y, e.fout(Interp.pow2Out) * 100f, NHColor.darkEnrColor, 0.7f);
+        Drawf.light(e.x, e.y, e.fout(Interp.pow2Out) * 100f, base, 0.7f);
     }),
 
     lightSkyCircleSplash = new Effect(26f, e -> {
@@ -1292,6 +1306,46 @@ public class NHFx {
             Draw.color(e.color, Color.white, e.fout() * 0.7f);
             Lines.stroke(thick * e.fout());
             Lines.circle(e.x, e.y, radius * e.fin(Interp.pow3Out));
+        });
+    }
+
+    public static Color energyColor(Color color) {
+        if (color == null || color.equals(Color.white) || color.a < 0.02f) {
+            return NHColor.darkEnrColor;
+        }
+        return color;
+    }
+
+    public static Color energyDark(Color color) {
+        return Tmp.c1.set(energyColor(color)).lerp(Color.black, 0.85f);
+    }
+
+    public static Color energyFront(Color color) {
+        return Tmp.c2.set(energyColor(color)).lerp(Color.white, 0.45f);
+    }
+
+    public static Effect energyCircleOut(float range) {
+        return new Effect(Mathf.clamp(range / 2, 45f, 360f), range * 1.5f, e -> {
+            rand.setSeed(e.id);
+            Color base = energyColor(e.color);
+            Draw.color(Color.white, base, e.fin() + 0.6f);
+            float circleRad = e.fin(Interp.circleOut) * range;
+            Lines.stroke(Mathf.clamp(range / 24, 4, 20) * e.fout());
+            Lines.circle(e.x, e.y, circleRad);
+            if (NHSetting.enableDetails()) for (int i = 0; i < Mathf.clamp(range / 12, 9, 60); i++) {
+                Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
+                DrawFunc.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+            }
+        });
+    }
+
+    public static Effect polyTrail(float size, float lifetime) {
+        return new Effect(lifetime, size * 2, e -> {
+            Color from = energyColor(e.color);
+            Color to = energyFront(e.color);
+            color(from, to, e.fin());
+            Fill.poly(e.x, e.y, 6, size * e.fout(), e.rotation);
+            Drawf.light(e.x, e.y, e.fout() * size, from, 0.7f);
         });
     }
 
@@ -1893,6 +1947,7 @@ public class NHFx {
     }
 
 }
+
 
 
 

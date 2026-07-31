@@ -6,6 +6,7 @@ import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.special.JumpGate;
+import newhorizon.expand.block.special.JumpGate.JumpGateBuild;
 
 import static mindustry.type.ItemStack.with;
 

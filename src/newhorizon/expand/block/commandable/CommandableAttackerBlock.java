@@ -65,7 +65,9 @@ public abstract class CommandableAttackerBlock extends CommandableBlock {
         super.setStats();
 //		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shootp", "\n 1 -> Control All\n 2 -> Control Single")));
         stats.add(Stat.range, range / tilesize, StatUnit.blocks);
-        stats.add(Stat.damage, StatValues.ammo(ObjectMap.of(this, bullet)));
+        if (bullet != null) {
+            stats.add(Stat.damage, StatValues.ammo(ObjectMap.of(this, bullet)));
+        }
     }
 
     @Override
@@ -248,3 +250,5 @@ public abstract class CommandableAttackerBlock extends CommandableBlock {
         }
     }
 }
+
+
