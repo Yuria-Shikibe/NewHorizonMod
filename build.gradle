@@ -32,12 +32,13 @@ java{
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+}
+
 ext{
     // Mindustry version to depend on.
-    // Valid values:
-    // - latest: depend on the latest release of mindustry
-    // - be: depend on the very latest commit of mindustry
-    // - v<number>: depend on a specific commit
     mindustryVersion = "v159.7"
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
@@ -59,18 +60,25 @@ tasks.register('jarAndroid'){
     doLast{
         if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
 
-        def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find{ f -> new File(f, "android.jar").exists() }
+        def platformRoot = new File("$sdkRoot/platforms/").listFiles()?.sort()?.reverse()?.find{ f -> new File(f, "android.jar").exists() }
 
         if(!platformRoot) throw new GradleException("No android.jar found. Ensure that you have an Android platform installed.")
 
-        //collect dependencies needed for desugaring
-        def dependencies = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File(platformRoot, "android.jar")]).collect{ "--classpath $it.path" }.join(" ")
+        def dependencies = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File(platformRoot, "android.jar")])
+                .collect{ "--classpath \"${it.path}\"" }.join(" ")
 
         def d8 = isWindows ? "d8.bat" : "d8"
 
-        //dex and desugar files - this requires d8 in your PATH
-        "$d8 $dependencies --min-api 21 --output ${projectName}Android.jar ${projectName}Desktop.jar"
-                .execute(null, new File("build/libs")).waitForProcessOutput(System.out, System.err)
+        def command = "$d8 $dependencies --min-api 21 --core-platform --output \"${projectName}Android.jar\" \"${projectName}Desktop.jar\""
+
+        println "Executing D8 command: $command"
+
+        def process = command.execute(null, new File("build/libs"))
+        process.waitForProcessOutput(System.out, System.err)
+
+        if (process.exitValue() != 0) {
+            throw new GradleException("D8 processing failed with exit code ${process.exitValue()}. Check errors above.")
+        }
     }
 }
 
