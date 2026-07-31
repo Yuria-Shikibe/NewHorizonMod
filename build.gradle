@@ -32,10 +32,6 @@ java{
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
 ext{
     // Mindustry version to depend on.
     // Valid values:
@@ -45,11 +41,6 @@ ext{
     mindustryVersion = "v159.7"
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
-
-    mindustryJar = "E:/project/MindustryModDevLib/Mindustry8.0.jar"
-    steamModsDir = "E:/Steam/steamapps/common/Mindustry/saves/mods"
-    appDataModsDir = "${System.getenv('APPDATA')}/Mindustry/mods"
-    modDeployName = "SpaceIndustryModJar.jar"
 }
 
 dependencies{
