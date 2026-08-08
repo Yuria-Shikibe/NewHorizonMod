@@ -1,7 +1,6 @@
 package newhorizon.expand.game.MapMarker;
 
 import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -13,7 +12,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.game.MapObjectives;
 import mindustry.game.Team;
-import mindustry.graphics.Layer;
 import newhorizon.content.NHContent;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.graphic.DrawFunc;
@@ -99,8 +97,9 @@ public class RaidIndicator extends MapObjectives.PosMarker {
 
         float fin = progress();
 
-        Draw.blend(Blending.additive);
-        Draw.z(Layer.legUnit + 1);
+        // Minimap entities and labels have already been drawn when markers are rendered.
+        // Additive blending here would brighten every label pixel underneath the warning.
+        Draw.blend();
         Draw.color(team.color, Color.white, 0.075f);
         Draw.alpha(0.65f);
 
@@ -123,8 +122,9 @@ public class RaidIndicator extends MapObjectives.PosMarker {
         float ang = source.angleTo(target);
         float outerR = radius * (1f + Mathf.absin(4f, 0.055f));
 
+        Draw.blend();
         Draw.color(Team.get(teamID).color, Color.white, 0.075f);
-        Draw.blend(Blending.additive);
+        Draw.alpha(0.65f);
 
         for (int i = 0; i < 4; i++) {
             float s = (1 - ((Time.time + 25 * i) % 100) / 100) * f * Draw.scl * 1.75f;
@@ -132,6 +132,7 @@ public class RaidIndicator extends MapObjectives.PosMarker {
             Draw.rect(NHContent.arrowRegion, Tmp.v1, NHContent.arrowRegion.width * s, NHContent.arrowRegion.height * s, ang - 90);
         }
 
+        Draw.reset();
         Draw.blend();
     }
 

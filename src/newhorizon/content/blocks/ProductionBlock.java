@@ -44,7 +44,11 @@ public class ProductionBlock {
                     NHItems.graphite, 40
             ));
             size = 3;
-            //addLink(0, 2, 2, 0, -3, 2);
+            // Formerly two size-2 links; the current API requires one link per occupied tile.
+            addLink(
+                    p(0, 2), p(1, 2), p(0, 3), p(1, 3),
+                    p(0, -3), p(1, -3), p(0, -2), p(1, -2)
+            );
 
             itemCapacity = 30;
 
