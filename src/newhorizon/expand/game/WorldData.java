@@ -47,7 +47,8 @@ public class WorldData implements SaveFileReader.CustomChunk {
         }
 
         if (version > 2) {
-            DefaultSpecialEvent.readState(stream);
+            // Version 3 stored one-shot event IDs; version 4 also stores loop schedules.
+            DefaultSpecialEvent.readState(stream, version > 3);
         }
 
         version = CURRENT_VER;

@@ -6,6 +6,7 @@ import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.content.TechTree.TechNode;
 import mindustry.content.UnitTypes;
@@ -64,7 +65,22 @@ public class NHTechTree {
             }
         });
 
+        addSerpuloTechTree();
         registerProgressionEvents();
+    }
+
+    private static void addSerpuloTechTree() {
+        TechNode combustionGenerator = all.find(node -> node.content == Blocks.combustionGenerator);
+        if (combustionGenerator == null
+                || combustionGenerator.children.contains(node -> node.content == PowerBlock.photothermalGenerator)) {
+            return;
+        }
+
+        new TechNode(
+                combustionGenerator,
+                PowerBlock.photothermalGenerator,
+                PowerBlock.photothermalGenerator.researchRequirements()
+        );
     }
 
     private static void registerProgressionEvents() {

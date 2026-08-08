@@ -32,11 +32,15 @@ public class DefaultSpecialEvent {
     private static final IntMap<SpecialEvent> events = new IntMap<>();
     private static final IntMap<Double> nextAt = new IntMap<>();
     private static final Seq<Integer> fired = new Seq<>();
+    private static boolean restoringWorld;
 
     public static void load() {
         registerEvents();
 
-        Events.on(EventType.WorldLoadBeginEvent.class, e -> reset());
+        Events.on(EventType.WorldLoadBeginEvent.class, e -> {
+            restoringWorld = true;
+            reset();
+        });
         Events.on(EventType.PlayEvent.class, e -> SpecialEventState.init());
         Events.on(EventType.WorldLoadEvent.class, e -> SpecialEventState.init());
     }
@@ -62,6 +66,31 @@ public class DefaultSpecialEvent {
         return events.containsKey(id);
     }
 
+    public static void markFired(int id) {
+        SpecialEvent event = events.get(id);
+        if (event != null && event.disposable && !fired.contains(id, false)) {
+            fired.add(id);
+        }
+    }
+
+    public static void restoreAction(EventInterventionAction action) {
+        if (action == null) return;
+        SpecialEvent event = events.get(action.eventId);
+        if (event == null) return;
+
+        if (!event.looping) {
+            markFired(event.id);
+            return;
+        }
+
+        // Old saves did not contain loop schedules. Keep a restored action from
+        // immediately scheduling another copy after that action finishes.
+        double next = nextAt.get(event.id, -1d);
+        if (!Double.isFinite(next) || next <= state.tick) {
+            nextAt.put(event.id, state.tick + Math.max(event.loopInterval, 1f) * Time.toSeconds);
+        }
+    }
+
     public static void reset() {
         nextAt.clear();
         fired.clear();
@@ -73,28 +102,58 @@ public class DefaultSpecialEvent {
         overrideCheck.reset(0, OVERRIDE_CHECK_INTERVAL);
     }
 
+    public static void finishRestore() {
+        restoringWorld = false;
+    }
+
     /** Saves the ids of disposable automatic events that have already been scheduled. */
     public static void writeState(DataOutput out) throws IOException {
         out.writeInt(fired.size);
         for (int id : fired) out.writeInt(id);
+
+        int loops = 0;
+        for (SpecialEvent event : events.values()) {
+            if (event.looping && nextAt.containsKey(event.id)) loops++;
+        }
+        out.writeInt(loops);
+        for (SpecialEvent event : events.values()) {
+            if (event.looping && nextAt.containsKey(event.id)) {
+                out.writeInt(event.id);
+                out.writeDouble(nextAt.get(event.id, 0d));
+            }
+        }
     }
 
     /** Restores one-shot event state after the world-load reset and before automatic updates run. */
     public static void readState(DataInput in) throws IOException {
+        readState(in, true);
+    }
+
+    public static void readState(DataInput in, boolean readLoops) throws IOException {
         fired.clear();
         int count = in.readInt();
         if (count < 0 || count > 1024) throw new IOException("Invalid New Horizon special event state count: " + count);
 
         for (int i = 0; i < count; i++) {
+            markFired(in.readInt());
+        }
+
+        if (!readLoops) return;
+
+        int loops = in.readInt();
+        if (loops < 0 || loops > 1024) throw new IOException("Invalid New Horizon special event loop state count: " + loops);
+        for (int i = 0; i < loops; i++) {
             int id = in.readInt();
+            double next = in.readDouble();
             SpecialEvent event = events.get(id);
-            if (event != null && event.disposable && !fired.contains(id, false)) {
-                fired.add(id);
+            if (event != null && event.looping && Double.isFinite(next)) {
+                nextAt.put(id, next);
             }
         }
     }
 
     public static void update() {
+        if (restoringWorld) return;
         if (!SpecialEventState.enabled()) return;
         if (!RaidLogic.isLogicSide()) return;
         if (!state.isPlaying()) return;
@@ -121,7 +180,7 @@ public class DefaultSpecialEvent {
 
             if (special.looping) {
                 double next = nextAt.get(special.id, 0d);
-                if (state.tick < next) continue;
+                if (state.tick < next || hasActiveAction(special.id)) continue;
             } else if (special.disposable && fired.contains(special.id, false)) {
                 continue;
             }
@@ -143,9 +202,30 @@ public class DefaultSpecialEvent {
             if (special.looping) {
                 nextAt.put(special.id, state.tick + Math.max(special.loopInterval, 1f) * Time.toSeconds);
             } else if (special.disposable) {
-                fired.add(special.id);
+                markFired(special.id);
             }
         }
+    }
+
+    private static boolean hasActiveAction(int eventId) {
+        if (cutscene == null) return false;
+        if (hasActiveAction(cutscene.mainBus, eventId)) return true;
+        for (ActionBus bus : cutscene.subBuses) {
+            if (hasActiveAction(bus, eventId)) return true;
+        }
+        for (ActionBus bus : cutscene.waitingBuses) {
+            if (hasActiveAction(bus, eventId)) return true;
+        }
+        return false;
+    }
+
+    private static boolean hasActiveAction(ActionBus bus, int eventId) {
+        if (bus == null) return false;
+        if (bus.current instanceof EventInterventionAction action && action.eventId == eventId && !action.complete()) return true;
+        for (newhorizon.expand.logic.components.Action action : bus.queue) {
+            if (action instanceof EventInterventionAction intervention && intervention.eventId == eventId && !intervention.complete()) return true;
+        }
+        return false;
     }
 
     public static EventInterventionAction createAction(SpecialEvent special, float tileX, float tileY) {

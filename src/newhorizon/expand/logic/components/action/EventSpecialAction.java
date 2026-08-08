@@ -4,7 +4,6 @@ import arc.Core;
 import arc.flabel.FLabel;
 import arc.math.Angles;
 import arc.struct.Seq;
-import arc.util.Strings;
 import arc.util.Time;
 import mindustry.content.StatusEffects;
 import mindustry.game.Team;
@@ -44,7 +43,7 @@ public class EventSpecialAction extends Action {
     public final Seq<SpecialEvent.UnitSpec> units = new Seq<>();
 
     private boolean spawned;
-    private boolean popupDisplayed;
+    private boolean alertSoundPlayed;
 
     @Override
     public String actionName() {
@@ -141,17 +140,17 @@ public class EventSpecialAction extends Action {
 
     @Override
     public void act() {
-        updatePopup();
+        updateAlertSound();
         if (RaidLogic.isRemoteClient()) return;
         if (spawned || lifeTimer < alertTime) return;
         spawnUnits();
     }
 
-    private void updatePopup() {
+    private void updateAlertSound() {
         if (headless) return;
-        if (lifeTimer > alertTime && !popupDisplayed) {
-            popupDisplayed = true;
-            showToast();
+        if (lifeTimer > alertTime && !alertSoundPlayed) {
+            alertSoundPlayed = true;
+            NHSounds.uiAlert1.play();
         }
     }
 
@@ -175,7 +174,7 @@ public class EventSpecialAction extends Action {
     public void applyNetworkState(float lifeTimer, boolean spawned) {
         this.lifeTimer = lifeTimer;
         this.spawned = spawned;
-        if (lifeTimer > alertTime) popupDisplayed = true;
+        if (lifeTimer > alertTime) alertSoundPlayed = true;
     }
 
     private EventInterventionAction toInterventionProxy() {
@@ -205,7 +204,7 @@ public class EventSpecialAction extends Action {
     }
 
     private void showPresentation() {
-        showToast();
+        NHSounds.uiAlert1.play();
         NHUIFunc.showLabel(2.5f, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {
@@ -244,12 +243,4 @@ public class EventSpecialAction extends Action {
                 .addMarker();
     }
 
-    public void showToast() {
-        NHUIFunc.showToast(
-                NHContent.fleet,
-                Core.bundle.format("nh.cutscene.event.fleet-popup", Strings.fixed(targetX / tilesize, 1), Strings.fixed(targetY / tilesize, 1)),
-                NHSounds.uiAlert1,
-                team.color
-        );
-    }
 }
