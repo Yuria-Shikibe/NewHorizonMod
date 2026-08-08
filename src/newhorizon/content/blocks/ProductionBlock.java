@@ -33,7 +33,7 @@ import static newhorizon.util.func.NHFunc.rand;
 public class ProductionBlock {
     public static Block
             sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, resourceConvertor, oilRefiner, scanCollector,
-            resonanceMiningFacility, beamMiningFacility,
+            resonanceMiningFacility, interlockingDrill, beamMiningFacility,
             airRadiator, liquidRadiator;
 
     public static void load() {
@@ -210,39 +210,7 @@ public class ProductionBlock {
             craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 12, 2);
         }};
         /*
-        xenExtractor = new ThermalGenerator("xen-extractor") {{
-            requirements(Category.production, with(NHItems.titanium, 40, NHItems.silicon, 40));
-            attribute = NHContent.quantum;
-            group = BlockGroup.liquids;
-            displayEfficiencyScale = 1f / 9f;
-            minEfficiency = 9f - 0.0001f;
-            powerProduction = 800.0001f / 60f / 9f;
-            displayEfficiency = false;
-            effectChance = 0.2f;
-            generateEffect = new OptionalMultiEffect(
-                    NHFx.square(NHColor.lightSkyFront, 60, 6, 32, 3),
-                    new Effect(40f, 80f, e -> {
-                        Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin() * 0.8f);
-                        Lines.stroke(2f * e.fout());
-                        Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
-                    })
-            );
-            effectChance = 0.04f;
-            size = 3;
-            squareSprite = false;
 
-            drawer = new DrawMulti(
-                    new DrawRegion("-base"),
-                    new DrawLiquidTile(NHLiquids.xenFluid, 2f),
-                    new DrawRegion("-top")
-            );
-
-            hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 30f / 60f / 9f);
-            liquidCapacity = 300f;
-            health = 1200;
-            armor = 8;
-        }};
         xenIterator = new RecipeGenericCrafter("xen-iterator"){{
             requirements(Category.production, ItemStack.with(
                     NHItems.metalOxhydrigen, 40,
@@ -260,6 +228,42 @@ public class ProductionBlock {
         }};
 
          */
+        interlockingDrill = new AdaptDrill("interlocking-drill") {{
+            requirements(Category.production, with(
+                    NHItems.silicar, 60
+            ));
+
+            size = 3;
+            tier = 3;
+            modulesEnabled = false;
+
+            drawRim = false;
+            hasPower = false;
+            hasLiquids = true;
+            itemCapacity = 30;
+            liquidCapacity = 60f;
+
+            drillTime = 337.5f;
+            liquidBoostIntensity = 1.6f;
+            warmupSpeed = 0.035f;
+
+            drillEffect = Fx.mineHuge;
+            updateEffectChance = 0.06f;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawRotator() {{
+                        suffix = "-rotor";
+                        rotateSpeed = 3f;
+                        usesSpinDraw = true;
+                        useDrillWarmup = true;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            consumeLiquid(NHLiquids.ammonia, 6f / 60f).boost();
+        }};
+
 
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(
@@ -311,7 +315,6 @@ public class ProductionBlock {
 
             consumePower(1.5f);
         }};
-
         beamMiningFacility = new AdaptDrill("beam-mining-facility") {{
             requirements(Category.production, with(
                     NHItems.juniorProcessor, 50,

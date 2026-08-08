@@ -66,21 +66,24 @@ public class NHTechTree {
         });
 
         addSerpuloTechTree();
+        addErekirTechTree();
         registerProgressionEvents();
     }
 
     private static void addSerpuloTechTree() {
-        TechNode combustionGenerator = all.find(node -> node.content == Blocks.combustionGenerator);
-        if (combustionGenerator == null
-                || combustionGenerator.children.contains(node -> node.content == PowerBlock.photothermalGenerator)) {
-            return;
-        }
+        addTechNode(Blocks.combustionGenerator, PowerBlock.photothermalGenerator);
+        addTechNode(Blocks.thermalGenerator, PowerBlock.geologicalPhotothermalGenerator);
+    }
 
-        new TechNode(
-                combustionGenerator,
-                PowerBlock.photothermalGenerator,
-                PowerBlock.photothermalGenerator.researchRequirements()
-        );
+    private static void addErekirTechTree() {
+        addTechNode(Blocks.turbineCondenser, PowerBlock.vectorCondenser);
+    }
+
+    private static void addTechNode(UnlockableContent parentContent, UnlockableContent childContent) {
+        TechNode parent = all.find(node -> node.content == parentContent);
+        if (parent == null || parent.children.contains(node -> node.content == childContent)) return;
+
+        new TechNode(parent, childContent, childContent.researchRequirements());
     }
 
     private static void registerProgressionEvents() {
@@ -307,11 +310,13 @@ public class NHTechTree {
                                         ProductionNode.node(ProductionBlock.titaniumReconstructor)
                                 ),
                                 ProductionNode.node(ProductionBlock.decoherenceReverser),
-                                ProductionNode.node(ProductionBlock.resonanceMiningFacility,
-                                        ProductionNode.node(ProductionBlock.airRadiator),
-                                        ProductionNode.node(ProductionBlock.beamMiningFacility,
-                                                ProductionNode.node(ProductionBlock.liquidRadiator)
-                                        )
+                                ProductionNode.node(ProductionBlock.interlockingDrill,
+                                        ProductionNode.node(ProductionBlock.resonanceMiningFacility,
+                                                ProductionNode.node(ProductionBlock.beamMiningFacility,
+                                                    ProductionNode.node(ProductionBlock.liquidRadiator)
+                                                )
+                                        ),
+                                        ProductionNode.node(ProductionBlock.airRadiator)
                                 ),
                                 ProductionNode.node(ProductionBlock.resourceConvertor),
                                 ProductionNode.node(ProductionBlock.oilRefiner)
@@ -378,7 +383,8 @@ public class NHTechTree {
                                 ),
                                 ProductionNode.node(CraftingBlock.particleActivator,
                                         ProductionNode.node(CraftingBlock.plasmaActivator),
-                                        ProductionNode.node(CraftingBlock.xenSeparator)
+                                        ProductionNode.node(CraftingBlock.xenSeparator),
+                                        ProductionNode.node(PowerBlock.xenExtractor)
                                 ),
                                 ProductionNode.node(CraftingBlock.reverseCollapseFacility)
                         ),

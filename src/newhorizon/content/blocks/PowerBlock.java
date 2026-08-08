@@ -3,11 +3,13 @@ package newhorizon.content.blocks;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -27,6 +29,7 @@ import newhorizon.expand.block.drawer.DrawRotation;
 import newhorizon.expand.block.power.GravityWell;
 import newhorizon.expand.block.power.MultiBlockConsumeGenerator;
 import newhorizon.expand.block.special.HyperReactor;
+import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
@@ -38,7 +41,7 @@ public class PowerBlock {
             photothermalGenerator, geologicalPhotothermalGenerator,
           //erekir generators
             vectorCondenser, differentialReactor,
-            photonPanel,
+            photonPanel,xenExtractor,
             neutralizationGenerator, hydrazineGenerator, fissionReactor, fusionReactor, hyperReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapSmall, gravityTrap;
@@ -411,6 +414,39 @@ public class PowerBlock {
                 stats.add(Stat.output, NHStatValues.itemsWithSolarMultiplier(produceTime, ItemStack.with(NHItems.hardLight, 1)));
             }
         };
+
+        xenExtractor = new ThermalGenerator("xen-extractor") {{
+            requirements(Category.production, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
+            attribute = NHContent.quantum;
+            displayEfficiencyScale = 1f / 9f;
+            minEfficiency = 9f - 0.0001f;
+            powerProduction = 240.0001f / 60f / 9f;
+            displayEfficiency = false;
+            effectChance = 0.2f;
+            generateEffect = new OptionalMultiEffect(
+                    NHFx.square(NHColor.lightSkyFront, 60, 6, 32, 3),
+                    new Effect(40f, 80f, e -> {
+                        Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin() * 0.8f);
+                        Lines.stroke(2f * e.fout());
+                        Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
+                    })
+            );
+            effectChance = 0.04f;
+            size = 3;
+            squareSprite = false;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawLiquidTile(NHLiquids.xenFluid, 2f),
+                    new DrawRegion("-top")
+            );
+
+            hasLiquids = true;
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 12f / 60f / 9f);
+            liquidCapacity = 300f;
+            health = 1200;
+            armor = 8;
+        }};
 
         neutralizationGenerator = new MultiBlockConsumeGenerator("neutralization-generator") {{
             requirements(Category.power, ItemStack.with(
