@@ -28,6 +28,7 @@ public class WorldData implements SaveFileReader.CustomChunk {
         stream.writeBoolean(jumpGateUsesCoreItems);
         stream.writeBoolean(applyEventTriggers);
         if (eventSaveData != null) eventSaveData.writeSnapshot(stream);
+        DefaultSpecialEvent.writeState(stream);
     }
 
     @Override
@@ -43,6 +44,10 @@ public class WorldData implements SaveFileReader.CustomChunk {
 
         if (version > 1 && eventSaveData != null) {
             eventSaveData.readSnapshot(stream);
+        }
+
+        if (version > 2) {
+            DefaultSpecialEvent.readState(stream);
         }
 
         version = CURRENT_VER;

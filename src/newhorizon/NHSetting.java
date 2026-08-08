@@ -41,6 +41,7 @@ public class NHSetting {
 
     EVENT_RAID = "nh-event-raid",
             EVENT_INTERVENTION = "nh-event-intervention",
+            EVENT_SPECIAL = "nh-event-special",
 
     DEBUGGING = "nh-debugging",
             DEBUG_PANEL = "nh-debug-panel";
@@ -85,7 +86,8 @@ public class NHSetting {
 
         allSettings.put("event", Seq.with(
                 new BoolSetting(EVENT_RAID, true, true),
-                new BoolSetting(EVENT_INTERVENTION, true, true)
+                new BoolSetting(EVENT_INTERVENTION, true, true),
+                new BoolSetting(EVENT_SPECIAL, true, true)
         ));
 
         allSettings.put("debug", Seq.with(

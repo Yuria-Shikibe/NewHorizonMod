@@ -1,6 +1,7 @@
 package newhorizon.expand.game;
 
 import mindustry.Vars;
+import newhorizon.NHSetting;
 
 /** Per-world switch for automatic default special events. */
 public final class SpecialEventState {
@@ -12,9 +13,27 @@ public final class SpecialEventState {
     }
 
     public static void init() {
-        enabled = !Vars.state.rules.tags.containsKey(TAG)
-                || Boolean.parseBoolean(Vars.state.rules.tags.get(TAG));
+        boolean fromSetting = defaultEnabled();
+
+        if (Vars.state.rules.tags.containsKey(TAG)) {
+            enabled = Boolean.parseBoolean(Vars.state.rules.tags.get(TAG));
+        } else {
+            enabled = fromSetting;
+        }
+
+        if (!Vars.net.active()) {
+            if (!fromSetting) {
+                enabled = false;
+            } else if (!enabled) {
+                enabled = true;
+            }
+        }
+
         writeTag();
+    }
+
+    private static boolean defaultEnabled() {
+        return Vars.headless || NHSetting.getBool(NHSetting.EVENT_SPECIAL);
     }
 
     public static boolean enabled() {

@@ -1077,16 +1077,19 @@ public class AirRaider extends CommandableBlock {
             BaseDialog dialog = new BaseDialog("@mod.ui.air-raid-settings");
             dialog.addCloseListener();
 
-            // The stats/action bar is part of the dialog canvas, not extra height below it.
-            // This keeps the whole configuration UI in bounds when UI scale is increased.
-            TableFunc.DialogSize layout = TableFunc.dialogSize(1080f, 820f, 0.84f, 0.88f);
+            boolean portrait = TableFunc.isPortraitLayout();
+            TableFunc.DialogSize layout = portrait
+                    ? TableFunc.dialogSize(640f, 1200f, 0.92f, 0.90f)
+                    : TableFunc.dialogSize(1080f, 820f, 0.84f, 0.88f);
             float dialogW = layout.width();
-            float statsH = Math.max(ui(LEN) * 2.2f + ui(12f), layout.height() * 0.18f);
-            float dialogH = Math.max(layout.height() - statsH, ui(LEN) * 5f);
-            float leftW = dialogW / 3f;
-            float rightW = dialogW - leftW;
-            float topH = dialogH / 3f;
-            float bottomH = dialogH - topH;
+            float statsH = portrait
+                    ? Math.max(ui(LEN) * 3.3f + ui(12f), layout.height() * 0.28f)
+                    : Math.max(ui(LEN) * 2.2f + ui(12f), layout.height() * 0.18f);
+            float dialogH = layout.height() - statsH;
+            float leftW = portrait ? dialogW : dialogW / 3f;
+            float rightW = portrait ? dialogW : dialogW - leftW;
+            float topH = portrait ? dialogH * 0.22f : dialogH / 3f;
+            float bottomH = portrait ? dialogH * 0.28f : dialogH - topH;
             float[] uiSlot = {selectedSlot};
 
             Runnable[] rebuildHold = {null};
@@ -1095,13 +1098,13 @@ public class AirRaider extends CommandableBlock {
             };
             rebuildHold[0] = () -> {
                 dialog.cont.clearChildren();
-                buildRaidContent(dialog, dialogW, leftW, rightW, topH, bottomH, uiSlot, rebuild);
+                buildRaidContent(dialog, dialogW, leftW, rightW, topH, bottomH, statsH, portrait, uiSlot, rebuild);
             };
             rebuild.run();
             dialog.show();
         }
 
-        private void buildRaidContent(BaseDialog dialog, float dialogW, float leftW, float rightW, float topH, float bottomH, float[] uiSlot, Runnable rebuild) {
+        private void buildRaidContent(BaseDialog dialog, float dialogW, float leftW, float rightW, float topH, float bottomH, float statsH, boolean portrait, float[] uiSlot, Runnable rebuild) {
             selectedSlot = (int) uiSlot[0];
             float dialogH = topH + bottomH;
             float len = Mathf.clamp(ui(LEN), 42f, dialogH * 0.085f);
@@ -1132,6 +1135,7 @@ public class AirRaider extends CommandableBlock {
                                 .growX().height(len - ui(4f)).pad(ui(6f));
                     }).size(leftW, topH).pad(ui(2f));
 
+                    if (portrait) top.row();
                     top.table(Styles.black3, tr -> {
                         tr.top().left().margin(ui(8f));
                         tr.add("@nh.air-raid.select-shell").color(Pal.accent).left().padBottom(ui(8f)).row();
@@ -1195,12 +1199,13 @@ public class AirRaider extends CommandableBlock {
                                         int slot = s;
                                         labels.button(Core.bundle.get(slotDefs[slot].bundleKey), Styles.togglet, () -> selectRaidSlot(uiSlot, slot, rebuild))
                                                 .checked(b -> (int) uiSlot[0] == slot).pad(ui(6f));
+                                        if (portrait && s == 1) labels.row();
                                     }
                                 }).growX().padTop(ui(8f));
                             }).grow().center();
                         }
                     }).size(rightW, topH).pad(ui(2f));
-                }).growX().height(topH).row();
+                }).growX().height(portrait ? topH * 2f : topH).row();
 
                 main.table(bottom -> {
                     bottom.table(Styles.black3, bl -> {
@@ -1237,6 +1242,7 @@ public class AirRaider extends CommandableBlock {
                         }).growX().height(len - ui(8f)).padTop(pad).disabled(b -> weaponIndex < 0);
                     }).size(leftW, bottomH).pad(ui(2f));
 
+                    if (portrait) bottom.row();
                     bottom.table(Styles.black3, br -> {
                         br.top().left().margin(ui(8f));
                         br.add("@nh.air-raid.select-items").color(Pal.accent).padBottom(ui(6f)).left().row();
@@ -1310,7 +1316,7 @@ public class AirRaider extends CommandableBlock {
                             }).grow().pad(ui(2f));
                         }
                     }).size(rightW, bottomH).pad(ui(2f));
-                }).growX().height(bottomH).row();
+                }).growX().height(portrait ? bottomH * 2f : bottomH).row();
 
                 main.table(Tex.pane, statsBar -> {
                     statsBar.top().left();
@@ -1334,13 +1340,16 @@ public class AirRaider extends CommandableBlock {
                             );
                         }).left().growX().wrap().labelAlign(Align.left);
                     }).growX().left().pad(ui(6f));
-                    statsBar.table(actions -> {
+                    if (portrait) statsBar.row();
+                    var actionCell = statsBar.table(actions -> {
                         actions.defaults().pad(ui(3f));
                         actions.button("@back", Icon.left, Styles.cleart, dialog::hide).size(len * 2f, len);
+                        if (portrait) actions.row();
                         actions.button("@nh.air-raid.cancel-raid", Icon.cancel, Styles.cleart, () -> {
                             configure(false);
                             rebuild.run();
                         }).size(len * 2.4f, len).disabled(b -> !raidActive);
+                        if (portrait) actions.row();
                         actions.button("@nh.air-raid.launch", Icon.ok, Styles.cleart, () -> {
                             configure(true);
                             Core.app.post(() -> {
@@ -1349,7 +1358,8 @@ public class AirRaider extends CommandableBlock {
                             });
                         }).size(len * 2.6f, len).disabled(b -> raidActive || !isPowered() || weaponIndex < 0 || !hasPayload() || !canAffordPayload() || !hasTarget());
                     }).right().pad(pad);
-                }).width(dialogW).minHeight(len * 2.2f).padTop(pad);
+                    if (portrait) actionCell.growX();
+                }).width(dialogW).height(statsH).padTop(pad);
             });
         }
 
@@ -1517,8 +1527,6 @@ public class AirRaider extends CommandableBlock {
         float get(Item item, float amount);
     }
 }
-
-
 
 
 

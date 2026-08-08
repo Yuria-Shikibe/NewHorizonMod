@@ -17,6 +17,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.meta.Env;
+import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.expand.map.DysonRingMesh;
 import newhorizon.expand.map.MidanthaPlanetGenerator;
 
@@ -34,6 +35,7 @@ public class NHPlanets {
             alwaysUnlocked = true;
             allowCampaignRules = true;
             iconColor = NHColor.darkEnrColor;
+            defaultCore = SpecialBlock.coreConflux;
 
             meshLoader = () -> new HexMesh(this, 6);
             gridMeshLoader = () -> MeshBuilder.buildPlanetGrid(grid, outlineColor, outlineRad * radius * sectorGridScale);

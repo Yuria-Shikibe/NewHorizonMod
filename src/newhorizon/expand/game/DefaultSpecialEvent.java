@@ -2,7 +2,7 @@ package newhorizon.expand.game;
 
 import arc.Events;
 import arc.struct.IntMap;
-import arc.struct.IntSet;
+import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
 import mindustry.content.StatusEffects;
@@ -17,6 +17,10 @@ import newhorizon.content.NHUnitTypes;
 import newhorizon.expand.logic.components.ActionBus;
 import newhorizon.expand.logic.components.action.EventInterventionAction;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
 import static mindustry.Vars.*;
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.expand.game.SpecialEvent.Triggers;
@@ -27,19 +31,14 @@ public class DefaultSpecialEvent {
     private static final Interval overrideCheck = new Interval(OVERRIDE_CHECK_INTERVAL);
     private static final IntMap<SpecialEvent> events = new IntMap<>();
     private static final IntMap<Double> nextAt = new IntMap<>();
-    private static final IntSet fired = new IntSet();
+    private static final Seq<Integer> fired = new Seq<>();
 
     public static void load() {
         registerEvents();
 
-        Events.on(EventType.PlayEvent.class, e -> {
-            SpecialEventState.init();
-            reset();
-        });
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            SpecialEventState.init();
-            reset();
-        });
+        Events.on(EventType.WorldLoadBeginEvent.class, e -> reset());
+        Events.on(EventType.PlayEvent.class, e -> SpecialEventState.init());
+        Events.on(EventType.WorldLoadEvent.class, e -> SpecialEventState.init());
     }
 
     public static void register(int id, SpecialEvent.Builder builder) {
@@ -74,6 +73,27 @@ public class DefaultSpecialEvent {
         overrideCheck.reset(0, OVERRIDE_CHECK_INTERVAL);
     }
 
+    /** Saves the ids of disposable automatic events that have already been scheduled. */
+    public static void writeState(DataOutput out) throws IOException {
+        out.writeInt(fired.size);
+        for (int id : fired) out.writeInt(id);
+    }
+
+    /** Restores one-shot event state after the world-load reset and before automatic updates run. */
+    public static void readState(DataInput in) throws IOException {
+        fired.clear();
+        int count = in.readInt();
+        if (count < 0 || count > 1024) throw new IOException("Invalid New Horizon special event state count: " + count);
+
+        for (int i = 0; i < count; i++) {
+            int id = in.readInt();
+            SpecialEvent event = events.get(id);
+            if (event != null && event.disposable && !fired.contains(id, false)) {
+                fired.add(id);
+            }
+        }
+    }
+
     public static void update() {
         if (!SpecialEventState.enabled()) return;
         if (!RaidLogic.isLogicSide()) return;
@@ -102,7 +122,7 @@ public class DefaultSpecialEvent {
             if (special.looping) {
                 double next = nextAt.get(special.id, 0d);
                 if (state.tick < next) continue;
-            } else if (special.disposable && fired.contains(special.id)) {
+            } else if (special.disposable && fired.contains(special.id, false)) {
                 continue;
             }
 
