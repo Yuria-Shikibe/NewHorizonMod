@@ -16,6 +16,7 @@ import static mindustry.Vars.renderer;
 public class NHShaders {
     public static ModShader gravityTrap, quantum, statusXWave, hexShield;
     public static ModSurfaceShader displaceGlitch;
+    public static GalaxyNebulaShader galaxyNebula;
 
     public static float alphaInner, alphaOuter;
 
@@ -116,6 +117,8 @@ public class NHShaders {
                 return NHContent.smoothNoise;
             }
         };
+
+        galaxyNebula = new GalaxyNebulaShader();
     }
 
     public static Fi getShaderFi(String file) {
@@ -188,6 +191,25 @@ public class NHShaders {
 
         public ModShader(String frag) {
             super(getShaderFi("screenspace.vert"), getShaderFi(frag + ".frag"));
+        }
+    }
+
+    public static class GalaxyNebulaShader extends ModShader {
+        public float seed, alpha, warp, palette;
+        public float cameraX, cameraY, cameraZ;
+
+        public GalaxyNebulaShader() {
+            super("galaxy_nebula", "galaxy_nebula");
+        }
+
+        @Override
+        public void apply() {
+            setUniformf("u_time", Time.globalTime / 60f);
+            setUniformf("u_seed", seed);
+            setUniformf("u_alpha", alpha);
+            setUniformf("u_warp", warp);
+            setUniformf("u_palette", palette);
+            setUniformf("u_camera", cameraX, cameraY, cameraZ);
         }
     }
 }
