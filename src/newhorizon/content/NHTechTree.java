@@ -303,14 +303,14 @@ public class NHTechTree {
                                         )
                                 )
                         ),
-                        ProductionNode.node(ProductionBlock.scanCollector,
+                        ProductionNode.node(ProductionBlock.interlockingDrill,
                                 ProductionNode.node(ProductionBlock.sandCracker),
                                 ProductionNode.node(NHBlocks.largeWaterExtractor),
                                 ProductionNode.node(ProductionBlock.tungstenReconstructor,
                                         ProductionNode.node(ProductionBlock.titaniumReconstructor)
                                 ),
                                 ProductionNode.node(ProductionBlock.decoherenceReverser),
-                                ProductionNode.node(ProductionBlock.interlockingDrill,
+                                ProductionNode.node(ProductionBlock.scanCollector,
                                         ProductionNode.node(ProductionBlock.resonanceMiningFacility,
                                                 ProductionNode.node(ProductionBlock.beamMiningFacility,
                                                     ProductionNode.node(ProductionBlock.liquidRadiator)
