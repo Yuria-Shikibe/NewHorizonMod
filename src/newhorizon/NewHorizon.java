@@ -51,6 +51,7 @@ public class NewHorizon extends Mod {
     public NewHorizon() {
         DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 
+        Events.run(EventType.Trigger.universeDrawBegin, NHPlanets::updateRingWorldCamera);
         Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
         Events.on(EventType.PlayerConnect.class, e -> Call.clientPacketReliable("override_check", NHSetting.overrideStatus()));
         Events.on(ClientLoadEvent.class, e -> {
