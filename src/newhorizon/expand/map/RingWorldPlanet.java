@@ -38,8 +38,10 @@ public class RingWorldPlanet extends Planet {
     public final float hexSize;
 
     public float panelScale = 0.985f;
-    // Shared inward offset for picking, sector fills, borders and labels.
+    /** Shared inward offset for picking, sector fills, borders and labels. */
     public float campaignDepth = 1.35f;
+    /** Additional inward bias for sector fill so it renders visibly in front of terrain. */
+    public float fillInwardBias = 0.045f;
     public float sourceLatitude = 32f;
     public float maxCameraPitch = 22f;
     public float campaignCameraMinDistance = 16f;
@@ -150,22 +152,35 @@ public class RingWorldPlanet extends Planet {
         float hitV = hit.y - position.y;
         float circumference = Mathf.PI2 * innerRadius;
 
+        // Compensate for the mirror across the symmetry line at column 75 (angle π/2).
+        // Swaps (x,z) -> (z,x), or equivalently θ -> π/2 - θ.
+        hitU = Mathf.PI * innerRadius / 2f - hitU;
+        if (hitU < 0f) hitU += circumference;
+
         Sector nearest = null;
         float nearestDst = Float.POSITIVE_INFINITY;
+        boolean insideAny = false;
         for (Sector sector : sectors) {
             float signedDu = centerU(sector.id) - hitU;
             if (signedDu > circumference / 2f) signedDu -= circumference;
             if (signedDu < -circumference / 2f) signedDu += circumference;
-            float du = Math.abs(signedDu);
             float dv = centerV(sector.id) - hitV;
-            float dst = du * du + dv * dv;
-            if (insideSectorHex(signedDu, dv)) return sector;
-            if (dst < nearestDst) {
+            float dst = signedDu * signedDu + dv * dv;
+            boolean inside = insideSectorHex(signedDu, dv);
+            if (inside) {
+                // Among hexagons that contain the hit, pick the closest center.
+                if (!insideAny || dst < nearestDst) {
+                    insideAny = true;
+                    nearestDst = dst;
+                    nearest = sector;
+                }
+            } else if (!insideAny && dst < nearestDst) {
+                // No hexagon contains the hit - fall back to closest center.
                 nearestDst = dst;
                 nearest = sector;
             }
         }
-        return nearestDst <= hexSize * hexSize * 1.35f ? nearest : null;
+        return nearest != null && nearestDst <= hexSize * hexSize * 1.35f ? nearest : null;
     }
 
     @Override
@@ -220,7 +235,7 @@ public class RingWorldPlanet extends Planet {
 
     @Override
     public void fill(VertexBatch3D batch, Sector sector, Color color, float offset) {
-        float radial = innerRadius - campaignDepth - offset;
+        float radial = innerRadius - campaignDepth - offset - fillInwardBias;
         Vec3 center = getSectorCenter(sector.id, radial, Tmp.v33);
         for (int i = 0; i < 6; i++) {
             getSectorCorner(sector.id, i, radial, panelScale, Tmp.v31);
@@ -358,10 +373,7 @@ public class RingWorldPlanet extends Planet {
     /** Places the camera on the star-facing side of a sector and points it toward the inner wall. */
     public void applyCampaignCamera(Camera3D camera, Vec3 cameraOffset, float zoom) {
         float horizontal = Mathf.sqrt(cameraOffset.x * cameraOffset.x + cameraOffset.z * cameraOffset.z);
-        // PlanetDialog's spherical drag direction is reversed when the camera
-        // is looking outward from inside the ring. Mirror the horizontal axis
-        // so screen-space dragging retains vanilla behavior.
-        Vec3 radial = Tmp.v31.set(cameraOffset.x, 0f, -cameraOffset.z).nor();
+        Vec3 radial = Tmp.v31.set(cameraOffset.x, 0f, cameraOffset.z).nor();
         float targetY = horizontal < 0.0001f ? 0f :
                 Mathf.clamp(cameraOffset.y / horizontal * innerRadius, -campaignHalfWidth, campaignHalfWidth);
         Vec3 target = Tmp.v33.set(radial.x * (innerRadius - campaignDepth - 0.12f), targetY,

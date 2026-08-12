@@ -77,7 +77,7 @@ public class RingWorldMesh extends PlanetMesh {
         float hexRadius = Mathf.PI2 * planet.innerRadius / (columns * 1.5f);
         float rowSpacing = sqrt3 * hexRadius;
         int rows = Mathf.ceil(planet.campaignHalfWidth * 2f / rowSpacing) + 2;
-        float surfaceRadius = planet.innerRadius - 0.18f;
+        float surfaceRadius = planet.innerRadius - planet.campaignDepth;
         Seq<Mesh> result = new Seq<>();
         TerrainChunk chunk = new TerrainChunk();
         Vec3 source = new Vec3();
@@ -128,7 +128,7 @@ public class RingWorldMesh extends PlanetMesh {
         float hexRadius = Mathf.PI2 * planet.innerRadius / (columns * 1.5f);
         float rowSpacing = sqrt3 * hexRadius;
         int rows = Mathf.ceil(planet.campaignHalfWidth * 2f / rowSpacing) + 2;
-        float surfaceRadius = planet.innerRadius - 0.18f;
+        float surfaceRadius = planet.innerRadius - planet.campaignDepth;
         FloatSeq vertices = new FloatSeq(50000 * 7);
 
         Vec3 source = new Vec3();

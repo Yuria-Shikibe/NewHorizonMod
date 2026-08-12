@@ -3,7 +3,9 @@ package newhorizon.content;
 import arc.graphics.Color;
 import arc.graphics.g3d.VertexBatch3D;
 import arc.math.Mathf;
+import arc.math.geom.Ray;
 import arc.math.geom.Vec3;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -180,7 +182,6 @@ public class NHPlanets {
         if (selected != null && changedSelection) {
             float length = dialog.state.camPos.len();
             ringWorld.getSectorCenter(selected.id, ringWorld.innerRadius, dialog.state.camPos);
-            dialog.state.camPos.z *= -1f;
             dialog.state.camPos.setLength(length);
         }
 
@@ -218,8 +219,13 @@ public class NHPlanets {
             dialog.hovered = ringWorld.getSector(camera.getMouseRay());
         }
 
-        dialog.state.camUp.set(camera.up);
-        dialog.state.camDir.set(camera.direction);
+        if (sectorView) {
+            dialog.state.camUp.set(0f, -1f, 0f);
+            dialog.state.camDir.set(Tmp.v31.set(camera.direction).scl(-1f));
+        } else {
+            dialog.state.camUp.set(camera.up);
+            dialog.state.camDir.set(camera.direction);
+        }
         dialog.planets.projector.proj(camera.combined);
         dialog.planets.batch.proj(camera.combined);
     }
@@ -294,6 +300,14 @@ public class NHPlanets {
         SelectableStar(String name, float radius) {
             super(name, null, radius);
             sectors.add(new Sector(this, Ptile.empty));
+        }
+
+        @Override
+        public @Nullable Vec3 intersect(Ray ray, float radius) {
+            if (Vars.ui.planet != null && Vars.ui.planet.state.planet == ringWorld) {
+                return null;
+            }
+            return super.intersect(ray, radius);
         }
     }
 }
