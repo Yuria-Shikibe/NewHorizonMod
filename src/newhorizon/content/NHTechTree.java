@@ -73,10 +73,12 @@ public class NHTechTree {
     private static void addSerpuloTechTree() {
         addTechNode(Blocks.combustionGenerator, PowerBlock.photothermalGenerator);
         addTechNode(Blocks.thermalGenerator, PowerBlock.geologicalPhotothermalGenerator);
+        addTechNode(Blocks.separator, ProductionBlock.tungstenReconstructor);
     }
 
     private static void addErekirTechTree() {
         addTechNode(Blocks.turbineCondenser, PowerBlock.vectorCondenser);
+        addTechNode(Blocks.siliconArcFurnace, ProductionBlock.titaniumReconstructor);
     }
 
     private static void addTechNode(UnlockableContent parentContent, UnlockableContent childContent) {
@@ -306,9 +308,6 @@ public class NHTechTree {
                         ProductionNode.node(ProductionBlock.interlockingDrill,
                                 ProductionNode.node(ProductionBlock.sandCracker),
                                 ProductionNode.node(NHBlocks.largeWaterExtractor),
-                                ProductionNode.node(ProductionBlock.tungstenReconstructor,
-                                        ProductionNode.node(ProductionBlock.titaniumReconstructor)
-                                ),
                                 ProductionNode.node(ProductionBlock.decoherenceReverser),
                                 ProductionNode.node(ProductionBlock.scanCollector,
                                         ProductionNode.node(ProductionBlock.resonanceMiningFacility,

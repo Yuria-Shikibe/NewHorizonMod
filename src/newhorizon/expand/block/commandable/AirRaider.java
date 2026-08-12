@@ -85,8 +85,8 @@ public class AirRaider extends CommandableBlock {
     public static final float MAX_ALERT_SECONDS = 240f;
     public static final float BASE_ALERT_SECONDS = 120f;
     public static final float MIN_ALERT_SECONDS = 12f;
+    /** Payload-derived spread at full load, maximum item threat and an inaccuracy multiplier of 1. */
     public static final float MAX_SPREAD = 360f;
-    public static final float MIN_SPREAD = 8f;
     public static final float MAX_BULLET_SPEED = 36f;
     public static final float MIN_BULLET_SPEED = 2.5f;
     public static final float MAX_BULLET_SIZE = 48f;
@@ -129,12 +129,12 @@ public class AirRaider extends CommandableBlock {
     }
 
     private void initDefs() {
-        weapons[0] = new WeaponMode("nh.air-raid.weapon-1", RaidBullets.defaultRaidBullet1, 1f, 0.01f, 0.2f, 1f, 1f, 40f, 0.5f, 80f, 10);
-        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.2f, 1f, 1.2f, 0.4f, 50f, 4f, 250f, 1);
-        weapons[2] = new WeaponMode("nh.air-raid.weapon-3", RaidBullets.raidBullet_9, 0.6f, 0.2f, 0.5f, 0.5f, 2f, 80f, 1f, 100f, 4, 40);
-        weapons[3] = new WeaponMode("nh.air-raid.weapon-4", NHBullets.blastEnergyNgt, 0.1f, 0.05f, 0.4f, 0.2f, 4f, 25f, 2f, 80f, 40, 120);
-        weapons[4] = new WeaponMode("nh.air-raid.weapon-5", NHBullets.railGun1, 3f, 1f, 1.2f, 0.4f, 8f, 5f, 5f, 640f, 1);
-        weapons[5] = new WeaponMode("nh.air-raid.weapon-6", NHBullets.airRaidBomb, 1.2f, 0.8f, 0.8f, 1.3f, 2f, 48f, 10f, 120f, 2, 20);
+        weapons[0] = new WeaponMode("nh.air-raid.weapon-1", RaidBullets.defaultRaidBullet1, 1f, 0.01f, 0.2f, 1f, 1f, 8f, 1f, 0.5f, 80f, 10);
+        weapons[1] = new WeaponMode("nh.air-raid.weapon-2", NHBullets.arc_9000, 0.8f, 0.2f, 1f, 1.2f, 0.4f, 8f, 1.25f, 4f, 250f, 1);
+        weapons[2] = new WeaponMode("nh.air-raid.weapon-3", RaidBullets.raidBullet_9, 0.6f, 0.2f, 0.5f, 0.5f, 2f, 8f, 2f, 1f, 100f, 4, 40);
+        weapons[3] = new WeaponMode("nh.air-raid.weapon-4", NHBullets.blastEnergyNgt, 0.1f, 0.05f, 0.4f, 0.2f, 4f, 8f, 0.625f, 2f, 80f, 40, 120);
+        weapons[4] = new WeaponMode("nh.air-raid.weapon-5", NHBullets.railGun1, 3f, 1f, 1.2f, 0.4f, 8f, 8f, 0.125f, 5f, 640f, 1);
+        weapons[5] = new WeaponMode("nh.air-raid.weapon-6", NHBullets.airRaidBomb, 1.2f, 0.8f, 0.8f, 1.3f, 2f, 8f, 1.2f, 10f, 120f, 2, 20);
 
         slotDefs[0] = new SlotDef("nh.air-raid.slot-charge", 280, new Seq<>());
         slotDefs[1] = new SlotDef("nh.air-raid.slot-control", 240, new Seq<>());
@@ -359,7 +359,7 @@ public class AirRaider extends CommandableBlock {
             if (weaponIndex < 0 || weaponIndex >= WEAPON_COUNT) {
                 return 40f;
             }
-            return Math.max(calcStats().inaccuracy, 8f);
+            return calcStats().inaccuracy;
         }
 
         public boolean hasPayload() {
@@ -556,8 +556,6 @@ public class AirRaider extends CommandableBlock {
 
             float chargeExplosiveness = slotContribution(0, (item, amt) ->
                     itemWeight(item, amt, 0) * softAttr(item.explosiveness, 1.45f));
-            float chargeExplosivenessUtil = slotContribution(0, (item, amt) ->
-                    utilWeight(item, amt, 0) * softAttr(item.explosiveness, 1.45f));
             float chargeElectric = slotContribution(0, (item, amt) ->
                     itemWeight(item, amt, 0) * softAttr(item.charge, 3.2f));
             float chargeFlame = slotContribution(0, (item, amt) ->
@@ -583,11 +581,10 @@ public class AirRaider extends CommandableBlock {
             stats.pierce = Mathf.clamp(Math.round(maxThreatInSlot(3) / (float) MAX_ITEM_THREAT * 8f * shellFill), 0, 8);
 
             float splashScore = 3.5f + chargePower * 0.08f + chargeExplosiveness * 0.12f + shellPower * 0.015f;
-            float spreadScore = chargeExplosivenessUtil * 1.15f + chargeUtil * 0.35f + shellUtil * 0.12f;
-            float spreadT = Mathf.clamp(spreadScore / 3.0f, 0f, 1f);
-            float spreadMul = Math.max(mode.inaccuracy, 0.0001f) / 40f;
-            float spreadMax = MAX_SPREAD * spreadMul;
-            stats.inaccuracy = Mathf.lerp(MIN_SPREAD, spreadMax, spreadT);
+            float spreadAmount = utilAccel01(spreadPayloadFill());
+            float spreadTier = spreadPayloadThreatFactor();
+            float resourceSpread = MAX_SPREAD * spreadTier * spreadAmount * controlSpreadMultiplier();
+            stats.inaccuracy = mode.baseInaccuracy + resourceSpread * mode.inaccuracy;
 
             float tierGate = accel01(maxThreatLoaded() / (float) MAX_ITEM_THREAT);
             float amountGate = accel01(payloadFill());
@@ -911,6 +908,50 @@ public class AirRaider extends CommandableBlock {
                 sum += Mathf.clamp(slots[i].total() / (float) cap);
             }
             return sum / SLOT_COUNT;
+        }
+
+        private float spreadPayloadFill() {
+            float sum = 0f;
+            for (int i = 0; i < SLOT_COUNT; i++) {
+                if (i == 1) continue;
+                int cap = Math.max(slotCapacity(i), 1);
+                sum += Mathf.clamp(slots[i].total() / (float) cap);
+            }
+            return sum / (SLOT_COUNT - 1f);
+        }
+
+        private float spreadPayloadThreatFactor() {
+            float[] weightedThreat = {0f};
+            float[] loaded = {0f};
+            for (int i = 0; i < SLOT_COUNT; i++) {
+                if (i == 1) continue;
+                float cap = Math.max(slotCapacity(i), 1f);
+                slots[i].each((item, amount) -> {
+                    float normalizedAmount = Mathf.clamp(amount / cap, 0f, 1f);
+                    weightedThreat[0] += utilThreatFactor(item) * normalizedAmount;
+                    loaded[0] += normalizedAmount;
+                });
+            }
+            return loaded[0] <= 0.0001f ? 0f : Mathf.clamp(weightedThreat[0] / loaded[0], 0f, 1f);
+        }
+
+        private float controlSpreadMultiplier() {
+            float cap = Math.max(slotCapacity(1), 1f);
+            float total = Mathf.clamp(slots[1].total(), 0f, cap);
+            if (total <= 0.0001f) return 1f;
+
+            float[] weightedMultiplier = {0f};
+            slots[1].each((item, amount) ->
+                    weightedMultiplier[0] += controlSpreadMultiplier(item) * Math.min(amount, cap));
+            float fullLoadMultiplier = Mathf.clamp(weightedMultiplier[0] / total, 1f / 3f, 1f);
+            return Mathf.lerp(1f, fullLoadMultiplier, utilAccel01(total / cap));
+        }
+
+        private float controlSpreadMultiplier(Item item) {
+            if (item == NHItems.hyperProcessor) return 1f / 3f;
+            if (item == NHItems.seniorProcessor) return 1f / 2f;
+            if (item == NHItems.juniorProcessor) return 6f / 10f;
+            return 3f / 4f;
         }
 
         private int scaledShotCount(WeaponMode mode) {
@@ -1475,14 +1516,19 @@ public class AirRaider extends CommandableBlock {
     public static class WeaponMode {
         public final String bundleKey;
         public final BulletType bullet;
-        public final float damageMul, splashDamageMul, splashRangeMul, sizeMul, speedMul, inaccuracy, costMul, maxLightningDmg;
+        public final float damageMul, splashDamageMul, splashRangeMul, sizeMul, speedMul;
+        /** Minimum raid spread radius in world units, independent of payload. */
+        public final float baseInaccuracy;
+        /** Multiplier applied to the payload-derived spread before adding {@link #baseInaccuracy}. */
+        public final float inaccuracy;
+        public final float costMul, maxLightningDmg;
         public final int shotCountMin, shotCountMax;
 
-        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float splashRangeMul, float sizeMul, float speedMul, float inaccuracy, float costMul, float maxLightningDmg, int shotCount) {
-            this(bundleKey, bullet, damageMul, splashDamageMul, splashRangeMul, sizeMul, speedMul, inaccuracy, costMul, maxLightningDmg, shotCount, shotCount);
+        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float splashRangeMul, float sizeMul, float speedMul, float baseInaccuracy, float inaccuracy, float costMul, float maxLightningDmg, int shotCount) {
+            this(bundleKey, bullet, damageMul, splashDamageMul, splashRangeMul, sizeMul, speedMul, baseInaccuracy, inaccuracy, costMul, maxLightningDmg, shotCount, shotCount);
         }
 
-        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float splashRangeMul, float sizeMul, float speedMul, float inaccuracy, float costMul, float maxLightningDmg, int shotCountMin, int shotCountMax) {
+        public WeaponMode(String bundleKey, BulletType bullet, float damageMul, float splashDamageMul, float splashRangeMul, float sizeMul, float speedMul, float baseInaccuracy, float inaccuracy, float costMul, float maxLightningDmg, int shotCountMin, int shotCountMax) {
             this.bundleKey = bundleKey;
             this.bullet = bullet;
             this.damageMul = damageMul;
@@ -1490,7 +1536,8 @@ public class AirRaider extends CommandableBlock {
             this.splashRangeMul = splashRangeMul;
             this.sizeMul = sizeMul;
             this.speedMul = speedMul;
-            this.inaccuracy = inaccuracy;
+            this.baseInaccuracy = Math.max(baseInaccuracy, 0f);
+            this.inaccuracy = Math.max(inaccuracy, 0f);
             this.costMul = Math.max(costMul, 0.0001f);
             this.maxLightningDmg = Math.max(maxLightningDmg, 0f);
             this.shotCountMin = Math.min(shotCountMin, shotCountMax);
@@ -1527,9 +1574,6 @@ public class AirRaider extends CommandableBlock {
         float get(Item item, float amount);
     }
 }
-
-
-
 
 
 
