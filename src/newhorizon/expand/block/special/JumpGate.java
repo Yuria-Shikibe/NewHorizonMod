@@ -937,7 +937,8 @@ public class JumpGate extends Block {
             selectNum = Mathf.clamp(selectNum, 1, maxSpawnCount);
 
             Table content = portrait ? new Table() : dialog.cont;
-            content.top();
+            if (portrait) content.top();
+            else content.center();
             content.table(main -> {
                 main.table(Styles.black3, left -> {
                     left.top();
