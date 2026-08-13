@@ -113,9 +113,7 @@ public class TableFunc {
     }
 
     public static boolean isPortraitLayout() {
-        float width = Core.scene == null ? Core.graphics.getWidth() : Core.scene.getWidth();
-        float height = Core.scene == null ? Core.graphics.getHeight() : Core.scene.getHeight();
-        return height > width;
+        return Core.graphics.getHeight() > Core.graphics.getWidth();
     }
 
     public static float dialogWidth(float design, float screenFrac) {
