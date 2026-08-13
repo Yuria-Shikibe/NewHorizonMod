@@ -166,15 +166,18 @@ public class NHPlanets {
     public static void updateRingWorldCamera() {
         if (Vars.headless || ringWorld == null || Vars.ui == null || Vars.ui.planet == null ||
                 !Vars.ui.planet.hasParent()) return;
+        var cam = Vars.renderer.planets.cam;
         if (Vars.ui.planet.state.planet != ringWorld) {
             lastRingSelection = null;
             ringCamPositionInitialized = false;
+            cam.near = 1f;
             return;
         }
         if (Vars.ui.planet.state.otherCamPos != null) {
             ringCamPositionInitialized = false;
             return;
         }
+        cam.near = 6f;
 
         var dialog = Vars.ui.planet;
         Sector selected = dialog.selected != null && dialog.selected.planet == ringWorld ? dialog.selected : null;
