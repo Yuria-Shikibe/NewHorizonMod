@@ -46,7 +46,7 @@ public class NHPlanets {
     public static void load() {
         blueGiant = new SelectableStar("blue-giant", 6.5f) {{
             bloom = true;
-            visible = true;
+            visible = false;
             accessible = true;
             alwaysUnlocked = true;
             hasAtmosphere = false;
@@ -72,7 +72,7 @@ public class NHPlanets {
         }};
 
         ringWorld = new RingWorldPlanet("ring-world", blueGiant, 45f, 46.25f, 7f, 120, 4) {{
-            visible = true;
+            visible = false;
             accessible = true;
             alwaysUnlocked = true;
             allowCampaignRules = true;
