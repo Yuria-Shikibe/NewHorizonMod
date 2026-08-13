@@ -11,6 +11,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.consumers.ConsumeLiquidBase;
+import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import newhorizon.content.NHStats;
@@ -26,6 +27,13 @@ public class AdaptDrill extends Drill {
         size = 4;
         itemCapacity = 40;
         hasLiquids = false;
+    }
+
+    @Override
+    public ConsumePower consumePower(float amount) {
+        return consumePowerDynamic(amount, (AdaptDrillBuild build) ->
+                build.shouldConsume() ? amount * build.modulePowerMultiplier : 0f
+        );
     }
 
     @Override
@@ -84,6 +92,7 @@ public class AdaptDrill extends Drill {
     public class AdaptDrillBuild extends DrillBuild {
         public Seq<DrillModule.DrillModuleBuild> modules = new Seq<>();
         public float moduleBoost = 0f;
+        public float modulePowerMultiplier = 1f;
 
         public float maxModules() {
             return maxModules;
@@ -91,6 +100,7 @@ public class AdaptDrill extends Drill {
 
         public void updateModule() {
             moduleBoost = 0f;
+            modulePowerMultiplier = 1f;
             if (!modulesEnabled) {
                 modules.each(module -> module.drillBuild = null);
                 modules.clear();

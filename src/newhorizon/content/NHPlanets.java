@@ -22,6 +22,7 @@ import mindustry.graphics.g3d.SunMesh;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
+import mindustry.type.Weather.WeatherEntry;
 import mindustry.world.meta.Env;
 import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.expand.map.DysonRingMesh;
@@ -141,7 +142,12 @@ public class NHPlanets {
                 teamRule.rtsAi = false;
                 teamRule.unitBuildSpeedMultiplier = 1f;
                 teamRule.buildSpeedMultiplier = 1f;
-                NHSectorPresents.applyLandingPointMapRules(r);
+                NHSectorPresents.applyCampaignMapRules(r);
+
+                r.weather.removeAll(entry -> entry.weather == NHWeathers.quantumField);
+                WeatherEntry quantumWeather = new WeatherEntry(NHWeathers.quantumField);
+                quantumWeather.always = true;
+                r.weather.add(quantumWeather);
             };
             generator = new MidanthaPlanetGenerator();
 

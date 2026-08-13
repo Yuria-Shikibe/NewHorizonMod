@@ -13,6 +13,7 @@ import mindustry.world.blocks.campaign.LandingPad;
 public class NHSectorPresents {
     public static SectorPreset primaryBase;
     public static SectorPreset landingPoint;
+    public static SectorPreset relicAccess;
     private static boolean campaignEventsRegistered;
     private static boolean landingPointTransitionPending;
 
@@ -31,6 +32,12 @@ public class NHSectorPresents {
             difficulty = 1;
         }};
 
+        relicAccess = new SectorPreset("relic-access", "new-horizon-RelicAccess", NHPlanets.midantha, 42) {{
+            showHidden = true;
+            captureWave = 2;
+            difficulty = 2;
+        }};
+
         unlockPrimaryBase();
         registerCampaignEvents();
     }
@@ -44,11 +51,16 @@ public class NHSectorPresents {
         }
     }
 
-    public static void applyLandingPointMapRules(Rules rules) {
-        if (landingPoint == null || landingPoint.generator.map == null || rules.sector != landingPoint.sector) return;
+    public static void applyCampaignMapRules(Rules rules) {
+        applyMapRules(landingPoint, rules);
+        applyMapRules(relicAccess, rules);
+    }
 
-        landingPoint.generator.map.rules(rules);
-        rules.sector = landingPoint.sector;
+    private static void applyMapRules(SectorPreset preset, Rules rules) {
+        if (preset == null || preset.generator.map == null || rules.sector != preset.sector) return;
+
+        preset.generator.map.rules(rules);
+        rules.sector = preset.sector;
         rules.planet = NHPlanets.midantha;
     }
 

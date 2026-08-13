@@ -35,9 +35,6 @@ public class NHWeathers {
         quantumField = new Weather("quantum-weather") {
             {
                 duration = 10f * Time.toMinutes;
-                statusAir = statusGround = true;
-                status = NHStatusEffects.quantization;
-                statusDuration = 60f;
                 attrs.set(Attribute.light, -0.3f);
                 opacityMultiplier = 0.47f;
             }

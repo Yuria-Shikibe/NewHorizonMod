@@ -54,6 +54,7 @@ nh.stat.percent = +@% Max Boost Cap
 nh.stat.increase-when-shooting = +@%/s
 nh.stat.decrease-not-shooting = -@%/s
 nh.stat.speed-up-turret-coolant = [accent]{0}% [lightgray]Overheat Time | [accent]{1}% [lightgray]Overheat Cooldown[]
+nh.stat.liquid-radiator = [accent]+{0}%[lightgray] efficiency | [accent]{1}x[lightgray] drill power use[]
 nh.stat.speed-bonus = [accent]{0}%[lightgray] Speed Bonus
 nh.stat.productivity-bonus = [accent]+{0}%[lightgray] Productivity Bonus
 nh.stat.cons-extra = [accent]{0}x[lightgray] Power Consumption

@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.func.Boolf;
+import arc.func.Floatf;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -246,6 +247,33 @@ public class NHStatValues {
                             bt.add(Core.bundle.format("nh.stat.speed-up-turret-coolant", Strings.autoFixed((liquid.heatCapacity + 1) * 100, 2), Strings.autoFixed((1 / (liquid.heatCapacity + 1)) * 100, 0))).pad(5);
                         }).right().grow().pad(10f).padRight(15f);
                     }).growX().pad(5).row();
+                }
+            }).growX().colspan(table.getColumns());
+            table.row();
+        };
+    }
+
+    public static StatValue liquidRadiatorLiquids(float amount, Boolf<Liquid> filter, Floatf<Liquid> efficiencyBoost, Floatf<Liquid> powerMultiplier) {
+        return table -> {
+            table.row();
+            table.table(c -> {
+                for (Liquid liquid : content.liquids()) {
+                    if (liquid.isHidden() || !filter.get(liquid)) continue;
+
+                    c.table(Styles.grayPanel, b -> {
+                        b.image(liquid.uiIcon).size(40f).pad(10f).left().scaling(Scaling.fit);
+                        b.table(info -> {
+                            info.add(liquid.localizedName).left().row();
+                            info.add(Strings.autoFixed(amount * 60f, 2) + StatUnit.perSecond.localized())
+                                    .left().color(Color.lightGray);
+                        });
+
+                        b.add(Core.bundle.format(
+                                "nh.stat.liquid-radiator",
+                                Strings.autoFixed(efficiencyBoost.get(liquid) * 100f, 0),
+                                Strings.autoFixed(powerMultiplier.get(liquid), 2)
+                        )).pad(10f).padRight(15f).right().growX();
+                    }).growX().pad(5f).row();
                 }
             }).growX().colspan(table.getColumns());
             table.row();

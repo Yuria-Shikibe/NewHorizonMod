@@ -3,9 +3,12 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
@@ -24,6 +27,7 @@ import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
+import newhorizon.expand.block.production.drill.LiquidRadiator;
 import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
@@ -32,8 +36,8 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, resourceConvertor, oilRefiner, scanCollector,
-            resonanceMiningFacility, interlockingDrill, beamMiningFacility,
+            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, /*resourceConvertor,*/ oilRefiner, scanCollector,
+            resonanceMiningFacility, interlockingDrill, beamMiningFacility, implosionMiningFacility,
             airRadiator, liquidRadiator;
 
     public static void load() {
@@ -160,7 +164,7 @@ public class ProductionBlock {
             );
         }};
 
-        resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
+        /*resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
@@ -178,7 +182,7 @@ public class ProductionBlock {
             consumePower(300f / 60f);
 
             drawer = new DrawMulti(new DrawDefault());
-        }};
+        }};*/
 
         oilRefiner = new GenericCrafter("oil-refiner") {{
             requirements(Category.production, ItemStack.with(
@@ -354,6 +358,80 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
+        implosionMiningFacility = new AdaptDrill("implosion-mining-facility") {{
+            requirements(Category.production, with(
+                    NHItems.seniorProcessor, 100,
+                    NHItems.setonAlloy, 150,
+                    NHItems.zeta, 400
+            ));
+
+            size = 4;
+            tier = 8;
+
+            drawRim = false;
+            hasPower = true;
+
+            maxModules = 4;
+
+            drillTime = 120f;
+            itemCapacity = 300;
+            warmupSpeed = 0.035f;
+
+            drillEffect = Fx.mineHuge;
+            updateEffect = new Effect(30f, e -> {
+                Draw.color(e.color, Color.white, e.fout() * 0.66f);
+                Draw.alpha(0.55f * e.fout() + 0.5f);
+                Angles.randLenVectors(e.id, 4, 4f + e.finpow() * 17f, (x, y) -> {
+                    Fill.poly(e.x + x, e.y + y, 3, e.fout() * rand(e.id).random(2.5f, 4), rand(e.id).random(360f));
+                });
+            });
+            updateEffectChance = 0.04f;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawBlock() {
+                        @Override
+                        public void draw(Building build) {
+                            if (!(build instanceof AdaptDrill.AdaptDrillBuild drill)
+                                    || drill.dominantItem == null
+                                    || drill.warmup <= 0.001f) return;
+
+                            float base = Time.time / 25f;
+                            Tmp.c1.set(drill.dominantItem.color).lerp(Color.white, 0.2f).a(drill.warmup);
+                            Draw.color(Tmp.c1);
+                            Lines.stroke(1.2f);
+
+                            for (int i = 0; i < 32; i++) {
+                                rand.setSeed(build.id + i);
+                                float fin = (rand.random(1f) + base) % 1f;
+                                float angle = rand.random(360f);
+                                float len = 13.5f * Interp.pow2.apply(1f - fin);
+                                Lines.lineAngle(
+                                        build.x + Angles.trnsx(angle, len),
+                                        build.y + Angles.trnsy(angle, len),
+                                        angle, 6f * fin
+                                );
+                            }
+
+                            float pulse = Mathf.sinDeg(Time.time * 1.2f);
+                            Tmp.c1.set(build.team.color).lerp(Color.white, 0.4f).a(drill.warmup / 1.1f);
+                            Draw.color(Tmp.c1);
+                            Fill.circle(build.x, build.y, 3f + pulse);
+                            Lines.stroke(1.3f);
+                            Lines.circle(build.x, build.y, 6f + pulse);
+                            Fill.light(build.x, build.y, Lines.circleVertices(15f), 15f, Color.clear, Tmp.c1);
+
+                            Lines.stroke(1f);
+                            Draw.reset();
+                        }
+                    },
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawDrillOreTop()
+            );
+
+            consumePower(10f);
+        }};
 
         airRadiator = new DrillModule("air-radiator") {{
             requirements(Category.production, with(
@@ -397,20 +475,16 @@ public class ProductionBlock {
             };
         }};
 
-        liquidRadiator = new DrillModule("liquid-radiator") {{
+        liquidRadiator = new LiquidRadiator("liquid-radiator") {{
             requirements(Category.production, with(
                     NHItems.multipleSteel, 25,
                     NHItems.plastanium, 25
             ));
 
             size = 2;
-            hasLiquids = true;
-
-            consumeLiquid(NHLiquids.water, 0.05f);
-
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
-                    new DrawLiquidTile(NHLiquids.water),
+                    new DrawLiquidTile(),
                     new DrawRegion("-top"),
                     new DrawTeamTop(),
                     new DrawRotation() {
@@ -429,12 +503,6 @@ public class ProductionBlock {
                     }
             );
 
-            buildType = () -> new DrillModuleBuild() {
-                @Override
-                public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
-                    drill.moduleBoost += efficiency;
-                }
-            };
         }};
 
         /*
