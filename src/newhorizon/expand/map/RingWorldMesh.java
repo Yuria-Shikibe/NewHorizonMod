@@ -59,7 +59,7 @@ public class RingWorldMesh extends PlanetMesh {
         Color reverse = Color.valueOf("070c15");
         Color rim = Color.valueOf("313d57");
 
-        cylinder(vertices, planet.innerRadius, -planet.halfWidth, planet.halfWidth, bodySegments, backing, true);
+//        cylinder(vertices, planet.innerRadius, -planet.campaignHalfWidth, planet.campaignHalfWidth, bodySegments, backing, true);
         cylinder(vertices, planet.outerRadius, -planet.halfWidth, planet.halfWidth, bodySegments, reverse, false);
         rim(vertices, planet.innerRadius, planet.outerRadius, planet.halfWidth, bodySegments, rim, true);
         rim(vertices, planet.innerRadius, planet.outerRadius, -planet.halfWidth, bodySegments, rim, false);
@@ -77,7 +77,7 @@ public class RingWorldMesh extends PlanetMesh {
         float hexRadius = Mathf.PI2 * planet.innerRadius / (columns * 1.5f);
         float rowSpacing = sqrt3 * hexRadius;
         int rows = Mathf.ceil(planet.campaignHalfWidth * 2f / rowSpacing) + 2;
-        float surfaceRadius = planet.innerRadius - planet.campaignDepth;
+        float surfaceRadius = planet.innerRadius;
         Seq<Mesh> result = new Seq<>();
         TerrainChunk chunk = new TerrainChunk();
         Vec3 source = new Vec3();
@@ -128,7 +128,7 @@ public class RingWorldMesh extends PlanetMesh {
         float hexRadius = Mathf.PI2 * planet.innerRadius / (columns * 1.5f);
         float rowSpacing = sqrt3 * hexRadius;
         int rows = Mathf.ceil(planet.campaignHalfWidth * 2f / rowSpacing) + 2;
-        float surfaceRadius = planet.innerRadius - planet.campaignDepth;
+        float surfaceRadius = planet.innerRadius;
         FloatSeq vertices = new FloatSeq(50000 * 7);
 
         Vec3 source = new Vec3();
@@ -180,35 +180,81 @@ public class RingWorldMesh extends PlanetMesh {
         int columns = 120;
         float step = Mathf.PI2 / columns;
         Color base = Pal.darkerMetal.cpy().lerp(Color.valueOf("28344c"), 0.35f);
+        Color backing = Color.valueOf("09111e");
         Color inset = base.cpy().mul(0.72f);
 
         for (int side = -1; side <= 1; side += 2) {
             float minY = side < 0 ? -planet.halfWidth + 0.08f : planet.campaignHalfWidth + 0.08f;
             float maxY = side < 0 ? -planet.campaignHalfWidth - 0.08f : planet.halfWidth - 0.08f;
+            float minY2 = side < 0 ? -planet.halfWidth  : planet.campaignHalfWidth;
+            float maxY2 = side < 0 ? -planet.campaignHalfWidth : planet.halfWidth;
             for (int column = 0; column < columns; column++) {
+                float a0 = column * step;
                 float a1 = column * step + step * 0.055f;
                 float a2 = (column + 1f) * step - step * 0.055f;
+                float a3 = (column + 1f) * step;
                 float middle = (a1 + a2) * 0.5f;
                 Vec3 normal = new Vec3(-Mathf.cos(middle), 0f, -Mathf.sin(middle));
 
-                quad(vertices, point(a1, planet.innerRadius - 0.035f, minY),
-                        point(a2, planet.innerRadius - 0.035f, minY),
-                        point(a2, planet.innerRadius - 0.035f, maxY),
-                        point(a1, planet.innerRadius - 0.035f, maxY), normal, base);
+                float pad = 0.02f;
+
+                //边框1
+                quad(vertices, point(a0, planet.innerRadius, minY2),
+                        point(a3, planet.innerRadius, minY2),
+                        point(a3, planet.innerRadius, minY),
+                        point(a0, planet.innerRadius, minY), normal, backing);
+
+                quad(vertices, point(a0, planet.innerRadius, maxY),
+                        point(a3, planet.innerRadius, maxY),
+                        point(a3, planet.innerRadius, maxY2),
+                        point(a0, planet.innerRadius, maxY2), normal, backing);
+
+                quad(vertices, point(a0, planet.innerRadius, minY - pad),
+                        point(a1, planet.innerRadius, minY - pad),
+                        point(a1, planet.innerRadius, maxY + pad),
+                        point(a0, planet.innerRadius, maxY + pad), normal, backing);
+
+                quad(vertices, point(a2, planet.innerRadius, minY - pad),
+                        point(a3, planet.innerRadius, minY - pad),
+                        point(a3, planet.innerRadius, maxY + pad),
+                        point(a2, planet.innerRadius, maxY + pad), normal, backing);
 
                 float angleInset = step * 0.20f;
                 float yInset = (maxY - minY) * 0.20f;
-                quad(vertices, point(a1 + angleInset, planet.innerRadius - 0.055f, minY + yInset),
-                        point(a2 - angleInset, planet.innerRadius - 0.055f, minY + yInset),
-                        point(a2 - angleInset, planet.innerRadius - 0.055f, maxY - yInset),
-                        point(a1 + angleInset, planet.innerRadius - 0.055f, maxY - yInset), normal, inset);
+
+                //边框2
+                quad(vertices, point(a1, planet.innerRadius, minY),
+                        point(a2, planet.innerRadius, minY),
+                        point(a2, planet.innerRadius, minY + yInset),
+                        point(a1, planet.innerRadius, minY + yInset), normal, base);
+
+                quad(vertices, point(a1, planet.innerRadius, maxY - yInset),
+                        point(a2, planet.innerRadius, maxY - yInset),
+                        point(a2, planet.innerRadius, maxY),
+                        point(a1, planet.innerRadius, maxY), normal, base);
+
+                quad(vertices, point(a1, planet.innerRadius, minY + yInset - pad),
+                        point(a1 + angleInset, planet.innerRadius, minY + yInset - pad),
+                        point(a1 + angleInset, planet.innerRadius, maxY - yInset + pad),
+                        point(a1, planet.innerRadius, maxY - yInset + pad), normal, base);
+
+                quad(vertices, point(a2 - angleInset, planet.innerRadius, minY + yInset - pad),
+                        point(a2, planet.innerRadius, minY + yInset - pad),
+                        point(a2, planet.innerRadius, maxY - yInset + pad),
+                        point(a2 - angleInset, planet.innerRadius, maxY - yInset + pad), normal, base);
+
+                //内部
+                quad(vertices, point(a1 + angleInset, planet.innerRadius, minY + yInset),
+                        point(a2 - angleInset, planet.innerRadius, minY + yInset),
+                        point(a2 - angleInset, planet.innerRadius, maxY - yInset),
+                        point(a1 + angleInset, planet.innerRadius, maxY - yInset), normal, inset);
             }
         }
     }
 
     /** Restored initial reverse-side design: dark shell with blue-violet energy traces. */
     private static void addReverseTraces(FloatSeq vertices, RingWorldPlanet planet) {
-        float radius = planet.outerRadius + 0.025f;
+        float radius = planet.outerRadius + 0.2f;
         Color primary = NHColor.lightSkyFront.cpy();
         Color secondary = NHColor.darkEnrFront.cpy().lerp(Color.white, 0.22f);
 
