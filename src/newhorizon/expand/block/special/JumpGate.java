@@ -910,21 +910,21 @@ public class JumpGate extends Block {
             dialog.addCloseListener();
 
             boolean portrait = TableFunc.isPortraitLayout();
-            // A phone needs a tall canvas for the stacked resource, queue and unit panels;
-            // preserving the desktop two-column canvas leaves the unit list without usable width.
-            TableFunc.DialogSize layout = portrait
-                    ? TableFunc.dialogSize(640f, 980f, 0.92f, 0.90f)
-                    : TableFunc.dialogSize(960f, 760f, 0.82f, 0.88f);
-            float dialogW = layout.width();
-            float footerH = portrait
-                    ? Math.max(ui(LEN) * 3.1f + ui(12f), layout.height() * 0.25f)
-                    : Math.max(ui(LEN) * 2f + ui(12f), layout.height() * 0.15f);
-            float dialogH = layout.height() - footerH;
+            TableFunc.DialogSize landscapeLayout = TableFunc.dialogSize(960f, 760f, 0.82f, 0.88f);
+            float dialogW = portrait ? TableFunc.dialogWidth(640f, 0.92f) : landscapeLayout.width();
+            float viewportH = portrait ? TableFunc.dialogHeight(1180f, 0.88f) : landscapeLayout.height();
+            float landscapeFooterH = Math.max(ui(LEN) * 2f + ui(12f), viewportH * 0.15f);
+            float landscapeBodyH = viewportH - landscapeFooterH;
+            float resourceH = portrait ? Math.max(ui(180f), viewportH * 0.20f) : landscapeBodyH / 3f;
+            float queueH = portrait ? Math.max(ui(240f), viewportH * 0.24f) : landscapeBodyH - resourceH;
             float leftW = portrait ? dialogW : dialogW / 3f;
             float rightW = portrait ? dialogW : dialogW * 2f / 3f;
-            float leftH = portrait ? dialogH * 0.34f : dialogH;
-            float rightH = portrait ? dialogH - leftH : dialogH;
+            float leftH = portrait ? resourceH + queueH : landscapeBodyH;
+            float rightH = portrait ? Math.max(ui(560f), viewportH * 0.62f) : leftH;
+            float dialogH = portrait ? leftH + rightH + ui(6f) : leftH;
             float len = Mathf.clamp(ui(LEN), 42f, dialogH * 0.09f);
+            float resourceEntryW = 32f + ui(8f);
+            int resourceColumns = Math.max(1, Mathf.floor((leftW - ui(28f)) / resourceEntryW));
 
             if (selectID < 0 || selectID >= recipeList.size || hideRecipe(recipeList.get(selectID).unitType)) {
                 for (int i = 0; i < recipeList.size; i++) {
@@ -936,13 +936,15 @@ public class JumpGate extends Block {
             }
             selectNum = Mathf.clamp(selectNum, 1, maxSpawnCount);
 
-            dialog.cont.table(main -> {
-                main.table(Styles.black3, left -> {
+            Table content = portrait ? new Table() : dialog.cont;
+            content.top();
+            content.table(main -> {
+                arc.scene.ui.layout.Cell<Table> leftCell = main.table(Styles.black3, left -> {
                     left.top();
-                    left.table(Tex.pane, res -> {
+                    arc.scene.ui.layout.Cell<Table> resourceCell = left.table(Tex.pane, res -> {
                         res.top().left();
                         res.add("@mod.ui.core-resources").color(Pal.accent).left().pad(ui(6f)).row();
-                        res.pane(list -> {
+                        Cons<Table> fillResources = list -> {
                             list.left().top();
                             tmpItems.clear();
                             for (UnitRecipe recipe : recipeList) {
@@ -953,12 +955,20 @@ public class JumpGate extends Block {
                             int col = 0;
                             for (Item item : tmpItems) {
                                 list.add(new ItemImageDynamic(item, () -> realItems().get(item), realItems())).pad(ui(4f));
-                                if (++col % 4 == 0) list.row();
+                                if (++col % resourceColumns == 0) list.row();
                             }
-                        }).grow().pad(ui(4f));
-                    }).growX().height(portrait ? leftH * 0.5f : dialogH / 3f).pad(ui(4f)).row();
+                        };
+                        if (portrait) {
+                            res.table(fillResources).growX().top().pad(ui(4f));
+                        } else {
+                            res.pane(fillResources).grow().pad(ui(4f));
+                        }
+                    }).growX().pad(ui(4f));
+                    if (portrait) resourceCell.minHeight(resourceH);
+                    else resourceCell.height(resourceH);
+                    left.row();
 
-                    left.table(Tex.pane, queuePanel -> {
+                    arc.scene.ui.layout.Cell<Table> queueCell = left.table(Tex.pane, queuePanel -> {
                         queuePanel.top();
                         queuePanel.add("@mod.ui.build-queue").color(Pal.accent).left().pad(ui(6f)).row();
                         Table queueList = new Table();
@@ -1189,7 +1199,7 @@ public class JumpGate extends Block {
 
                         syncHold[0] = syncQueue;
                         syncHold[0].run();
-                        queuePanel.pane(queueList).grow().pad(ui(4f)).update(p -> {
+                        queueList.update(() -> {
                             if (dragging[0]) return;
                             int a = spawnID;
                             int b = buildQueue.size;
@@ -1207,86 +1217,100 @@ public class JumpGate extends Block {
                                 syncHold[0].run();
                             }
                         });
+                        if (portrait) {
+                            queuePanel.add(queueList).growX().top().pad(ui(4f));
+                        } else {
+                            queuePanel.pane(queueList).grow().pad(ui(4f));
+                        }
                         queuePanel.row();
                         queuePanel.button("@mod.ui.clear-wait-queue", Icon.trash, Styles.cleart, () -> configure(IntSeq.with(1, 0))).growX().height(len - ui(8f)).pad(ui(4f))
                                 .disabled(b -> buildQueue.isEmpty());
-                    }).grow().pad(ui(4f));
-                }).size(leftW, leftH).padRight(portrait ? 0f : ui(6f));
+                    }).growX().pad(ui(4f));
+                    if (portrait) queueCell.minHeight(queueH);
+                    else queueCell.height(queueH);
+                }).padRight(portrait ? 0f : ui(6f));
+                if (portrait) leftCell.width(leftW).minHeight(leftH);
+                else leftCell.size(leftW, leftH);
 
                 if (portrait) main.row();
-                main.table(Styles.black3, right -> {
+                arc.scene.ui.layout.Cell<Table> rightCell = main.table(Styles.black3, right -> {
                     float cardW = rightW - ui(40f);
                     float cardH = portrait
                             ? Mathf.clamp(ui(132f), 96f, rightH * 0.44f)
                             : Mathf.clamp(ui(86f), 64f, rightH * 0.16f);
                     float border = ui(2f);
-                    arc.scene.ui.layout.Cell<ScrollPane> paneCell = right.pane(grid -> {
-                        grid.top().left();
-                        for (int i = 0; i < recipeList.size; i++) {
-                            UnitRecipe set = recipeList.get(i);
-                            if (hideRecipe(set.unitType)) continue;
-                            int idx = i;
-                            grid.stack(
-                                    new Table(Tex.pane, card -> {
-                                        card.margin(ui(8f));
-                                        card.touchable = Touchable.enabled;
-                                        card.addListener(new HandCursorListener());
-                                        card.clicked(() -> selectID = idx);
-                                        card.table(body -> {
-                                            body.table(info -> {
-                                                info.left().top();
-                                                info.table(header -> {
-                                                    header.left();
-                                                    header.image(set.unitType.uiIcon).size(ui(40f)).scaling(Scaling.fit).padRight(ui(8f));
-                                                    header.add(set.unitType.localizedName).growX().left().wrap().labelAlign(Align.left);
-                                                    Label buildTime = new Label(() -> {
-                                                        float sec = set.costTime() * selectNum / speedMultiplier(selectNum) / 60f / Math.max(state.rules.unitBuildSpeed(team), 0.0001f);
-                                                        return "[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + Strings.fixed(sec, 1) + "[]" + Core.bundle.get("unit.seconds");
-                                                    });
-                                                    if (portrait) {
-                                                        header.row();
-                                                        header.add(buildTime).colspan(2).left().padTop(ui(2f));
-                                                    } else {
-                                                        header.add(buildTime).right().padLeft(ui(8f));
-                                                    }
-                                                }).growX().left().row();
-                                                info.table(req -> {
-                                                    req.left();
-                                                    for (ItemStack stack : set.dynamicRequirements(team)) {
-                                                        req.add(new ItemImageDynamic(stack.item, () -> Math.round(stack.amount * selectNum), realItems())).padRight(ui(4f));
-                                                    }
-                                                    for (PayloadStack stack : set.recipe.inputPayload) {
-                                                        req.add(StatValues.stack(stack.item, Math.round(stack.amount * selectNum * state.rules.unitCost(team)), true)).padRight(ui(4f));
-                                                    }
-                                                }).growX().left().padTop(ui(6f));
-                                            }).grow().left();
+                    Table grid = new Table();
+                    grid.top().left();
+                    for (int i = 0; i < recipeList.size; i++) {
+                        UnitRecipe set = recipeList.get(i);
+                        if (hideRecipe(set.unitType)) continue;
+                        int idx = i;
+                        grid.stack(
+                                new Table(Tex.pane, card -> {
+                                    card.margin(ui(8f));
+                                    card.touchable = Touchable.enabled;
+                                    card.addListener(new HandCursorListener());
+                                    card.clicked(() -> selectID = idx);
+                                    card.table(body -> {
+                                        body.table(info -> {
+                                            info.left().top();
+                                            info.table(header -> {
+                                                header.left();
+                                                header.image(set.unitType.uiIcon).size(ui(40f)).scaling(Scaling.fit).padRight(ui(8f));
+                                                header.add(set.unitType.localizedName).growX().left().wrap().labelAlign(Align.left);
+                                                Label buildTime = new Label(() -> {
+                                                    float sec = set.costTime() * selectNum / speedMultiplier(selectNum) / 60f / Math.max(state.rules.unitBuildSpeed(team), 0.0001f);
+                                                    return "[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + Strings.fixed(sec, 1) + "[]" + Core.bundle.get("unit.seconds");
+                                                });
+                                                if (portrait) {
+                                                    header.row();
+                                                    header.add(buildTime).colspan(2).left().padTop(ui(2f));
+                                                } else {
+                                                    header.add(buildTime).right().padLeft(ui(8f));
+                                                }
+                                            }).growX().left().row();
+                                            info.table(req -> {
+                                                req.left();
+                                                for (ItemStack stack : set.dynamicRequirements(team)) {
+                                                    req.add(new ItemImageDynamic(stack.item, () -> Math.round(stack.amount * selectNum), realItems())).padRight(ui(4f));
+                                                }
+                                                for (PayloadStack stack : set.recipe.inputPayload) {
+                                                    req.add(StatValues.stack(stack.item, Math.round(stack.amount * selectNum * state.rules.unitCost(team)), true)).padRight(ui(4f));
+                                                }
+                                            }).growX().left().padTop(ui(6f));
+                                        }).grow().left();
 
-                                            body.image().width(border).color(Pal.gray).growY().padLeft(ui(6f)).padRight(ui(6f));
-                                            body.button(Icon.info, Styles.clearNonei, () -> ui.content.show(set.unitType)).size(len).growY();
-                                        }).grow();
-                                    }),
-                                    new Table(outline -> {
-                                        outline.touchable = Touchable.disabled;
-                                        outline.visible(() -> selectID == idx);
-                                        outline.top().defaults().pad(0f);
-                                        outline.image().color(Pal.accent).height(border).growX().row();
-                                        outline.table(mid -> {
-                                            mid.image().color(Pal.accent).width(border).growY();
-                                            mid.add().grow();
-                                            mid.image().color(Pal.accent).width(border).growY();
-                                        }).grow().row();
-                                        outline.image().color(Pal.accent).height(border).growX();
-                                    })
-                            ).size(cardW, cardH).pad(ui(6f)).padRight(ui(28f)).left().row();
-                        }
-                    }).grow().pad(ui(4f));
-                    ScrollPane unitPane = paneCell.get();
-                    unitPane.setScrollingDisabled(true, false);
-                    unitPane.setFadeScrollBars(false);
-                }).size(rightW, rightH);
-            }).size(dialogW, dialogH).row();
+                                        body.image().width(border).color(Pal.gray).growY().padLeft(ui(6f)).padRight(ui(6f));
+                                        body.button(Icon.info, Styles.clearNonei, () -> ui.content.show(set.unitType)).size(len).growY();
+                                    }).grow();
+                                }),
+                                new Table(outline -> {
+                                    outline.touchable = Touchable.disabled;
+                                    outline.visible(() -> selectID == idx);
+                                    outline.top().defaults().pad(0f);
+                                    outline.image().color(Pal.accent).height(border).growX().row();
+                                    outline.table(mid -> {
+                                        mid.image().color(Pal.accent).width(border).growY();
+                                        mid.add().grow();
+                                        mid.image().color(Pal.accent).width(border).growY();
+                                    }).grow().row();
+                                    outline.image().color(Pal.accent).height(border).growX();
+                                })
+                        ).size(cardW, cardH).pad(ui(6f)).padRight(ui(28f)).left().row();
+                    }
+                    if (portrait) {
+                        right.add(grid).growX().top().pad(ui(4f));
+                    } else {
+                        ScrollPane unitPane = right.pane(grid).grow().pad(ui(4f)).get();
+                        unitPane.setScrollingDisabled(true, false);
+                        unitPane.setFadeScrollBars(false);
+                    }
+                });
+                if (portrait) rightCell.width(rightW).minHeight(rightH);
+                else rightCell.size(rightW, rightH);
+            }).width(dialogW).minHeight(dialogH).row();
 
-            dialog.cont.table(bottom -> {
+            content.table(bottom -> {
                 Label amountLabel = new Label("");
                 Slider slider = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnCount), 1, false);
                 slider.setValue(selectNum);
@@ -1325,6 +1349,14 @@ public class JumpGate extends Block {
                     });
                 }).growX().height(portrait ? len * 2f : len);
             }).width(dialogW).padTop(ui(6f));
+
+            if (portrait) {
+                ScrollPane pagePane = new ScrollPane(content, Styles.noBarPane);
+                pagePane.setScrollingDisabled(true, false);
+                pagePane.setFadeScrollBars(false);
+                pagePane.setOverscroll(false, true);
+                dialog.cont.add(pagePane).size(dialogW, viewportH);
+            }
 
             dialog.keyDown(c -> {
                 if (c == KeyCode.left) selectNum = Mathf.clamp(--selectNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnCount));

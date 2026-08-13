@@ -47,8 +47,8 @@ public class NHPlanets {
         blueGiant = new SelectableStar("blue-giant", 6.5f) {{
             bloom = true;
             visible = false;
-            accessible = true;
-            alwaysUnlocked = true;
+            accessible = false;
+            alwaysUnlocked = false;
             hasAtmosphere = false;
             updateLighting = false;
             camRadius = 16f;
@@ -73,8 +73,8 @@ public class NHPlanets {
 
         ringWorld = new RingWorldPlanet("ring-world", blueGiant, 45f, 46.25f, 7f, 120, 4) {{
             visible = false;
-            accessible = true;
-            alwaysUnlocked = true;
+            accessible = false;
+            alwaysUnlocked = false;
             allowCampaignRules = true;
             autoAssignPlanet = false;
             icon = "commandRally";
