@@ -2,6 +2,7 @@ package newhorizon.expand.game;
 
 import arc.struct.Seq;
 import arc.Events;
+import arc.Core;
 import mindustry.game.EventType;
 import arc.util.Log;
 import mindustry.entities.bullet.BulletType;
@@ -52,7 +53,8 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
             activeSpecials.clear();
         });
         Events.on(EventType.SaveWriteEvent.class, event -> prepareWrite());
-        Events.on(EventType.SaveLoadEvent.class, event -> restore());
+        // Defer restoration until CutsceneControl has discarded actions from the previous world.
+        Events.on(EventType.WorldLoadEvent.class, event -> Core.app.post(this::restore));
     }
 
     public void track(EventRaidAction action) {
@@ -180,6 +182,7 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
     private void restore() {
         if (pending.isEmpty() || cutscene == null || RaidLogic.isRemoteClient()) {
             pending.clear();
+            DefaultSpecialEvent.finishRestore();
             return;
         }
 
@@ -189,6 +192,11 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
             if (saved.type == 3) continue;
             Action action = saved.create();
             if (action == null || action.complete()) continue;
+
+            if (action instanceof EventInterventionAction intervention
+                    && DefaultSpecialEvent.contains(intervention.eventId)) {
+                DefaultSpecialEvent.restoreAction(intervention);
+            }
 
             ActionBus bus = new ActionBus();
             bus.add(action);
@@ -203,6 +211,7 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
         }
         Log.info("[New Horizon] Restored @ local event action(s).", restored);
         pending.clear();
+        DefaultSpecialEvent.finishRestore();
     }
 
 

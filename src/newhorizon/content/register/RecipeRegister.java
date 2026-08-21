@@ -49,7 +49,7 @@ public class RecipeRegister {
             recipe.craftTime = 30f;
         });
 
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
+        /*recipe(ProductionBlock.resourceConvertor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.graphite, 2, NHItems.silicon, 2);
             recipe.outputItem = ItemStack.list(NHItems.silicar, 4);
             recipe.craftTime = 1f;
@@ -65,7 +65,7 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(NHItems.sand, 1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.ammonia, 60 / 60f);
             recipe.craftTime = 60f;
-        });
+        });*/
 
 /*
         recipe(ProductionBlock.tungstenReconstructor, recipe -> {

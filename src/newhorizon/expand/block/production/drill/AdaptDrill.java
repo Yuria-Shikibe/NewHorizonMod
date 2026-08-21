@@ -10,12 +10,16 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.Drill;
+import mindustry.world.consumers.ConsumeLiquidBase;
+import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import newhorizon.content.NHStats;
 
 public class AdaptDrill extends Drill {
     public int maxModules = 1;
+    public boolean modulesEnabled = true;
+    public boolean hasLiquidBooster;
     public DrawBlock drawer = new DrawDefault();
 
     public AdaptDrill(String name) {
@@ -26,9 +30,24 @@ public class AdaptDrill extends Drill {
     }
 
     @Override
+    public ConsumePower consumePower(float amount) {
+        return consumePowerDynamic(amount, (AdaptDrillBuild build) ->
+                build.shouldConsume() ? amount * build.modulePowerMultiplier : 0f
+        );
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        hasLiquidBooster = findConsumer(consumer -> consumer.booster && consumer instanceof ConsumeLiquidBase) != null;
+    }
+
+    @Override
     public void setStats() {
         super.setStats();
-        stats.add(NHStats.maxModules, maxModules);
+        if (modulesEnabled) {
+            stats.add(NHStats.maxModules, maxModules);
+        }
     }
 
     @Override
@@ -40,6 +59,8 @@ public class AdaptDrill extends Drill {
     @Override
     public void setBars() {
         super.setBars();
+        if (!modulesEnabled) return;
+
         addBar("boost", (AdaptDrillBuild build) -> new Bar(
                 () -> Core.bundle.format("nh.bar.module-boost", build.modules.size, maxModules, Mathf.round(build.moduleBoost * 100)),
                 () -> Pal.accent,
@@ -71,6 +92,7 @@ public class AdaptDrill extends Drill {
     public class AdaptDrillBuild extends DrillBuild {
         public Seq<DrillModule.DrillModuleBuild> modules = new Seq<>();
         public float moduleBoost = 0f;
+        public float modulePowerMultiplier = 1f;
 
         public float maxModules() {
             return maxModules;
@@ -78,6 +100,13 @@ public class AdaptDrill extends Drill {
 
         public void updateModule() {
             moduleBoost = 0f;
+            modulePowerMultiplier = 1f;
+            if (!modulesEnabled) {
+                modules.each(module -> module.drillBuild = null);
+                modules.clear();
+                return;
+            }
+
             modules.each(module -> module.updateDrill(this));
         }
 
@@ -98,10 +127,13 @@ public class AdaptDrill extends Drill {
             float delay = getDrillTime(dominantItem);
 
             if (items.total() < itemCapacity && dominantItems > 0 && efficiency > 0) {
-                float speed = (1 + moduleBoost) * efficiency;
+                float liquidBoost = hasLiquidBooster
+                        ? Mathf.lerp(1f, liquidBoostIntensity, optionalEfficiency)
+                        : 1f;
+                float speed = (1 + moduleBoost) * liquidBoost * efficiency;
 
                 lastDrillSpeed = (speed * dominantItems * warmup) / delay;
-                warmup = Mathf.approachDelta(warmup, efficiency, warmupSpeed);
+                warmup = Mathf.approachDelta(warmup, liquidBoost * efficiency, warmupSpeed);
                 progress += delta() * dominantItems * speed * warmup;
 
                 if (Mathf.chanceDelta(updateEffectChance * warmup))
@@ -141,6 +173,8 @@ public class AdaptDrill extends Drill {
             super.onProximityUpdate();
             modules.each(build -> build.drillBuild = null);
             modules.clear();
+            if (!modulesEnabled) return;
+
             proximity.each(building -> {
                 if (building instanceof DrillModule.DrillModuleBuild module) {
                     if (module.canApply(this)) {

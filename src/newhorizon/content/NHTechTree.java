@@ -6,12 +6,16 @@ import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.content.TechTree.TechNode;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
+import mindustry.game.Objectives.Objective;
+import mindustry.game.Objectives.SectorComplete;
 import mindustry.type.ItemStack;
+import mindustry.type.SectorPreset;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
@@ -64,7 +68,31 @@ public class NHTechTree {
             }
         });
 
+        addSerpuloTechTree();
+        addErekirTechTree();
         registerProgressionEvents();
+    }
+
+    private static void addSerpuloTechTree() {
+        addTechNode(Blocks.combustionGenerator, PowerBlock.photothermalGenerator);
+        addTechNode(Blocks.thermalGenerator, PowerBlock.geologicalPhotothermalGenerator);
+        addTechNode(Blocks.separator, ProductionBlock.tungstenReconstructor);
+        addTechNode(Blocks.siliconSmelter, CraftingBlock.recrystallizer);
+        addTechNode(Blocks.sporePress, CraftingBlock.chemicalDissociationChamber);
+    }
+
+    private static void addErekirTechTree() {
+        addTechNode(Blocks.turbineCondenser, PowerBlock.vectorCondenser);
+        addTechNode(Blocks.siliconArcFurnace, ProductionBlock.titaniumReconstructor);
+        addTechNode(Blocks.siliconArcFurnace, CraftingBlock.recrystallizer);
+        addTechNode(Blocks.pyrolysisGenerator, PowerBlock.differentialReactor);
+    }
+
+    private static void addTechNode(UnlockableContent parentContent, UnlockableContent childContent) {
+        TechNode parent = all.find(node -> node.content == parentContent);
+        if (parent == null || parent.children.contains(node -> node.content == childContent)) return;
+
+        new TechNode(parent, childContent, childContent.researchRequirements());
     }
 
     private static void registerProgressionEvents() {
@@ -117,10 +145,16 @@ public class NHTechTree {
         root.each(node -> {
             if (!isModTechNode(node)) return;
 
+            if (node.content instanceof SectorPreset) {
+                node.content.alwaysUnlocked = false;
+                node.content.clearUnlock();
+                node.reset();
+                return;
+            }
+
             node.content.alwaysUnlocked = initiallyAlwaysUnlocked.contains(node.content);
             node.content.quietUnlock();
         });
-        lockLandingPoint();
         NHSectorPresents.unlockPrimaryBase();
         Core.settings.put(progressionResetKey, false);
     }
@@ -155,12 +189,6 @@ public class NHTechTree {
     private static void unlockLandingPoint() {
         if (NHSectorPresents.landingPoint != null) {
             NHSectorPresents.landingPoint.quietUnlock();
-        }
-    }
-
-    private static void lockLandingPoint() {
-        if (NHSectorPresents.landingPoint != null) {
-            NHSectorPresents.landingPoint.clearUnlock();
         }
     }
 
@@ -201,7 +229,7 @@ public class NHTechTree {
 
         addedProductionContents.add(techNode.content);
 
-        node(techNode.content, getResearchRequirements(techNode), () -> {
+        node(techNode.content, getResearchRequirements(techNode), techNode.objectives, () -> {
             for (ProductionNode child : techNode.children) {
                 addBlockTechNode(child);
             }
@@ -235,25 +263,34 @@ public class NHTechTree {
         public final UnlockableContent content;
         public final Seq<ProductionNode> children;
         public final ItemStack[] requirements;
+        public final Seq<Objective> objectives;
 
-        private ProductionNode(UnlockableContent content, ItemStack[] requirements, ProductionNode... children) {
+        private ProductionNode(UnlockableContent content, ItemStack[] requirements, Seq<Objective> objectives, ProductionNode... children) {
             this.content = content;
             this.requirements = requirements;
+            this.objectives = objectives;
             this.children = Seq.with(children);
         }
 
         public static ProductionNode node(UnlockableContent content, ProductionNode... children) {
-            return new ProductionNode(content, null, children);
+            return new ProductionNode(content, null, new Seq<>(), children);
         }
 
         public static ProductionNode node(UnlockableContent content, ItemStack[] requirements, ProductionNode... children) {
-            return new ProductionNode(content, requirements, children);
+            return new ProductionNode(content, requirements, new Seq<>(), children);
+        }
+
+        public static ProductionNode node(UnlockableContent content, Seq<Objective> objectives, ProductionNode... children) {
+            return new ProductionNode(content, null, objectives, children);
         }
     }
 
     private static Seq<ProductionNode> buildBlockTechTree() {
         return Seq.with(
                 ProductionNode.node(SpecialBlock.coreConflux,
+                        ProductionNode.node(NHSectorPresents.landingPoint, Seq.with(new SectorComplete(NHSectorPresents.primaryBase)),
+                                ProductionNode.node(NHSectorPresents.relicAccess)
+                        ),
                         ProductionNode.node(SpecialBlock.coreArray,
                                 ProductionNode.node(SpecialBlock.coreNexus,
                                         ProductionNode.node(SpecialBlock.coreCluster)
@@ -284,20 +321,20 @@ public class NHTechTree {
                                         )
                                 )
                         ),
-                        ProductionNode.node(ProductionBlock.scanCollector,
+                        ProductionNode.node(ProductionBlock.interlockingDrill,
                                 ProductionNode.node(ProductionBlock.sandCracker),
                                 ProductionNode.node(NHBlocks.largeWaterExtractor),
-                                ProductionNode.node(ProductionBlock.tungstenReconstructor,
-                                        ProductionNode.node(ProductionBlock.titaniumReconstructor)
-                                ),
                                 ProductionNode.node(ProductionBlock.decoherenceReverser),
-                                ProductionNode.node(ProductionBlock.resonanceMiningFacility,
-                                        ProductionNode.node(ProductionBlock.airRadiator),
-                                        ProductionNode.node(ProductionBlock.beamMiningFacility,
-                                                ProductionNode.node(ProductionBlock.liquidRadiator)
-                                        )
+                                ProductionNode.node(ProductionBlock.scanCollector,
+                                        ProductionNode.node(ProductionBlock.resonanceMiningFacility,
+                                                ProductionNode.node(ProductionBlock.beamMiningFacility,
+                                                    ProductionNode.node(ProductionBlock.implosionMiningFacility),
+                                                    ProductionNode.node(ProductionBlock.liquidRadiator)
+                                                )
+                                        ),
+                                        ProductionNode.node(ProductionBlock.airRadiator)
                                 ),
-                                ProductionNode.node(ProductionBlock.resourceConvertor),
+                                ProductionNode.node(CraftingBlock.recrystallizer),
                                 ProductionNode.node(ProductionBlock.oilRefiner)
                         ),
                         ProductionNode.node(CraftingBlock.silicarCrusher,
@@ -362,7 +399,8 @@ public class NHTechTree {
                                 ),
                                 ProductionNode.node(CraftingBlock.particleActivator,
                                         ProductionNode.node(CraftingBlock.plasmaActivator),
-                                        ProductionNode.node(CraftingBlock.xenSeparator)
+                                        ProductionNode.node(CraftingBlock.xenSeparator),
+                                        ProductionNode.node(PowerBlock.xenExtractor)
                                 ),
                                 ProductionNode.node(CraftingBlock.reverseCollapseFacility)
                         ),

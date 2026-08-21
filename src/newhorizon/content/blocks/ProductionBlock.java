@@ -3,9 +3,12 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
@@ -24,6 +27,7 @@ import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
+import newhorizon.expand.block.production.drill.LiquidRadiator;
 import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
@@ -32,8 +36,8 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, resourceConvertor, oilRefiner, scanCollector,
-            resonanceMiningFacility, beamMiningFacility,
+            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, /*resourceConvertor,*/ oilRefiner, scanCollector,
+            resonanceMiningFacility, interlockingDrill, beamMiningFacility, implosionMiningFacility,
             airRadiator, liquidRadiator;
 
     public static void load() {
@@ -44,7 +48,11 @@ public class ProductionBlock {
                     NHItems.graphite, 40
             ));
             size = 3;
-            //addLink(0, 2, 2, 0, -3, 2);
+            // Formerly two size-2 links; the current API requires one link per occupied tile.
+            addLink(
+                    p(0, 2), p(1, 2), p(0, 3), p(1, 3),
+                    p(0, -3), p(1, -3), p(0, -2), p(1, -2)
+            );
 
             itemCapacity = 30;
 
@@ -156,7 +164,7 @@ public class ProductionBlock {
             );
         }};
 
-        resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
+        /*resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
@@ -174,7 +182,7 @@ public class ProductionBlock {
             consumePower(300f / 60f);
 
             drawer = new DrawMulti(new DrawDefault());
-        }};
+        }};*/
 
         oilRefiner = new GenericCrafter("oil-refiner") {{
             requirements(Category.production, ItemStack.with(
@@ -206,39 +214,7 @@ public class ProductionBlock {
             craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 12, 2);
         }};
         /*
-        xenExtractor = new ThermalGenerator("xen-extractor") {{
-            requirements(Category.production, with(NHItems.titanium, 40, NHItems.silicon, 40));
-            attribute = NHContent.quantum;
-            group = BlockGroup.liquids;
-            displayEfficiencyScale = 1f / 9f;
-            minEfficiency = 9f - 0.0001f;
-            powerProduction = 800.0001f / 60f / 9f;
-            displayEfficiency = false;
-            effectChance = 0.2f;
-            generateEffect = new OptionalMultiEffect(
-                    NHFx.square(NHColor.lightSkyFront, 60, 6, 32, 3),
-                    new Effect(40f, 80f, e -> {
-                        Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin() * 0.8f);
-                        Lines.stroke(2f * e.fout());
-                        Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
-                    })
-            );
-            effectChance = 0.04f;
-            size = 3;
-            squareSprite = false;
 
-            drawer = new DrawMulti(
-                    new DrawRegion("-base"),
-                    new DrawLiquidTile(NHLiquids.xenFluid, 2f),
-                    new DrawRegion("-top")
-            );
-
-            hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 30f / 60f / 9f);
-            liquidCapacity = 300f;
-            health = 1200;
-            armor = 8;
-        }};
         xenIterator = new RecipeGenericCrafter("xen-iterator"){{
             requirements(Category.production, ItemStack.with(
                     NHItems.metalOxhydrigen, 40,
@@ -256,16 +232,53 @@ public class ProductionBlock {
         }};
 
          */
+        interlockingDrill = new AdaptDrill("interlocking-drill") {{
+            requirements(Category.production, with(
+                    NHItems.silicar, 60
+            ));
+
+            size = 3;
+            tier = 3;
+            modulesEnabled = false;
+
+            drawRim = false;
+            hasPower = false;
+            hasLiquids = true;
+            itemCapacity = 30;
+            liquidCapacity = 60f;
+
+            drillTime = 337.5f;
+            liquidBoostIntensity = 1.6f;
+            warmupSpeed = 0.035f;
+
+            drillEffect = Fx.mineHuge;
+            updateEffectChance = 0.06f;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawRotator() {{
+                        suffix = "-rotor";
+                        rotateSpeed = 3f;
+                        usesSpinDraw = true;
+                        useDrillWarmup = true;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            consumeLiquid(NHLiquids.ammonia, 6f / 60f).boost();
+        }};
+
 
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(
-                    NHItems.silicon, 50,
-                    NHItems.titanium, 50,
-                    NHItems.tungsten, 50
+                    NHItems.hardLight, 40,
+                    NHItems.presstanium, 30,
+                    NHItems.juniorProcessor, 30
             ));
 
             size = 4;
-            tier = 3;
+            tier = 5;
+            blockedItem = NHItems.thorium;
 
             drawRim = false;
             hasPower = true;
@@ -307,7 +320,6 @@ public class ProductionBlock {
 
             consumePower(1.5f);
         }};
-
         beamMiningFacility = new AdaptDrill("beam-mining-facility") {{
             requirements(Category.production, with(
                     NHItems.juniorProcessor, 50,
@@ -346,6 +358,80 @@ public class ProductionBlock {
             );
 
             consumePower(5f);
+        }};
+        implosionMiningFacility = new AdaptDrill("implosion-mining-facility") {{
+            requirements(Category.production, with(
+                    NHItems.seniorProcessor, 100,
+                    NHItems.setonAlloy, 150,
+                    NHItems.zeta, 400
+            ));
+
+            size = 4;
+            tier = 8;
+
+            drawRim = false;
+            hasPower = true;
+
+            maxModules = 4;
+
+            drillTime = 120f;
+            itemCapacity = 300;
+            warmupSpeed = 0.035f;
+
+            drillEffect = Fx.mineHuge;
+            updateEffect = new Effect(30f, e -> {
+                Draw.color(e.color, Color.white, e.fout() * 0.66f);
+                Draw.alpha(0.55f * e.fout() + 0.5f);
+                Angles.randLenVectors(e.id, 4, 4f + e.finpow() * 17f, (x, y) -> {
+                    Fill.poly(e.x + x, e.y + y, 3, e.fout() * rand(e.id).random(2.5f, 4), rand(e.id).random(360f));
+                });
+            });
+            updateEffectChance = 0.04f;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawBlock() {
+                        @Override
+                        public void draw(Building build) {
+                            if (!(build instanceof AdaptDrill.AdaptDrillBuild drill)
+                                    || drill.dominantItem == null
+                                    || drill.warmup <= 0.001f) return;
+
+                            float base = Time.time / 25f;
+                            Tmp.c1.set(drill.dominantItem.color).lerp(Color.white, 0.2f).a(drill.warmup);
+                            Draw.color(Tmp.c1);
+                            Lines.stroke(1.2f);
+
+                            for (int i = 0; i < 32; i++) {
+                                rand.setSeed(build.id + i);
+                                float fin = (rand.random(1f) + base) % 1f;
+                                float angle = rand.random(360f);
+                                float len = 13.5f * Interp.pow2.apply(1f - fin);
+                                Lines.lineAngle(
+                                        build.x + Angles.trnsx(angle, len),
+                                        build.y + Angles.trnsy(angle, len),
+                                        angle, 6f * fin
+                                );
+                            }
+
+                            float pulse = Mathf.sinDeg(Time.time * 1.2f);
+                            Tmp.c1.set(build.team.color).lerp(Color.white, 0.4f).a(drill.warmup / 1.1f);
+                            Draw.color(Tmp.c1);
+                            Fill.circle(build.x, build.y, 3f + pulse);
+                            Lines.stroke(1.3f);
+                            Lines.circle(build.x, build.y, 6f + pulse);
+                            Fill.light(build.x, build.y, Lines.circleVertices(15f), 15f, Color.clear, Tmp.c1);
+
+                            Lines.stroke(1f);
+                            Draw.reset();
+                        }
+                    },
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawDrillOreTop()
+            );
+
+            consumePower(10f);
         }};
 
         airRadiator = new DrillModule("air-radiator") {{
@@ -390,20 +476,16 @@ public class ProductionBlock {
             };
         }};
 
-        liquidRadiator = new DrillModule("liquid-radiator") {{
+        liquidRadiator = new LiquidRadiator("liquid-radiator") {{
             requirements(Category.production, with(
                     NHItems.multipleSteel, 25,
                     NHItems.plastanium, 25
             ));
 
             size = 2;
-            hasLiquids = true;
-
-            consumeLiquid(NHLiquids.water, 0.05f);
-
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
-                    new DrawLiquidTile(NHLiquids.water),
+                    new DrawLiquidTile(),
                     new DrawRegion("-top"),
                     new DrawTeamTop(),
                     new DrawRotation() {
@@ -422,12 +504,6 @@ public class ProductionBlock {
                     }
             );
 
-            buildType = () -> new DrillModuleBuild() {
-                @Override
-                public void updateDrill(AdaptDrill.AdaptDrillBuild drill) {
-                    drill.moduleBoost += efficiency;
-                }
-            };
         }};
 
         /*

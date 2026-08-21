@@ -44,7 +44,7 @@ import static mindustry.type.ItemStack.with;
 public class CraftingBlock {
 
     public static Block
-            silicarCrusher,
+            silicarCrusher, recrystallizer, chemicalDissociationChamber,
             stampingFacility, heavyStampingFacility, processorManuFactory, processorPrinter, subCooler, hyperCooler,
             rectificatior, phaseRectificatior, plasticator, photocatalystFactory, metalOxhydrigenRestructuror, crystallizer, particleActivator, plasmaActivator,
             crucibleFoundry, castingFoundry, xenSeparator, multipleRollingMill, mixedRollingMill, heavyRollingMill,
@@ -71,7 +71,7 @@ public class CraftingBlock {
             consumeItems(ItemStack.with(NHItems.silicar, 2));
 
             drawer = new DrawMulti(
-                    new DrawBaseRegion("-2x2"),
+                    new DrawRegion("-base"),
                     new DrawPistons() {{
                         sinScl = 8f;
                         sinMag = 2f;
@@ -89,6 +89,128 @@ public class CraftingBlock {
                         Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
                 );
             }).layer(Layer.blockOver + 1);
+        }};
+
+        recrystallizer = new GenericCrafter("recrystallizer") {{
+            requirements(Category.crafting, with(
+                    NHItems.graphite, 35,
+                    NHItems.silicon, 35,
+                    NHItems.titanium, 20
+            ));
+
+            size = 2;
+            health = 360;
+            armor = 2;
+            itemCapacity = 20;
+            liquidCapacity = 30f;
+            craftTime = 30f;
+
+            consumePower(30f / 60f);
+            consumeItems(with(NHItems.graphite, 1, NHItems.silicon, 1));
+            consumeLiquid(NHLiquids.water, 6f / 60f);
+            outputItems = with(NHItems.silicar, 2);
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawLiquidTile(NHLiquids.water) {{
+                        padding = 0f;
+                        alpha = 0.9f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            ambientSound = Sounds.loopMachine;
+            ambientSoundVolume = 0.06f;
+            craftEffect = NHFx.square(NHItems.silicar.color.cpy(), 30, 4, 12, 2);
+            updateEffect = Fx.smeltsmoke;
+        }};
+
+        chemicalDissociationChamber = new GenericCrafter("chemical-dissociation-chamber") {{
+            requirements(Category.crafting, with(
+                    NHItems.graphite, 30,
+                    NHItems.silicon, 30,
+                    NHItems.titanium, 25,
+                    NHItems.hardLight, 15
+            ));
+
+            size = 2;
+            health = 480;
+            armor = 3;
+            itemCapacity = 10;
+            liquidCapacity = 60f;
+            craftTime = 150f;
+
+            consumePower(90f / 60f);
+            consumeItem(NHItems.sporePod, 3);
+            consumeLiquid(NHLiquids.water, 36f / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.ammonia, 18f / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawLiquidTile(NHLiquids.ammonia) {{
+                        padding = 0f;
+                        alpha = 0.9f;
+                    }},
+                    new DrawCrucibleFlame() {
+                        {
+                            flameColor = NHLiquids.ammonia.color.cpy();
+                            midColor = NHLiquids.ammonia.color.cpy().lerp(Pal.coalBlack, 0.65f);
+                            flameRad = 0.5f;
+                            flameRadiusMag = 0.25f;
+                            circleStroke = 0.65f;
+                            circleSpace = 1.55f;
+                            particles = 18;
+                            particleRad = 4.2f;
+                            particleSize = 1.4f;
+                        }
+
+                        @Override
+                        public void draw(Building build) {
+                            if (build.warmup() > 0f && flameColor.a > 0.001f) {
+                                Lines.stroke(circleStroke * build.warmup());
+
+                                float si = Mathf.absin(flameRadiusScl, flameRadiusMag);
+                                float a = alpha * build.warmup();
+
+                                Draw.blend(Blending.additive);
+                                Draw.color(flameColor, a);
+
+                                float base = Time.time / particleLife;
+                                rand.setSeed(build.id);
+                                for (int i = 0; i < particles; i++) {
+                                    float fin = (rand.random(1f) + base) % 1f;
+                                    float fout = 1f - fin;
+                                    float angle = rand.random(360f) + (Time.time / rotateScl) % 360f;
+                                    float len = particleRad * particleInterp.apply(fout);
+                                    Draw.alpha(a * (1f - Mathf.curve(fin, 1f - fadeMargin)));
+                                    Fill.square(
+                                            build.x + Angles.trnsx(angle, len),
+                                            build.y + Angles.trnsy(angle, len),
+                                            particleSize * fin * build.warmup(), 45f
+                                    );
+                                }
+
+                                Draw.blend();
+
+                                Draw.color(midColor, build.warmup());
+                                Lines.square(build.x, build.y, (flameRad + circleSpace + si) * build.warmup(), 45f);
+
+                                Draw.reset();
+                            }
+                        }
+                    },
+                    new DrawDefault()
+            );
+
+            ambientSound = Sounds.loopElectricHum;
+            ambientSoundVolume = 0.08f;
+            craftEffect = Fx.none;
+            updateEffect = new Effect(45f, e -> {
+                Fx.rand.setSeed(e.id);
+                Draw.color(NHLiquids.ammonia.color, Color.white, e.fin() * 0.25f);
+                Angles.randLenVectors(e.id, 3, 2f + 7f * e.fin(Interp.pow2Out), (x, y) ->
+                        Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(0.8f, 2.2f))
+                );
+            }).layer(Layer.blockOver + 1f);
         }};
 
         stampingFacility = new MultiBlockCrafter("stamping-facility") {{

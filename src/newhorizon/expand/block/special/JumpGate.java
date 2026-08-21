@@ -909,15 +909,22 @@ public class JumpGate extends Block {
             BaseDialog dialog = new BaseDialog("@spawn");
             dialog.addCloseListener();
 
-            // Include the amount selector and action row in the fitted canvas.  They used to
-            // be appended after dialogH had been calculated, which pushed the dialog off-screen.
-            TableFunc.DialogSize layout = TableFunc.dialogSize(960f, 760f, 0.82f, 0.88f);
-            float dialogW = layout.width();
-            float footerH = Math.max(ui(LEN) * 2f + ui(12f), layout.height() * 0.15f);
-            float dialogH = Math.max(layout.height() - footerH, ui(LEN) * 4f);
-            float leftW = dialogW / 3f;
-            float rightW = dialogW * 2f / 3f;
+            boolean portrait = TableFunc.isPortraitLayout();
+            TableFunc.DialogSize landscapeLayout = TableFunc.dialogSize(960f, 760f, 0.82f, 0.88f);
+            float dialogW = portrait ? TableFunc.dialogWidth(640f, 0.92f) : landscapeLayout.width();
+            float viewportH = portrait ? TableFunc.dialogHeight(1180f, 0.90f) : landscapeLayout.height();
+            float footerH = Math.max(ui(LEN) * 2f + ui(12f), viewportH * 0.15f);
+            float landscapeBodyH = viewportH - footerH;
+            float resourceH = portrait ? Math.max(ui(220f), viewportH * 0.22f) : landscapeBodyH / 3f;
+            float queueH = portrait ? Math.max(ui(280f), viewportH * 0.26f) : landscapeBodyH - resourceH;
+            float leftW = portrait ? dialogW : dialogW / 3f;
+            float rightW = portrait ? dialogW : dialogW * 2f / 3f;
+            float leftH = portrait ? resourceH + queueH : landscapeBodyH;
+            float rightH = portrait ? Math.max(ui(700f), viewportH * 0.66f) : landscapeBodyH;
+            float dialogH = portrait ? leftH + rightH : landscapeBodyH;
             float len = Mathf.clamp(ui(LEN), 42f, dialogH * 0.09f);
+            float resourceEntryW = 32f + ui(8f);
+            int resourceColumns = Math.max(1, Mathf.floor((leftW - ui(28f)) / resourceEntryW));
 
             if (selectID < 0 || selectID >= recipeList.size || hideRecipe(recipeList.get(selectID).unitType)) {
                 for (int i = 0; i < recipeList.size; i++) {
@@ -929,7 +936,10 @@ public class JumpGate extends Block {
             }
             selectNum = Mathf.clamp(selectNum, 1, maxSpawnCount);
 
-            dialog.cont.table(main -> {
+            Table content = portrait ? new Table() : dialog.cont;
+            if (portrait) content.top();
+            else content.center();
+            content.table(main -> {
                 main.table(Styles.black3, left -> {
                     left.top();
                     left.table(Tex.pane, res -> {
@@ -946,10 +956,10 @@ public class JumpGate extends Block {
                             int col = 0;
                             for (Item item : tmpItems) {
                                 list.add(new ItemImageDynamic(item, () -> realItems().get(item), realItems())).pad(ui(4f));
-                                if (++col % 4 == 0) list.row();
+                                if (++col % resourceColumns == 0) list.row();
                             }
                         }).grow().pad(ui(4f));
-                    }).growX().height(dialogH / 3f).pad(ui(4f)).row();
+                    }).growX().height(resourceH).pad(ui(4f)).row();
 
                     left.table(Tex.pane, queuePanel -> {
                         queuePanel.top();
@@ -1204,11 +1214,14 @@ public class JumpGate extends Block {
                         queuePanel.button("@mod.ui.clear-wait-queue", Icon.trash, Styles.cleart, () -> configure(IntSeq.with(1, 0))).growX().height(len - ui(8f)).pad(ui(4f))
                                 .disabled(b -> buildQueue.isEmpty());
                     }).grow().pad(ui(4f));
-                }).size(leftW, dialogH).padRight(ui(6f));
+                }).size(leftW, leftH).padRight(portrait ? 0f : ui(6f));
 
+                if (portrait) main.row();
                 main.table(Styles.black3, right -> {
                     float cardW = rightW - ui(40f);
-                    float cardH = Mathf.clamp(ui(86f), 64f, dialogH * 0.16f);
+                    float cardH = portrait
+                            ? Mathf.clamp(ui(132f), 96f, rightH * 0.44f)
+                            : Mathf.clamp(ui(86f), 64f, rightH * 0.16f);
                     float border = ui(2f);
                     arc.scene.ui.layout.Cell<ScrollPane> paneCell = right.pane(grid -> {
                         grid.top().left();
@@ -1229,10 +1242,16 @@ public class JumpGate extends Block {
                                                     header.left();
                                                     header.image(set.unitType.uiIcon).size(ui(40f)).scaling(Scaling.fit).padRight(ui(8f));
                                                     header.add(set.unitType.localizedName).growX().left().wrap().labelAlign(Align.left);
-                                                    header.add(new Label(() -> {
+                                                    Label buildTime = new Label(() -> {
                                                         float sec = set.costTime() * selectNum / speedMultiplier(selectNum) / 60f / Math.max(state.rules.unitBuildSpeed(team), 0.0001f);
                                                         return "[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + Strings.fixed(sec, 1) + "[]" + Core.bundle.get("unit.seconds");
-                                                    })).right().padLeft(ui(8f));
+                                                    });
+                                                    if (portrait) {
+                                                        header.row();
+                                                        header.add(buildTime).colspan(2).left().padTop(ui(2f));
+                                                    } else {
+                                                        header.add(buildTime).right().padLeft(ui(8f));
+                                                    }
                                                 }).growX().left().row();
                                                 info.table(req -> {
                                                     req.left();
@@ -1267,10 +1286,10 @@ public class JumpGate extends Block {
                     ScrollPane unitPane = paneCell.get();
                     unitPane.setScrollingDisabled(true, false);
                     unitPane.setFadeScrollBars(false);
-                }).size(rightW, dialogH);
+                }).size(rightW, rightH);
             }).size(dialogW, dialogH).row();
 
-            dialog.cont.table(bottom -> {
+            content.table(bottom -> {
                 Label amountLabel = new Label("");
                 Slider slider = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnCount), 1, false);
                 slider.setValue(selectNum);
@@ -1292,6 +1311,7 @@ public class JumpGate extends Block {
                     actions.button("@back", Icon.left, Styles.cleart, dialog::hide).growX().height(len);
                     actions.button("@mod.ui.force-abort", Icon.cancel, Styles.cleart, () -> configure(false)).growX().height(len)
                             .disabled(b -> !isCalling());
+                    if (portrait) actions.row();
                     actions.button("@mod.ui.infinite-prod", Icon.refresh, Styles.cleart, () -> {
                         if (selectID < 0) return;
                         configure(IntSeq.with(0, selectID, selectNum, 1));
@@ -1306,8 +1326,16 @@ public class JumpGate extends Block {
                         UnitRecipe set = getRecipe(selectID);
                         return set == null || !canSpawn(set, selectNum) || !hasConsume(set, selectNum);
                     });
-                }).growX().height(len);
+                }).growX().height(portrait ? len * 2f : len);
             }).width(dialogW).padTop(ui(6f));
+
+            if (portrait) {
+                ScrollPane pagePane = new ScrollPane(content, Styles.noBarPane);
+                pagePane.setScrollingDisabled(true, false);
+                pagePane.setFadeScrollBars(false);
+                pagePane.setOverscroll(false, true);
+                dialog.cont.add(pagePane).size(dialogW, viewportH);
+            }
 
             dialog.keyDown(c -> {
                 if (c == KeyCode.left) selectNum = Mathf.clamp(--selectNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnCount));
