@@ -277,7 +277,8 @@ public class ProductionBlock {
             ));
 
             size = 4;
-            tier = 3;
+            tier = 5;
+            blockedItem = NHItems.thorium;
 
             drawRim = false;
             hasPower = true;
