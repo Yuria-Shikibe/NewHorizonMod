@@ -16,7 +16,7 @@ float hash31(vec3 p){
     return fract((p.x + p.y) * p.z);
 }
 
-float noise3(vec3 p){
+float nhNoise3(vec3 p){
     vec3 cell = floor(p);
     vec3 f = fract(p);
     f = f * f * (3.0 - 2.0 * f);
@@ -41,7 +41,7 @@ float fbm(vec3 p){
     float value = 0.0;
     float amplitude = 0.58;
     for(int i = 0; i < 3; i++){
-        value += noise3(p) * amplitude;
+        value += nhNoise3(p) * amplitude;
         p = p * 2.03 + vec3(7.1, 3.7, 5.3);
         amplitude *= 0.50;
     }
@@ -72,7 +72,7 @@ void main(){
     vec3 samplePos = v_local * 2.15 + flow + vec3(phase, phase * 1.7, -phase * 0.8);
 
     float broad = fbm(samplePos);
-    float detail = noise3(samplePos * 3.35 - flow * 1.7 + 9.4);
+    float detail = nhNoise3(samplePos * 3.35 - flow * 1.7 + 9.4);
     float dust = fbm(samplePos * 0.61 - flow * 0.35 + vec3(17.0, 3.0, 11.0));
     float density = smoothstep(0.39, 0.76, broad * 0.74 + detail * 0.26);
     float filament = pow(clamp(1.0 - abs(broad - detail) * 2.2, 0.0, 1.0), 3.0);
