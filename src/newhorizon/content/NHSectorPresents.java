@@ -14,6 +14,7 @@ public class NHSectorPresents {
     public static SectorPreset primaryBase;
     public static SectorPreset landingPoint;
     public static SectorPreset relicAccess;
+    public static SectorPreset edgeZone;
     private static boolean campaignEventsRegistered;
     private static boolean landingPointTransitionPending;
 
@@ -28,13 +29,19 @@ public class NHSectorPresents {
 
         landingPoint = new SectorPreset("landing-point", "new-horizon-LandingPoint", NHPlanets.midantha, 2) {{
             showHidden = true;
-            captureWave = 2;
+            captureWave = 20;
             difficulty = 1;
         }};
 
         relicAccess = new SectorPreset("relic-access", "new-horizon-RelicAccess", NHPlanets.midantha, 42) {{
             showHidden = true;
-            captureWave = 2;
+            captureWave = 25;
+            difficulty = 2;
+        }};
+
+        edgeZone = new SectorPreset("edge-zone", "new-horizon-EdgeZone", NHPlanets.midantha, 27) {{
+            showHidden = true;
+            captureWave = 0;
             difficulty = 2;
         }};
 
@@ -54,6 +61,7 @@ public class NHSectorPresents {
     public static void applyCampaignMapRules(Rules rules) {
         applyMapRules(landingPoint, rules);
         applyMapRules(relicAccess, rules);
+        applyMapRules(edgeZone, rules);
     }
 
     private static void applyMapRules(SectorPreset preset, Rules rules) {

@@ -289,7 +289,11 @@ public class NHTechTree {
         return Seq.with(
                 ProductionNode.node(SpecialBlock.coreConflux,
                         ProductionNode.node(NHSectorPresents.landingPoint, Seq.with(new SectorComplete(NHSectorPresents.primaryBase)),
-                                ProductionNode.node(NHSectorPresents.relicAccess)
+                                ProductionNode.node(NHSectorPresents.relicAccess,
+                                        ProductionNode.node(NHSectorPresents.edgeZone,
+                                                Seq.with(new SectorComplete(NHSectorPresents.relicAccess))
+                                        )
+                                )
                         ),
                         ProductionNode.node(SpecialBlock.coreArray,
                                 ProductionNode.node(SpecialBlock.coreNexus,
