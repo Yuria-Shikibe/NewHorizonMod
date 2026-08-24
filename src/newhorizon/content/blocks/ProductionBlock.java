@@ -271,13 +271,14 @@ public class ProductionBlock {
 
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(
-                    NHItems.silicon, 50,
-                    NHItems.titanium, 50,
-                    NHItems.tungsten, 50
+                    NHItems.hardLight, 40,
+                    NHItems.presstanium, 30,
+                    NHItems.juniorProcessor, 30
             ));
 
             size = 4;
-            tier = 3;
+            tier = 5;
+            blockedItem = NHItems.thorium;
 
             drawRim = false;
             hasPower = true;
