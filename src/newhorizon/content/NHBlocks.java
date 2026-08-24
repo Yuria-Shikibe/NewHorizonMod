@@ -956,7 +956,7 @@ public class NHBlocks {
             heatColor = NHColor.darkEnrColor;
             unitSort = NHUnitSorts.regionalHPMaximum_All;
 
-            coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 1));
+            coolant = consume(new ConsumeLiquid(NHLiquids.antiMatter, 1));
             liquidCapacity = 120;
             coolantMultiplier = 2.5f;
 
@@ -1715,7 +1715,7 @@ public class NHBlocks {
             unitSort = UnitSorts.strongest;
 
             warmupMaintainTime = 50f;
-            coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 20f / 60f));
+            coolant = consume(new ConsumeLiquid(NHLiquids.antiMatter, 20f / 60f));
             coolantMultiplier = 2.5f;
 
             moveWhileCharging = false;

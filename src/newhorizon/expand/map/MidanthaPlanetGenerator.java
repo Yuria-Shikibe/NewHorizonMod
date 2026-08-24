@@ -18,6 +18,7 @@ import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
 import arc.util.noise.VoronoiNoise;
 import mindustry.content.Blocks;
+import arc.util.Log;
 import mindustry.game.Schematics;
 import mindustry.graphics.g3d.PlanetGrid;
 import mindustry.maps.generators.PlanetGenerator;
@@ -30,6 +31,7 @@ import newhorizon.content.NHSectorPresents;
 import newhorizon.content.blocks.EnvironmentBlock;
 
 import static mindustry.Vars.content;
+import static mindustry.Vars.tree;
 
 public class MidanthaPlanetGenerator extends PlanetGenerator {
     public static Interp interp = new Interp.Exp(2, 3);
@@ -149,7 +151,11 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
     };
 
     public MidanthaPlanetGenerator() {
-
+        try{
+            defaultLoadout = Schematics.read(tree.get("schematics/core-conflux.msch"));
+        }catch(Exception e){
+            Log.err("Failed to load Midantha default loadout: @", e);
+        }
     }
 
     @SuppressWarnings("all")
