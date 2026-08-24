@@ -459,7 +459,9 @@ public class NHTechTree {
                                 ProductionNode.node(DefenseBlock.presstaniumWall,
                                         ProductionNode.node(DefenseBlock.refactoringMultiWall,
                                                 ProductionNode.node(DefenseBlock.setonPhasedWall,
-                                                        ProductionNode.node(DefenseBlock.shapedWall)
+                                                        ProductionNode.node(DefenseBlock.shapedWall,
+                                                                ProductionNode.node(NHBlocks.ancientLaserWall)
+                                                        )
                                                 )
                                         )
                                 ),
@@ -498,6 +500,7 @@ public class NHTechTree {
                                                 ProductionNode.node(NHBlocks.webber)
                                         )
                                 ),
+                                ProductionNode.node(NHBlocks.laserWall),
                                 ProductionNode.node(NHBlocks.blaster),
                                 ProductionNode.node(NHBlocks.antibody,
                                         ProductionNode.node(NHBlocks.interferon,
