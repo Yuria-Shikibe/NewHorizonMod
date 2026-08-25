@@ -10,6 +10,7 @@ import mindustry.gen.Building;
 import newhorizon.expand.block.commandable.CommandableBlock;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.entities.GravityTrapField;
+import newhorizon.expand.entities.SharedShieldFields;
 
 import static mindustry.Vars.world;
 
@@ -38,12 +39,14 @@ public class NHGroups {
         beaconBoostLinks.clear();
         commandableBuilds.clear();
         gravityFields.clear();
+        SharedShieldFields.clearWorld();
     }
 
     public static void worldReset() {
     }
 
     public static void update() {
+        SharedShieldFields.update();
     }
 
     public static void draw() {

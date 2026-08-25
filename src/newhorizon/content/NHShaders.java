@@ -25,6 +25,7 @@ public class NHShaders {
     public static ModSurfaceShader luminousQuantum;
     public static ModSurfaceShader displaceGlitch;
     public static GalaxyNebulaShader galaxyNebula;
+    public static VortexHitShader vortexHit;
 
     public static float alphaInner, alphaOuter;
 
@@ -69,6 +70,8 @@ public class NHShaders {
                 setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
             }
         };
+
+        vortexHit = new VortexHitShader();
 
         displaceGlitch = new ModSurfaceShader("VFX_displaceGlitch") {
             @Override
@@ -398,6 +401,29 @@ public class NHShaders {
 
         public ModShader(String frag) {
             super(getShaderFi("screenspace.vert"), getShaderFi(frag + ".frag"));
+        }
+    }
+
+    public static class VortexHitShader extends ModShader {
+        public final float[] hitPositions = new float[48];
+        public final float[] hitAngles = new float[48];
+
+        public VortexHitShader() {
+            super("VFX_vortexHit");
+        }
+
+        @Override
+        public void apply() {
+            setUniformf("u_offset",
+                    Core.camera.position.x - Core.camera.width / 2,
+                    Core.camera.position.y - Core.camera.height / 2);
+            setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+            setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
+            setUniformf("u_time", Time.time);
+            setUniformf("u_scale", Scl.scl(1f));
+            setUniform1fv("u_hits[0]", hitPositions, 0, hitPositions.length);
+            setUniform1fv("u_hitAngles[0]", hitAngles, 0, hitAngles.length);
+            setUniformi("u_hitCount", Math.min(newhorizon.expand.entities.VortexEvent.active.length, 24));
         }
     }
 

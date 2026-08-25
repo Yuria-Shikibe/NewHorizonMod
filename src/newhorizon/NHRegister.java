@@ -44,9 +44,17 @@ public class NHRegister {
             NHGroups.draw();
         });
 
+        Events.run(EventType.Trigger.postDraw, () -> {
+            if (!Vars.headless && Vars.state.isPlaying()) NHVars.vortexRenderer.draw();
+        });
+
         Events.on(EventType.WorldLoadEvent.class, e -> {
             NHGroups.worldInit();
-            if (!Vars.headless) NHVars.renderer.statusRenderer.clear();
+            if (!Vars.headless) {
+                NHVars.renderer.statusRenderer.clear();
+                NHGroups.worldReset();
+                newhorizon.expand.entities.VortexEvent.clear();
+            }
         });
     }
 }

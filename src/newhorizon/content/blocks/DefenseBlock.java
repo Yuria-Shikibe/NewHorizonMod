@@ -11,11 +11,13 @@ import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.defence.AdaptRegenProjector;
 import newhorizon.expand.block.defence.AdaptWall;
+import newhorizon.expand.block.defence.QuantumVortexProjector;
 import newhorizon.expand.block.defence.ShieldGenerator;
 
 import static arc.graphics.g2d.Draw.color;
@@ -27,7 +29,8 @@ public class DefenseBlock {
     public static Block
             titaniumWall,
             presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall,
-            standardRegenProjector, heavyRegenProjector, standardForceProjector, largeShieldGenerator, riftShield;
+            standardRegenProjector, heavyRegenProjector, standardForceProjector, largeShieldGenerator, riftShield,
+            quantumVortexProjector;
 
     public static void load() {
         titaniumWall = new AdaptWall("titanium-wall") {{
@@ -194,6 +197,10 @@ public class DefenseBlock {
 
         riftShield = new ShieldGenerator("rift-shield") {{
             requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.nodexPlate, 300));
+        }};
+
+        quantumVortexProjector = new QuantumVortexProjector("quantum-vortex-projector") {{
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
         }};
 
     }

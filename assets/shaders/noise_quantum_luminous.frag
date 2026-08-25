@@ -67,9 +67,13 @@ vec2 mouseDelta(){
         vec2(7.5 * eighth, 2.5 * eighth));
     vec4 nowMouse = vec4(u_mouse.xy / u_resolution, u_mouse.zw / u_resolution);
 
-    bool oldActive = oldMouse.z > pixelSize.x && oldMouse.w > pixelSize.y;
-    bool nowActive = nowMouse.z > pixelSize.x && nowMouse.w > pixelSize.y;
-    return oldActive && nowActive ? nowMouse.xy - oldMouse.xy : vec2(0.0);
+    float oldActiveX = step(pixelSize.x, oldMouse.z);
+    float oldActiveY = step(pixelSize.y, oldMouse.w);
+    float nowActiveX = step(pixelSize.x, nowMouse.z);
+    float nowActiveY = step(pixelSize.y, nowMouse.w);
+
+    vec2 movedDelta = nowMouse.xy - oldMouse.xy;
+    return movedDelta * oldActiveX * oldActiveY * nowActiveX * nowActiveY;
 }
 
 void main(){
