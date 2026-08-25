@@ -113,6 +113,7 @@ public class NHBlocks {
     public static Block quantumField;
     public static Block quantumFieldDeep;
     public static Block quantumFieldDisturbing;
+    public static Block quantumFieldLuminous;
     public static Block metalWall;
     public static Block metalWallQuantum;
     public static Block metalTower;
@@ -257,6 +258,27 @@ public class NHBlocks {
                 fullIcon = uiIcon = region = Core.atlas.find(NewHorizon.name("quantum-field-disturbing-icon"));
             }
         };
+
+        quantumFieldLuminous = new Floor("quantum-field-luminous", 1) {{
+            status = NHStatusEffects.quantization;
+            statusDuration = 120f;
+            speedMultiplier = 1.2f;
+            liquidDrop = NHLiquids.quantumLiquid;
+            liquidMultiplier = 0.3f;
+            isLiquid = true;
+            cacheLayer = NHContent.luminousQuantumLayer;
+            attributes.set(Attribute.light, 4f);
+            emitLight = true;
+            lightRadius = 48f;
+            lightColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.35f);
+            blendGroup = this;
+
+            attributes.set(NHContent.quantum, 0.5f);
+            attributes.set(Attribute.heat, 0.2f);
+            attributes.set(Attribute.water, -1f);
+            attributes.set(Attribute.oil, -1f);
+            attributes.set(Attribute.spores, -1f);
+        }};
 
         metalTower = new StaticWall("metal-tower") {{
             variants = 3;
@@ -2215,5 +2237,4 @@ public class NHBlocks {
         PayloadBlock.load();
     }
 }
-
 

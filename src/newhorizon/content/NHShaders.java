@@ -2,9 +2,16 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.files.Fi;
+import arc.graphics.g2d.Draw;
+import arc.graphics.Color;
+import arc.math.geom.Vec2;
 import arc.graphics.Texture;
+import arc.graphics.Pixmap;
+import arc.graphics.gl.FrameBuffer;
+import mindustry.graphics.CacheLayer;
 import arc.graphics.gl.Shader;
 import arc.scene.ui.layout.Scl;
+import arc.util.Tmp;
 import arc.util.Time;
 import mindustry.graphics.Shaders;
 import mindustry.mod.Mods;
@@ -15,6 +22,7 @@ import static mindustry.Vars.renderer;
 
 public class NHShaders {
     public static ModShader gravityTrap, quantum, statusXWave, hexShield;
+    public static ModSurfaceShader luminousQuantum;
     public static ModSurfaceShader displaceGlitch;
     public static GalaxyNebulaShader galaxyNebula;
 
@@ -119,6 +127,55 @@ public class NHShaders {
         };
 
         galaxyNebula = new GalaxyNebulaShader();
+
+        luminousQuantum = new LuminousQuantumShader();
+    }
+
+    public static class LuminousQuantumShader extends ModSurfaceShader {
+        public LuminousQuantumShader() {
+            super("noise_quantum_luminous");
+        }
+
+        public Texture floorTexture;
+        public Texture blurTexture;
+        public int frame;
+        public final Vec2 mouseWorld = new Vec2();
+        public final Vec2 previousMouseWorld = new Vec2();
+        public Texture mouseHistoryTexture;
+
+        @Override
+        public void loadNoise() {
+            noiseTex1 = NHContent.smoothNoise;
+        }
+
+        @Override
+        public Texture getTexture() {
+            return NHContent.smoothNoise;
+        }
+
+        @Override
+        public void apply() {
+            setUniformf("u_mouse", mouseWorld.x, mouseWorld.y, previousMouseWorld.x, previousMouseWorld.y);
+            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
+            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+            setUniformf("u_time", Time.time / 1000f);
+            setUniformi("u_frame", frame);
+
+            Texture floor = floorTexture == null ? renderer.effectBuffer.getTexture() : floorTexture;
+            floor.bind(5);
+            floor.bind(4);
+            noiseTex1.bind(3);
+            mouseHistoryTexture.bind(2);
+            blurTexture.bind(1);
+
+            setUniformi("u_mouseTex", 2);
+            setUniformi("u_texture", 0);
+            setUniformi("u_blur", 1);
+            setUniformi("u_noise", 3);
+            setUniformi("u_floor", 4);
+            setUniformi("u_floorTex", 4);
+            setUniformi("u_floorTex", 5);
+        }
     }
 
     public static Fi getShaderFi(String file) {
@@ -126,6 +183,156 @@ public class NHShaders {
         Fi shaders = mod.root.child("shaders");
         if (shaders.exists() && shaders.child(file).exists()) return shaders.child(file);
         return Shaders.getShaderFi(file);
+    }
+
+    public static class LuminousQuantumCacheLayer extends CacheLayer {
+        private final FrameBuffer simulationA = new FrameBuffer();
+        private final FrameBuffer simulationB = new FrameBuffer();
+        private final FrameBuffer blurred = new FrameBuffer();
+        private final FrameBuffer blurTemp = new FrameBuffer();
+        private final LuminousQuantumShader mainShader = new LuminousQuantumShader();
+        private final SimpleSurfaceShader blurHorizontal = new SimpleSurfaceShader("quantum_luminous_blur_h");
+        private final SimpleSurfaceShader blurVertical = new SimpleSurfaceShader("quantum_luminous_blur_v");
+        private final LuminousCompositeShader compositeShader = new LuminousCompositeShader();
+        private final FrameBuffer mouseHistory = new FrameBuffer();
+        private boolean usingFirstSimulation;
+        private int clearedWidth;
+        private int clearedHeight;
+
+        @Override
+        public void begin() {
+            if (!renderer.animateWater) return;
+
+            int width = Math.max(2, Core.graphics.getWidth());
+            int height = Math.max(2, Core.graphics.getHeight());
+            simulationA.resize(width, height);
+            simulationB.resize(width, height);
+            blurred.resize(width, height);
+            blurTemp.resize(width, height);
+            mouseHistory.resize(width, height);
+
+            if(clearedWidth != width || clearedHeight != height){
+                clear(simulationA);
+                clear(simulationB);
+                clear(blurred);
+                clear(blurTemp);
+                clear(mouseHistory);
+                clearedWidth = width;
+                clearedHeight = height;
+            }
+
+            renderer.effectBuffer.begin(Color.clear);
+            renderer.blocks.floor.beginDraw();
+        }
+
+        @Override
+        public void end() {
+            if (!renderer.animateWater) return;
+
+            renderer.effectBuffer.end();
+
+            FrameBuffer previous = usingFirstSimulation ? simulationA : simulationB;
+            FrameBuffer next = usingFirstSimulation ? simulationB : simulationA;
+
+            blit(previous, blurHorizontal, blurTemp);
+            blit(blurTemp, blurVertical, blurred);
+            mainShader.frame++;
+            renderSimulation(previous, blurred, next);
+            compositeShader.simulationTexture = next.getTexture();
+            compositeShader.floorTexture = renderer.effectBuffer.getTexture();
+            renderer.effectBuffer.blit(compositeShader);
+            usingFirstSimulation = !usingFirstSimulation;
+            renderer.blocks.floor.beginDraw();
+
+        }
+        private void renderSimulation(FrameBuffer previous, FrameBuffer blurSource, FrameBuffer target) {
+            mainShader.floorTexture = renderer.effectBuffer.getTexture();
+            mainShader.blurTexture = blurSource.getTexture();
+            mainShader.mouseHistoryTexture = mouseHistory.getTexture();
+            Vec2 currentMouse = Core.input.mouseWorld(Core.input.mouseX(), Core.input.mouseY());
+            if(mainShader.frame == 0){
+                mainShader.previousMouseWorld.set(currentMouse);
+                mainShader.mouseWorld.set(currentMouse);
+            }else{
+                mainShader.previousMouseWorld.set(mainShader.mouseWorld);
+                mainShader.mouseWorld.set(currentMouse);
+            }
+            mouseHistory.begin();
+            mouseStatePixmap.fill(Color.packRgba(
+                (int)(currentMouse.x / Core.camera.width * 255f),
+                (int)(currentMouse.y / Core.camera.height * 255f),
+                (int)(mainShader.mouseWorld.x / Core.camera.width * 255f),
+                (int)(mainShader.mouseWorld.y / Core.camera.height * 255f)));
+            Texture historyTexture = mouseHistory.getTexture();
+            historyTexture.draw(mouseStatePixmap);
+            mouseHistory.end();
+
+            target.begin();
+            previous.getTexture().bind(0);
+            Draw.blit(mainShader);
+            target.end();
+        }
+
+        private void clear(FrameBuffer buffer) {
+            buffer.begin(Color.clear);
+            buffer.end();
+        }
+
+        private final Pixmap mouseStatePixmap = new Pixmap(1, 1);
+
+        private void blit(FrameBuffer source, Shader shader, FrameBuffer target) {
+            target.begin();
+            source.blit(shader);
+            target.end();
+        }
+    }
+
+    public static class SimpleSurfaceShader extends ModSurfaceShader {
+        public SimpleSurfaceShader(String frag) {
+            super(frag);
+        }
+
+        @Override
+        public void loadNoise() {
+        }
+
+        @Override
+        public Texture getTexture() {
+            return null;
+        }
+
+        @Override
+        public void apply() {
+            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
+            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+            setUniformf("u_texsize", Core.graphics.getWidth(), Core.graphics.getHeight());
+            setUniformf("u_time", Time.time);
+            setUniformf("u_mouse", Core.input.mouseWorld(Core.input.mouseX(), Core.input.mouseY()));
+        }
+    }
+
+    public static class LuminousCompositeShader extends SimpleSurfaceShader {
+        public Texture simulationTexture;
+        public Texture floorTexture;
+
+        public LuminousCompositeShader() {
+            super("quantum_luminous_composite");
+        }
+
+        @Override
+        public void apply() {
+            super.apply();
+
+            if(floorTexture != null){
+                floorTexture.bind(2);
+                setUniformi("u_floorTex", 2);
+            }
+
+            if(simulationTexture != null){
+                simulationTexture.bind(1);
+                setUniformi("u_simulation", 1);
+            }
+        }
     }
 
     public static class ModSurfaceShader extends ModShader {

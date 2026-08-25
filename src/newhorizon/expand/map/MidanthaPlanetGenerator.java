@@ -428,7 +428,8 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
     }
 
     private boolean isExcludedFloor(Block floor) {
-        return floor == NHBlocks.quantumField || floor == NHBlocks.quantumFieldDeep || floor == NHBlocks.quantumFieldDisturbing;
+        return floor == NHBlocks.quantumField || floor == NHBlocks.quantumFieldDeep || floor == NHBlocks.quantumFieldDisturbing
+                || floor == NHBlocks.quantumFieldLuminous;
     }
 
     private boolean isMetalFloor(Block floor) {

@@ -31,7 +31,7 @@ public class NHContent extends Content {
 
     public static Texture smoothNoise, particleNoise, darkerNoise, noise;
 
-    public static CacheLayer quantumLayer, armorLayer;
+    public static CacheLayer quantumLayer, luminousQuantumLayer, armorLayer;
 
     public static TextureRegion
             crossRegion, sourceCenter, timeIcon, xenIcon,
@@ -50,6 +50,7 @@ public class NHContent extends Content {
 
     public static void loadBeforeContentLoad() {
         CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum));
+        CacheLayer.add(luminousQuantumLayer = new NHShaders.LuminousQuantumCacheLayer());
         quantum = Attribute.add("quantum");
         density = Attribute.add("density");
     }
