@@ -1,6 +1,7 @@
 package newhorizon.util.graphic;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -9,7 +10,7 @@ import arc.util.Disposable;
 import mindustry.Vars;
 import mindustry.graphics.Layer;
 import newhorizon.content.NHShaders;
-import newhorizon.content.NHShaders.SimpleSurfaceShader;
+import newhorizon.content.NHShaders.ShieldQuantumBlurShader;
 import newhorizon.expand.entities.SharedShieldField;
 import newhorizon.expand.entities.SharedShieldFields;
 import newhorizon.expand.entities.VortexEvent;
@@ -18,13 +19,12 @@ public class VortexHitRenderer implements Disposable {
     public static final float VORTEX_RENDER_LAYER = Layer.end + 1f;
 
     private final FrameBuffer mask = new FrameBuffer();
-    private final FrameBuffer simulationA = new FrameBuffer();
-    private final FrameBuffer simulationB = new FrameBuffer();
-    private final FrameBuffer blurred = new FrameBuffer();
+    private final FrameBuffer shield = new FrameBuffer();
+    private final FrameBuffer glowNear = new FrameBuffer();
+    private final FrameBuffer glowFar = new FrameBuffer();
     private final FrameBuffer blurTemp = new FrameBuffer();
-    private final SimpleSurfaceShader blurHorizontal = new SimpleSurfaceShader("VFX_quantumShieldBlurH");
-    private final SimpleSurfaceShader blurVertical = new SimpleSurfaceShader("VFX_quantumShieldBlurV");
-    private boolean usingFirstSimulation;
+    private final ShieldQuantumBlurShader blurHorizontal = new ShieldQuantumBlurShader("VFX_quantumShieldBlurH");
+    private final ShieldQuantumBlurShader blurVertical = new ShieldQuantumBlurShader("VFX_quantumShieldBlurV");
     private int width = -1, height = -1;
 
     public void update() {
@@ -46,15 +46,17 @@ public class VortexHitRenderer implements Disposable {
         NHShaders.shieldQuantum.texture = mask.getTexture();
         fillShaderState();
 
-        Draw.drawRange(VORTEX_RENDER_LAYER, 0.001f,
-                () -> mask.begin(Color.clear),
-                () -> {
-                    captureMask();
-                    mask.end();
-                    updateSimulation();
-                    mask.blit(NHShaders.shieldQuantum);
-                    Draw.flush();
-                });
+        Draw.draw(VORTEX_RENDER_LAYER, () -> {
+            // Submit all world geometry before changing the render target.
+            Draw.flush();
+            mask.begin(Color.clear);
+            captureMask();
+            Draw.flush();
+            mask.end();
+
+            renderShield();
+            Draw.flush();
+        });
     }
 
     private void captureMask() {
@@ -80,36 +82,49 @@ public class VortexHitRenderer implements Disposable {
         width = w;
         height = h;
         mask.resize(w, h);
-        simulationA.resize(w, h);
-        simulationB.resize(w, h);
-        blurred.resize(w, h);
+        shield.resize(w, h);
+        glowNear.resize(w, h);
+        glowFar.resize(w, h);
         blurTemp.resize(w, h);
-        clear(simulationA);
-        clear(simulationB);
-        clear(blurred);
+        clear(shield);
+        clear(glowNear);
+        clear(glowFar);
         clear(blurTemp);
     }
 
-    private void updateSimulation() {
-        FrameBuffer previous = usingFirstSimulation ? simulationA : simulationB;
-        FrameBuffer next = usingFirstSimulation ? simulationB : simulationA;
+    private void renderShield() {
+        // Intermediate buffers must receive exact RGBA values without blending.
+        Blending.disabled.apply();
+        shield.begin(Color.clear);
+        mask.blit(NHShaders.shieldQuantum);
+        shield.end();
 
+        blurHorizontal.radius = 1f;
         blurTemp.begin();
-        previous.blit(blurHorizontal);
+        shield.blit(blurHorizontal);
         blurTemp.end();
 
-        blurred.begin();
+        blurVertical.radius = 1f;
+        glowNear.begin();
         blurTemp.blit(blurVertical);
-        blurred.end();
+        glowNear.end();
 
-        NHShaders.shieldQuantumSimulation.blurTexture = blurred.getTexture();
-        next.begin();
-        previous.blit(NHShaders.shieldQuantumSimulation);
-        next.end();
+        blurHorizontal.radius = 3f;
+        blurTemp.begin();
+        glowNear.blit(blurHorizontal);
+        blurTemp.end();
 
-        NHShaders.shieldQuantumSimulation.frame++;
-        NHShaders.shieldQuantum.simulationTexture = next.getTexture();
-        usingFirstSimulation = !usingFirstSimulation;
+        blurVertical.radius = 3f;
+        glowFar.begin();
+        blurTemp.blit(blurVertical);
+        glowFar.end();
+
+        NHShaders.shieldQuantumComposite.glowNear = glowNear.getTexture();
+        NHShaders.shieldQuantumComposite.glowFar = glowFar.getTexture();
+
+        // Composite transparently over the already-rendered world.
+        Blending.normal.apply();
+        shield.blit(NHShaders.shieldQuantumComposite);
     }
 
     private void clear(FrameBuffer buffer) {
@@ -140,9 +155,9 @@ public class VortexHitRenderer implements Disposable {
     @Override
     public void dispose() {
         mask.dispose();
-        simulationA.dispose();
-        simulationB.dispose();
-        blurred.dispose();
+        shield.dispose();
+        glowNear.dispose();
+        glowFar.dispose();
         blurTemp.dispose();
     }
 }

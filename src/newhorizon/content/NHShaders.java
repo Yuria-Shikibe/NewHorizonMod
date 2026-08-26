@@ -27,7 +27,7 @@ public class NHShaders {
     public static ModSurfaceShader displaceGlitch;
     public static GalaxyNebulaShader galaxyNebula;
     public static ShieldQuantumShader shieldQuantum;
-    public static ShieldQuantumSimulationShader shieldQuantumSimulation;
+    public static ShieldQuantumCompositeShader shieldQuantumComposite;
 
     public static float alphaInner, alphaOuter;
 
@@ -74,7 +74,7 @@ public class NHShaders {
         };
 
         shieldQuantum = new ShieldQuantumShader();
-        shieldQuantumSimulation = new ShieldQuantumSimulationShader();
+        shieldQuantumComposite = new ShieldQuantumCompositeShader();
 
         displaceGlitch = new ModSurfaceShader("VFX_displaceGlitch") {
             @Override
@@ -410,7 +410,6 @@ public class NHShaders {
 
     public static class ShieldQuantumShader extends ModShader {
         public Texture texture;
-        public Texture simulationTexture;
         private final float[] fields = new float[24 * 4];
         private final float[] fieldColors = new float[24 * 4];
         public int eventCount;
@@ -457,17 +456,12 @@ public class NHShaders {
             setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2,
                     Core.camera.position.y - Core.camera.height / 2);
             setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-            setUniformf("u_time", Time.time / 1000f);
+            setUniformf("u_time", Time.time / 60f);
             setUniform4fv("u_fields[0]", fields, 0, fields.length);
             setUniform4fv("u_fieldColors[0]", fieldColors, 0, fieldColors.length);
             setUniform4fv("u_events[0]", paddedEvents(), 0, paddedEvents().length);
             setUniformi("u_eventCount", Math.min(eventCount, 24));
             setUniformi("u_fieldCount", Math.min(fieldCount, 24));
-
-           if (hasUniform("u_noise")) {
-                NHContent.smoothNoise.bind(2);
-                setUniformi("u_noise", 2);
-            }
 
             if (hasUniform("u_texel")) {
                 setUniformf("u_texel", 1f / Core.graphics.getWidth(), 1f / Core.graphics.getHeight());
@@ -476,11 +470,6 @@ public class NHShaders {
             if (texture != null) {
                 texture.bind(0);
                 setUniformi("u_texture", 0);
-            }
-
-            if (simulationTexture != null) {
-                simulationTexture.bind(1);
-                setUniformi("u_simulation", 1);
             }
 
             Gl.activeTexture(Gl.texture0);
@@ -497,31 +486,40 @@ public class NHShaders {
         }
     }
 
-    public static class ShieldQuantumSimulationShader extends ModShader {
-        public Texture blurTexture;
-        public int frame;
+    public static class ShieldQuantumBlurShader extends SimpleSurfaceShader {
+        public float radius = 1f;
 
-        public ShieldQuantumSimulationShader() {
-            super("VFX_quantumShieldSim");
+        public ShieldQuantumBlurShader(String fragment) {
+            super(fragment);
         }
 
         @Override
         public void apply() {
-            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2,
-                    Core.camera.position.y - Core.camera.height / 2);
-            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-            setUniformf("u_texsize", Core.graphics.getWidth(), Core.graphics.getHeight());
-            setUniformf("u_time", Time.time / 1000f);
-            setUniformi("u_frame", frame);
+            super.apply();
+            setUniformf("u_radius", radius);
+        }
+    }
 
-            if (hasUniform("u_noise")) {
-                NHContent.smoothNoise.bind(2);
-                setUniformi("u_noise", 2);
+    public static class ShieldQuantumCompositeShader extends SimpleSurfaceShader {
+        public Texture glowNear;
+        public Texture glowFar;
+
+        public ShieldQuantumCompositeShader() {
+            super("VFX_quantumShieldComposite");
+        }
+
+        @Override
+        public void apply() {
+            super.apply();
+
+            if (glowNear != null) {
+                glowNear.bind(1);
+                setUniformi("u_glowNear", 1);
             }
 
-            if (blurTexture != null) {
-                blurTexture.bind(1);
-                setUniformi("u_blur", 1);
+            if (glowFar != null) {
+                glowFar.bind(2);
+                setUniformi("u_glowFar", 2);
             }
 
             Gl.activeTexture(Gl.texture0);
