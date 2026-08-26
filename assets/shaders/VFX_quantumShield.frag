@@ -16,10 +16,22 @@ uniform int u_eventCount;
 
 varying vec2 v_texCoords;
 
-float hash12(vec2 p){
-    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
+float quantumRandom(vec2 st){
+    return fract(sin(dot(st, vec2(12.9898, 78.233))) * 142214.5453123);
+}
+
+float quantumNoise(vec2 st){
+    vec2 ipos = floor(st);
+    vec2 fpos = fract(st);
+
+    float a = quantumRandom(ipos);
+    float b = quantumRandom(ipos + vec2(1.0, 0.0));
+    float c = quantumRandom(ipos + vec2(0.0, 1.0));
+    float d = quantumRandom(ipos + vec2(1.0, 1.0));
+
+    float x1 = mix(a, b, fpos.x);
+    float x2 = mix(c, d, fpos.x);
+    return mix(x1, x2, fpos.y);
 }
 
 vec3 quantumPalette(float t){
@@ -85,14 +97,20 @@ void main(){
         fieldSeed += u_fields[i].w + float(i) * 0.173;
     }
 
-    vec2 flowUv = worldPos / 180.0;
-    flowUv += fract(vec2(42.0, 56.0) * u_time * 0.01);
+    vec2 patternCoords = worldPos / max(u_resolution.y, 1.0);
+    patternCoords.x += 1.0;
+
+    float lowNoise = quantumNoise(patternCoords * 5.0 + u_time);
+    float mediumNoise = quantumNoise(patternCoords * 32.0);
+    float highNoise = quantumNoise(patternCoords * 48.0);
+
+    patternCoords.x += highNoise * 0.02;
+    float pattern = sin(patternCoords.x * (64.0 + lowNoise * 8.0) + mediumNoise * 4.0) + 1.0;
+    pattern += highNoise * 0.3;
+    float dendrite = smoothstep(0.45, 0.46, pattern);
     float broad = simulation.r;
     float branchField = simulation.g;
     float flowField = simulation.b;
-    float detail = hash12(floor(flowUv * 190.0));
-    float dendrite = smoothstep(0.36, 0.84, broad * 0.58 + branchField * 0.34 + detail * 0.08);
-    float filament = pow(clamp(1.0 - abs(broad - branchField) * 2.3, 0.0, 1.0), 3.0);
 
     float hitBoost = 0.0;
     vec2 warpDelta = vec2(0.0, 0.0);
@@ -121,7 +139,7 @@ void main(){
     vec3 teamTint = u_fieldColors[0].rgb;
     vec3 quantumColor = quantumPalette(broad * 0.78 + branchField * 0.16 + flowField * 0.06 + abs(fieldSeed) * 0.037);
     vec3 fillColor = mix(teamTint, quantumColor, 0.48 + clamp(hitBoost * 0.35, 0.0, 0.38));
-    fillColor += vec3(0.78, 0.92, 1.00) * pow(dendrite * filament, 2.2) * (0.55 + hitBoost * 2.20);
+    fillColor += mix(teamTint, vec3(0.78, 0.92, 1.00), 0.55) * dendrite * (0.55 + hitBoost * 2.20);
 
     float fillAlpha = 0.18;
     vec3 outlineColor = mix(teamTint, vec3(0.82, 0.96, 1.00), 0.45);
