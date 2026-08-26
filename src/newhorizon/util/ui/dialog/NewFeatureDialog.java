@@ -38,10 +38,11 @@ public class NewFeatureDialog extends BaseDialog {
     private FeatureLog[] getUpdateContent() {
         return new FeatureLog[]{
                 new FeatureLog("v222-campaign", "v222-campaign-desc", FeatureLog.featureType.FEATURE, NHSectorPresents.primaryBase),
+                new FeatureLog("v222-expansion", "v222-expansion-desc", FeatureLog.featureType.CONTENT, NHSectorPresents.edgeZone),
                 new FeatureLog("v222-events", "v222-events-desc", FeatureLog.featureType.FIX, NHContent.fleet),
                 new FeatureLog("v222-command-ui", "v222-command-ui-desc", FeatureLog.featureType.IMPROVE, NHBlocks.airRaider),
                 new FeatureLog("v222-production", "v222-production-desc", FeatureLog.featureType.CONTENT, CraftingBlock.recrystallizer),
-                new FeatureLog("v222-mining", "v222-mining-desc", FeatureLog.featureType.CONTENT, ProductionBlock.interlockingDrill),
+                new FeatureLog("v222-mining", "v222-mining-desc", FeatureLog.featureType.IMPROVE, ProductionBlock.resonanceMiningFacility),
                 new FeatureLog("v222-power", "v222-power-desc", FeatureLog.featureType.CONTENT, PowerBlock.differentialReactor),
                 new FeatureLog("v222-balance", "v222-balance-desc", FeatureLog.featureType.BALANCE, ProductionBlock.scanCollector),
         };

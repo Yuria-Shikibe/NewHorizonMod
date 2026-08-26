@@ -329,6 +329,8 @@ public class PowerBlock {
                     public void updateTile() {
                         super.updateTile();
 
+                        if (efficiency <= 0f) return;
+
                         produceTime += delta();
                         if (produceTime > hlTime) {
                             if (core() != null) core().handleItem(this, NHItems.hardLight);

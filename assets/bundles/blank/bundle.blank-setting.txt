@@ -25,6 +25,8 @@ nh.new-feature.v222-power =
 nh.new-feature.v222-power-desc =
 nh.new-feature.v222-balance =
 nh.new-feature.v222-balance-desc =
+nh.new-feature.v222-expansion =
+nh.new-feature.v222-expansion-desc =
 
 
 #[[LOGIC PART]]

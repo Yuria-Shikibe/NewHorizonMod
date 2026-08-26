@@ -262,7 +262,9 @@ public class ProductionBlock {
                         usesSpinDraw = true;
                         useDrillWarmup = true;
                     }},
-                    new DrawRegion("-top")
+                    new DrawRegion("-top"),
+                    new DrawTeamTop(),
+                    new DrawDrillOreTop()
             );
 
             consumeLiquid(NHLiquids.ammonia, 6f / 60f).boost();
