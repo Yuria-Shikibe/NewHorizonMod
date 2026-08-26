@@ -7,6 +7,7 @@ import arc.graphics.Color;
 import arc.math.geom.Vec2;
 import arc.graphics.Texture;
 import arc.graphics.Pixmap;
+import arc.graphics.Gl;
 import arc.graphics.gl.FrameBuffer;
 import mindustry.graphics.CacheLayer;
 import arc.graphics.gl.Shader;
@@ -26,6 +27,7 @@ public class NHShaders {
     public static ModSurfaceShader displaceGlitch;
     public static GalaxyNebulaShader galaxyNebula;
     public static ShieldQuantumShader shieldQuantum;
+    public static ShieldQuantumSimulationShader shieldQuantumSimulation;
 
     public static float alphaInner, alphaOuter;
 
@@ -72,6 +74,7 @@ public class NHShaders {
         };
 
         shieldQuantum = new ShieldQuantumShader();
+        shieldQuantumSimulation = new ShieldQuantumSimulationShader();
 
         displaceGlitch = new ModSurfaceShader("VFX_displaceGlitch") {
             @Override
@@ -160,7 +163,8 @@ public class NHShaders {
         public void apply() {
             setUniformf("u_mouse", mouseWorld.x, mouseWorld.y, previousMouseWorld.x, previousMouseWorld.y);
             setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
-            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+           setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+            setUniformf("u_texsize", Core.graphics.getWidth(), Core.graphics.getHeight());
             setUniformf("u_time", Time.time / 1000f);
             setUniformi("u_frame", frame);
 
@@ -406,6 +410,7 @@ public class NHShaders {
 
     public static class ShieldQuantumShader extends ModShader {
         public Texture texture;
+        public Texture simulationTexture;
         private final float[] fields = new float[24 * 4];
         private final float[] fieldColors = new float[24 * 4];
         public int eventCount;
@@ -459,9 +464,9 @@ public class NHShaders {
             setUniformi("u_eventCount", Math.min(eventCount, 24));
             setUniformi("u_fieldCount", Math.min(fieldCount, 24));
 
-            if (hasUniform("u_noise")) {
-                NHContent.smoothNoise.bind(1);
-                setUniformi("u_noise", 1);
+           if (hasUniform("u_noise")) {
+                NHContent.smoothNoise.bind(2);
+                setUniformi("u_noise", 2);
             }
 
             if (hasUniform("u_texel")) {
@@ -472,6 +477,13 @@ public class NHShaders {
                 texture.bind(0);
                 setUniformi("u_texture", 0);
             }
+
+            if (simulationTexture != null) {
+                simulationTexture.bind(1);
+                setUniformi("u_simulation", 1);
+            }
+
+            Gl.activeTexture(Gl.texture0);
         }
 
         private float[] paddedEvents() {
@@ -481,7 +493,38 @@ public class NHShaders {
                 result[i * 4 + 1] = events[i * 3 + 1];
                 result[i * 4 + 2] = events[i * 3 + 2];
             }
-            return result;
+           return result;
+        }
+    }
+
+    public static class ShieldQuantumSimulationShader extends ModShader {
+        public Texture blurTexture;
+        public int frame;
+
+        public ShieldQuantumSimulationShader() {
+            super("VFX_quantumShieldSim");
+        }
+
+        @Override
+        public void apply() {
+            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2,
+                    Core.camera.position.y - Core.camera.height / 2);
+            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+            setUniformf("u_texsize", Core.graphics.getWidth(), Core.graphics.getHeight());
+            setUniformf("u_time", Time.time / 1000f);
+            setUniformi("u_frame", frame);
+
+            if (hasUniform("u_noise")) {
+                NHContent.smoothNoise.bind(2);
+                setUniformi("u_noise", 2);
+            }
+
+            if (blurTexture != null) {
+                blurTexture.bind(1);
+                setUniformi("u_blur", 1);
+            }
+
+            Gl.activeTexture(Gl.texture0);
         }
     }
 

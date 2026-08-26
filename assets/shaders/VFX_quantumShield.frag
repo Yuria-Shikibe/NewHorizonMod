@@ -1,9 +1,11 @@
 #define HIGHP
 
 uniform sampler2D u_texture;
+uniform sampler2D u_simulation;
 uniform sampler2D u_noise;
 uniform vec2 u_resolution;
 uniform vec2 u_campos;
+uniform vec2 u_texsize;
 uniform vec2 u_texel;
 uniform float u_time;
 uniform vec4 u_fields[24];
@@ -70,6 +72,7 @@ float innerEdge(vec2 uv){
 void main(){
     vec2 worldPos = (v_texCoords * u_resolution) + u_campos;
     float centerMask = maskAt(v_texCoords);
+    vec4 simulation = texture2D(u_simulation, v_texCoords);
     float outsideEdge = outerEdge(v_texCoords);
     float insideEdge = innerEdge(v_texCoords);
     float edge = max(outsideEdge, insideEdge * centerMask);
@@ -84,7 +87,7 @@ void main(){
 
     vec2 flowUv = worldPos / 180.0;
     flowUv += fract(vec2(42.0, 56.0) * u_time * 0.01);
-    float broad = texture2D(u_noise, flowUv).r;
+    float broad = simulation.r;
     float detail = hash12(floor(flowUv * 190.0));
     float dendrite = smoothstep(0.34, 0.78, broad * 0.76 + detail * 0.24);
     float filament = pow(clamp(1.0 - abs(broad - detail) * 2.1, 0.0, 1.0), 3.0);
@@ -105,20 +108,19 @@ void main(){
         warpDelta += normalize(delta + vec2(0.0001)) * ring * fade * 8.0;
     }
 
-    vec2 warpedUv = flowUv + warpDelta / 180.0;
-    float warpedFlow = texture2D(u_noise, warpedUv).r;
-    broad = mix(broad, warpedFlow, clamp(hitBoost, 0.0, 0.75));
+    vec4 warpedSimulation = texture2D(u_simulation, fract(v_texCoords + warpDelta / u_texsize * 0.25));
+    broad = mix(broad, max(broad, warpedSimulation.r), clamp(hitBoost, 0.0, 0.75));
 
     vec3 teamTint = u_fieldColors[0].rgb;
     vec3 quantumColor = quantumPalette(broad + detail * 0.16 + abs(fieldSeed) * 0.037);
     vec3 fillColor = mix(teamTint, quantumColor, 0.48 + clamp(hitBoost * 0.35, 0.0, 0.38));
     fillColor += vec3(0.78, 0.92, 1.00) * pow(dendrite * filament, 2.2) * (0.55 + hitBoost * 2.20);
 
-    float fillMask = smoothstep(0.04, 0.35, centerMask);
-    float fillAlpha = fillMask * (0.10 + dendrite * 0.13 + hitBoost * 0.42);
+    float fillAlpha = 0.18;
     vec3 outlineColor = mix(teamTint, vec3(0.82, 0.96, 1.00), 0.45);
     vec3 finalColor = mix(fillColor, outlineColor, clamp(edge * 1.15, 0.0, 1.0));
-    float alpha = max(fillAlpha, edge * 0.82);
+    float alpha = fillAlpha;
+    if(centerMask < 0.90 && edge > 0.02) alpha = clamp(edge * 100.0, 0.0, 0.85);
 
     gl_FragColor = vec4(finalColor * (1.0 + dendrite * 0.35 + hitBoost * 1.15), alpha);
 }
