@@ -25,7 +25,7 @@ public class NHShaders {
     public static ModSurfaceShader luminousQuantum;
     public static ModSurfaceShader displaceGlitch;
     public static GalaxyNebulaShader galaxyNebula;
-    public static VortexHitShader vortexHit;
+    public static ShieldQuantumShader shieldQuantum;
 
     public static float alphaInner, alphaOuter;
 
@@ -71,7 +71,7 @@ public class NHShaders {
             }
         };
 
-        vortexHit = new VortexHitShader();
+        shieldQuantum = new ShieldQuantumShader();
 
         displaceGlitch = new ModSurfaceShader("VFX_displaceGlitch") {
             @Override
@@ -404,26 +404,84 @@ public class NHShaders {
         }
     }
 
-    public static class VortexHitShader extends ModShader {
-        public final float[] hitPositions = new float[48];
-        public final float[] hitAngles = new float[48];
+    public static class ShieldQuantumShader extends ModShader {
+        public Texture texture;
+        private final float[] fields = new float[24 * 4];
+        private final float[] fieldColors = new float[24 * 4];
+        public int eventCount;
+        private final float[] events = new float[24 * 3];
+        private int fieldCount;
 
-        public VortexHitShader() {
-            super("VFX_vortexHit");
+        public ShieldQuantumShader() {
+            super("VFX_quantumShield");
+        }
+
+        public void addField(float x, float y, float radius, Color color, float hit) {
+            if (fieldCount >= 24) return;
+            int offset = fieldCount++ * 4;
+            fields[offset] = x;
+            fields[offset + 1] = y;
+            fields[offset + 2] = radius;
+            fields[offset + 3] = hit;
+
+            int colorOffset = offset;
+            fieldColors[colorOffset] = color.r;
+            fieldColors[colorOffset + 1] = color.g;
+            fieldColors[colorOffset + 2] = color.b;
+            fieldColors[colorOffset + 3] = color.a;
+        }
+
+        public void addEvent(float x, float y, float age) {
+            if (eventCount >= 24) return;
+            int offset = eventCount++ * 3;
+            events[offset] = x;
+            events[offset + 1] = y;
+            events[offset + 2] = age;
+        }
+
+        public void resetState() {
+            fieldCount = eventCount = 0;
+        }
+
+        public int getFieldCount() {
+            return Math.min(fieldCount, 24);
         }
 
         @Override
         public void apply() {
-            setUniformf("u_offset",
-                    Core.camera.position.x - Core.camera.width / 2,
+            setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2,
                     Core.camera.position.y - Core.camera.height / 2);
-            setUniformf("u_texsize", Core.camera.width, Core.camera.height);
-            setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
-            setUniformf("u_time", Time.time);
-            setUniformf("u_scale", Scl.scl(1f));
-            setUniform1fv("u_hits[0]", hitPositions, 0, hitPositions.length);
-            setUniform1fv("u_hitAngles[0]", hitAngles, 0, hitAngles.length);
-            setUniformi("u_hitCount", Math.min(newhorizon.expand.entities.VortexEvent.active.length, 24));
+            setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+            setUniformf("u_time", Time.time / 1000f);
+            setUniform4fv("u_fields[0]", fields, 0, fields.length);
+            setUniform4fv("u_fieldColors[0]", fieldColors, 0, fieldColors.length);
+            setUniform4fv("u_events[0]", paddedEvents(), 0, paddedEvents().length);
+            setUniformi("u_eventCount", Math.min(eventCount, 24));
+            setUniformi("u_fieldCount", Math.min(fieldCount, 24));
+
+            if (hasUniform("u_noise")) {
+                NHContent.smoothNoise.bind(1);
+                setUniformi("u_noise", 1);
+            }
+
+            if (hasUniform("u_texel")) {
+                setUniformf("u_texel", 1f / Core.graphics.getWidth(), 1f / Core.graphics.getHeight());
+            }
+
+            if (texture != null) {
+                texture.bind(0);
+                setUniformi("u_texture", 0);
+            }
+        }
+
+        private float[] paddedEvents() {
+            float[] result = new float[24 * 4];
+            for (int i = 0; i < Math.min(eventCount, 24); i++) {
+                result[i * 4] = events[i * 3];
+                result[i * 4 + 1] = events[i * 3 + 1];
+                result[i * 4 + 2] = events[i * 3 + 2];
+            }
+            return result;
         }
     }
 

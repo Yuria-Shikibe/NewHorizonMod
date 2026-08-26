@@ -3,67 +3,98 @@ package newhorizon.util.graphic;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.gl.FrameBuffer;
 import arc.util.Disposable;
 import mindustry.Vars;
-import mindustry.gen.Building;
 import mindustry.graphics.Layer;
-import mindustry.world.blocks.defense.ForceProjector;
 import newhorizon.content.NHShaders;
+import newhorizon.expand.entities.SharedShieldField;
+import newhorizon.expand.entities.SharedShieldFields;
 import newhorizon.expand.entities.VortexEvent;
 
 public class VortexHitRenderer implements Disposable {
-    public static final float VORTEX_RENDER_LAYER = Layer.space + 0.021f;
+    public static final float VORTEX_RENDER_LAYER = Layer.end + 1f;
 
-    @Override
-    public void dispose() {
-    }
+    private final FrameBuffer mask = new FrameBuffer();
+    private int width = -1, height = -1;
 
     public void update() {
         VortexEvent.update();
     }
 
-    public void draw() {
-        if (NHShaders.vortexHit == null || !hasEvents()) return;
-
-        fillShaderData();
-        Draw.drawRange(VORTEX_RENDER_LAYER, 0.0001f,
-                () -> Vars.renderer.effectBuffer.begin(Color.clear),
-                () -> {
-                    Vars.renderer.effectBuffer.end();
-                    Vars.renderer.effectBuffer.blit(NHShaders.vortexHit);
-                });
-    }
-
-    private boolean hasEvents() {
-        for (VortexEvent event : VortexEvent.active) {
-            if (event != null) return true;
+    public boolean hasActiveField() {
+        for (SharedShieldField field : SharedShieldFields.all()) {
+            if (field.active()) return true;
         }
         return false;
     }
 
-    private void fillShaderData() {
-        float[] positions = NHShaders.vortexHit.hitPositions;
-        float[] angles = NHShaders.vortexHit.hitAngles;
-        float cameraLeft = Core.camera.position.x - Core.camera.width / 2f;
-        float cameraBottom = Core.camera.position.y - Core.camera.height / 2f;
-        int count = 0;
+    public void draw() {
+        if (Vars.headless || NHShaders.shieldQuantum == null || !hasActiveField()) return;
 
-        for (int i = 0; i < VortexEvent.active.length && count < 24; i++) {
-            VortexEvent event = VortexEvent.active[i];
-            if (event == null) continue;
+        resize();
+        NHShaders.shieldQuantum.resetState();
+        NHShaders.shieldQuantum.texture = mask.getTexture();
+        fillShaderState();
 
-            float x = (event.x - cameraLeft) / Core.camera.width;
-            float y = (event.y - cameraBottom) / Core.camera.height;
-            positions[count * 2] = x;
-            positions[count * 2 + 1] = y;
-            angles[count * 2] = event.angle;
-            angles[count * 2 + 1] = event.time;
-            count++;
+        Draw.drawRange(VORTEX_RENDER_LAYER, 0.001f,
+                () -> mask.begin(Color.clear),
+                () -> {
+                    captureMask();
+                    mask.end();
+                    mask.blit(NHShaders.shieldQuantum);
+                    Draw.flush();
+                });
+    }
+
+    private void captureMask() {
+        for (SharedShieldField field : SharedShieldFields.all()) {
+            if (!field.active()) continue;
+
+            for (var source : field.iterable()) {
+                if (!(source.block instanceof newhorizon.expand.block.defence.QuantumVortexProjector projector)) continue;
+                float radius = projector.displayRadius(source);
+                if (radius <= 0.01f) continue;
+
+                Draw.color(Color.white);
+                Fill.poly(source.x, source.y, projector.sides, radius, projector.shieldRotation);
+            }
+        }
+    }
+
+    private void resize() {
+        int w = Math.max(2, Core.graphics.getWidth());
+        int h = Math.max(2, Core.graphics.getHeight());
+        if (w == width && h == height) return;
+
+        width = w;
+        height = h;
+        mask.resize(w, h);
+    }
+
+    private void fillShaderState() {
+        NHShaders.ShieldQuantumShader shader = NHShaders.shieldQuantum;
+
+        for (SharedShieldField field : SharedShieldFields.all()) {
+            if (!field.active()) continue;
+
+            for (var source : field.iterable()) {
+                if (!(source.block instanceof newhorizon.expand.block.defence.QuantumVortexProjector projector)) continue;
+                float radius = projector.displayRadius(source);
+                if (radius <= 0.01f || shader.getFieldCount() >= 24) continue;
+
+                shader.addField(source.x, source.y, radius, source.team.color, field.hit);
+            }
         }
 
-        for (int i = count * 2; i < positions.length; i++) {
-            positions[i] = 0f;
-            angles[i] = 0f;
+        for (VortexEvent event : VortexEvent.active) {
+            if (event != null && shader.eventCount < 24) shader.addEvent(event.x, event.y, event.time);
         }
+    }
+
+    @Override
+    public void dispose() {
+        mask.dispose();
     }
 }

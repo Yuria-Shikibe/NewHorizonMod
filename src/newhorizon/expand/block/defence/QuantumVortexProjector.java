@@ -1,14 +1,15 @@
 package newhorizon.expand.block.defence;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
+import arc.Core;
+import arc.util.Strings;
 import arc.math.Mathf;
+import mindustry.graphics.Pal;
+import mindustry.ui.Bar;
 import arc.math.geom.Intersector;
 import mindustry.gen.Bullet;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
-import mindustry.graphics.Layer;
 import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.type.Category;
@@ -45,6 +46,11 @@ public class QuantumVortexProjector extends ForceProjector {
 
     public float realRadius(QuantumBuild build) {
         return (radius + build.phaseHeat * phaseRadiusBoost) * build.radscl;
+    }
+
+    public float displayRadius(Building build) {
+        if (!(build instanceof QuantumBuild quantum)) return 0f;
+        return (radius + quantum.phaseHeat * phaseRadiusBoost) * quantum.radscl;
     }
 
     public class QuantumBuild extends ForceBuild {
@@ -113,16 +119,21 @@ public class QuantumVortexProjector extends ForceProjector {
         @Override
         public void draw() {
             super.draw();
-            drawSharedShield();
+            drawShield();
         }
 
-        private void drawSharedShield() {
-            if (field == null || field.broken || radscl <= 0.001f) return;
-
-            Draw.color(team.color, Color.white, Mathf.clamp(field.hit));
-            Draw.z(Layer.shields + 0.001f * field.hit);
-            Fill.poly(x, y, sides, QuantumVortexProjector.this.realRadius(this), shieldRotation);
-            Draw.reset();
+        @Override
+        public void drawShield() {
         }
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+        addBar("sharedShield", (QuantumBuild entity) -> new Bar(
+                () -> Core.bundle.format("bar.new-horizon-shared-shield", Strings.autoFixed(Math.max(entity.field.capacity() - entity.field.buildup, 0f), 0)),
+                () -> Pal.accent,
+                () -> Mathf.clamp((entity.field.capacity() - entity.field.buildup) / entity.field.capacity())
+        ).blink(Color.white));
     }
 }

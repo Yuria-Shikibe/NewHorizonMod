@@ -4,7 +4,7 @@ import arc.struct.Seq;
 import mindustry.gen.Building;
 
 public class SharedShieldFields {
-    private static final Seq<SharedShieldField> fields = new Seq<>(false, 16);
+    private static final Seq<SharedShieldField> fields = new Seq<>(true, 16, SharedShieldField.class);
 
     public static SharedShieldField find(Building source) {
         for (int i = 0; i < fields.size; i++) {
@@ -27,21 +27,19 @@ public class SharedShieldFields {
             if (i >= fields.size) continue;
 
             SharedShieldField field = fields.get(i);
-            int beforeSize = fields.size;
             field.update();
 
             if (field.empty()) {
-                for (int j = Math.min(beforeSize, fields.size) - 1; j >= i; j--) {
-                    if (fields.items[j] == field) {
-                        fields.remove(j);
-                        break;
-                    }
-                }
+                fields.remove(field, true);
             }
         }
     }
 
     public static void clearWorld() {
         fields.clear();
+    }
+
+    public static Iterable<SharedShieldField> all() {
+        return fields;
     }
 }

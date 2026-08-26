@@ -42,10 +42,7 @@ public class NHRegister {
         Events.run(EventType.Trigger.draw, () -> {
             NHVars.renderer.draw();
             NHGroups.draw();
-        });
-
-        Events.run(EventType.Trigger.postDraw, () -> {
-            if (!Vars.headless && Vars.state.isPlaying()) NHVars.vortexRenderer.draw();
+            if (!Vars.headless) NHVars.vortexRenderer.draw();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {

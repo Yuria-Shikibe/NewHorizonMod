@@ -7,10 +7,17 @@ public class VortexEvent {
     public float x, y;
     public float angle;
     public float time;
+    public int id;
 
     public static final VortexEvent[] active = new VortexEvent[24];
     private static final VortexEvent[] pool = new VortexEvent[32];
     private static int poolSize;
+
+    private static int version;
+
+    public static int version() {
+        return version;
+    }
 
     public static void add(float x, float y) {
         add(x, y, Angles.angle(0f, 0f, x % 97f - 48.5f, y % 97f - 48.5f));
@@ -30,8 +37,10 @@ public class VortexEvent {
         event.x = x;
         event.y = y;
         event.angle = angle;
+        event.id = nextId++;
         event.time = 0f;
         active[slot] = event;
+        version++;
     }
 
     public static void update() {
@@ -42,6 +51,7 @@ public class VortexEvent {
             if (event.time >= 1f) {
                 active[i] = null;
                 release(event);
+                version++;
             }
         }
     }
@@ -56,4 +66,6 @@ public class VortexEvent {
     private static void release(VortexEvent event) {
         if (poolSize < pool.length) pool[poolSize++] = event;
     }
+
+    private static int nextId;
 }

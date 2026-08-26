@@ -47,6 +47,13 @@ public class SharedShieldField {
         return false;
     }
 
+    public int indexOf(Building source) {
+        for (int i = 0; i < sourceCount; i++) {
+            if (sources[i] == source) return i;
+        }
+        return -1;
+    }
+
     public float maxRadius() {
         float radius = 0f;
         for (int i = 0; i < sourceCount; i++) {
