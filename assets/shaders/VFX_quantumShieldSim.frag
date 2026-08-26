@@ -20,19 +20,29 @@ void main(){
         texture2D(u_blur, fract(uv - vec2(d.x, 0.0)))) * 0.5;
     vec4 dy = (texture2D(u_blur, fract(uv + vec2(0.0, d.y))) -
         texture2D(u_blur, fract(uv - vec2(0.0, d.y)))) * 0.5;
+    vec2 gradient = vec2(dx.r, dy.r);
 
-    vec2 shifted = fract(uv + vec2(dx.x, dy.x) * 2.0);
+    vec2 shifted = fract(uv + gradient * 2.0);
     float previous = texture2D(u_texture, shifted).r;
     float blur = texture2D(u_blur, shifted).r;
 
-    float value = previous + (noise.r - 0.5) * 0.0025 - 0.002;
-    value -= (blur - previous) * 0.047;
-    value += (mix(0.30, 0.72, smoothstep(0.24, 0.86, noise.g)) - value) * 0.011;
+    float value = previous + (noise.r - 0.5) * 0.0060 - 0.0022;
+    value -= (blur - previous) * 0.075;
+    value += (mix(0.26, 0.78, smoothstep(0.22, 0.88, noise.g)) - value) * 0.018;
+
+    float branchTarget = smoothstep(0.48, 0.86, value + gradient.r * 2.5 + gradient.g * 2.5);
+    float flowTarget = fract(noise.b + u_time * 0.012 + value * 0.18);
+    float oldBranch = texture2D(u_texture, uv).g;
+    float oldFlow = texture2D(u_texture, uv).b;
+    float branch = mix(oldBranch, branchTarget, 0.035);
+    float flow = mix(oldFlow, flowTarget, 0.012);
 
     if(u_frame < 10){
         gl_FragColor = noise;
     }else{
         gl_FragColor = texture2D(u_texture, uv);
         gl_FragColor.r = clamp(value, 0.0, 1.0);
+        gl_FragColor.g = clamp(branch, 0.0, 1.0);
+        gl_FragColor.b = clamp(flow, 0.0, 1.0);
     }
 }

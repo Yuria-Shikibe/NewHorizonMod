@@ -88,31 +88,38 @@ void main(){
     vec2 flowUv = worldPos / 180.0;
     flowUv += fract(vec2(42.0, 56.0) * u_time * 0.01);
     float broad = simulation.r;
+    float branchField = simulation.g;
+    float flowField = simulation.b;
     float detail = hash12(floor(flowUv * 190.0));
-    float dendrite = smoothstep(0.34, 0.78, broad * 0.76 + detail * 0.24);
-    float filament = pow(clamp(1.0 - abs(broad - detail) * 2.1, 0.0, 1.0), 3.0);
+    float dendrite = smoothstep(0.36, 0.84, broad * 0.58 + branchField * 0.34 + detail * 0.08);
+    float filament = pow(clamp(1.0 - abs(broad - branchField) * 2.3, 0.0, 1.0), 3.0);
 
     float hitBoost = 0.0;
-    vec2 warpDelta = vec2(0.0);
+    vec2 warpDelta = vec2(0.0, 0.0);
     for(int i = 0; i < 24; i++){
         if(i >= u_eventCount) break;
-        vec4 eventData = u_events[i];
-        vec2 eventPos = eventData.xy;
-        float age = eventData.z;
-        vec2 delta = worldPos - eventPos;
-        float dist = length(delta);
+        float eventX = u_events[i].x;
+        float eventY = u_events[i].y;
+        float age = u_events[i].z;
+        float offsetX = worldPos.x - eventX;
+        float offsetY = worldPos.y - eventY;
+        float dist = sqrt(offsetX * offsetX + offsetY * offsetY);
         float waveRadius = age * 260.0;
-        float ring = exp(-pow((dist - waveRadius) / max(waveRadius * 0.16 + 0.8, 0.001), 2.0));
+        float width = max(waveRadius * 0.16 + 0.8, 0.001);
+        float ring = exp(-pow((dist - waveRadius) / width, 2.0));
         float fade = clamp(1.0 - age, 0.0, 1.0);
         hitBoost += ring * fade * fade;
-        warpDelta += normalize(delta + vec2(0.0001)) * ring * fade * 8.0;
+        float safeDist = max(dist, 0.001);
+        warpDelta.x += offsetX / safeDist * ring * fade * 8.0;
+        warpDelta.y += offsetY / safeDist * ring * fade * 8.0;
     }
 
     vec4 warpedSimulation = texture2D(u_simulation, fract(v_texCoords + warpDelta / u_texsize * 0.25));
     broad = mix(broad, max(broad, warpedSimulation.r), clamp(hitBoost, 0.0, 0.75));
+    branchField = mix(branchField, max(branchField, warpedSimulation.g), clamp(hitBoost * 1.15, 0.0, 0.85));
 
     vec3 teamTint = u_fieldColors[0].rgb;
-    vec3 quantumColor = quantumPalette(broad + detail * 0.16 + abs(fieldSeed) * 0.037);
+    vec3 quantumColor = quantumPalette(broad * 0.78 + branchField * 0.16 + flowField * 0.06 + abs(fieldSeed) * 0.037);
     vec3 fillColor = mix(teamTint, quantumColor, 0.48 + clamp(hitBoost * 0.35, 0.0, 0.38));
     fillColor += vec3(0.78, 0.92, 1.00) * pow(dendrite * filament, 2.2) * (0.55 + hitBoost * 2.20);
 
