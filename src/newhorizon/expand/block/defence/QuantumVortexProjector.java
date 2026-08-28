@@ -12,6 +12,10 @@ import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.consumers.ConsumeCoolant;
+import mindustry.content.Items;
+import mindustry.logic.LAccess;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.type.Category;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.expand.entities.SharedShieldField;
@@ -35,22 +39,25 @@ public class QuantumVortexProjector extends ForceProjector {
         radius = 120f;
         shieldHealth = 5000f;
         cooldownNormal = 12f;
+        // Coolant multiplier applied to each projector's normal recovery rate.
+        cooldownLiquid = 2f;
         cooldownBrokenBase = 2.5f;
-        phaseRadiusBoost = 60f;
+        // Phase fabric contributes shield capacity only; it never expands range.
+        phaseRadiusBoost = 0f;
         phaseShieldBoost = 2500f;
         consumePower(5f);
-        itemConsumer = null;
+        itemConsumer = consumeItem(Items.phaseFabric).boost();
         coolantConsumer = new ConsumeCoolant(0.1f);
         consume(coolantConsumer).boost().update(false);
     }
 
     public float realRadius(QuantumBuild build) {
-        return (radius + build.phaseHeat * phaseRadiusBoost) * build.radscl;
+        return radius * build.radscl;
     }
 
     public float displayRadius(Building build) {
         if (!(build instanceof QuantumBuild quantum)) return 0f;
-        return (radius + quantum.phaseHeat * phaseRadiusBoost) * quantum.radscl;
+        return radius * quantum.radscl;
     }
 
     public class QuantumBuild extends ForceBuild {
@@ -67,22 +74,38 @@ public class QuantumVortexProjector extends ForceProjector {
             super.updateTile();
             if (field == null) {
                 field = SharedShieldFields.find(this);
-                field.add(this);
             } else if (!field.hasSource(this)) {
-                field.add(this);
+                // Re-resolve through the registry. The old field may have been
+                // removed during a world reset or topology rebuild.
+                field = SharedShieldFields.find(this);
             }
 
-            deflectBullets();
+            // ForceProjector only updates coolant while its private shield has
+            // buildup.  Shared shields keep buildup in SharedShieldField, so
+            // explicitly update the coolant consumer while recovering.
+            if (field != null && (field.broken || field.buildup > 0f) && coolantConsumer != null) {
+                coolantConsumer.update(this);
+            }
+
+            // ForceBuild.updateTile() dispatches to this class's deflectBullets()
+            // once. Calling it again here would scan every nearby bullet twice.
         }
 
         @Override
         public void onRemoved() {
-            if (field != null) field.remove(this);
+            if (field != null) {
+                field.remove(this);
+                field = null;
+            }
             super.onRemoved();
         }
 
         @Override
         public void pickedUp() {
+            if (field != null) {
+                field.remove(this);
+                field = null;
+            }
             super.pickedUp();
             radscl = warmup = 0f;
         }
@@ -125,15 +148,71 @@ public class QuantumVortexProjector extends ForceProjector {
         @Override
         public void drawShield() {
         }
+
+        @Override
+        public boolean absorbExplosion(float ex, float ey, float damage) {
+            if (field == null || field.broken || !field.active()) return false;
+            if (!Intersector.isInRegularPolygon(sides, x, y, QuantumVortexProjector.this.realRadius(this), shieldRotation, ex, ey)) return false;
+            field.damage(damage * crashDamageMultiplier, ex, ey);
+            return true;
+        }
+
+        @Override
+        public double sense(LAccess sensor) {
+            if (sensor == LAccess.shield) {
+                if (field == null || field.broken) return 0d;
+                return Math.max(field.capacity() - field.buildup, 0f);
+            }
+            return super.sense(sensor);
+        }
+
+        @Override
+        public void setProp(LAccess prop, double value) {
+            if (prop == LAccess.shield && field != null) {
+                float capacity = field.capacity();
+                field.buildup = Mathf.clamp(capacity - (float)value, 0f, capacity);
+                if (field.buildup >= capacity) field.broken = true;
+                return;
+            }
+            super.setProp(prop, value);
+        }
+
+        @Override
+        public void writeSync(Writes write) {
+            super.writeSync(write);
+            SharedShieldField shared = field;
+            write.f(shared == null ? 0f : shared.buildup);
+            write.bool(shared != null && shared.broken);
+            write.f(shared == null ? 0f : shared.cooldownProgress());
+        }
+
+        @Override
+        public void readSync(Reads read, byte revision) {
+            super.readSync(read, revision);
+            float syncedBuildup = read.f();
+            boolean syncedBroken = read.bool();
+            float syncedCooldown = read.f();
+            if (field == null) field = SharedShieldFields.find(this);
+            if (field != null) {
+                field.buildup = syncedBuildup;
+                field.broken = syncedBroken;
+                field.setCooldownProgress(syncedCooldown);
+            }
+        }
     }
 
     @Override
     public void setBars() {
         super.setBars();
+        removeBar("shield");
         addBar("sharedShield", (QuantumBuild entity) -> new Bar(
-                () -> Core.bundle.format("bar.new-horizon-shared-shield", Strings.autoFixed(Math.max(entity.field.capacity() - entity.field.buildup, 0f), 0)),
+                () -> Core.bundle.format("bar.new-horizon-shared-shield", Strings.autoFixed(Math.max(entity.field == null ? 0f : entity.field.capacity() - entity.field.buildup, 0f), 0)),
                 () -> Pal.accent,
-                () -> Mathf.clamp((entity.field.capacity() - entity.field.buildup) / entity.field.capacity())
+                () -> {
+                    if (entity.field == null) return 0f;
+                    float capacity = entity.field.capacity();
+                    return capacity <= 0f ? 0f : Mathf.clamp((capacity - entity.field.buildup) / capacity);
+                }
         ).blink(Color.white));
     }
 }

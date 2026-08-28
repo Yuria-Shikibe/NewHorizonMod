@@ -8,6 +8,8 @@ public class VortexEvent {
     public float angle;
     public float time;
     public int id;
+    /** Shared shield group that owns this hit. Null means unscoped/legacy event. */
+    public SharedShieldField field;
 
     public static final VortexEvent[] active = new VortexEvent[24];
     private static final VortexEvent[] pool = new VortexEvent[32];
@@ -20,10 +22,19 @@ public class VortexEvent {
     }
 
     public static void add(float x, float y) {
-        add(x, y, Angles.angle(0f, 0f, x % 97f - 48.5f, y % 97f - 48.5f));
+        add(x, y, Angles.angle(0f, 0f, x % 97f - 48.5f, y % 97f - 48.5f), null);
     }
 
     public static void add(float x, float y, float angle) {
+        add(x, y, angle, null);
+    }
+
+    /** Adds a hit event owned by one shared shield field. */
+    public static void add(float x, float y, SharedShieldField field) {
+        add(x, y, Angles.angle(0f, 0f, x % 97f - 48.5f, y % 97f - 48.5f), field);
+    }
+
+    public static void add(float x, float y, float angle, SharedShieldField field) {
         int slot = -1;
         for (int i = 0; i < active.length; i++) {
             if (active[i] == null) {
@@ -37,6 +48,7 @@ public class VortexEvent {
         event.x = x;
         event.y = y;
         event.angle = angle;
+        event.field = field;
         event.id = nextId++;
         event.time = 0f;
         active[slot] = event;
@@ -64,6 +76,7 @@ public class VortexEvent {
     }
 
     private static void release(VortexEvent event) {
+        event.field = null;
         if (poolSize < pool.length) pool[poolSize++] = event;
     }
 

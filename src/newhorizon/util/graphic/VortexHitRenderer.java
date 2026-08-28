@@ -14,6 +14,7 @@ import newhorizon.content.NHShaders.ShieldQuantumBlurShader;
 import newhorizon.expand.entities.SharedShieldField;
 import newhorizon.expand.entities.SharedShieldFields;
 import newhorizon.expand.entities.VortexEvent;
+import arc.struct.Seq;
 
 public class VortexHitRenderer implements Disposable {
     public static final float VORTEX_RENDER_LAYER = Layer.end + 1f;
@@ -25,6 +26,7 @@ public class VortexHitRenderer implements Disposable {
     private final FrameBuffer blurTemp = new FrameBuffer();
     private final ShieldQuantumBlurShader blurHorizontal = new ShieldQuantumBlurShader("VFX_quantumShieldBlurH");
     private final ShieldQuantumBlurShader blurVertical = new ShieldQuantumBlurShader("VFX_quantumShieldBlurV");
+    private final Seq<SharedShieldField> groups = new Seq<>(false, 16, SharedShieldField.class);
     private int width = -1, height = -1;
 
     public void update() {
@@ -134,21 +136,27 @@ public class VortexHitRenderer implements Disposable {
 
     private void fillShaderState() {
         NHShaders.ShieldQuantumShader shader = NHShaders.shieldQuantum;
+        groups.clear();
 
         for (SharedShieldField field : SharedShieldFields.all()) {
             if (!field.active()) continue;
+            int group = groups.size;
+            groups.add(field);
 
             for (var source : field.iterable()) {
                 if (!(source.block instanceof newhorizon.expand.block.defence.QuantumVortexProjector projector)) continue;
                 float radius = projector.displayRadius(source);
                 if (radius <= 0.01f || shader.getFieldCount() >= 24) continue;
 
-                shader.addField(source.x, source.y, radius, source.team.color, field.hit);
+                shader.addField(source.x, source.y, radius, source.team.color, field.hit, group);
             }
         }
 
         for (VortexEvent event : VortexEvent.active) {
-            if (event != null && shader.eventCount < 24) shader.addEvent(event.x, event.y, event.time);
+            if (event == null || shader.eventCount >= 24 || event.field == null) continue;
+            int group = groups.indexOf(event.field, true);
+            if (group < 0 || group >= 24) continue;
+            shader.addEvent(event.x, event.y, event.time, group);
         }
     }
 

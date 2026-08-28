@@ -413,14 +413,16 @@ public class NHShaders {
         private final float[] fields = new float[24 * 4];
         private final float[] fieldColors = new float[24 * 4];
         public int eventCount;
-        private final float[] events = new float[24 * 3];
+        // x/y = world position, z = normalized age, w = shared-field render group.
+        private final float[] events = new float[24 * 4];
+        private final float[] paddedEventData = new float[24 * 4];
         private int fieldCount;
 
         public ShieldQuantumShader() {
             super("VFX_quantumShield");
         }
 
-        public void addField(float x, float y, float radius, Color color, float hit) {
+        public void addField(float x, float y, float radius, Color color, float hit, int group) {
             if (fieldCount >= 24) return;
             int offset = fieldCount++ * 4;
             fields[offset] = x;
@@ -432,15 +434,21 @@ public class NHShaders {
             fieldColors[colorOffset] = color.r;
             fieldColors[colorOffset + 1] = color.g;
             fieldColors[colorOffset + 2] = color.b;
-            fieldColors[colorOffset + 3] = color.a;
+            // Alpha is unused by the shader's color math and carries the field group.
+            fieldColors[colorOffset + 3] = group;
         }
 
-        public void addEvent(float x, float y, float age) {
+        public void addEvent(float x, float y, float age, int group) {
             if (eventCount >= 24) return;
-            int offset = eventCount++ * 3;
+            int offset = eventCount++ * 4;
             events[offset] = x;
             events[offset + 1] = y;
             events[offset + 2] = age;
+            events[offset + 3] = group;
+        }
+
+        public void addField(float x, float y, float radius, Color color, float hit) {
+            addField(x, y, radius, color, hit, 0);
         }
 
         public void resetState() {
@@ -476,13 +484,13 @@ public class NHShaders {
         }
 
         private float[] paddedEvents() {
-            float[] result = new float[24 * 4];
             for (int i = 0; i < Math.min(eventCount, 24); i++) {
-                result[i * 4] = events[i * 3];
-                result[i * 4 + 1] = events[i * 3 + 1];
-                result[i * 4 + 2] = events[i * 3 + 2];
+                paddedEventData[i * 4] = events[i * 4];
+                paddedEventData[i * 4 + 1] = events[i * 4 + 1];
+                paddedEventData[i * 4 + 2] = events[i * 4 + 2];
+                paddedEventData[i * 4 + 3] = events[i * 4 + 3];
             }
-           return result;
+           return paddedEventData;
         }
     }
 

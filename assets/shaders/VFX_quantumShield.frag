@@ -89,6 +89,7 @@ void main(){
     vec3 teamTint = u_fieldColors[0].rgb;
     float nearestField = 999.0;
     float fieldHit = 0.0;
+    float fieldGroup = -1.0;
     for(int i = 0; i < 24; i++){
         if(i >= u_fieldCount) break;
         float normalizedDistance = distance(worldPos, u_fields[i].xy) / max(u_fields[i].z, 0.001);
@@ -96,6 +97,7 @@ void main(){
             nearestField = normalizedDistance;
             teamTint = u_fieldColors[i].rgb;
             fieldHit = u_fields[i].w;
+            fieldGroup = u_fieldColors[i].a;
         }
     }
 
@@ -124,6 +126,23 @@ void main(){
     float hitBoost = clamp(fieldHit * 0.35, 0.0, 0.35);
     for(int i = 0; i < 24; i++){
         if(i >= u_eventCount) break;
+        // A hit ring belongs to one shared field; never bleed into another group.
+        if(fieldGroup < -0.5 || abs(u_events[i].w - fieldGroup) > 0.5) continue;
+        // Keep the ring inside the union of the owning field's polygons. The
+        // projector is a 45-degree square, so its regular-polygon test reduces
+        // to the diamond metric below. This matters where two enemy fields
+        // overlap: the nearest-field color must not leak the other ring.
+        bool insideEventField = false;
+        for(int j = 0; j < 24; j++){
+            if(j >= u_fieldCount || abs(u_fieldColors[j].a - u_events[i].w) > 0.5) continue;
+            vec2 delta = worldPos - u_fields[j].xy;
+            float diamond = max(abs(delta.x + delta.y), abs(delta.x - delta.y));
+            if(diamond <= u_fields[j].z * 1.41421356) {
+                insideEventField = true;
+                break;
+            }
+        }
+        if(!insideEventField) continue;
         float age = u_events[i].z;
         float radius = age * 260.0;
         float width = max(radius * 0.16 + 0.8, 0.001);
