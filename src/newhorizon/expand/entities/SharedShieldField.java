@@ -113,9 +113,12 @@ public class SharedShieldField {
             // fields, leave it above 60s; partial coolant coverage scales the
             // all-cooled theoretical duration by its aggregate rate ratio.
             float duration = hasLiquid ? rawDuration / speed : arc.math.Mathf.clamp(rawDuration, 20f, 60f);
+            // cooldownTimer is accumulated in simulation ticks (Time.delta),
+            // while the design duration above is expressed in seconds.
+            float durationTicks = duration * 60f;
             cooldownTimer += Time.delta;
             if (buildup > 0f) buildup = Math.max(buildup - Time.delta * liquidRate, 0f);
-            if (cooldownTimer >= duration) {
+            if (cooldownTimer >= durationTicks) {
                 broken = false;
                 cooldownTimer = 0f;
                 buildup = 0f;

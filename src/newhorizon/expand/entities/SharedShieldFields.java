@@ -26,6 +26,20 @@ public class SharedShieldFields {
                 break;
             }
         }
+        // Attach a newly placed projector directly to an already overlapping
+        // field. Creating a temporary one-projector field first can make the
+        // topology rebuild select that empty field as its state owner, which
+        // resets buildup and the broken cooldown.
+        if (result == null) {
+            for (int i = 0; i < fields.size; i++) {
+                SharedShieldField field = fields.get(i);
+                if (field.sameTeam(source) && field.overlaps(source)) {
+                    result = field;
+                    result.add(source);
+                    break;
+                }
+            }
+        }
         if (result == null) {
             result = new SharedShieldField();
             fields.add(result);
@@ -151,10 +165,11 @@ public class SharedShieldFields {
             for (Building source : component) {
                 if (!(source instanceof QuantumVortexProjector.QuantumBuild quantum)) continue;
                 SharedShieldField previous = quantum.field;
-                if (previous != null && oldFields.contains(previous, true) && !reused.contains(previous, true)) {
-                    target = previous;
-                    break;
-                }
+                if (previous == null || !oldFields.contains(previous, true) || reused.contains(previous, true)) continue;
+                // Prefer the previous field carrying the most sources/state.
+                // This keeps damaged/broken cooldown state when a new source
+                // was temporarily registered as a separate field.
+                if (target == null || previousStateWeight(previous) > previousStateWeight(target)) target = previous;
             }
             if (target == null) target = new SharedShieldField();
             target.clear();
@@ -163,6 +178,14 @@ public class SharedShieldFields {
             fields.add(target);
             assignBuildingFields(target);
         }
+    }
+
+    private static float previousStateWeight(SharedShieldField field) {
+        float weight = field.sourceCount();
+        if (field.broken) weight += 100000f;
+        weight += field.buildup * 0.001f;
+        weight += field.cooldownProgress() * 0.001f;
+        return weight;
     }
 
     private static boolean sameTeam(Building a, Building b) {

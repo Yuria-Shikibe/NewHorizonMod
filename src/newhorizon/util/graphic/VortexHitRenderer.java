@@ -174,13 +174,10 @@ public class VortexHitRenderer implements Disposable {
                     var otherProjector = (newhorizon.expand.block.defence.QuantumVortexProjector)other.block;
                     int otherSides = Math.max(otherProjector.sides, 3);
                     float otherRadius = otherProjector.displayRadius(other);
-                    for (int otherEdge = 0; otherEdge < otherSides; otherEdge++) {
-                        float cx = vertexX(other, otherProjector, otherEdge, otherSides, otherRadius);
-                        float cy = vertexY(other, otherProjector, otherEdge, otherSides, otherRadius);
-                        float dx = vertexX(other, otherProjector, (otherEdge + 1) % otherSides, otherSides, otherRadius);
-                        float dy = vertexY(other, otherProjector, (otherEdge + 1) % otherSides, otherSides, otherRadius);
-                        addIntersectionParameter(ax, ay, bx, by, cx, cy, dx, dy, splits);
-                    }
+                    // Add the exact parameter interval covered by the other
+                    // convex polygon. This handles collinear/shared edges,
+                    // which cannot be found reliably by line intersection.
+                    addCoverageInterval(ax, ay, bx, by, other, otherProjector, otherSides, otherRadius, splits);
                 }
                 splits.sort();
                 for (int i = 0; i + 1 < splits.size; i++) {
@@ -219,16 +216,60 @@ public class VortexHitRenderer implements Disposable {
         return source.y + Mathf.sinDeg(angle) * radius;
     }
 
-    private static void addIntersectionParameter(float ax, float ay, float bx, float by,
-                                                  float cx, float cy, float dx, float dy, FloatSeq splits) {
-        float rx = bx - ax, ry = by - ay;
-        float sx = dx - cx, sy = dy - cy;
-        float denominator = rx * sy - ry * sx;
-        if (Math.abs(denominator) < 0.00001f) return;
-        float qpx = cx - ax, qpy = cy - ay;
-        float t = (qpx * sy - qpy * sx) / denominator;
-        float u = (qpx * ry - qpy * rx) / denominator;
-        if (t > 0.0001f && t < 0.9999f && u > -0.0001f && u < 1.0001f) splits.add(Mathf.clamp(t));
+    private static void addCoverageInterval(float ax, float ay, float bx, float by, Building polygon,
+                                             newhorizon.expand.block.defence.QuantumVortexProjector projector,
+                                             int sides, float radius, FloatSeq splits) {
+        float dx = bx - ax, dy = by - ay;
+        float low = 0f, high = 1f;
+        float lineLength2 = dx * dx + dy * dy;
+        if (lineLength2 <= 0.000001f) return;
+        final float epsilon = 0.001f;
+        for (int i = 0; i < sides; i++) {
+            float x0 = vertexX(polygon, projector, i, sides, radius);
+            float y0 = vertexY(polygon, projector, i, sides, radius);
+            float x1 = vertexX(polygon, projector, (i + 1) % sides, sides, radius);
+            float y1 = vertexY(polygon, projector, (i + 1) % sides, sides, radius);
+            float ex = x1 - x0, ey = y1 - y0;
+            float c = ex * (ay - y0) - ey * (ax - x0);
+            float d = ex * dy - ey * dx;
+            if (Math.abs(d) < 0.00001f) {
+                if (Math.abs(c) > epsilon) continue;
+
+                // Collinear edges need special handling. Treating the whole
+                // edge as covered drops valid outer edges when two polygons
+                // lie on opposite sides, or when their coincident edge is
+                // shorter than the source edge. Project the other polygon
+                // onto this line and only cover the interval it actually
+                // occupies, provided its interior is on the source's inside
+                // side of the edge.
+                // Both regular polygons are counter-clockwise, so the source
+                // interior is to the left of its directed edge. The other
+                // polygon's center tells us which side its interior occupies;
+                // this remains valid even when its coincident edge is shorter
+                // and does not contain the source edge midpoint.
+                float centerSide = dx * (polygon.y - ay) - dy * (polygon.x - ax);
+                if (centerSide <= epsilon) return;
+
+                float minT = Float.POSITIVE_INFINITY, maxT = Float.NEGATIVE_INFINITY;
+                for (int k = 0; k < sides; k++) {
+                    float vx = vertexX(polygon, projector, k, sides, radius) - ax;
+                    float vy = vertexY(polygon, projector, k, sides, radius) - ay;
+                    float t = (vx * dx + vy * dy) / lineLength2;
+                    minT = Math.min(minT, t);
+                    maxT = Math.max(maxT, t);
+                }
+                splits.add(Mathf.clamp(minT));
+                splits.add(Mathf.clamp(maxT));
+                return;
+            } else if (d > 0f) {
+                low = Math.max(low, (-epsilon - c) / d);
+            } else {
+                high = Math.min(high, (-epsilon - c) / d);
+            }
+            if (low > high) return;
+        }
+        splits.add(Mathf.clamp(low));
+        splits.add(Mathf.clamp(high));
     }
 
     private void clear(FrameBuffer buffer) {
