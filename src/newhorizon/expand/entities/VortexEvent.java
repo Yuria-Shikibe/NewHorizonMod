@@ -37,13 +37,35 @@ public class VortexEvent {
     public static void add(float x, float y, float angle, SharedShieldField field) {
         int slot = -1;
         for (int i = 0; i < active.length; i++) {
-            if (active[i] == null) {
+            VortexEvent existing = active[i];
+            if (existing != null && existing.field == field && existing.time < 0.12f) {
+                // Collapse bursts from rapid-fire projectiles into one smooth
+                // wave per field instead of filling all event slots at once.
+                return;
+            }
+            if (existing == null) {
                 slot = i;
                 break;
             }
         }
+        if (slot < 0) {
+            // Keep the newest hit visible when the global pool is saturated.
+            // Replacing the oldest event avoids the visible stop/start pattern
+            // caused by silently dropping every subsequent hit.
+            float oldest = -1f;
+            for (int i = 0; i < active.length; i++) {
+                if (active[i] != null && active[i].time > oldest) {
+                    oldest = active[i].time;
+                    slot = i;
+                }
+            }
+        }
         if (slot < 0) return;
 
+        // Return the evicted event to the small object pool before reusing its
+        // slot.  This also clears its field reference, preventing stale group
+        // ownership from being retained across a saturated event stream.
+        if (active[slot] != null) release(active[slot]);
         VortexEvent event = poolSize > 0 ? pool[--poolSize] : new VortexEvent();
         event.x = x;
         event.y = y;

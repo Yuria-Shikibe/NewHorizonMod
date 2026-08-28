@@ -7,8 +7,12 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.gl.FrameBuffer;
+import arc.math.Mathf;
+import arc.math.geom.Intersector;
+import arc.struct.FloatSeq;
 import arc.util.Disposable;
 import mindustry.Vars;
+import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import newhorizon.content.NHShaders;
 import newhorizon.content.NHShaders.ShieldQuantumBlurShader;
@@ -137,16 +141,94 @@ public class VortexHitRenderer implements Disposable {
     private void drawProjectorOutlines() {
         for (SharedShieldField field : SharedShieldFields.all()) {
             if (!field.active()) continue;
-            for (var source : field.iterable()) {
-                if (!(source.block instanceof newhorizon.expand.block.defence.QuantumVortexProjector projector)) continue;
-                float radius = projector.displayRadius(source);
-                if (radius <= 0.01f) continue;
-                Draw.color(source.team.color);
-                Lines.stroke(1.5f);
-                Lines.poly(source.x, source.y, projector.sides, radius, projector.shieldRotation);
-            }
+            drawFieldOutline(field);
         }
         Draw.reset();
+    }
+
+    /** Draw only the outside edges of the union of one shared field's polygons. */
+    private void drawFieldOutline(SharedShieldField field) {
+        Lines.stroke(1.5f);
+        if (field.team() == null) return;
+        Draw.color(field.team().color);
+        Seq<Building> sources = new Seq<>(false, field.sourceCount(), Building.class);
+        for (var source : field.iterable()) {
+            if (source.block instanceof newhorizon.expand.block.defence.QuantumVortexProjector && source.isValid()) sources.add(source);
+        }
+        FloatSeq splits = new FloatSeq(32);
+        for (Building source : sources) {
+            var projector = (newhorizon.expand.block.defence.QuantumVortexProjector)source.block;
+            int sides = Math.max(projector.sides, 3);
+            float radius = projector.displayRadius(source);
+            if (radius <= 0.01f) continue;
+            for (int edge = 0; edge < sides; edge++) {
+                float ax = vertexX(source, projector, edge, sides, radius);
+                float ay = vertexY(source, projector, edge, sides, radius);
+                float bx = vertexX(source, projector, (edge + 1) % sides, sides, radius);
+                float by = vertexY(source, projector, (edge + 1) % sides, sides, radius);
+                splits.clear();
+                splits.add(0f);
+                splits.add(1f);
+                for (Building other : sources) {
+                    if (other == source) continue;
+                    var otherProjector = (newhorizon.expand.block.defence.QuantumVortexProjector)other.block;
+                    int otherSides = Math.max(otherProjector.sides, 3);
+                    float otherRadius = otherProjector.displayRadius(other);
+                    for (int otherEdge = 0; otherEdge < otherSides; otherEdge++) {
+                        float cx = vertexX(other, otherProjector, otherEdge, otherSides, otherRadius);
+                        float cy = vertexY(other, otherProjector, otherEdge, otherSides, otherRadius);
+                        float dx = vertexX(other, otherProjector, (otherEdge + 1) % otherSides, otherSides, otherRadius);
+                        float dy = vertexY(other, otherProjector, (otherEdge + 1) % otherSides, otherSides, otherRadius);
+                        addIntersectionParameter(ax, ay, bx, by, cx, cy, dx, dy, splits);
+                    }
+                }
+                splits.sort();
+                for (int i = 0; i + 1 < splits.size; i++) {
+                    float t0 = splits.get(i), t1 = splits.get(i + 1);
+                    if (t1 - t0 < 0.0001f) continue;
+                    float tm = (t0 + t1) * 0.5f;
+                    float mx = Mathf.lerp(ax, bx, tm), my = Mathf.lerp(ay, by, tm);
+                    boolean covered = false;
+                    for (Building other : sources) {
+                        if (other == source) continue;
+                        var otherProjector = (newhorizon.expand.block.defence.QuantumVortexProjector)other.block;
+                        if (Intersector.isInRegularPolygon(Math.max(otherProjector.sides, 3), other.x, other.y,
+                                otherProjector.displayRadius(other), otherProjector.shieldRotation, mx, my)) {
+                            covered = true;
+                            break;
+                        }
+                    }
+                    if (!covered) {
+                        Lines.line(Mathf.lerp(ax, bx, t0), Mathf.lerp(ay, by, t0),
+                                Mathf.lerp(ax, bx, t1), Mathf.lerp(ay, by, t1));
+                    }
+                }
+            }
+        }
+    }
+
+    private static float vertexX(Building source, newhorizon.expand.block.defence.QuantumVortexProjector projector,
+                                 int index, int sides, float radius) {
+        float angle = projector.shieldRotation + index * 360f / sides;
+        return source.x + Mathf.cosDeg(angle) * radius;
+    }
+
+    private static float vertexY(Building source, newhorizon.expand.block.defence.QuantumVortexProjector projector,
+                                 int index, int sides, float radius) {
+        float angle = projector.shieldRotation + index * 360f / sides;
+        return source.y + Mathf.sinDeg(angle) * radius;
+    }
+
+    private static void addIntersectionParameter(float ax, float ay, float bx, float by,
+                                                  float cx, float cy, float dx, float dy, FloatSeq splits) {
+        float rx = bx - ax, ry = by - ay;
+        float sx = dx - cx, sy = dy - cy;
+        float denominator = rx * sy - ry * sx;
+        if (Math.abs(denominator) < 0.00001f) return;
+        float qpx = cx - ax, qpy = cy - ay;
+        float t = (qpx * sy - qpy * sx) / denominator;
+        float u = (qpx * ry - qpy * rx) / denominator;
+        if (t > 0.0001f && t < 0.9999f && u > -0.0001f && u < 1.0001f) splits.add(Mathf.clamp(t));
     }
 
     private void clear(FrameBuffer buffer) {
