@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.Core;
 import arc.util.Strings;
 import arc.math.Mathf;
+import mindustry.entities.Effect;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import arc.math.geom.Intersector;
@@ -11,44 +12,18 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.world.blocks.defense.ForceProjector;
-import mindustry.world.consumers.ConsumeCoolant;
-import mindustry.content.Items;
 import mindustry.logic.LAccess;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.type.Category;
-import mindustry.world.meta.BuildVisibility;
 import newhorizon.expand.entities.SharedShieldField;
 import newhorizon.expand.entities.SharedShieldFields;
-import newhorizon.expand.entities.VortexEvent;
-
-import static mindustry.type.ItemStack.with;
 
 public class QuantumVortexProjector extends ForceProjector {
+    /** Assigned by DefenseBlock during content registration. */
+    public Effect shieldActivateEffect;
+
     public QuantumVortexProjector(String name) {
         super(name);
-
-        requirements(Category.effect, BuildVisibility.sandboxOnly, with());
-        size = 2;
-        sides = 4;
-        health = 1500;
-        armor = 10;
-        itemCapacity = 20;
-        liquidCapacity = 25f;
-        shieldRotation = 45f;
-        radius = 120f;
-        shieldHealth = 5000f;
-        cooldownNormal = 12f;
-        // Coolant multiplier applied to each projector's normal recovery rate.
-        cooldownLiquid = 2f;
-        cooldownBrokenBase = 2.5f;
-        // Phase fabric contributes shield capacity only; it never expands range.
-        phaseRadiusBoost = 0f;
-        phaseShieldBoost = 2500f;
-        consumePower(5f);
-        itemConsumer = consumeItem(Items.phaseFabric).boost();
-        coolantConsumer = new ConsumeCoolant(0.1f);
-        consume(coolantConsumer).boost().update(false);
     }
 
     public float realRadius(QuantumBuild build) {

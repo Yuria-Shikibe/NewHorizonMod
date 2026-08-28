@@ -4,6 +4,7 @@ import arc.math.geom.Intersector;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Time;
+import mindustry.entities.Effect;
 import newhorizon.expand.block.defence.QuantumVortexProjector;
 import mindustry.gen.Building;
 import mindustry.game.Team;
@@ -17,6 +18,7 @@ public class SharedShieldField {
     public boolean broken = false;
     public transient float radscl, warmup, hit;
     private float cooldownTimer;
+    private transient boolean visualActive;
     /** Sources are unbounded; fields can contain any number of projectors. */
     private final Seq<Building> sources = new Seq<>(false, 8, Building.class);
 
@@ -130,9 +132,33 @@ public class SharedShieldField {
             cooldownTimer = 0f;
         }
 
+        boolean activeNow = !broken && targetWarmup > 0f && radscl > 0.01f;
+        if (activeNow && !visualActive) triggerVisualEffect(true);
+        else if (visualActive && broken) triggerVisualEffect(false);
+        visualActive = activeNow;
+
         // A healthy field must never remain visually collapsed after a broken
         // transition or topology rebuild.
         if (!broken && targetWarmup > 0f && radscl < 0.999f) radscl = targetWarmup;
+    }
+
+    private void triggerVisualEffect(boolean activating) {
+        for (int i = 0; i < sources.size; i++) {
+            Building source = sources.get(i);
+            if (!(source.block instanceof QuantumVortexProjector projector)) continue;
+
+            Effect effect = activating ? projector.shieldActivateEffect : projector.shieldBreakEffect;
+            if (effect == null) continue;
+
+            // Effect.rotation carries the polygon radius, matching the
+            // ForceProjector shield-break convention. The configured radius
+            // is used on activation so the pulse is visible even while the
+            // shared warmup scale is still approaching one.
+            float effectRadius = activating
+                    ? projector.radius
+                    : projector.radius * Math.max(Math.max(radscl, warmup), 0.001f);
+            effect.at(source.x, source.y, effectRadius, source.team.color);
+        }
     }
 
     public float capacity() {
