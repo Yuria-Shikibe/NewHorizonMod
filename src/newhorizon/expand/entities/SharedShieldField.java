@@ -1,6 +1,7 @@
 package newhorizon.expand.entities;
 
 import arc.math.geom.Intersector;
+import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Time;
 import newhorizon.expand.block.defence.QuantumVortexProjector;
@@ -223,13 +224,9 @@ public class SharedShieldField {
 
     public boolean overlaps(Building source) {
         if (!sameTeam(source)) return false;
-        float sourceRadius = connectionRadius(source);
-        if (sourceRadius <= 0f) return false;
         for (int i = 0; i < sources.size; i++) {
             Building other = sources.get(i);
-            float otherRadius = connectionRadius(other);
-            float combined = sourceRadius + otherRadius;
-            if (otherRadius > 0f && other.dst2(source) <= combined * combined + 0.01f) return true;
+            if (projectorsOverlap(other, source)) return true;
         }
         return false;
     }
@@ -237,11 +234,67 @@ public class SharedShieldField {
     /** Fast broad-phase connection test for two stationary projectors. */
     public static boolean projectorsOverlap(Building a, Building b) {
         if (a == null || b == null || a.team == null || a.team != b.team) return false;
-        float radiusA = connectionRadius(a);
-        float radiusB = connectionRadius(b);
+        if (!(a.block instanceof QuantumVortexProjector pa) || !(b.block instanceof QuantumVortexProjector pb)) return false;
+
+        float radiusA = connectionRadius(a), radiusB = connectionRadius(b);
         if (radiusA <= 0f || radiusB <= 0f) return false;
-        float combined = radiusA + radiusB;
-        return a.dst2(b) <= combined * combined + 0.01f;
+
+        // Cheap circumscribed-circle rejection keeps the exact SAT pass small
+        // when many projectors are present. The circle is only a broad phase;
+        // the polygon test below remains authoritative.
+        float broadRadius = (radiusA + radiusB) * 1.41421356f;
+        if (a.dst2(b) > broadRadius * broadRadius + 0.01f) return false;
+
+        // Use the actual convex shield polygons rather than a circumscribed
+        // circle. Circle broad-phase tests incorrectly join projectors whose
+        // square corners are near each other while their shield areas do not
+        // overlap. SAT also handles containment and edge-touching correctly.
+        int sidesA = Math.max(pa.sides, 3), sidesB = Math.max(pb.sides, 3);
+        float[] vertsA = polygonVertices(a.x, a.y, radiusA, pa.shieldRotation, sidesA);
+        float[] vertsB = polygonVertices(b.x, b.y, radiusB, pb.shieldRotation, sidesB);
+        return overlapConvexPolygons(vertsA, vertsB, sidesA, sidesB);
+    }
+
+    private static float[] polygonVertices(float cx, float cy, float radius, float rotation, int sides) {
+        float[] vertices = new float[sides * 2];
+        for (int i = 0; i < sides; i++) {
+            float angle = rotation + i * 360f / sides;
+            vertices[i * 2] = cx + Mathf.cosDeg(angle) * radius;
+            vertices[i * 2 + 1] = cy + Mathf.sinDeg(angle) * radius;
+        }
+        return vertices;
+    }
+
+    private static boolean overlapConvexPolygons(float[] a, float[] b, int sidesA, int sidesB) {
+        return separatesOnAnyAxis(a, sidesA, b, sidesB) == false && separatesOnAnyAxis(b, sidesB, a, sidesA) == false;
+    }
+
+    private static boolean separatesOnAnyAxis(float[] axisPolygon, int axisSides, float[] otherPolygon, int otherSides) {
+        for (int i = 0; i < axisSides; i++) {
+            int j = (i + 1) % axisSides;
+            float ex = axisPolygon[j * 2] - axisPolygon[i * 2];
+            float ey = axisPolygon[j * 2 + 1] - axisPolygon[i * 2 + 1];
+            float nx = -ey, ny = ex;
+
+            float minA = Float.POSITIVE_INFINITY, maxA = Float.NEGATIVE_INFINITY;
+            for (int k = 0; k < axisSides; k++) {
+                float projection = axisPolygon[k * 2] * nx + axisPolygon[k * 2 + 1] * ny;
+                minA = Math.min(minA, projection);
+                maxA = Math.max(maxA, projection);
+            }
+
+            float minB = Float.POSITIVE_INFINITY, maxB = Float.NEGATIVE_INFINITY;
+            for (int k = 0; k < otherSides; k++) {
+                float projection = otherPolygon[k * 2] * nx + otherPolygon[k * 2 + 1] * ny;
+                minB = Math.min(minB, projection);
+                maxB = Math.max(maxB, projection);
+            }
+
+            // Keep touching polygons connected: a shared boundary counts as
+            // overlap for shield networking.
+            if (maxA < minB - 0.001f || maxB < minA - 0.001f) return true;
+        }
+        return false;
     }
 
     private void cleanupSources() {

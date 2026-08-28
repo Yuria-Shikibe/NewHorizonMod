@@ -173,7 +173,12 @@ public class SharedShieldFields {
         // Buildings cache their transient field reference. Clear each source
         // list as well, otherwise a post-reload building can retain an
         // apparently valid field that is no longer in this registry.
-        for (SharedShieldField field : fields) field.clear();
+        for (SharedShieldField field : fields) {
+            for (Building source : field.iterable()) {
+                if (source instanceof QuantumVortexProjector.QuantumBuild quantum) quantum.field = null;
+            }
+            field.clear();
+        }
         fields.clear();
         topologyDirty = false;
     }

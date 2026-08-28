@@ -5,6 +5,7 @@ import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.graphics.gl.FrameBuffer;
 import arc.util.Disposable;
 import mindustry.Vars;
@@ -127,6 +128,25 @@ public class VortexHitRenderer implements Disposable {
         // Composite transparently over the already-rendered world.
         Blending.normal.apply();
         shield.blit(NHShaders.shieldQuantumComposite);
+        Draw.flush();
+        drawProjectorOutlines();
+        Draw.flush();
+    }
+
+    /** Draw each boundary independently so enemy fields never share one mask edge. */
+    private void drawProjectorOutlines() {
+        for (SharedShieldField field : SharedShieldFields.all()) {
+            if (!field.active()) continue;
+            for (var source : field.iterable()) {
+                if (!(source.block instanceof newhorizon.expand.block.defence.QuantumVortexProjector projector)) continue;
+                float radius = projector.displayRadius(source);
+                if (radius <= 0.01f) continue;
+                Draw.color(source.team.color);
+                Lines.stroke(1.5f);
+                Lines.poly(source.x, source.y, projector.sides, radius, projector.shieldRotation);
+            }
+        }
+        Draw.reset();
     }
 
     private void clear(FrameBuffer buffer) {
