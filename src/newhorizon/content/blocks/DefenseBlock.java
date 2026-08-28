@@ -202,7 +202,7 @@ public class DefenseBlock {
         }};
 
         quantumVortexProjector = new QuantumVortexProjector("quantum-vortex-projector") {{
-            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
+            requirements(Category.effect, with(NHItems.seniorProcessor, 100, NHItems.nodexPlate, 20, Items.phaseFabric, 50, NHItems.multipleSteel, 100));
 
             size = 2;
             sides = 4;
@@ -222,7 +222,7 @@ public class DefenseBlock {
             phaseRadiusBoost = 0f;
             phaseShieldBoost = 2500f;
 
-            consumePower(5f);
+            consumePower(12f);
             itemConsumer = consumeItem(Items.phaseFabric).boost();
             coolantConsumer = new ConsumeCoolant(0.1f);
             consume(coolantConsumer).boost().update(false);

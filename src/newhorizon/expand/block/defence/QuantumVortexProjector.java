@@ -38,7 +38,8 @@ public class QuantumVortexProjector extends ForceProjector {
     /** The shared field owns the visible shield scale; inherited ForceBuild
      * state is retained only for the base class update contract. */
     private float visualScale(QuantumBuild build) {
-        if (build.field == null) return Math.max(build.radscl, 0f);
+        if (build.efficiency <= 0.01f) return 0f;
+        if (build.field == null || !build.field.hasSource(build) || !build.field.sameTeam(build)) return 0f;
         if (build.field.broken) return 0f;
         return Mathf.clamp(Math.max(build.field.radscl, build.field.warmup));
     }
@@ -63,11 +64,26 @@ public class QuantumVortexProjector extends ForceProjector {
         @Override
         public void updateTile() {
             super.updateTile();
+
+            // A projector without power is not an active source: it neither
+            // contributes capacity/recovery nor keeps a range connection.
+            if (efficiency <= 0.01f) {
+                if (field != null) {
+                    field.remove(this);
+                    field = null;
+                }
+                radscl = warmup = 0f;
+                buildup = 0f;
+                broken = false;
+                return;
+            }
+
             if (field == null) {
                 field = SharedShieldFields.find(this);
-            } else if (!field.hasSource(this)) {
+            } else if (!field.hasSource(this) || !field.sameTeam(this)) {
                 // Re-resolve through the registry. The old field may have been
                 // removed during a world reset or topology rebuild.
+                field.remove(this);
                 field = SharedShieldFields.find(this);
             }
 
@@ -118,7 +134,12 @@ public class QuantumVortexProjector extends ForceProjector {
         }
 
         public void deflectBullets() {
-            if (field == null || field.broken || !field.active()) return;
+            // ForceBuild.updateTile() dispatches here before this override can
+            // detach an unpowered source. Gate the local interaction as well,
+            // otherwise a stale field reference could absorb for a powered
+            // neighbour during the power-loss tick.
+            if (efficiency <= 0.01f || field == null || !field.hasSource(this) || !field.sameTeam(this)
+                    || field.broken || !field.active()) return;
 
             float radius = QuantumVortexProjector.this.realRadius(this);
             float maxRadius = field.maxRadius();
@@ -158,7 +179,8 @@ public class QuantumVortexProjector extends ForceProjector {
 
         @Override
         public boolean absorbExplosion(float ex, float ey, float damage) {
-            if (field == null || field.broken || !field.active()) return false;
+            if (efficiency <= 0.01f || field == null || !field.hasSource(this) || !field.sameTeam(this)
+                    || field.broken || !field.active()) return false;
             if (!Intersector.isInRegularPolygon(sides, x, y, QuantumVortexProjector.this.realRadius(this), shieldRotation, ex, ey)) return false;
             field.damage(damage * crashDamageMultiplier, ex, ey);
             return true;
@@ -167,7 +189,7 @@ public class QuantumVortexProjector extends ForceProjector {
         @Override
         public double sense(LAccess sensor) {
             if (sensor == LAccess.shield) {
-                if (field == null || field.broken) return 0d;
+                if (efficiency <= 0.01f || field == null || !field.hasSource(this) || !field.sameTeam(this) || field.broken) return 0d;
                 return Math.max(field.capacity() - field.buildup, 0f);
             }
             return super.sense(sensor);
@@ -175,7 +197,8 @@ public class QuantumVortexProjector extends ForceProjector {
 
         @Override
         public void setProp(LAccess prop, double value) {
-            if (prop == LAccess.shield && field != null) {
+            if (prop == LAccess.shield) {
+                if (efficiency <= 0.01f || field == null || !field.hasSource(this) || !field.sameTeam(this)) return;
                 float capacity = field.capacity();
                 field.buildup = Mathf.clamp(capacity - (float)value, 0f, capacity);
                 if (field.buildup >= capacity) field.broken = true;
@@ -187,7 +210,7 @@ public class QuantumVortexProjector extends ForceProjector {
         @Override
         public void writeSync(Writes write) {
             super.writeSync(write);
-            SharedShieldField shared = field;
+            SharedShieldField shared = efficiency > 0.01f && field != null && field.hasSource(this) && field.sameTeam(this) ? field : null;
             write.f(shared == null ? 0f : shared.buildup);
             write.bool(shared != null && shared.broken);
             write.f(shared == null ? 0f : shared.cooldownProgress());
@@ -199,8 +222,8 @@ public class QuantumVortexProjector extends ForceProjector {
             float syncedBuildup = read.f();
             boolean syncedBroken = read.bool();
             float syncedCooldown = read.f();
-            if (field == null) field = SharedShieldFields.find(this);
-            if (field != null) {
+            if (efficiency > 0.01f && field == null) field = SharedShieldFields.find(this);
+            if (efficiency > 0.01f && field != null && field.hasSource(this) && field.sameTeam(this)) {
                 field.buildup = syncedBuildup;
                 field.broken = syncedBroken;
                 field.setCooldownProgress(syncedCooldown);

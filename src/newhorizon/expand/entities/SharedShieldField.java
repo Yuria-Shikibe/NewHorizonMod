@@ -23,7 +23,10 @@ public class SharedShieldField {
     private final Seq<Building> sources = new Seq<>(false, 8, Building.class);
 
     public void add(Building source) {
-        if (source != null && !sources.contains(source, true)) {
+        // Keep the source list itself powered-only. Callers also filter during
+        // topology rebuilds, but enforcing it here prevents future paths from
+        // accidentally granting an unpowered projector shared-shield effects.
+        if (isPowered(source) && !sources.contains(source, true)) {
             sources.add(source);
             SharedShieldFields.markDirty();
         }
@@ -36,7 +39,7 @@ public class SharedShieldField {
     public boolean active() {
         if (broken || sources.isEmpty()) return false;
         for (int i = 0; i < sources.size; i++) {
-            if (sources.get(i).efficiency > 0.01f) return true;
+            if (isPowered(sources.get(i))) return true;
         }
         return false;
     }
@@ -50,14 +53,18 @@ public class SharedShieldField {
     }
 
     public int sourceCount() {
-        return sources.size;
+        int count = 0;
+        for (int i = 0; i < sources.size; i++) {
+            if (isPowered(sources.get(i))) count++;
+        }
+        return count;
     }
 
     public float maxRadius() {
         float radius = 0f;
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
-            if (source.block instanceof QuantumVortexProjector p && source.efficiency > 0.01f) {
+            if (isPowered(source) && source.block instanceof QuantumVortexProjector p) {
                 radius = Math.max(radius, p.realRadius((QuantumVortexProjector.QuantumBuild)source));
             }
         }
@@ -72,7 +79,7 @@ public class SharedShieldField {
         if (radius <= 0f) return false;
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
-            if (!(source.block instanceof QuantumVortexProjector)) continue;
+            if (!isPowered(source) || !(source.block instanceof QuantumVortexProjector)) continue;
             QuantumVortexProjector.QuantumBuild build = (QuantumVortexProjector.QuantumBuild)source;
             QuantumVortexProjector projector = (QuantumVortexProjector)build.block;
             if (Intersector.isInRegularPolygon(projector.sides, build.x, build.y,
@@ -90,7 +97,7 @@ public class SharedShieldField {
 
         float targetWarmup = 0f;
         for (int i = 0; i < sources.size; i++) {
-            if (sources.get(i).efficiency > 0.01f) {
+            if (isPowered(sources.get(i))) {
                 targetWarmup = 1f;
                 break;
             }
@@ -165,7 +172,7 @@ public class SharedShieldField {
         float total = 0f;
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
-            if (!(source.block instanceof QuantumVortexProjector block)) continue;
+            if (!isPowered(source) || !(source.block instanceof QuantumVortexProjector block)) continue;
             QuantumVortexProjector.QuantumBuild build = (QuantumVortexProjector.QuantumBuild)source;
             total += block.shieldHealth + block.phaseShieldBoost * arc.math.Mathf.clamp(build.phaseHeat);
         }
@@ -177,7 +184,7 @@ public class SharedShieldField {
         float total = 0f;
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
-            if (source.block instanceof QuantumVortexProjector block) {
+            if (isPowered(source) && source.block instanceof QuantumVortexProjector block) {
                 // ForceProjector's regeneration is a fixed per-building rate;
                 // efficiency gates interception, but does not scale the rate.
                 total += block.cooldownNormal;
@@ -191,7 +198,7 @@ public class SharedShieldField {
         float total = 0f;
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
-            if (!(source.block instanceof QuantumVortexProjector block)) continue;
+            if (!isPowered(source) || !(source.block instanceof QuantumVortexProjector block)) continue;
             float rate = block.cooldownNormal;
             if (block.coolantConsumer != null && block.coolantConsumer.efficiency(source) > 0.01f) {
                 rate *= block.cooldownLiquid > 0f ? block.cooldownLiquid : 1f;
@@ -253,19 +260,30 @@ public class SharedShieldField {
     public Team team() {
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
-            if (source != null && source.isValid() && source.isAdded()) return source.team;
+            if (isPowered(source) && source.isValid() && source.isAdded()) return source.team;
         }
         return null;
     }
 
     public boolean sameTeam(Building source) {
-        Team owner = team();
-        return owner != null && source != null && owner == source.team;
+        if (!isPowered(source) || source.team == null) return false;
+
+        // A field may outlive a source's team assignment by one update tick.
+        // Validate every remaining source instead of trusting only the first
+        // one, otherwise a stale cross-team member can bridge two fields.
+        boolean found = false;
+        for (int i = 0; i < sources.size; i++) {
+            Building existing = sources.get(i);
+            if (existing == null || !existing.isValid() || !existing.isAdded()) continue;
+            found = true;
+            if (existing.team != source.team) return false;
+        }
+        return found;
     }
 
     /**
      * Connection range deliberately ignores warmup/radscl and phase-fabric range effects.
-     * A projector contributes its configured shield radius to grouping immediately on placement.
+     * A powered projector contributes its configured shield radius to grouping.
      */
     private static float connectionRadius(Building source) {
         if (!(source.block instanceof QuantumVortexProjector projector)) return 0f;
@@ -284,7 +302,7 @@ public class SharedShieldField {
 
     /** Fast broad-phase connection test for two stationary projectors. */
     public static boolean projectorsOverlap(Building a, Building b) {
-        if (a == null || b == null || a.team == null || a.team != b.team) return false;
+        if (!isPowered(a) || !isPowered(b) || a.team == null || a.team != b.team) return false;
         if (!(a.block instanceof QuantumVortexProjector pa) || !(b.block instanceof QuantumVortexProjector pb)) return false;
 
         float radiusA = connectionRadius(a), radiusB = connectionRadius(b);
@@ -350,12 +368,21 @@ public class SharedShieldField {
 
     private void cleanupSources() {
         tmpBuildings.clear();
+        boolean changed = false;
         for (Iterator<Building> iterator = iterator(); iterator.hasNext(); ) {
             Building building = iterator.next();
-            if (building.isValid() && building.isAdded()) tmpBuildings.add(building);
+            if (building.isValid() && building.isAdded() && isPowered(building)) {
+                tmpBuildings.add(building);
+            } else {
+                changed = true;
+                if (building instanceof QuantumVortexProjector.QuantumBuild quantum && quantum.field == this) {
+                    quantum.field = null;
+                }
+            }
         }
         clear();
         sources.addAll(tmpBuildings);
+        if (changed) SharedShieldFields.markDirty();
     }
 
     public Iterable<Building> iterable() {
@@ -388,8 +415,13 @@ public class SharedShieldField {
 
     private QuantumVortexProjector firstBlock() {
         for (int i = 0; i < sources.size; i++) {
-            if (sources.get(i).block instanceof QuantumVortexProjector p) return p;
+            Building source = sources.get(i);
+            if (isPowered(source) && source.block instanceof QuantumVortexProjector p) return p;
         }
         return null;
+    }
+
+    private static boolean isPowered(Building source) {
+        return source != null && source.efficiency > 0.01f;
     }
 }

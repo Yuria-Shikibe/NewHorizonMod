@@ -3,6 +3,7 @@ package newhorizon.expand.entities;
 import arc.struct.Seq;
 import newhorizon.expand.block.defence.QuantumVortexProjector;
 import mindustry.gen.Building;
+import mindustry.game.Team;
 
 public class SharedShieldFields {
     private static final Seq<SharedShieldField> fields = new Seq<>(true, 16, SharedShieldField.class);
@@ -26,6 +27,12 @@ public class SharedShieldFields {
                 break;
             }
         }
+
+        // An unpowered projector keeps no active field of its own. If it was
+        // already registered, return the old reference so its caller can
+        // remove it cleanly; otherwise wait until power is available before
+        // creating or joining a shared field.
+        if (source.efficiency <= 0.01f) return result;
         // Attach a newly placed projector directly to an already overlapping
         // field. Creating a temporary one-projector field first can make the
         // topology rebuild select that empty field as its state owner, which
@@ -47,8 +54,9 @@ public class SharedShieldFields {
             topologyDirty = true;
         }
 
-        // A field is connected by geometric range overlap, never by warmup/efficiency.
-        // Merge transitively so A-B and B-C produce one shared field even when A-C do not overlap.
+        // A powered field is connected by geometric range overlap; warmup does
+        // not affect the configured connection radius. Merge transitively so
+        // A-B and B-C produce one shared field even when A-C do not overlap.
         boolean merged;
         do {
             merged = false;
@@ -67,7 +75,19 @@ public class SharedShieldFields {
     }
 
     private static boolean sameTeam(SharedShieldField a, SharedShieldField b) {
-        return a.team() != null && b.team() != null && a.team() == b.team();
+        Team teamA = a.team(), teamB = b.team();
+        if (teamA == null || teamA != teamB) return false;
+
+        // Do not merge a field that still contains a stale source from a
+        // different team. Such a source can remain for a tick when a building
+        // is converted or loaded while the topology index is dirty.
+        for (Building source : a.iterable()) {
+            if (source.isValid() && source.isAdded() && source.team != teamA) return false;
+        }
+        for (Building source : b.iterable()) {
+            if (source.isValid() && source.isAdded() && source.team != teamA) return false;
+        }
+        return true;
     }
 
     private static boolean overlaps(SharedShieldField a, SharedShieldField b) {
@@ -130,7 +150,9 @@ public class SharedShieldFields {
         for (SharedShieldField field : fields) {
             oldFields.add(field);
             for (Building source : field.iterable()) {
-                if (source.isValid() && source.isAdded() && !remaining.contains(source, true)) remaining.add(source);
+                if (source.isValid() && source.isAdded() && source.efficiency > 0.01f && !remaining.contains(source, true)) {
+                    remaining.add(source);
+                }
             }
         }
 
