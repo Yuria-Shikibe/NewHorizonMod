@@ -51,10 +51,49 @@ float maskAt(vec2 uv){
     return texture2D(u_texture, uv).a;
 }
 
+// The original shield outline is derived from the union alpha mask. This
+// naturally merges overlapping projectors and cannot lose individual polygon
+// edge segments due to CPU-side clipping decisions.
+float outerEdge(vec2 uv){
+    float nearest = 999.0;
+    for(int x = -3; x <= 3; x++){
+        for(int y = -3; y <= 3; y++){
+            vec2 offset = vec2(float(x), float(y));
+            // Do not count the current pixel itself. Otherwise every filled
+            // pixel reports an outer edge and the triangular fill pattern is
+            // replaced by the outline color across the whole shield.
+            if((x != 0 || y != 0) && maskAt(uv + offset * u_texel) > 0.45){
+                nearest = min(nearest, length(offset));
+            }
+        }
+    }
+    return exp(-max(nearest - 0.45, 0.0) / 1.8);
+}
+
+float innerEdge(vec2 uv){
+    float nearest = 999.0;
+    for(int x = -3; x <= 3; x++){
+        for(int y = -3; y <= 3; y++){
+            vec2 offset = vec2(float(x), float(y));
+            if(maskAt(uv + offset * u_texel) < 0.20){
+                nearest = min(nearest, length(offset));
+            }
+        }
+    }
+    return exp(-max(nearest - 0.45, 0.0) / 2.4);
+}
+
 void main(){
     vec2 worldPos = v_texCoords * u_resolution + u_campos;
     float centerMask = maskAt(v_texCoords);
-    if(centerMask < 0.004) discard;
+    float outsideEdge = outerEdge(v_texCoords);
+    float insideEdge = innerEdge(v_texCoords);
+    // Apply each edge detector on its own side of the mask. This keeps the
+    // outside stroke continuous while preventing neighboring filled pixels
+    // from tinting the entire interior with the outline color.
+    float edge = max(outsideEdge * (1.0 - centerMask), insideEdge * centerMask);
+
+    if(centerMask < 0.004 && edge < 0.004) discard;
 
     vec3 teamTint = u_fieldColors[0].rgb;
     float nearestField = 999.0;
@@ -108,11 +147,10 @@ void main(){
 
     vec3 fillColor = teamPalette(teamTint, cellLevel) * (0.68 + cellLight * 0.32) * (1.0 + hitBoost * 1.10);
     fillColor += teamPalette(teamTint, 0.92) * cellBorder * 0.18;
-    // Polygon outlines are drawn per projector by VortexHitRenderer. Keeping
-    // the shader fill independent of the union mask prevents overlapping
-    // enemy fields from producing a single blended outline.
-    vec3 finalColor = fillColor;
+    vec3 outlineColor = teamPalette(teamTint, 1.0);
+    vec3 finalColor = mix(fillColor, outlineColor, clamp(edge * 1.15, 0.0, 1.0));
     float alpha = (0.175 + cellLevel * 0.009 + cellBorder * 0.009) * centerMask * 0.65;
+    if(centerMask < 0.90 && edge > 0.02) alpha = clamp(edge * 100.0, 0.0, 0.85);
 
     // Intermediate blur buffers operate on premultiplied color.
     gl_FragColor = vec4(finalColor * alpha, alpha);

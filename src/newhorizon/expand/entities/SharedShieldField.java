@@ -72,8 +72,9 @@ public class SharedShieldField {
             Building source = sources.get(i);
             if (!(source.block instanceof QuantumVortexProjector)) continue;
             QuantumVortexProjector.QuantumBuild build = (QuantumVortexProjector.QuantumBuild)source;
-            if (Intersector.isInRegularPolygon(((QuantumVortexProjector)build.block).sides, build.x, build.y,
-                    build.realRadius(), ((QuantumVortexProjector)build.block).shieldRotation, x, y)) return true;
+            QuantumVortexProjector projector = (QuantumVortexProjector)build.block;
+            if (Intersector.isInRegularPolygon(projector.sides, build.x, build.y,
+                    projector.realRadius(build), projector.shieldRotation, x, y)) return true;
         }
         return false;
     }
@@ -105,23 +106,18 @@ public class SharedShieldField {
         // its rate to the aggregate field instead.
         if (broken) {
             float liquidRate = recoveryWithLiquid();
-            float speed = recovery <= 0.001f ? 1f : Math.max(liquidRate / recovery, 1f);
-            float rawDuration = brokenDurationSeconds(currentCapacity);
-            boolean hasLiquid = liquidRate > recovery + 0.001f;
-            // The 20..60 second rule applies to an uncooled field only. Coolant
-            // is allowed to shorten the cooldown below 20s or, for very large
-            // fields, leave it above 60s; partial coolant coverage scales the
-            // all-cooled theoretical duration by its aggregate rate ratio.
-            float duration = hasLiquid ? rawDuration / speed : arc.math.Mathf.clamp(rawDuration, 20f, 60f);
-            // cooldownTimer is accumulated in simulation ticks (Time.delta),
-            // while the design duration above is expressed in seconds.
-            float durationTicks = duration * 60f;
             cooldownTimer += Time.delta;
             if (buildup > 0f) buildup = Math.max(buildup - Time.delta * liquidRate, 0f);
-            if (cooldownTimer >= durationTicks) {
+            if (cooldownTimer >= cooldownDurationTicks()) {
                 broken = false;
                 cooldownTimer = 0f;
                 buildup = 0f;
+                // The field was visually collapsed while broken. Restore its
+                // active scale immediately on the recovery tick; otherwise a
+                // stale zero scale can leave a fully recharged shield hidden
+                // until another topology or warmup transition occurs.
+                radscl = targetWarmup;
+                warmup = targetWarmup;
             }
         } else {
             cooldownTimer = 0f;
@@ -133,6 +129,10 @@ public class SharedShieldField {
             buildup = currentCapacity;
             cooldownTimer = 0f;
         }
+
+        // A healthy field must never remain visually collapsed after a broken
+        // transition or topology rebuild.
+        if (!broken && targetWarmup > 0f && radscl < 0.999f) radscl = targetWarmup;
     }
 
     public float capacity() {
@@ -178,6 +178,27 @@ public class SharedShieldField {
     /** Progress of the current broken cooldown, in simulation ticks. */
     public float cooldownProgress() {
         return cooldownTimer;
+    }
+
+    /** Elapsed cooldown as a normalized value for the building bar. */
+    public float cooldownProgressRatio() {
+        if (!broken) return 0f;
+        float duration = cooldownDurationTicks();
+        return duration <= 0.001f ? 0f : Mathf.clamp(cooldownTimer / duration);
+    }
+
+    /** Current broken duration in simulation ticks, including coolant effects. */
+    private float cooldownDurationTicks() {
+        float recovery = normalRecoveryRate();
+        float liquidRate = recoveryWithLiquid();
+        float speed = recovery <= 0.001f ? 1f : Math.max(liquidRate / recovery, 1f);
+        float rawDuration = brokenDurationSeconds(capacity());
+        boolean hasLiquid = liquidRate > recovery + 0.001f;
+        // Without coolant, enforce the 20..60 second range. Coolant scales the
+        // theoretical duration by aggregate per-projector coverage and may go
+        // outside that range as designed.
+        float duration = hasLiquid ? rawDuration / speed : Mathf.clamp(rawDuration, 20f, 60f);
+        return Math.max(duration * 60f, 1f);
     }
 
     public void setCooldownProgress(float progress) {
@@ -231,6 +252,7 @@ public class SharedShieldField {
             Building other = sources.get(i);
             if (projectorsOverlap(other, source)) return true;
         }
+
         return false;
     }
 

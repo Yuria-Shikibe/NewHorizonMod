@@ -52,16 +52,32 @@ public class QuantumVortexProjector extends ForceProjector {
     }
 
     public float realRadius(QuantumBuild build) {
-        return radius * build.radscl;
+        return radius * visualScale(build);
     }
 
     public float displayRadius(Building build) {
         if (!(build instanceof QuantumBuild quantum)) return 0f;
-        return radius * quantum.radscl;
+        return radius * visualScale(quantum);
+    }
+
+    /** The shared field owns the visible shield scale; inherited ForceBuild
+     * state is retained only for the base class update contract. */
+    private float visualScale(QuantumBuild build) {
+        if (build.field == null) return Math.max(build.radscl, 0f);
+        if (build.field.broken) return 0f;
+        return Mathf.clamp(Math.max(build.field.radscl, build.field.warmup));
     }
 
     public class QuantumBuild extends ForceBuild {
         public transient SharedShieldField field;
+
+        @Override
+        public float realRadius() {
+            // ForceBuild exposes this value to range queries and effects. Keep
+            // those callers on the same shared-field scale as rendering and
+            // bullet interception.
+            return QuantumVortexProjector.this.realRadius(this);
+        }
 
         @Override
         public void created() {
@@ -85,6 +101,22 @@ public class QuantumVortexProjector extends ForceProjector {
             // explicitly update the coolant consumer while recovering.
             if (field != null && (field.broken || field.buildup > 0f) && coolantConsumer != null) {
                 coolantConsumer.update(this);
+            }
+
+            // The shared field is authoritative. Keep only its visual warmup
+            // mirrored to the inherited projector; copying shared buildup into
+            // ForceBuild would make a multi-projector field look broken as soon
+            // as it exceeded one projector's 5000-point private capacity.
+            if (field != null) {
+                float scale = visualScale(this);
+                radscl = scale;
+                warmup = field.broken ? 0f : field.warmup;
+
+                // Do not let ForceBuild's private 5000-point shield trigger a
+                // second break or keep the inherited scale collapsed. Shared
+                // ShieldField is the sole authority for damage and recovery.
+                buildup = 0f;
+                broken = false;
             }
 
             // ForceBuild.updateTile() dispatches to this class's deflectBullets()
@@ -214,5 +246,10 @@ public class QuantumVortexProjector extends ForceProjector {
                     return capacity <= 0f ? 0f : Mathf.clamp((capacity - entity.field.buildup) / capacity);
                 }
         ).blink(Color.white));
+        addBar("sharedShieldCooldown", (QuantumBuild entity) -> new Bar(
+                () -> Core.bundle.get("stat.cooldowntime"),
+                () -> entity.field != null && entity.field.broken ? Pal.redderDust : Pal.accent,
+                () -> entity.field == null ? 0f : entity.field.cooldownProgressRatio()
+        ));
     }
 }
