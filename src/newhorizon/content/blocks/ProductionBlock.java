@@ -72,9 +72,9 @@ public class ProductionBlock {
             rotate = false;
 
             drawer = new DrawMulti(
-                    new DrawRegion("-base"),
+                    new DrawBaseRegion("-2x2"),
                     new DrawRotator(),
-                    new DrawRegion("-top")
+                    new DrawRegion()
             );
 
             craftEffect = NHFx.hugeSmokeGray;
@@ -208,7 +208,7 @@ public class ProductionBlock {
                         flameRad /= 1.585f;
                         particleRad /= 1.5f;
                     }},
-                    new DrawRegion("-top")
+                    new DrawRegion()
             );
 
             craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 12, 2);
