@@ -175,7 +175,7 @@ public class DefaultSpecialEvent {
         for (SpecialEvent special : events.values()) {
             boolean auto = special.looping || special.triggers.any();
             if (!auto) continue;
-            if (!special.difficultyMet()) continue;
+            if (!special.available()) continue;
             if (!special.triggersMet()) continue;
 
             if (special.looping) {
@@ -242,7 +242,7 @@ public class DefaultSpecialEvent {
     }
 
     public static void runAt(SpecialEvent special, float worldX, float worldY, int syncSeed) {
-        if (special == null || !special.difficultyMet()) return;
+        if (special == null || !special.available()) return;
         special.runEffects(special.resolveTeam(), worldX, worldY, syncSeed);
     }
 
@@ -291,6 +291,7 @@ public class DefaultSpecialEvent {
 
         register(200, new SpecialEvent.Builder()
                 .enemy()
+                .serverOnly()
                 .alert(200f)
                 .requireAll()
                 .trigger(

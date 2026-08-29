@@ -305,7 +305,7 @@ public class EventInterventionAction extends Action {
 
         SpecialEvent special = DefaultSpecialEvent.get(eventId);
         if (special != null) {
-            if (!special.difficultyMet()) return;
+            if (!special.available()) return;
             special.runEffects(team, targetX, targetY, syncSeed, units);
             return;
         }
@@ -315,7 +315,7 @@ public class EventInterventionAction extends Action {
 
     private boolean specialEventAllowed() {
         SpecialEvent special = DefaultSpecialEvent.get(eventId);
-        return special == null || special.difficultyMet();
+        return presentationOnly || special == null || special.available();
     }
 
     public static void spawnJumpIn(Team team, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay,

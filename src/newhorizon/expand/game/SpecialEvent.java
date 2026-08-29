@@ -41,6 +41,7 @@ public class SpecialEvent {
     public boolean requireAll = true;
     public boolean disposable = true;
     public boolean looping;
+    public boolean serverOnly;
     public float loopInterval;
     public DifficultyRequirement difficultyRequirement = difficulty -> true;
     public final Seq<Trigger> triggers = new Seq<>();
@@ -79,6 +80,10 @@ public class SpecialEvent {
                 || difficultyRequirement.allows(NHDifficulty.current());
     }
 
+    public boolean available() {
+        return difficultyMet() && (!serverOnly || (net.server() && net.active()));
+    }
+
     public Seq<EventInterventionAction.UnitEntry> toUnitEntries() {
         Seq<EventInterventionAction.UnitEntry> seq = new Seq<>();
         for (UnitSpec spec : units) {
@@ -94,7 +99,7 @@ public class SpecialEvent {
     }
 
     public void runEffects(Team team, float worldX, float worldY, int syncSeed, Seq<EventInterventionAction.UnitEntry> countOverrides) {
-        if (!RaidLogic.isLogicSide()) return;
+        if (!RaidLogic.isLogicSide() || !available()) return;
         Team spawnTeam = team != null ? team : resolveTeam();
 
         NHFx.spawn.at(worldX, worldY, 12f, spawnTeam.color);
@@ -279,6 +284,12 @@ public class SpecialEvent {
 
         public Builder enemy() {
             event.teamProv = () -> state.rules.waveTeam;
+            return this;
+        }
+
+        /** Restricts this event to an active multiplayer server, including a hosted game. */
+        public Builder serverOnly() {
+            event.serverOnly = true;
             return this;
         }
 
