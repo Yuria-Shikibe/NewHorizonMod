@@ -46,8 +46,8 @@ public class CraftingBlock {
     public static Block
             silicarCrusher, recrystallizer, chemicalDissociationChamber,
             stampingFacility, heavyStampingFacility, processorManuFactory, processorPrinter, subCooler, hyperCooler,
-            rectificatior, phaseRectificatior, plasticator, photocatalystFactory, metalOxhydrigenRestructuror, crystallizer, particleActivator, plasmaActivator,
-            crucibleFoundry, castingFoundry, xenSeparator, multipleRollingMill, mixedRollingMill, heavyRollingMill, def, abc,
+            rectificatior, phaseRectificatior, plasticator, photocatalystFactory, metalOxhydrigenRestructuror, crystallizer, eutecticPurifierGraphite, eutecticPurifierSilicon, particleActivator, plasmaActivator,
+            crucibleFoundry, castingFoundry, xenSeparator, multipleRollingMill, mixedRollingMill, heavyRollingMill,
             thoriumTransmuter, fusionCoreEnergyFactory,
             zetaFactory, fabricRestructuror, fabricSynthesizer, alloySmelter, surgeSynthesizer, irdryonFluidFactory, irdryonPhaseAscender,
             processorEtchingFacility, processorCompactor,
@@ -766,12 +766,12 @@ public class CraftingBlock {
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
         }};
 
-        def = new MultiBlockCrafter("这么强") {{
+        eutecticPurifierGraphite = new MultiBlockCrafter("eutectic-purifier-graphite") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.juniorProcessor, 75,
-                    NHItems.plastanium, 60,
+                    NHItems.graphite, 120,
                     NHItems.metalOxhydrigen, 50,
-                    NHItems.tungsten, 80
+                    NHItems.tungsten, 50
             ));
             addLink(p(2, -1), p(2, 0), p(2, 1),
                     p(-2, -1), p(-2, 0), p(-2, 1)
@@ -779,7 +779,7 @@ public class CraftingBlock {
 
             size = 3;
             health = 900;
-            armor = 6;
+            armor = 4;
             itemCapacity = 30;
             craftTime = 60f;
 
@@ -789,7 +789,7 @@ public class CraftingBlock {
             outputItem = new ItemStack(NHItems.graphite, 5);
 
             drawer = new DrawMulti(
-                    new DrawBaseRegion("-这么强"),
+                    new DrawBaseRegion("-eutectic-purifier-graphite"),
                     new DrawRegionFlip() {{
                         suffix = "-rot";
                     }}
@@ -797,12 +797,12 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        abc = new MultiBlockCrafter("何意味") {{
+        eutecticPurifierSilicon = new MultiBlockCrafter("eutectic-purifier-silicon") {{
             requirements(Category.crafting, with(
-                    NHItems.plastanium, 30,
-                    NHItems.presstanium, 20,
-                    NHItems.juniorProcessor, 60,
-                    NHItems.hardLight, 80
+                    NHItems.juniorProcessor, 75,
+                    NHItems.silicon, 120,
+                    NHItems.plastanium, 50,
+                    NHItems.tungsten, 50
             ));
             addLink(p(2, -1), p(2, 0), p(2, 1), p(-1, 2), p(0, 2), p(1, 2));
 
@@ -810,7 +810,7 @@ public class CraftingBlock {
             hasLiquids = true;
             canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-            health = 600;
+            health = 900;
             armor = 4;
             itemCapacity = 30;
             craftTime = 120f;
@@ -821,7 +821,7 @@ public class CraftingBlock {
             outputItems = with(NHItems.silicon, 10);
 
             drawer = new DrawMulti(
-                    new DrawBaseRegion("-何意味") {{
+                    new DrawBaseRegion("-eutectic-purifier-silicon") {{
                         x = y = 4;
                     }},
                     new DrawRegionRotated("-rot") {{
