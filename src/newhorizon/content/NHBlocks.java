@@ -708,7 +708,7 @@ public class NHBlocks {
             shootWarmupSpeed /= 2f;
             cooldownTime = 65f;
 
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.presstanium, 250, NHItems.juniorProcessor, 120, Items.carbide, 90, NHItems.zeta, 300));
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.presstanium, 250, NHItems.juniorProcessor, 120, Items.carbide, 90, NHItems.multipleSteel, 300));
             shootY -= 6f;
             shootType = new LightningLinkerBulletType(1.5f, 40) {{
                 lifetime = 110;

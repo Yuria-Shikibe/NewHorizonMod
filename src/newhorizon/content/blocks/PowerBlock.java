@@ -452,9 +452,9 @@ public class PowerBlock {
 
         neutralizationGenerator = new MultiBlockConsumeGenerator("neutralization-generator") {{
             requirements(Category.power, ItemStack.with(
-                    NHItems.titanium, 30,
-                    NHItems.silicon, 45,
-                    NHItems.tungsten, 30
+                    NHItems.titanium, 20,
+                    NHItems.silicon, 50,
+                    NHItems.graphite, 20
             ));
             addLink(p(2, 0), p(2, 1), p(-1, 0), p(-1, 1), p(0, -1), p(1, -1));
 
@@ -462,13 +462,13 @@ public class PowerBlock {
             rotations = new int[]{0, 3, 2, 1, 2, 1, 0, 3};
 
             size = 2;
-            scaledHealth = 100f;
+            health = 450;
             hasItems = true;
             hasLiquids = true;
 
-            consumeLiquids(LiquidStack.with(NHLiquids.ammonia, 6 / 60f));
+            consumeLiquids(LiquidStack.with(NHLiquids.ammonia, 12 / 60f));
             outputLiquid = new LiquidStack(NHLiquids.water, 12f / 60f);
-            powerProduction = 10f;
+            powerProduction = 6f;
 
             drawer = new DrawMulti(
                     new DrawRotation() {{
