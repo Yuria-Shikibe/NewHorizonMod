@@ -42,11 +42,16 @@ public class NHRegister {
         Events.run(EventType.Trigger.draw, () -> {
             NHVars.renderer.draw();
             NHGroups.draw();
+            if (!Vars.headless) NHVars.vortexRenderer.draw();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             NHGroups.worldInit();
-            if (!Vars.headless) NHVars.renderer.statusRenderer.clear();
+            if (!Vars.headless) {
+                NHVars.renderer.statusRenderer.clear();
+                NHGroups.worldReset();
+                newhorizon.expand.entities.VortexEvent.clear();
+            }
         });
     }
 }

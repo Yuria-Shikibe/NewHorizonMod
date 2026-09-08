@@ -3,7 +3,6 @@ package newhorizon.expand.game;
 import arc.math.Mathf;
 import arc.util.Strings;
 import mindustry.Vars;
-import newhorizon.NHSetting;
 
 public final class InterventionState {
     public static final String TAG = "nh-intervention-scale";
@@ -34,8 +33,7 @@ public final class InterventionState {
     }
 
     private static float defaultScale() {
-        if (Vars.headless) return 1f;
-        return NHSetting.getBool(NHSetting.EVENT_INTERVENTION) ? 1f : 0f;
+        return NHDefaultEventSettings.enabledForCurrentGame() ? 1f : 0f;
     }
 
     public static float scale() {

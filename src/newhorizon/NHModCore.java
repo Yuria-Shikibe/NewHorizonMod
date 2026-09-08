@@ -23,6 +23,7 @@ public class NHModCore implements ApplicationListener {
             NHGroups.update();
             if (!Vars.headless) {
                 renderer.statusRenderer.update();
+                NHVars.vortexRenderer.update();
                 NHSetting.update();
             }
         }
