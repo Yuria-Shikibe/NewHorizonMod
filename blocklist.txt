@@ -471,6 +471,7 @@ new-horizon-quantum-conductor 1 1 1 0
 new-horizon-quantum-field 0 0 1 11370475
 new-horizon-quantum-field-deep 0 0 1 9526223
 new-horizon-quantum-field-disturbing 0 0 1 11370475
+new-horizon-quantum-field-luminous 0 0 1 11370475
 new-horizon-rail-gun 1 1 4 0
 new-horizon-rapid-unloader 1 1 1 0
 new-horizon-reconstruct-plastanium-factory 1 1 2 0
