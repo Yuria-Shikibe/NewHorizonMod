@@ -332,6 +332,9 @@ block.new-horizon-ore-zeta-dense.description =
 block.new-horizon-ore-silicar-dense.name = 
 block.new-horizon-ore-silicar-dense.description = 
 #block.new-horizon-ore-silicar-dense.detail = 
+block.new-horizon-ore-cluster-silicar.name = 
+block.new-horizon-ore-cluster-silicar.description = 
+#block.new-horizon-ore-cluster-silicar.detail = 
 block.new-horizon-ore-cluster-titanium.name = 
 block.new-horizon-ore-cluster-titanium.description = 
 #block.new-horizon-ore-cluster-titanium.detail = 
@@ -1183,10 +1186,13 @@ planet.new-horizon-midantha.description =
 
 #[[REGION SECTOR]]
 
-sector.new-horizon-primary-base.name =
-sector.new-horizon-primary-base.description =
 
-
+sector.new-horizon-primary-base.name = 
+sector.new-horizon-primary-base.description = 
+#sector.new-horizon-primary-base.detail = 
+sector.new-horizon-landing-point.name = 
+sector.new-horizon-landing-point.description = 
+#sector.new-horizon-landing-point.detail = 
 
 
 #[[REGION WEATHER]]

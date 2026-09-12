@@ -364,6 +364,7 @@ new-horizon-oil-refiner 1 1 2 0
 new-horizon-omni-unloader 1 1 1 0
 new-horizon-optical-medium-drill 1 1 3 0
 new-horizon-ore-beryllium-dense 0 0 1 3837796
+new-horizon-ore-cluster-silicar 0 1 1 12373731
 new-horizon-ore-cluster-titanium 0 1 1 9543655
 new-horizon-ore-cluster-zeta 0 1 1 16772835
 new-horizon-ore-coal-dense 0 0 1 2565927

@@ -14,7 +14,8 @@ public class TriggerObjective extends MapObjectives.MapObjective {
     public TriggerObjective(String timer) {
         this.timer = timer;
         RaidIndicator raidIndicator = new RaidIndicator(timer);
-        raidIndicator.minimap = true;
+        raidIndicator.world = -1;
+        raidIndicator.minimap = 1;
 
         markers = new MapObjectives.ObjectiveMarker[]{raidIndicator};
     }

@@ -497,6 +497,12 @@
 	"size": 1,
 	"color": 1585159679
 },
+"new-horizon-ore-cluster-silicar": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1127291905
+},
 "new-horizon-ore-cluster-titanium": {
 	"synthetic": false,
 	"solid": true,

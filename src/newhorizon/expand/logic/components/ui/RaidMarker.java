@@ -90,7 +90,7 @@ public class RaidMarker extends HudMarker {
                 || (kind != Kind.RAID && kind != Kind.INTERVENTION && kind != Kind.SPECIAL)) return;
 
         if (syncSeed != 0) {
-            for (var marker : state.markers) {
+            for (var marker : state.markers.mapMarkers) {
                 if (!(marker instanceof RaidIndicator existing) || existing.eventSeed != syncSeed) continue;
                 minimapMarker = existing;
                 minimapId = existing.markerId;
@@ -111,6 +111,8 @@ public class RaidMarker extends HudMarker {
                 .setEventSeed(syncSeed)
                 .setMarkerId(minimapId);
         configureMinimapMarker(minimapMarker);
+        minimapMarker.world = -1;
+        minimapMarker.minimap = 1;
         state.markers.add(minimapId, minimapMarker);
     }
 
@@ -122,8 +124,6 @@ public class RaidMarker extends HudMarker {
                 .setProgress(progress())
                 .setIconName(minimapIconName)
                 .setEventSeed(syncSeed);
-        marker.world = false;
-        marker.minimap = true;
     }
 
     private void removeMinimapMarker() {

@@ -184,17 +184,20 @@ public class UltFire extends Fire {
     @Override
     public void remove() {
         if (added) {
-            Groups.all.remove(this);
-            Groups.sync.remove(this);
-            Groups.draw.remove(this);
-            Groups.fire.remove(this);
+            Groups.all.removeIndex(this, index__all);
+            index__all = -1;
+            Groups.sync.removeIndex(this, index__sync);
+            index__sync = -1;
+            Groups.draw.removeIndex(this, index__draw);
+            index__draw = -1;
+            added = false;
+
             removeEffect();
 
             if (Vars.net.client()) {
                 Vars.netClient.addRemovedEntity(id());
             }
 
-            added = false;
             Groups.queueFree(this);
             Fires.remove(tile);
         }

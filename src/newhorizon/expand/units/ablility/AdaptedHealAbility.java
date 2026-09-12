@@ -36,24 +36,24 @@ public class AdaptedHealAbility extends RepairFieldAbility {
     }
 
     public void update(Unit unit) {
-        timer += Time.delta;
+        healTimer += Time.delta;
 
-        if (timer >= reload) {
-            wasHealed = false;
+        if (healTimer >= reload) {
+            hasHealed = false;
 
             Units.nearby(unit.team, unit.x, unit.y, range, other -> {
                 if (other.damaged()) {
                     healEffect.at(other.x, other.y, 0, applyColor, parentizeEffects ? other : null);
-                    wasHealed = true;
+                    hasHealed = true;
                 }
                 other.heal(amount);
             });
 
-            if (wasHealed) {
+            if (hasHealed) {
                 activeEffect.at(unit.x, unit.y, range, applyColor);
             }
 
-            timer = 0f;
+            healTimer = 0f;
         }
 
         if (selfHealReloadTime < 0) return;

@@ -464,9 +464,6 @@ public class TableFunc {
                     }).growX().height(LEN).row();
                     tin.pane(con -> {
                         con.button("Remove Units", Styles.cleart, Groups.unit::clear).grow();
-                        con.button("Remove Fires", Styles.cleart, () -> {
-                            for (int i = 0; i < 20; i++) Time.run(i * Time.delta * 3, Groups.fire::clear);
-                        }).grow();
                         con.button("Cathc Fires", Styles.cleart, () -> {
                             Geometry.circle(World.toTile(point.x), World.toTile(point.y), 10, ((x1, y1) -> {
                                 Tile tile = world.tile(x1, y1);
