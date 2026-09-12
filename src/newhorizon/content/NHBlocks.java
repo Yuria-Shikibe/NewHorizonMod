@@ -22,6 +22,7 @@ import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
@@ -65,6 +66,7 @@ import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
+import newhorizon.expand.block.defence.LaserWallBlock;
 import newhorizon.expand.block.defence.FireExtinguisher;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShockwaveGenerator;
@@ -111,6 +113,7 @@ public class NHBlocks {
     public static Block quantumField;
     public static Block quantumFieldDeep;
     public static Block quantumFieldDisturbing;
+    public static Block quantumFieldLuminous;
     public static Block metalWall;
     public static Block metalWallQuantum;
     public static Block metalTower;
@@ -119,6 +122,7 @@ public class NHBlocks {
     public static Block metalScarp;
     public static Block metalVent;
     public static Block metalGroundHeat;
+    public static Block laserWall, ancientLaserWall;
 
     private static void loadEnv() {
 
@@ -254,6 +258,27 @@ public class NHBlocks {
                 fullIcon = uiIcon = region = Core.atlas.find(NewHorizon.name("quantum-field-disturbing-icon"));
             }
         };
+
+        quantumFieldLuminous = new Floor("quantum-field-luminous", 1) {{
+            status = NHStatusEffects.quantization;
+            statusDuration = 120f;
+            speedMultiplier = 1.2f;
+            liquidDrop = NHLiquids.quantumLiquid;
+            liquidMultiplier = 0.3f;
+            isLiquid = true;
+            cacheLayer = NHContent.luminousQuantumLayer;
+            attributes.set(Attribute.light, 4f);
+            emitLight = true;
+            lightRadius = 48f;
+            lightColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.35f);
+            blendGroup = this;
+
+            attributes.set(NHContent.quantum, 0.5f);
+            attributes.set(Attribute.heat, 0.2f);
+            attributes.set(Attribute.water, -1f);
+            attributes.set(Attribute.oil, -1f);
+            attributes.set(Attribute.spores, -1f);
+        }};
 
         metalTower = new StaticWall("metal-tower") {{
             variants = 3;
@@ -705,7 +730,7 @@ public class NHBlocks {
             shootWarmupSpeed /= 2f;
             cooldownTime = 65f;
 
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.presstanium, 250, NHItems.juniorProcessor, 120, Items.carbide, 90, NHItems.zeta, 300));
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.presstanium, 250, NHItems.juniorProcessor, 120, Items.carbide, 90, NHItems.multipleSteel, 300));
             shootY -= 6f;
             shootType = new LightningLinkerBulletType(1.5f, 40) {{
                 lifetime = 110;
@@ -953,7 +978,7 @@ public class NHBlocks {
             heatColor = NHColor.darkEnrColor;
             unitSort = NHUnitSorts.regionalHPMaximum_All;
 
-            coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 1));
+            coolant = consume(new ConsumeLiquid(NHLiquids.antiMatter, 1));
             liquidCapacity = 120;
             coolantMultiplier = 2.5f;
 
@@ -1712,7 +1737,7 @@ public class NHBlocks {
             unitSort = UnitSorts.strongest;
 
             warmupMaintainTime = 50f;
-            coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 20f / 60f));
+            coolant = consume(new ConsumeLiquid(NHLiquids.antiMatter, 20f / 60f));
             coolantMultiplier = 2.5f;
 
             moveWhileCharging = false;
@@ -1857,7 +1882,51 @@ public class NHBlocks {
     }
 
     private static void loadPowers() {
+        ancientLaserWall = new LaserWallBlock("ancient-laser-wall") {{
+            size = 2;
+            consumePowerCond(80f, LaserWallBuild::canActivate);
+            health = 8000;
+            range = 800;
+            armor = 20f;
+            crushDamageMultiplier = 0.025f;
 
+            generateType = new LaserWallBlock.Shooter(300) {{
+                Color color = NHColor.ancient;
+                colors = new Color[]{
+                        color.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f),
+                        color.cpy().mul(1f, 1f, 1f, 0.6f),
+                        color,
+                        Color.white
+                };
+                hitColor = lightColor = lightningColor = color;
+                width = 4.5f;
+                oscMag = 0.5f;
+                status = NHStatusEffects.entangled;
+                statusDuration = 60f;
+                lightningDamage = 200;
+            }
+
+                @Override
+                public void hit(Bullet bullet, float x, float y) {
+                    super.hit(bullet, x, y);
+
+                    for (int i = 0; i < 2; i++) {
+                        Lightning.create(bullet, lightningColor, lightningDamage < 0 ? damage : lightningDamage,
+                                x, y, Mathf.range(180), lightningLength + Mathf.random(lightningLengthRand));
+                    }
+                }
+            };
+
+            requirements(Category.defense, with(NHItems.seniorProcessor, 120, NHItems.ancimembrane, 200, NHItems.zeta, 800));
+        }};
+
+        laserWall = new LaserWallBlock("laser-wall") {{
+            size = 3;
+            consumePowerCond(30f, LaserWallBuild::canActivate);
+            health = 4000;
+            armor = 10f;
+            requirements(Category.defense, with(NHItems.juniorProcessor, 120,NHItems.multipleSteel, 80,Items.graphite, 80,NHItems.thorium,80));
+        }};
     }
 
     public static void load() {
@@ -2168,5 +2237,4 @@ public class NHBlocks {
         PayloadBlock.load();
     }
 }
-
 

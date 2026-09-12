@@ -6,8 +6,8 @@ import arc.graphics.Mesh;
 import arc.graphics.VertexAttribute;
 import arc.math.Mathf;
 import arc.math.geom.Vec3;
-import arc.util.Tmp;
 import arc.struct.Seq;
+import arc.util.Tmp;
 
 import java.nio.FloatBuffer;
 
@@ -24,7 +24,8 @@ public class CylinderRingMeshBuilder {
     }
 
     public static Mesh build(float radius, float height, int segments, Color color, Color color2, float colorPhase, boolean energyRing) {
-        int vertices = segments * 18;
+        segments = Math.max(3, segments);
+        int vertices = segments * 24;
 
         Seq<VertexAttribute> attributes = Seq.with(
                 VertexAttribute.position3,
@@ -43,97 +44,71 @@ public class CylinderRingMeshBuilder {
         float[] floats = new float[stride];
 
         float half = height / 2f;
-        float panelCount = energyRing ? 48f : 36f;
-        float gap = energyRing ? 0.028f : 0.045f;
+        float innerR = radius * (energyRing ? 0.975f : 0.962f);
 
-        for (int i = 0; i < segments; i++) {
-            float a1 = (float) i / segments * Mathf.PI2;
-            float a2 = (float) (i + 1) / segments * Mathf.PI2;
+        Vec3 p1 = new Vec3(), p2 = new Vec3(), p3 = new Vec3(), p4 = new Vec3();
+        Vec3 p5 = new Vec3(), p6 = new Vec3(), p7 = new Vec3(), p8 = new Vec3();
+        Vec3 normalOuter = new Vec3(), normalInner = new Vec3();
+        Vec3 normalUp = new Vec3(0f, 1f, 0f), normalDown = new Vec3(0f, -1f, 0f);
 
-            Vec3 p1 = new Vec3(Mathf.cos(a1) * radius, half, Mathf.sin(a1) * radius);
-            Vec3 p2 = new Vec3(Mathf.cos(a2) * radius, half, Mathf.sin(a2) * radius);
-            Vec3 p3 = new Vec3(Mathf.cos(a2) * radius, -half, Mathf.sin(a2) * radius);
-            Vec3 p4 = new Vec3(Mathf.cos(a1) * radius, -half, Mathf.sin(a1) * radius);
+        for (int segment = 0; segment < segments; segment++) {
+            float a1 = (float) segment / segments * Mathf.PI2;
+            float a2 = (float) (segment + 1) / segments * Mathf.PI2;
 
-            float innerR = radius * (energyRing ? 0.975f : 0.962f);
+            setPoint(p1, a1, radius, half);
+            setPoint(p2, a2, radius, half);
+            setPoint(p3, a2, radius, -half);
+            setPoint(p4, a1, radius, -half);
+            setPoint(p5, a1, innerR, half);
+            setPoint(p6, a2, innerR, half);
+            setPoint(p7, a2, innerR, -half);
+            setPoint(p8, a1, innerR, -half);
 
-            Vec3 p5 = new Vec3(Mathf.cos(a1) * innerR, half, Mathf.sin(a1) * innerR);
-            Vec3 p6 = new Vec3(Mathf.cos(a2) * innerR, half, Mathf.sin(a2) * innerR);
-            Vec3 p7 = new Vec3(Mathf.cos(a2) * innerR, -half, Mathf.sin(a2) * innerR);
-            Vec3 p8 = new Vec3(Mathf.cos(a1) * innerR, -half, Mathf.sin(a1) * innerR);
+            float col1 = vertexColor(a1, color, color2, colorPhase, energyRing);
+            float col2 = vertexColor(a2, color, color2, colorPhase, energyRing);
 
-            float col1o = vertexColor(a1, 1f, color, color2, colorPhase, panelCount, gap, energyRing);
-            float col2o = vertexColor(a2, 1f, color, color2, colorPhase, panelCount, gap, energyRing);
-            float col3o = vertexColor(a2, -1f, color, color2, colorPhase, panelCount, gap, energyRing);
-            float col4o = vertexColor(a1, -1f, color, color2, colorPhase, panelCount, gap, energyRing);
+            float middle = (a1 + a2) * 0.5f;
+            normalOuter.set(Mathf.cos(middle), 0f, Mathf.sin(middle));
+            normalInner.set(normalOuter).scl(-1f);
 
-            float col1i = vertexColor(a1, 1f, color, color2, colorPhase, panelCount, gap, energyRing);
-            float col2i = vertexColor(a2, 1f, color, color2, colorPhase, panelCount, gap, energyRing);
-            float col3i = vertexColor(a2, -1f, color, color2, colorPhase, panelCount, gap, energyRing);
-            float col4i = vertexColor(a1, -1f, color, color2, colorPhase, panelCount, gap, energyRing);
+            // Outer and inner walls make the ring visible from either side with back-face culling enabled.
+            triangle(buf, floats, p1, p2, p3, normalOuter, col1, col2, col2);
+            triangle(buf, floats, p1, p3, p4, normalOuter, col1, col2, col1);
+            triangle(buf, floats, p5, p8, p7, normalInner, col1, col1, col2);
+            triangle(buf, floats, p5, p7, p6, normalInner, col1, col2, col2);
 
-            Vec3 normalOuter = new Vec3(p1.x, 0, p1.z).nor();
-
-            vert(buf, floats, p1, normalOuter, col1o);
-            vert(buf, floats, p2, normalOuter, col2o);
-            vert(buf, floats, p3, normalOuter, col3o);
-
-            vert(buf, floats, p1, normalOuter, col1o);
-            vert(buf, floats, p3, normalOuter, col3o);
-            vert(buf, floats, p4, normalOuter, col4o);
-
-            Vec3 normalUp = new Vec3(0, -1, 0);
-
-            vert(buf, floats, p1, normalUp, col1o);
-            vert(buf, floats, p2, normalUp, col2o);
-            vert(buf, floats, p6, normalUp, col2i);
-            vert(buf, floats, p1, normalUp, col1o);
-            vert(buf, floats, p6, normalUp, col2i);
-            vert(buf, floats, p5, normalUp, col1i);
-
-            Vec3 normalDown = new Vec3(0, 1, 0);
-
-            vert(buf, floats, p8, normalDown, col4i);
-            vert(buf, floats, p7, normalDown, col3i);
-            vert(buf, floats, p3, normalDown, col3o);
-            vert(buf, floats, p8, normalDown, col4i);
-            vert(buf, floats, p3, normalDown, col3o);
-            vert(buf, floats, p4, normalDown, col4o);
+            // Top and bottom surfaces use outward-facing winding and normals.
+            triangle(buf, floats, p1, p6, p2, normalUp, col1, col2, col2);
+            triangle(buf, floats, p1, p5, p6, normalUp, col1, col1, col2);
+            triangle(buf, floats, p8, p3, p7, normalDown, col1, col2, col2);
+            triangle(buf, floats, p8, p4, p3, normalDown, col1, col1, col2);
         }
 
         mesh.getVerticesBuffer().limit(mesh.getVerticesBuffer().position());
         return mesh;
     }
 
-    private static float vertexColor(float angle, float yNorm, Color color, Color color2, float colorPhase, float panelCount, float gap, boolean energyRing) {
-        float panelT = angle / Mathf.PI2 * panelCount;
-        float panelFrac = panelT - (int) panelT;
+    private static void setPoint(Vec3 point, float angle, float radius, float y) {
+        point.set(Mathf.cos(angle) * radius, y, Mathf.sin(angle) * radius);
+    }
 
-        if (panelFrac < gap || panelFrac > 1f - gap) {
-            Tmp.c1.set(color).a(0f);
-            return Tmp.c1.toFloatBits();
-        }
-
-        float inner = (panelFrac - gap) / (1f - 2f * gap);
-        float edgeBright = 1f - Math.abs(inner - 0.5f) * 2f;
-        edgeBright = Mathf.pow(edgeBright, energyRing ? 1.8f : 3.5f);
-
+    private static float vertexColor(float angle, Color color, Color color2, float colorPhase, boolean energyRing) {
         float blend = 0.5f + 0.5f * Mathf.sin(angle * 2f + colorPhase);
-        float stripe = 0.9f + 0.1f * Mathf.sin(angle * panelCount * 5f + colorPhase * 2.5f);
+        float stripe = 0.94f + 0.06f * Mathf.sin(angle * 8f + colorPhase * 2.5f);
 
-        Tmp.c1.set(color).lerp(color2, blend * 0.4f + edgeBright * 0.6f).mul(stripe);
+        Tmp.c1.set(color).lerp(color2, blend).mul(stripe);
 
         if (energyRing) {
-            float rim = Mathf.pow(Math.abs(yNorm), 0.4f);
-            Tmp.c1.a(Tmp.c1.a * (0.18f + 0.82f * rim) * (0.55f + 0.45f * edgeBright));
-        } else {
-            int panelIdx = (int) panelT;
-            Tmp.c1.mul(panelIdx % 2 == 0 ? 1f : 0.78f);
-            float rim = Mathf.pow(Math.abs(yNorm), 1.6f);
-            Tmp.c1.lerp(color2, rim * 0.25f);
+            Tmp.c1.a(Tmp.c1.a * 0.82f);
         }
 
         return Tmp.c1.toFloatBits();
+    }
+
+    private static void triangle(FloatBuffer buf, float[] floats, Vec3 a, Vec3 b, Vec3 c, Vec3 normal, float colorA, float colorB, float colorC) {
+        vert(buf, floats, a, normal, colorA);
+        vert(buf, floats, b, normal, colorB);
+        vert(buf, floats, c, normal, colorC);
     }
 
     private static void vert(FloatBuffer buf, float[] floats, Vec3 p, Vec3 normal, float color) {

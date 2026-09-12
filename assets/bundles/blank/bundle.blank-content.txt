@@ -332,10 +332,10 @@ block.new-horizon-ore-zeta-dense.description =
 block.new-horizon-ore-silicar-dense.name = 
 block.new-horizon-ore-silicar-dense.description = 
 #block.new-horizon-ore-silicar-dense.detail = 
-block.new-horizon-ore-cluster-silicar.name = 
-block.new-horizon-ore-cluster-silicar.description = 
-#block.new-horizon-ore-cluster-silicar.detail = 
-block.new-horizon-ore-cluster-titanium.name = 
+block.new-horizon-ore-cluster-silicar.name =
+block.new-horizon-ore-cluster-silicar.description =
+#block.new-horizon-ore-cluster-silicar.detail =
+block.new-horizon-ore-cluster-titanium.name =
 block.new-horizon-ore-cluster-titanium.description = 
 #block.new-horizon-ore-cluster-titanium.detail = 
 block.new-horizon-ore-cluster-zeta.name = 
@@ -741,7 +741,13 @@ block.new-horizon-shaped-wall.description =
 block.new-horizon-silicar-crusher.name = 
 block.new-horizon-silicar-crusher.description = 
 #block.new-horizon-silicar-crusher.detail = 
-block.new-horizon-stamping-facility.name = 
+block.new-horizon-recrystallizer.name =
+block.new-horizon-recrystallizer.description =
+#block.new-horizon-recrystallizer.detail =
+block.new-horizon-chemical-dissociation-chamber.name =
+block.new-horizon-chemical-dissociation-chamber.description =
+#block.new-horizon-chemical-dissociation-chamber.detail =
+block.new-horizon-stamping-facility.name =
 block.new-horizon-stamping-facility.description = 
 #block.new-horizon-stamping-facility.detail = 
 block.new-horizon-heavy-stamping-facility.name = 
@@ -1186,13 +1192,13 @@ planet.new-horizon-midantha.description =
 
 #[[REGION SECTOR]]
 
+sector.new-horizon-primary-base.name =
+sector.new-horizon-primary-base.description =
+sector.new-horizon-landing-point.name =
+sector.new-horizon-landing-point.description =
+sector.new-horizon-relic-access.name =
+sector.new-horizon-relic-access.description =
 
-sector.new-horizon-primary-base.name = 
-sector.new-horizon-primary-base.description = 
-#sector.new-horizon-primary-base.detail = 
-sector.new-horizon-landing-point.name = 
-sector.new-horizon-landing-point.description = 
-#sector.new-horizon-landing-point.detail = 
 
 
 #[[REGION WEATHER]]

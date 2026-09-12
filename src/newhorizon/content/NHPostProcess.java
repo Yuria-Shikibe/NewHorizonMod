@@ -348,7 +348,7 @@ public class NHPostProcess {
         for (Block block : content.blocks()) {
             if (block.name.startsWith("new-horizon")) {
                 block.shownPlanets.clear();
-                block.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha);
+                block.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
             }
         }
 
@@ -363,10 +363,16 @@ public class NHPostProcess {
 
         Seq<Liquid> liquids = Seq.with(NHLiquids.quantumLiquid, NHLiquids.xenFluid, NHLiquids.zetaFluidPositive, NHLiquids.zetaFluidNegative, NHLiquids.irdryonFluid);
 
-        content.items().each(item -> item.shownPlanets.remove(NHPlanets.midantha));
-        content.liquids().each(liquid -> liquid.shownPlanets.remove(NHPlanets.midantha));
-        items.each(item -> item.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha));
-        liquids.each(liquid -> liquid.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha));
+        content.items().each(item -> {
+            item.shownPlanets.remove(NHPlanets.midantha);
+            item.shownPlanets.remove(NHPlanets.ringWorld);
+        });
+        content.liquids().each(liquid -> {
+            liquid.shownPlanets.remove(NHPlanets.midantha);
+            liquid.shownPlanets.remove(NHPlanets.ringWorld);
+        });
+        items.each(item -> item.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld));
+        liquids.each(liquid -> liquid.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld));
     }
 
     public static Seq<SpawnGroup> generate(float difficulty, boolean airOnly) {
@@ -631,52 +637,52 @@ public class NHPostProcess {
         adjustContent(Blocks.message, content -> {
             MessageBlock logicBlock = (MessageBlock) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.reinforcedMessage, content -> {
             MessageBlock logicBlock = (MessageBlock) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.switchBlock, content -> {
             SwitchBlock logicBlock = (SwitchBlock) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.microProcessor, content -> {
             LogicBlock logicBlock = (LogicBlock) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 50, Items.titanium, 50);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.logicProcessor, content -> {
             LogicBlock logicBlock = (LogicBlock) content;
             logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 50, NHItems.presstanium, 50);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.hyperProcessor, content -> {
             LogicBlock logicBlock = (LogicBlock) content;
             logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 100, NHItems.zeta, 200, Items.surgeAlloy, 150);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.memoryCell, content -> {
             MemoryBlock logicBlock = (MemoryBlock) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 30);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.memoryBank, content -> {
             MemoryBlock logicBlock = (MemoryBlock) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 80, Items.phaseFabric, 40);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.logicDisplay, content -> {
             LogicDisplay logicBlock = (LogicDisplay) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 50);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
         adjustContent(Blocks.largeLogicDisplay, content -> {
             LogicDisplay logicBlock = (LogicDisplay) content;
             logicBlock.requirements = ItemStack.with(Items.silicon, 150, Items.phaseFabric, 75);
-            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha);
+            logicBlock.shownPlanets.addAll(Planets.erekir, NHPlanets.midantha, NHPlanets.ringWorld);
         });
     }
 

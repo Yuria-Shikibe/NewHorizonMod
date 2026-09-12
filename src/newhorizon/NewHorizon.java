@@ -29,6 +29,7 @@ import newhorizon.expand.map.NHMapFilters;
 import newhorizon.expand.net.NHCall;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.ui.TableFunc;
+import newhorizon.util.ui.dialog.NHCampaignRulesDialog;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.*;
@@ -51,9 +52,11 @@ public class NewHorizon extends Mod {
     public NewHorizon() {
         DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 
+        Events.run(EventType.Trigger.universeDrawBegin, NHPlanets::updateRingWorldCamera);
         Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
         Events.on(EventType.PlayerConnect.class, e -> Call.clientPacketReliable("override_check", NHSetting.overrideStatus()));
         Events.on(ClientLoadEvent.class, e -> {
+            Vars.ui.campaignRules = new NHCampaignRulesDialog();
             Core.app.post(NHUI::init);
             updateServer();
             fetchNewRelease();

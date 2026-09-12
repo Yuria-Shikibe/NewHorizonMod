@@ -39,11 +39,9 @@ public class NHSetting {
             OVERRIDE_ITEM = "nh-override-item",
             OVERRIDE_TURRET = "nh-override-turret",
 
-    EVENT_RAID = "nh-event-raid",
-            EVENT_INTERVENTION = "nh-event-intervention",
-
     DEBUGGING = "nh-debugging",
-            DEBUG_PANEL = "nh-debug-panel";
+            DEBUG_PANEL = "nh-debug-panel",
+            DEBUG_GALAXY_DISTORTION = "nh-debug-galaxy-distortion";
 
     public static boolean enableEffectDetail = true;
 
@@ -83,21 +81,16 @@ public class NHSetting {
                 new BoolSetting(OVERRIDE_TURRET, false, true)
         ));
 
-        allSettings.put("event", Seq.with(
-                new BoolSetting(EVENT_RAID, true, true),
-                new BoolSetting(EVENT_INTERVENTION, true, true)
-        ));
-
         allSettings.put("debug", Seq.with(
                 new BoolSetting(DEBUGGING, false, true),
-                new BoolSetting(DEBUG_PANEL, false, true)
+                new BoolSetting(DEBUG_PANEL, false, true),
+                new BoolSetting(DEBUG_GALAXY_DISTORTION, false, false)
         ));
 
         allSettings.each((name, seq) -> seq.each(SettingKey::setDefault));
 
         if (Vars.headless) {
             NHSetting.allSettings.get("override").each(setting -> settings.put(setting.key, true));
-            NHSetting.allSettings.get("event").each(setting -> settings.put(setting.key, true));
         }
 
         enableEffectDetail = getBool(EFFECT_DETAIL);

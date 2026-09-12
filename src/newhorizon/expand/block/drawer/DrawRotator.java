@@ -8,6 +8,7 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.DrawBlock;
 
 public class DrawRotator extends DrawBlock {
@@ -17,6 +18,8 @@ public class DrawRotator extends DrawBlock {
     public float rotateSpeed = 1.25f;
     public float primaryRotation = 0;
     public boolean usesSpinDraw = false;
+    /** Uses a drill's warmup timer for rotation, so it accelerates and decelerates with mining. */
+    public boolean useDrillWarmup = false;
 
     public DrawRotator(boolean usesSpinDraw) {
         this.usesSpinDraw = usesSpinDraw;
@@ -53,9 +56,14 @@ public class DrawRotator extends DrawBlock {
 
     @Override
     public void draw(Building build) {
+        float progress = build.totalProgress();
+        if (useDrillWarmup && build instanceof Drill.DrillBuild drill) {
+            progress = drill.timeDrilled;
+        }
+
         if (usesSpinDraw)
-            Drawf.spinSprite(rotator, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + primaryRotation);
-        else Draw.rect(rotator, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + primaryRotation);
+            Drawf.spinSprite(rotator, build.x + x, build.y + y, progress * rotateSpeed + primaryRotation);
+        else Draw.rect(rotator, build.x + x, build.y + y, progress * rotateSpeed + primaryRotation);
     }
 
     @Override

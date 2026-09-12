@@ -12,9 +12,27 @@ public final class SpecialEventState {
     }
 
     public static void init() {
-        enabled = !Vars.state.rules.tags.containsKey(TAG)
-                || Boolean.parseBoolean(Vars.state.rules.tags.get(TAG));
+        boolean fromSetting = defaultEnabled();
+
+        if (Vars.state.rules.tags.containsKey(TAG)) {
+            enabled = Boolean.parseBoolean(Vars.state.rules.tags.get(TAG));
+        } else {
+            enabled = fromSetting;
+        }
+
+        if (!Vars.net.active()) {
+            if (!fromSetting) {
+                enabled = false;
+            } else if (!enabled) {
+                enabled = true;
+            }
+        }
+
         writeTag();
+    }
+
+    private static boolean defaultEnabled() {
+        return NHDefaultEventSettings.enabledForCurrentGame();
     }
 
     public static boolean enabled() {

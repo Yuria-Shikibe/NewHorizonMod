@@ -5,7 +5,6 @@ import arc.flabel.FLabel;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
@@ -44,7 +43,7 @@ public class EventRaidAction extends Action {
     public float sourceX = 0, sourceY = 0, targetX = 0, targetY = 0;
     public int syncSeed;
 
-    private boolean popupDisplayed;
+    private boolean alertSoundPlayed;
     private int raidCounter;
 
     @Override
@@ -123,7 +122,7 @@ public class EventRaidAction extends Action {
     public void applyNetworkState(float lifeTimer, int raidCounter) {
         this.lifeTimer = lifeTimer;
         this.raidCounter = raidCounter;
-        if (lifeTimer > alertTime) popupDisplayed = true;
+        if (lifeTimer > alertTime) alertSoundPlayed = true;
     }
 
     public int raidCounter() {
@@ -140,7 +139,7 @@ public class EventRaidAction extends Action {
     private void showRaidPresentation() {
         boolean restore = lifeTimer > 0.5f;
         if (!restore) {
-            showRaidToast();
+            raidType.raidAlarmSound.play();
             NHUIFunc.showLabel(4.5f, t -> {
                 t.background(Styles.black5);
                 t.table(t2 -> {
@@ -200,7 +199,7 @@ public class EventRaidAction extends Action {
 
     @Override
     public void act() {
-        updateRaidPopup();
+        updateAlertSound();
 
         if (presentationOnly || RaidLogic.isRemoteClient()) return;
         if (!spawnBullets) return;
@@ -217,11 +216,11 @@ public class EventRaidAction extends Action {
         }
     }
 
-    private void updateRaidPopup() {
+    private void updateAlertSound() {
         if (headless) return;
-        if (lifeTimer > alertTime && !popupDisplayed) {
-            popupDisplayed = true;
-            showRaidToast();
+        if (lifeTimer > alertTime && !alertSoundPlayed) {
+            alertSoundPlayed = true;
+            raidType.raidAlarmSound.play();
         }
     }
 
@@ -254,13 +253,6 @@ public class EventRaidAction extends Action {
         return "css-raid." + raidType.name().replace("_", "-").toLowerCase() + ".alert";
     }
 
-    public String popupBundleKey() {
-        BulletType key = keyBullet != null ? keyBullet : customBullet;
-        if (key != null) return RaidBulletUtil.popupKey(key);
-        if (raidType == RaidPreset.CUSTOM_RAID) return RaidBulletUtil.popupKey(customBulletType);
-        return "css-raid." + raidType.name().replace("_", "-").toLowerCase() + ".popup";
-    }
-
     public String warningIconName() {
         BulletType key = keyBullet != null ? keyBullet : customBullet;
         if (key != null) return RaidBulletUtil.warningIcon(key);
@@ -268,13 +260,5 @@ public class EventRaidAction extends Action {
         return raidType.warningIcon;
     }
 
-    public void showRaidToast() {
-        NHUIFunc.showToast(
-                Core.atlas.find(warningIconName()),
-                Core.bundle.format(popupBundleKey(), Strings.fixed(targetX / tilesize, 1), Strings.fixed(targetY / tilesize, 1)),
-                raidType.raidAlarmSound,
-                team.color
-        );
-    }
 }
 

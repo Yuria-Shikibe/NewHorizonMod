@@ -7,6 +7,7 @@ import arc.graphics.gl.Shader;
 import arc.util.Disposable;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
+import newhorizon.util.graphic.GalaxyNebulaRenderer;
 import newhorizon.util.graphic.StatusRenderer;
 
 import static arc.Core.graphics;
@@ -15,10 +16,12 @@ public class NHRenderer implements Disposable {
     public static float width, height;
     public FrameBuffer mask;
     public StatusRenderer statusRenderer;
+    public GalaxyNebulaRenderer galaxyNebulaRenderer;
 
     public NHRenderer() {
         mask = new FrameBuffer();
         statusRenderer = new StatusRenderer();
+        galaxyNebulaRenderer = new GalaxyNebulaRenderer();
     }
 
     public void draw() {
@@ -45,5 +48,6 @@ public class NHRenderer implements Disposable {
     @Override
     public void dispose() {
         mask.dispose();
+        galaxyNebulaRenderer.dispose();
     }
 }

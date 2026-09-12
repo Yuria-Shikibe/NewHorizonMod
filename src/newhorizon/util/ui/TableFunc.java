@@ -127,6 +127,10 @@ public class TableFunc {
         }
     }
 
+    public static boolean isPortraitLayout() {
+        return Core.graphics.getHeight() > Core.graphics.getWidth();
+    }
+
     public static float dialogWidth(float design, float screenFrac) {
         float max = Core.graphics.getWidth() / Math.max(Scl.scl(), 0.01f) * Mathf.clamp(screenFrac, 0.5f, 0.95f);
         return Math.min(design, max);
