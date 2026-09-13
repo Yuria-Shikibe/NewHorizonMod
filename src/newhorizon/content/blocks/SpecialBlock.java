@@ -53,7 +53,6 @@ public class SpecialBlock {
                     NHItems.carbide, 1000
             ));
 
-            alwaysUnlocked = true;
 
             size = 4;
             armor = 15f;
@@ -79,7 +78,6 @@ public class SpecialBlock {
                     NHItems.surgeAlloy, 3000
             ));
 
-            alwaysUnlocked = true;
 
             size = 5;
             armor = 25f;
@@ -104,7 +102,6 @@ public class SpecialBlock {
                     NHItems.setonAlloy, 5000
             ));
 
-            alwaysUnlocked = true;
 
             size = 6;
             armor = 40f;

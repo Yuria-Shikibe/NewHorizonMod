@@ -196,7 +196,8 @@ public class DefaultRaid {
     }
 
     private static void scheduleNextRaid(float delaySeconds) {
-        nextRaidAt = Time.millis() + (long) (delaySeconds * 1000f);
+        // Schedule against game time so both manual and background pauses freeze the cooldown.
+        nextRaidAt = (long) (state.tick + delaySeconds * Time.toSeconds);
     }
 
     public static void update() {
@@ -223,7 +224,7 @@ public class DefaultRaid {
             return;
         }
 
-        if (Time.millis() < nextRaidAt) return;
+        if (state.tick < nextRaidAt) return;
 
         dispatchRaid(wave, player);
     }

@@ -1,10 +1,15 @@
 package newhorizon.expand.block.defence;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.Core;
 import arc.util.Strings;
 import arc.math.Mathf;
+import arc.util.Time;
 import mindustry.entities.Effect;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import arc.math.geom.Intersector;
@@ -15,10 +20,13 @@ import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.logic.LAccess;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import newhorizon.content.NHColor;
 import newhorizon.expand.entities.SharedShieldField;
 import newhorizon.expand.entities.SharedShieldFields;
 
 public class QuantumVortexProjector extends ForceProjector {
+    private static final Color plasmaColor = Color.valueOf("d8a9ff");
+
     /** Assigned by DefenseBlock during content registration. */
     public Effect shieldActivateEffect;
 
@@ -171,6 +179,41 @@ public class QuantumVortexProjector extends ForceProjector {
         public void draw() {
             super.draw();
             drawShield();
+            drawPlasmaMembraneCore();
+        }
+
+        private void drawPlasmaMembraneCore() {
+            if (efficiency <= 0.01f || field == null || !field.hasSource(this) || !field.sameTeam(this)
+                    || !field.active()) return;
+
+            float intensity = Mathf.clamp(Math.max(field.warmup, field.radscl));
+            if (intensity <= 0.01f) return;
+
+            float pulse = 1f + Mathf.sin(Time.time * 0.12f) * 0.12f;
+            float triangleRadius = 6.5f * pulse;
+            float rotation1 = Time.time * 1.8f;
+            float rotation2 = Time.time * 2.4f;
+            float coreRadius = 1.9f + Mathf.sin(Time.time * 0.18f) * 0.25f;
+            float previousZ = Draw.z();
+
+            Draw.z(Layer.effect);
+
+            // Two hollow triangles rotate in opposite directions around the core.
+            Draw.color(NHColor.ancient, 0.75f * intensity);
+            Lines.stroke(1.1f * intensity);
+            Lines.poly(x, y, 3, triangleRadius, rotation1 + 30f);
+            Lines.poly(x, y, 3, triangleRadius, -rotation2 + 180f);
+
+            // Layered circles create a small luminous energy sphere at the center.
+            Draw.color(NHColor.ancient, 0.28f * intensity);
+            Fill.circle(x, y, coreRadius * 2.2f);
+            Draw.color(NHColor.ancient, 0.9f * intensity);
+            Fill.circle(x, y, coreRadius);
+            Draw.color(Color.white, 0.95f * intensity);
+            Fill.circle(x, y, coreRadius * 0.42f);
+
+            Draw.reset();
+            Draw.z(previousZ);
         }
 
         @Override

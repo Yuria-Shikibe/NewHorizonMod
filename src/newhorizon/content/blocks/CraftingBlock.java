@@ -444,7 +444,7 @@ public class CraftingBlock {
 
 
             consumePower(180f / 60f);
-            consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 6 / 60f, NHLiquids.hydrazine, 12 / 60f));
+            consumeLiquids(LiquidStack.with(NHLiquids.xenFluid, 6 / 60f, NHLiquids.hydrazine, 3 / 60f));
             outputLiquid = new LiquidStack(NHLiquids.cryofluid, 30 / 60f);
 
             drawer = new DrawMulti(
@@ -1256,7 +1256,7 @@ public class CraftingBlock {
             craftTime = 60f;
 
             outputItems = with(NHItems.phaseFabric, 1);
-            consumePower(60 / 60f);
+            consumePower(600 / 60f);
             consumeItems(with(NHItems.silicon, 3, NHItems.thorium, 2));
 
             drawer = new DrawMulti(

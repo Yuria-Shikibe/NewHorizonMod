@@ -219,7 +219,8 @@ public class DefaultIntervention {
     }
 
     private static void scheduleNext(float delaySeconds) {
-        nextInterventionAt = Time.millis() + (long) (delaySeconds * 1000f);
+        // Schedule against game time so both manual and background pauses freeze the cooldown.
+        nextInterventionAt = (long) (state.tick + delaySeconds * Time.toSeconds);
     }
 
     public static void update() {
@@ -246,7 +247,7 @@ public class DefaultIntervention {
             return;
         }
 
-        if (Time.millis() < nextInterventionAt) return;
+        if (state.tick < nextInterventionAt) return;
 
         dispatch(wave, player);
     }
