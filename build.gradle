@@ -87,6 +87,7 @@ jar{
 
     from("assets/"){
         include "**"
+        exclude "sounds/raw"
     }
 }
 
