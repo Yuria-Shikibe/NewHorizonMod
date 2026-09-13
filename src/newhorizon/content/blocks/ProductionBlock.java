@@ -228,7 +228,7 @@ public class ProductionBlock {
                     NHItems.beryllium, 120,
                     NHItems.silicon, 60,
                     NHItems.presstanium, 40,
-                    NHItems.metaglass, 60
+                    NHItems.oxide,40
             ));
             hasPower = true;
             hasLiquids = true;
