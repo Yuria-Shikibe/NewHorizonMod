@@ -231,11 +231,12 @@ public class ProductionBlock {
                     NHItems.oxide,40
             ));
             hasPower = true;
+            consumePower(6f);
             hasLiquids = true;
 
             consumeLiquids(LiquidStack.with(
-                    NHLiquids.nitrogen, 3f / 60f,
-                    NHLiquids.hydrogen, 9f / 60f
+                    NHLiquids.nitrogen, 6f / 60f,
+                    NHLiquids.hydrogen, 18f / 60f
             ));
             consumeItem(NHItems.oxide, 1);
 
