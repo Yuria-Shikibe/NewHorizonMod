@@ -32,7 +32,7 @@ public class DefenseBlock {
             titaniumWall,
             presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall,
             standardRegenProjector, heavyRegenProjector, standardForceProjector, largeShieldGenerator, riftShield,
-            quantumVortexProjector;
+            plasmaMembrane;
 
     public static void load() {
         titaniumWall = new AdaptWall("titanium-wall") {{
@@ -201,7 +201,7 @@ public class DefenseBlock {
             requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.nodexPlate, 300));
         }};
 
-        quantumVortexProjector = new QuantumVortexProjector("quantum-vortex-projector") {{
+        plasmaMembrane = new QuantumVortexProjector("plasma-membrane") {{
             requirements(Category.effect, with(NHItems.seniorProcessor, 100, NHItems.nodexPlate, 20, Items.phaseFabric, 50, NHItems.multipleSteel, 100));
 
             size = 2;

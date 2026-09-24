@@ -37,8 +37,9 @@ public class NHTechTree {
     public static Seq<ProductionNode> liquidProductionTree = new Seq<>();
     public static Seq<ProductionNode> blockTechTree = new Seq<>();
     public static TechNode root;
-    private static final ObjectSet<UnlockableContent> initiallyAlwaysUnlocked = new ObjectSet<>();
+    private static final ObjectMap<UnlockableContent, Boolean> temporaryAlwaysUnlocked = new ObjectMap<>();
     private static boolean progressionEventsRegistered;
+    private static boolean temporaryModTechActive;
 
     public static void load() {
         unitBuildCost.each((u, is) -> {
@@ -86,6 +87,7 @@ public class NHTechTree {
         addTechNode(Blocks.siliconArcFurnace, ProductionBlock.titaniumReconstructor);
         addTechNode(Blocks.siliconArcFurnace, CraftingBlock.recrystallizer);
         addTechNode(Blocks.pyrolysisGenerator, PowerBlock.differentialReactor);
+        addTechNode(Blocks.oxidationChamber, ProductionBlock.compoundHydrator);
     }
 
     private static void addTechNode(UnlockableContent parentContent, UnlockableContent childContent) {
@@ -96,21 +98,25 @@ public class NHTechTree {
     }
 
     private static void registerProgressionEvents() {
-        initiallyAlwaysUnlocked.clear();
-        root.each(node -> {
-            if (isModTechNode(node) && node.content.alwaysUnlocked) {
-                initiallyAlwaysUnlocked.add(node.content);
-            }
-        });
-
         if (progressionEventsRegistered) return;
         progressionEventsRegistered = true;
 
         Events.on(EventType.ContentInitEvent.class, event -> syncProgressionState());
+        Events.on(EventType.WorldLoadBeginEvent.class, event -> clearTemporaryModTech());
+        Events.on(EventType.WorldLoadEvent.class, event -> syncTemporaryModTech());
+        Events.on(EventType.ResetEvent.class, event -> clearTemporaryModTech());
+        Events.on(EventType.GameOverEvent.class, event -> clearTemporaryModTech());
+        Events.on(EventType.SectorLoseEvent.class, event -> {
+            if (NHSectorPresents.primaryBase != null
+                    && event.sector == NHSectorPresents.primaryBase.sector) {
+                clearTemporaryModTech();
+            }
+        });
         Events.run(EventType.Trigger.update, NHTechTree::checkCampaignReset);
         Events.on(EventType.SectorCaptureEvent.class, event -> {
             if (event.initialCapture && NHSectorPresents.primaryBase != null
                     && event.sector == NHSectorPresents.primaryBase.sector) {
+                clearTemporaryModTech();
                 resetModTechProgress();
                 NHSectorPresents.launchLandingPointFromPrimaryBase();
             }
@@ -129,34 +135,60 @@ public class NHTechTree {
             }
             NHSectorPresents.lockPrimaryBase();
         } else {
-            unlockModTech();
+            NHSectorPresents.unlockPrimaryBase();
         }
     }
 
     private static void checkCampaignReset() {
         if (NHSectorPresents.primaryBase == null || NHSectorPresents.primaryBase.sector == null) return;
+
+        // WorldLoadEvent is not guaranteed to run after the campaign sector has
+        // been assigned. Re-check the actual running sector every tick so entering
+        // Primary Base always activates the temporary NH unlock state.
+        syncTemporaryModTech();
+
         if (!NHSectorPresents.primaryBase.sector.info.wasCaptured
                 && Core.settings.getBool(progressionResetKey, false)) {
-            unlockModTech();
+            // A cleared campaign only needs its entry sector restored. Full NH access is
+            // granted temporarily when that sector is actually being played.
+            NHSectorPresents.unlockPrimaryBase();
+            Core.settings.put(progressionResetKey, false);
         }
     }
 
-    private static void unlockModTech() {
-        root.each(node -> {
-            if (!isModTechNode(node)) return;
+    private static void syncTemporaryModTech() {
+        if (Vars.state == null || !Vars.state.isGame() || !Vars.state.isCampaign()
+                || NHSectorPresents.primaryBase == null || NHSectorPresents.primaryBase.sector == null
+                || Vars.state.rules.sector != NHSectorPresents.primaryBase.sector
+                || NHSectorPresents.primaryBase.sector.info.wasCaptured) {
+            clearTemporaryModTech();
+            return;
+        }
 
-            if (node.content instanceof SectorPreset) {
-                node.content.alwaysUnlocked = false;
-                node.content.clearUnlock();
-                node.reset();
-                return;
-            }
+        enableTemporaryModTech();
+    }
 
-            node.content.alwaysUnlocked = initiallyAlwaysUnlocked.contains(node.content);
-            node.content.quietUnlock();
+    private static void enableTemporaryModTech() {
+        if (temporaryModTechActive) return;
+
+        temporaryAlwaysUnlocked.clear();
+        Vars.content.each(content -> {
+            if (!(content instanceof UnlockableContent unlockable)
+                    || content.minfo.mod != NewHorizon.MOD
+                    || content instanceof SectorPreset) return;
+
+            temporaryAlwaysUnlocked.put(unlockable, unlockable.alwaysUnlocked);
+            unlockable.alwaysUnlocked = true;
         });
-        NHSectorPresents.unlockPrimaryBase();
-        Core.settings.put(progressionResetKey, false);
+        temporaryModTechActive = true;
+    }
+
+    private static void clearTemporaryModTech() {
+        if (!temporaryModTechActive) return;
+
+        temporaryAlwaysUnlocked.each((content, value) -> content.alwaysUnlocked = value);
+        temporaryAlwaysUnlocked.clear();
+        temporaryModTechActive = false;
     }
 
     private static void enableModTechProgression() {
@@ -300,7 +332,7 @@ public class NHTechTree {
                                         ProductionNode.node(SpecialBlock.coreCluster)
                                 )
                         ),
-                        ProductionNode.node(PowerBlock.photonPanel,
+                        ProductionNode.node(PowerBlock.photonPanel, ItemStack.with(NHItems.silicar, 30),
                                 ProductionNode.node(PowerBlock.fluxNodeMK1,
                                         ProductionNode.node(PowerBlock.fluxNodeMK2),
                                         ProductionNode.node(PowerBlock.fluxNodeLargeMK1,
@@ -325,7 +357,7 @@ public class NHTechTree {
                                         )
                                 )
                         ),
-                        ProductionNode.node(ProductionBlock.interlockingDrill,
+                        ProductionNode.node(ProductionBlock.interlockingDrill, ItemStack.with(NHItems.silicar, 30),
                                 ProductionNode.node(ProductionBlock.sandCracker),
                                 ProductionNode.node(NHBlocks.largeWaterExtractor),
                                 ProductionNode.node(ProductionBlock.decoherenceReverser),
@@ -341,7 +373,7 @@ public class NHTechTree {
                                 ProductionNode.node(CraftingBlock.recrystallizer),
                                 ProductionNode.node(ProductionBlock.oilRefiner)
                         ),
-                        ProductionNode.node(CraftingBlock.silicarCrusher,
+                        ProductionNode.node(CraftingBlock.silicarCrusher, ItemStack.with(NHItems.silicar, 30),
                                 ProductionNode.node(CraftingBlock.stampingFacility,
                                         ProductionNode.node(CraftingBlock.heavyStampingFacility),
                                         ProductionNode.node(CraftingBlock.multipleRollingMill,
@@ -475,7 +507,8 @@ public class NHTechTree {
                                 ),
                                 ProductionNode.node(DefenseBlock.standardForceProjector,
                                         ProductionNode.node(DefenseBlock.largeShieldGenerator,
-                                                ProductionNode.node(DefenseBlock.riftShield)
+                                                ProductionNode.node(DefenseBlock.riftShield),
+                                                ProductionNode.node(DefenseBlock.plasmaMembrane)
                                         )
                                 )
                         ),

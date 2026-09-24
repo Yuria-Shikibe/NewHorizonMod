@@ -14,7 +14,6 @@ new-horizon-anode-fusion-reactor 1 1 4 0
 new-horizon-anti-bullet-turret 1 1 3 0
 new-horizon-antibody 1 1 3 0
 new-horizon-argmot 1 1 3 0
-new-horizon-arkycite-compactor 1 1 3 0
 new-horizon-armor-ancient 0 0 1 14196587
 new-horizon-armor-ancient-sub 0 0 1 15919224
 new-horizon-armor-battery 1 1 1 0
@@ -68,6 +67,7 @@ new-horizon-component-epic 1 1 4 0
 new-horizon-component-legendary 1 1 4 0
 new-horizon-component-rare 1 1 4 0
 new-horizon-component-uncommon 1 1 4 0
+new-horizon-compound-hydrator 1 1 3 0
 new-horizon-concentration 1 1 5 0
 new-horizon-condense-facility 1 1 3 0
 new-horizon-conduit 1 0 1 0

@@ -38,7 +38,7 @@ public class ProductionBlock {
     public static Block
             sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, /*resourceConvertor,*/ oilRefiner, scanCollector,
             resonanceMiningFacility, interlockingDrill, beamMiningFacility, implosionMiningFacility,
-            airRadiator, liquidRadiator;
+            airRadiator, liquidRadiator, compoundHydrator;
 
     public static void load() {
 
@@ -213,6 +213,57 @@ public class ProductionBlock {
 
             craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 12, 2);
         }};
+
+        compoundHydrator = new GenericCrafter("compound-hydrator") {{
+//            baseEfficiency = 1f;
+//            attribute = NHContent.quantum;
+//            boostScale = 0.25f;
+//            maxBoost = 2f;
+
+            size = 3;
+            squareSprite = false;
+            health = 560;
+
+            requirements(Category.crafting, with(
+                    NHItems.beryllium, 120,
+                    NHItems.silicon, 60,
+                    NHItems.presstanium, 40,
+                    NHItems.oxide,40
+            ));
+            hasPower = true;
+            consumePower(6f);
+            hasLiquids = true;
+
+            consumeLiquids(LiquidStack.with(
+                    NHLiquids.nitrogen, 6f / 60f,
+                    NHLiquids.hydrogen, 18f / 60f
+            ));
+            consumeItem(NHItems.oxide, 1);
+
+            outputLiquid = new LiquidStack(NHLiquids.ammonia, 48f/60f);
+            craftTime = 120f;
+
+            liquidCapacity = 180f;
+            itemCapacity = 16;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawPistons() {{
+                        sinMag = 2.75f;
+                        sinScl = 5f;
+                        sides = 4;
+                        lenOffset += 0.25f;
+                        angleOffset = 45f;
+                        sideOffset = Mathf.PI / 2f;
+                    }},
+                    new DrawLiquidTile(NHLiquids.ammonia, 38f / 4f),
+                    new DrawDefault(),
+                    new DrawGlowRegion() {{
+                        color = NHLiquids.ammonia.color;
+                        alpha = 0.721f;
+                    }}
+            );
+        }};
         /*
 
         xenIterator = new RecipeGenericCrafter("xen-iterator"){{
@@ -234,7 +285,7 @@ public class ProductionBlock {
          */
         interlockingDrill = new AdaptDrill("interlocking-drill") {{
             requirements(Category.production, with(
-                    NHItems.silicar, 60
+                    NHItems.silicar, 30
             ));
 
             size = 3;

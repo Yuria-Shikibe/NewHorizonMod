@@ -69,7 +69,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 0.115f;
@@ -118,7 +117,6 @@ public class DistributionBlock {
         conveyorBridge = new AdaptItemBridge("logistics-bridge") {{
             requirements(Category.distribution, with(NHItems.hardLight, 5, Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             hasPower = false;
             range = 6;
@@ -130,7 +128,6 @@ public class DistributionBlock {
         conveyorBridgeExtend = new AdaptItemBridge("logistics-extend-bridge") {{
             requirements(Category.distribution, with(NHItems.hardLight, 10, NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             hasPower = false;
             range = 12;
@@ -145,7 +142,6 @@ public class DistributionBlock {
             ));
 
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 3;
@@ -159,7 +155,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 3;
@@ -173,7 +168,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 4f;
@@ -186,7 +180,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 4f;
@@ -199,7 +192,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 4f;
@@ -219,7 +211,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 4f;
@@ -239,7 +230,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             placeableLiquid = true;
             health = 300;
@@ -250,7 +240,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
             invert = true;
 
             placeableLiquid = true;
@@ -262,7 +251,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             invert = false;
             placeableLiquid = true;
@@ -274,7 +262,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 1
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             invert = true;
             placeableLiquid = true;
@@ -286,7 +273,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 10
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 4f;
@@ -301,7 +287,6 @@ public class DistributionBlock {
                     NHItems.multipleSteel, 4
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             health = 300;
             speed = 1f;
@@ -365,7 +350,6 @@ public class DistributionBlock {
         liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge") {{
             requirements(Category.liquid, with(NHItems.hardLight, 5, Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
             hasPower = false;
             range = 6;
             health = 300;
@@ -377,7 +361,6 @@ public class DistributionBlock {
         liquidBridgeExtend = new AdaptLiquidBridge("logistics-extend-liquid-bridge") {{
             requirements(Category.liquid, with(NHItems.hardLight, 10, NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
             hasPower = false;
             range = 12;
             health = 600;
@@ -394,7 +377,6 @@ public class DistributionBlock {
                     NHItems.hardLight, 5
             ));
             buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
 
             hasPower = true;
             conductivePower = true;
