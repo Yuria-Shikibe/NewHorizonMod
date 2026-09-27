@@ -560,7 +560,9 @@ public class NHTechTree {
                         ),
                         ProductionNode.node(SpecialBlock.standardStorage,
                                 ProductionNode.node(SpecialBlock.heavyStorage,
-                                        ProductionNode.node(SpecialBlock.remoteStorage)
+                                        ProductionNode.node(SpecialBlock.accumulatingStorage,
+                                                ProductionNode.node(SpecialBlock.remoteStorage)
+                                        )
                                 ),
                                 ProductionNode.node(SpecialBlock.juniorModuleBeacon,
                                         ProductionNode.node(SpecialBlock.seniorModuleBeacon)
