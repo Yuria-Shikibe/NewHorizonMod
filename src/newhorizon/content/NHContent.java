@@ -49,8 +49,15 @@ public class NHContent extends Content {
     }
 
     public static void loadBeforeContentLoad() {
-        CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum));
-        CacheLayer.add(luminousQuantumLayer = new NHShaders.LuminousQuantumCacheLayer());
+        // Cache layers and their shaders allocate OpenGL resources (FrameBuffers) during
+        // construction.  A headless server has no Core.gl, so registering them here would
+        // crash content loading before the server can finish starting.
+        if (!Vars.headless) {
+            CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum));
+            CacheLayer.add(luminousQuantumLayer = new NHShaders.LuminousQuantumCacheLayer());
+        } else {
+            quantumLayer = luminousQuantumLayer = CacheLayer.normal;
+        }
         quantum = Attribute.add("quantum");
         density = Attribute.add("density");
     }
