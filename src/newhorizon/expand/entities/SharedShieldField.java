@@ -493,6 +493,6 @@ public class SharedShieldField {
     }
 
     private static boolean isPowered(Building source) {
-        return source != null && source.efficiency > 0.01f;
+        return source != null && source.efficiency >= QuantumVortexProjector.shieldActivationEfficiency;
     }
 }

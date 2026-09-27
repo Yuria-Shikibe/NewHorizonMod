@@ -32,7 +32,7 @@ public class SharedShieldFields {
         // already registered, return the old reference so its caller can
         // remove it cleanly; otherwise wait until power is available before
         // creating or joining a shared field.
-        if (source.efficiency <= 0.01f) return result;
+        if (source.efficiency < QuantumVortexProjector.shieldActivationEfficiency) return result;
         // Attach a newly placed projector directly to an already overlapping
         // field. Creating a temporary one-projector field first can make the
         // topology rebuild select that empty field as its state owner, which
@@ -150,7 +150,9 @@ public class SharedShieldFields {
         for (SharedShieldField field : fields) {
             oldFields.add(field);
             for (Building source : field.iterable()) {
-                if (source.isValid() && source.isAdded() && source.efficiency > 0.01f && !remaining.contains(source, true)) {
+                if (source.isValid() && source.isAdded()
+                        && source.efficiency >= QuantumVortexProjector.shieldActivationEfficiency
+                        && !remaining.contains(source, true)) {
                     remaining.add(source);
                 }
             }
