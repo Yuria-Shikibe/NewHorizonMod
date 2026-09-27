@@ -1,6 +1,7 @@
 package newhorizon.expand.entities;
 
 import arc.math.geom.Intersector;
+import arc.math.geom.Rect;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -19,6 +20,8 @@ public class SharedShieldField {
     public transient float radscl, warmup, hit;
     private float cooldownTimer;
     private transient boolean visualActive;
+    private transient Team cachedTeam;
+    private transient boolean teamCacheValid;
     /** Sources are unbounded; fields can contain any number of projectors. */
     private final Seq<Building> sources = new Seq<>(false, 8, Building.class);
 
@@ -28,12 +31,16 @@ public class SharedShieldField {
         // accidentally granting an unpowered projector shared-shield effects.
         if (isPowered(source) && !sources.contains(source, true)) {
             sources.add(source);
+            teamCacheValid = false;
             SharedShieldFields.markDirty();
         }
     }
 
     public void remove(Building source) {
-        if (sources.remove(source, true)) SharedShieldFields.markDirty();
+        if (sources.remove(source, true)) {
+            teamCacheValid = false;
+            SharedShieldFields.markDirty();
+        }
     }
 
     public boolean active() {
@@ -48,8 +55,24 @@ public class SharedShieldField {
         return sources.contains(source, true);
     }
 
+    /** Fast per-source validity check used from every projector update. */
+    public boolean isValidSource(Building source) {
+        if (!isPowered(source) || !hasSource(source) || source.team == null) return false;
+        if (!teamCacheValid) refreshTeamCache();
+        // The cached team is refreshed once per field update. Checking the
+        // first source as well catches the common team-change case without
+        // re-scanning the complete source list for every projector.
+        return cachedTeam != null && cachedTeam == source.team && !sources.isEmpty()
+                && sources.first().team == cachedTeam;
+    }
+
     public int indexOf(Building source) {
         return sources.indexOf(source, true);
+    }
+
+    /** The first source is the field's single bullet-scan owner. */
+    public boolean isPrimarySource(Building source) {
+        return !sources.isEmpty() && sources.first() == source;
     }
 
     public int sourceCount() {
@@ -62,10 +85,11 @@ public class SharedShieldField {
 
     public float maxRadius() {
         float radius = 0f;
+        float scale = sharedScale();
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
             if (isPowered(source) && source.block instanceof QuantumVortexProjector p) {
-                radius = Math.max(radius, p.realRadius((QuantumVortexProjector.QuantumBuild)source));
+                radius = Math.max(radius, p.radius * scale);
             }
         }
         // realRadius already includes the source warmup scale. Applying the
@@ -74,22 +98,45 @@ public class SharedShieldField {
         return radius;
     }
 
+    /** Broad-phase bounds for one bullet query covering every source polygon. */
+    public void bulletBounds(Rect out) {
+        if (out == null) return;
+        float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY;
+        for (int i = 0; i < sources.size; i++) {
+            Building source = sources.get(i);
+            if (!isPowered(source) || !(source instanceof QuantumVortexProjector.QuantumBuild build)
+                    || !(source.block instanceof QuantumVortexProjector projector)) continue;
+            float radius = Math.max(projector.radius * sharedScale(), 0f);
+            minX = Math.min(minX, source.x - radius);
+            minY = Math.min(minY, source.y - radius);
+            maxX = Math.max(maxX, source.x + radius);
+            maxY = Math.max(maxY, source.y + radius);
+        }
+        if (minX == Float.POSITIVE_INFINITY) {
+            out.set(0f, 0f, 0f, 0f);
+        } else {
+            out.set(minX, minY, maxX - minX, maxY - minY);
+        }
+    }
+
     public boolean contains(float x, float y) {
-        float radius = maxRadius();
-        if (radius <= 0f) return false;
         for (int i = 0; i < sources.size; i++) {
             Building source = sources.get(i);
             if (!isPowered(source) || !(source.block instanceof QuantumVortexProjector)) continue;
             QuantumVortexProjector.QuantumBuild build = (QuantumVortexProjector.QuantumBuild)source;
             QuantumVortexProjector projector = (QuantumVortexProjector)build.block;
+            float radius = projector.radius * sharedScale();
+            if (radius <= 0f) continue;
             if (Intersector.isInRegularPolygon(projector.sides, build.x, build.y,
-                    projector.realRadius(build), projector.shieldRotation, x, y)) return true;
+                    radius, projector.shieldRotation, x, y)) return true;
         }
         return false;
     }
 
     public void update() {
         cleanupSources();
+        refreshTeamCache();
         if (sources.isEmpty()) {
             remove();
             return;
@@ -269,8 +316,8 @@ public class SharedShieldField {
         if (!isPowered(source) || source.team == null) return false;
 
         // A field may outlive a source's team assignment by one update tick.
-        // Validate every remaining source instead of trusting only the first
-        // one, otherwise a stale cross-team member can bridge two fields.
+        // Validate every remaining source in topology operations so a stale
+        // cross-team member cannot bridge two fields.
         boolean found = false;
         for (int i = 0; i < sources.size; i++) {
             Building existing = sources.get(i);
@@ -279,6 +326,24 @@ public class SharedShieldField {
             if (existing.team != source.team) return false;
         }
         return found;
+    }
+
+    /** Rebuild the field team cache once per field update instead of scanning
+     * every source for every projector's per-tick update/draw call. */
+    private void refreshTeamCache() {
+        Team team = null;
+        for (int i = 0; i < sources.size; i++) {
+            Building existing = sources.get(i);
+            if (existing == null || !existing.isValid() || !existing.isAdded() || !isPowered(existing)) continue;
+            if (team == null) team = existing.team;
+            else if (existing.team != team) {
+                cachedTeam = null;
+                teamCacheValid = true;
+                return;
+            }
+        }
+        cachedTeam = team;
+        teamCacheValid = true;
     }
 
     /**
@@ -298,6 +363,10 @@ public class SharedShieldField {
         }
 
         return false;
+    }
+
+    private float sharedScale() {
+        return broken ? 0f : Mathf.clamp(Math.max(radscl, warmup));
     }
 
     /** Fast broad-phase connection test for two stationary projectors. */
@@ -407,6 +476,8 @@ public class SharedShieldField {
 
     public void clear() {
         sources.clear();
+        cachedTeam = null;
+        teamCacheValid = false;
     }
 
     public boolean empty() {
