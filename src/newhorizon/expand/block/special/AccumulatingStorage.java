@@ -8,6 +8,7 @@ import arc.struct.IntSet;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Tmp;
+import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
@@ -219,6 +220,21 @@ public class AccumulatingStorage extends StorageBlock {
             items = original;
         }
 
+        /**
+         * Building sync packets contain the item module for every building. The
+         * server writes an empty module for non-leaders; never let that empty
+         * payload clear the component's shared module on the client.
+         */
+        @Override
+        public void readAll(Reads read, byte revision) {
+            ItemModule original = items;
+            boolean leader = isLeader();
+            if (!leader) items = new ItemModule();
+            super.readAll(read, revision);
+            if (!leader) items = original;
+            linkComponentToLeader();
+        }
+
         private boolean isLeader() {
             rebuildComponent();
             int position = tile.pos();
@@ -226,6 +242,25 @@ public class AccumulatingStorage extends StorageBlock {
                 if (build.tile.pos() < position) return false;
             }
             return true;
+        }
+
+        /** Rebind all members to the authoritative component leader after sync. */
+        private void linkComponentToLeader() {
+            if (!isValid()) return;
+            component.clear();
+            collect(this, null, component);
+            if (component.isEmpty()) return;
+
+            AccumulatingStorageBuild leader = component.first();
+            for (AccumulatingStorageBuild build : component) {
+                if (build.tile.pos() < leader.tile.pos()) leader = build;
+            }
+            ItemModule shared = leader.items;
+            for (AccumulatingStorageBuild build : component) {
+                build.items = shared;
+                build.networkSize = component.size;
+                build.statusLeader = build == leader;
+            }
         }
 
         private boolean valid(AccumulatingStorageBuild build, AccumulatingStorageBuild excluded) {
