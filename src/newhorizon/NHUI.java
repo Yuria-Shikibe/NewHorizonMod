@@ -42,6 +42,7 @@ import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.CustomProgressBarEntry;
 import newhorizon.util.ui.ObjectiveSign;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
+import newhorizon.util.ui.dialog.NHResearchDialog;
 
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.underline;
@@ -62,6 +63,7 @@ public class NHUI {
     public static void init() {
 
         nhWorldSettingDialog = new NHWorldSettingDialog();
+        NHResearchDialog.install();
 
         try {
             getReferences();
