@@ -11,6 +11,7 @@ import newhorizon.expand.block.commandable.CommandableBlock;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.SharedShieldFields;
+import newhorizon.expand.game.SignalEvent;
 
 import static mindustry.Vars.world;
 
@@ -40,9 +41,11 @@ public class NHGroups {
         commandableBuilds.clear();
         gravityFields.clear();
         SharedShieldFields.clearWorld();
+        SignalEvent.clear();
     }
 
     public static void worldReset() {
+        SignalEvent.clear();
     }
 
     public static void update() {

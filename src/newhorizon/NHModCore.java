@@ -5,6 +5,7 @@ import mindustry.Vars;
 import newhorizon.expand.game.DefaultIntervention;
 import newhorizon.expand.game.DefaultRaid;
 import newhorizon.expand.game.DefaultSpecialEvent;
+import newhorizon.expand.game.SignalEvent;
 
 import static newhorizon.NHVars.cutscene;
 import static newhorizon.NHVars.renderer;
@@ -20,6 +21,7 @@ public class NHModCore implements ApplicationListener {
             DefaultRaid.update();
             DefaultIntervention.update();
             DefaultSpecialEvent.update();
+            SignalEvent.updateAll();
             NHGroups.update();
             if (!Vars.headless) {
                 renderer.statusRenderer.update();

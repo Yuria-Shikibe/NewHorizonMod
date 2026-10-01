@@ -134,6 +134,10 @@ public enum MarkStyle {
         Lines.spikes(pos.x, pos.y, size * 1.5f + 6f, size / 2, 4, 45);
     });
 
+    /** Compatibility names used by the original event marker API. */
+    public static final MarkStyle fixed = defaultFixed;
+    public static final MarkStyle shake = signalShake;
+
     public final DrawCaution drawer;
 
     MarkStyle(DrawCaution drawer) {

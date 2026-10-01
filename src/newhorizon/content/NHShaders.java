@@ -5,6 +5,7 @@ import arc.files.Fi;
 import arc.graphics.g2d.Draw;
 import arc.graphics.Color;
 import arc.math.geom.Vec2;
+import arc.math.Mat;
 import arc.graphics.Texture;
 import arc.graphics.Pixmap;
 import arc.graphics.Gl;
@@ -23,6 +24,7 @@ import static mindustry.Vars.renderer;
 
 public class NHShaders {
     public static ModShader gravityTrap, quantum, statusXWave, hexShield;
+    public static MatterStormShader matterStorm;
     public static ModSurfaceShader luminousQuantum;
     public static ModSurfaceShader displaceGlitch;
     public static GalaxyNebulaShader galaxyNebula;
@@ -131,6 +133,8 @@ public class NHShaders {
                 return NHContent.smoothNoise;
             }
         };
+
+        matterStorm = new MatterStormShader();
 
         galaxyNebula = new GalaxyNebulaShader();
 
@@ -505,6 +509,46 @@ public class NHShaders {
         public void apply() {
             super.apply();
             setUniformf("u_radius", radius);
+        }
+    }
+
+    public static class MatterStormShader extends ModSurfaceShader {
+        public final Vec2 direction = new Vec2();
+        public final Color primaryColor = new Color();
+        public final Color secondaryColor = new Color();
+        public final Mat rotator = new Mat();
+        public final Mat scaler = new Mat();
+
+        public MatterStormShader() {
+            super("storm");
+        }
+
+        public void applyDirection(Vec2 vector, float intensity) {
+            direction.set(vector).scl(intensity);
+            rotator.setToRotation(vector.angle());
+            scaler.setToScaling(direction);
+        }
+
+        @Override
+        public void loadNoise() {
+            super.loadNoise();
+            noiseTex2 = NHContent.darkerNoise;
+            noiseTex1 = NHContent.smoothNoise;
+        }
+
+        @Override
+        public Texture getTexture() {
+            return NHContent.smoothNoise;
+        }
+
+        @Override
+        public void apply() {
+            super.apply();
+            setUniformf("u_direction", direction.x, direction.y);
+            setUniformf("u_color_sec", secondaryColor);
+            setUniformf("u_color_pri", primaryColor);
+            setUniformMatrix("u_rotator", rotator);
+            setUniformMatrix("u_scaler", scaler);
         }
     }
 

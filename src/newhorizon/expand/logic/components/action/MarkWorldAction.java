@@ -1,6 +1,9 @@
 package newhorizon.expand.logic.components.action;
 
+import arc.graphics.Color;
 import arc.util.Time;
+import newhorizon.content.NHContent;
+import newhorizon.expand.logic.components.ui.HudMarker;
 import mindustry.game.Team;
 import newhorizon.expand.logic.ParseUtil;
 import newhorizon.expand.logic.components.Action;
@@ -12,6 +15,7 @@ public class MarkWorldAction extends Action {
     public int style;
     public Team team;
     public float worldX, worldY, markRadius, markTime;
+    private HudMarker marker;
 
     @Override
     public String actionName() {
@@ -26,7 +30,7 @@ public class MarkWorldAction extends Action {
         worldX = ParseUtil.getNextFloat(tokens);
         worldY = ParseUtil.getNextFloat(tokens);
         markRadius = ParseUtil.getNextFloat(tokens);
-        markTime = ParseUtil.getNextFloat(tokens);
+        markTime = ParseUtil.getNextFloat(tokens) * Time.toSeconds;
     }
 
     public MarkStyle getMarkStyle() {
@@ -41,7 +45,23 @@ public class MarkWorldAction extends Action {
 
     @Override
     public void end() {
+        if (headless || marker == null) return;
+        marker.removeMarkerNow();
+        marker = null;
+    }
+
+    @Override
+    public void begin() {
         if (headless) return;
+        Color color = team == null ? mindustry.graphics.Pal.accent : team.color;
+        marker = new HudMarker()
+                .setMarkPosition(worldX, worldY)
+                .setRadius(markRadius)
+                .setDuration(Math.max(markTime, 1f))
+                .setStyle(getMarkStyle())
+                .setMarkColor(color)
+                .setIcon(NHContent.objective);
+        marker.addMarker();
     }
 
     @Override

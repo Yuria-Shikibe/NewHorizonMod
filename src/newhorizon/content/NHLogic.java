@@ -29,6 +29,7 @@ import newhorizon.expand.logic.cutscene.letterbox.LetterboxOut;
 import newhorizon.expand.logic.cutscene.letterbox.LetterboxText;
 import newhorizon.expand.logic.wproc.CaptureSector;
 import newhorizon.expand.logic.wproc.CustomProgressBar;
+import newhorizon.expand.logic.wproc.HUDsetting;
 import newhorizon.expand.logic.wip.NearestSpawn;
 import newhorizon.expand.logic.wip.RandomTarget;
 import newhorizon.expand.game.DefaultIntervention;
@@ -85,6 +86,7 @@ public class NHLogic {
 
     public static void loadWprocStatements() {
         registerPrivilegedStatement(CustomProgressBar.class, "customprogress");
+        registerPrivilegedStatement(HUDsetting.class, "hudsetting");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultRaid.class, "defaultraid");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultIntervention.class, "defaultintervention");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultSpecialEvent.class, "defaultspecialevent");
@@ -117,6 +119,7 @@ public class NHLogic {
         registerAction(EventRaid.class, EventRaidAction.class);
         registerAction(EventIntervention.class, EventInterventionAction.class);
         registerAction(EventSpecial.class, EventSpecialAction.class);
+        CutsceneControl.registerAction(MarkWorldAction.class);
         registerStatement(EventSpecialUnit.class);
 
         //registerAction(WarningIcon.class, WarningIconAction.class);
