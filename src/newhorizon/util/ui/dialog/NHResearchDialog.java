@@ -37,7 +37,6 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ResearchDialog;
 import mindustry.world.Block;
-import mindustry.world.blocks.production.GenericCrafter;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHPlanets;
@@ -255,78 +254,39 @@ public class NHResearchDialog extends ResearchDialog {
         if (NHTechTree.root == null) return;
 
         NHTechTree.root.each(node -> {
-            if (node == NHTechTree.root || node.content == null || node.content.minfo.mod != NewHorizon.MOD) return;
-            if (!nativeNodes.containsKey(node.content)) nativeNodes.put(node.content, node);
+            if (node != NHTechTree.root && node.content != null && !nativeNodes.containsKey(node.content)) {
+                nativeNodes.put(node.content, node);
+            }
         });
 
         ObjectMap<String, Category> byName = new ObjectMap<>();
-        addCategory(byName, "MATERIALS", "process-multiple-steel-node", Color.valueOf("8dd6ff"));
-        addCategory(byName, "FLUID SYSTEMS", "liquid-logistics-1", Color.valueOf("65c9d8"));
-        addCategory(byName, "MINING", "mine-tungsten-node", Color.valueOf("b9d477"));
-        addCategory(byName, "LOGISTICS", "logistics-1", Color.valueOf("f6c96d"));
-        addCategory(byName, "POWER", "power-production-node", Color.valueOf("ffe46b"));
-        addCategory(byName, "FABRICATION", "process-presstanium-node", Color.valueOf("e7a2ff"));
-        addCategory(byName, "COMBAT", "quality-rare", Color.valueOf("ff8d8d"));
-        addCategory(byName, "ANCIENT SYSTEMS", "quality-legendary", Color.valueOf("ffcf7a"));
+        addCategory(byName, NHResearchTreeModel.MATERIALS, Icon.box, Color.valueOf("8dd6ff"));
+        addCategory(byName, NHResearchTreeModel.FLUIDS, Icon.liquid, Color.valueOf("65c9d8"));
+        addCategory(byName, NHResearchTreeModel.MINING, Icon.production, Color.valueOf("b9d477"));
+        addCategory(byName, NHResearchTreeModel.LOGISTICS, Icon.distribution, Color.valueOf("f6c96d"));
+        addCategory(byName, NHResearchTreeModel.POWER, Icon.power, Color.valueOf("ffe46b"));
+        addCategory(byName, NHResearchTreeModel.FABRICATION, Icon.production, Color.valueOf("e7a2ff"));
+        addCategory(byName, NHResearchTreeModel.COMBAT, Icon.turret, Color.valueOf("ff8d8d"));
+        addCategory(byName, NHResearchTreeModel.SYSTEMS, Icon.logic, Color.valueOf("ffcf7a"));
 
-        addNode(byName, "MATERIALS", "process-processor-junior-node", "JUNIOR PROCESSOR");
-        addNode(byName, "MATERIALS", "process-processor-senior-node", "SENIOR PROCESSOR");
-        addNode(byName, "MATERIALS", "process-processor-hyper-node", "HYPER PROCESSOR");
-        addNode(byName, "MATERIALS", "process-presstanium-node", "PRESSTANIUM");
-        addNode(byName, "MATERIALS", "process-multiple-steel-node", "MULTIPLE STEEL");
-        addNode(byName, "MATERIALS", "process-seton-alloy-node", "SETON ALLOY");
-        addNode(byName, "MATERIALS", "process-nodex-plate-node", "NODEX PLATE");
-        addNode(byName, "MATERIALS", "process-hadronicomp-node", "HADRONICOMP");
-        addNode(byName, "MATERIALS", "process-dark-energy-node", "DARK ENERGY");
-        addNode(byName, "MATERIALS", "process-irayrond-panel-node", "IRAYROND PANEL");
-        addNode(byName, "MATERIALS", "process-ancimembrane-node", "ANCIMEMBRANE");
-        addNode(byName, "MATERIALS", "process-metal-oxhydrigen-node", "METAL OXYHYDRIGEN");
-        addNode(byName, "MATERIALS", "process-phase-fabric-node", "PHASE FABRIC");
-        addNode(byName, "MATERIALS", "process-surge-alloy-node", "SURGE ALLOY");
-        addNode(byName, "MATERIALS", "process-thermo-core-positive-node", "POSITIVE THERMO CORE");
-        addNode(byName, "MATERIALS", "process-thermo-core-negative-node", "NEGATIVE THERMO CORE");
-        addNode(byName, "MATERIALS", "process-fusion-core-energy-node", "FUSION CORE ENERGY");
-        addNode(byName, "MATERIALS", "process-zeta-node", "ZETA");
-        addNode(byName, "MATERIALS", "basic-materials-node", "BASIC MATERIALS", "mine-silicon-node");
-
-        addNode(byName, "FLUID SYSTEMS", "liquid-logistics-1", "LIQUID LOGISTICS I");
-        addNode(byName, "FLUID SYSTEMS", "liquid-logistics-2", "LIQUID LOGISTICS II");
-        addNode(byName, "FLUID SYSTEMS", "liquid-logistics-3", "LIQUID LOGISTICS III");
-        addNode(byName, "FLUID SYSTEMS", "liquid-logistics-extend-1", "LIQUID EXTENSION I");
-        addNode(byName, "FLUID SYSTEMS", "liquid-logistics-extend-2", "LIQUID EXTENSION II");
-        addNode(byName, "FLUID SYSTEMS", "liquid-logistics-extend-3", "LIQUID EXTENSION III");
-        addNode(byName, "FLUID SYSTEMS", "process-irdryon-fluid-node", "IRDRYON FLUID");
-
-        addNode(byName, "MINING", "mine-silicon-node", "SILICON MINING");
-        addNode(byName, "MINING", "mine-titanium-node", "TITANIUM MINING");
-        addNode(byName, "MINING", "mine-tungsten-node", "TUNGSTEN MINING");
-        addNode(byName, "MINING", "mine-zeta-node", "ZETA MINING");
-        addNode(byName, "MINING", "mine-quantum-liquid-node", "QUANTUM LIQUID");
-        addNode(byName, "MINING", "mine-xen-fluid-node", "XEN FLUID");
-
-        addNode(byName, "LOGISTICS", "logistics-1", "LOGISTICS I");
-        addNode(byName, "LOGISTICS", "logistics-2", "LOGISTICS II");
-        addNode(byName, "LOGISTICS", "logistics-3", "LOGISTICS III");
-        addNode(byName, "LOGISTICS", "logistics-extend-1", "LOGISTICS EXTENSION I");
-        addNode(byName, "LOGISTICS", "logistics-extend-2", "LOGISTICS EXTENSION II");
-        addNode(byName, "LOGISTICS", "logistics-extend-3", "LOGISTICS EXTENSION III");
-
-        addNode(byName, "POWER", "power-production-node", "POWER PRODUCTION");
-        addNode(byName, "FABRICATION", "fabrication-process-node", "FABRICATION", "process-presstanium-node");
-        addNode(byName, "COMBAT", "quality-basic", "BASIC COMBAT");
-        addNode(byName, "COMBAT", "quality-uncommon", "UNCOMMON COMBAT");
-        addNode(byName, "COMBAT", "quality-rare", "RARE COMBAT");
-        addNode(byName, "COMBAT", "quality-epic", "EPIC COMBAT");
-        addNode(byName, "ANCIENT SYSTEMS", "quality-legendary", "LEGENDARY SYSTEMS");
+        NHResearchTreeModel.Model researchModel = NHResearchTreeModel.build(NHTechTree.root);
+        for (NHResearchTreeModel.Group definition : researchModel.groups) {
+            Drawable icon = definition.asset == null ? categoryIcon(definition.category)
+                    : nodeIcon(definition.asset, null);
+            addVanillaNode(byName, definition.category, definition.key, definition.title, icon);
+        }
 
         nativeNodes.each((content, node) -> {
-            Category category = byName.get(categoryName(content));
-            Entry entry = new Entry(content, node, category);
+            NHResearchTreeModel.Assignment assignment = researchModel.assignment(content);
+            String categoryName = assignment == null ? NHResearchTreeModel.SYSTEMS : assignment.category;
+            Category category = byName.get(categoryName);
+            if (category == null) return;
+            Entry entry = new Entry(content, node, category, assignment == null ? 0 : assignment.threat);
             entries.put(content, entry);
             category.entries.add(entry);
-            String nodeAsset = nodeAssetFor(content, category, node.depth);
-            NodeGroup group = nodeAsset == null ? null : nodeGroups.get(nodeAsset);
-            if (group == null || group.category != category) group = category.nodes.first();
+            NodeGroup group = assignment == null ? null : nodeGroups.get(assignment.groupKey);
+            if (group == null || group.category != category) group = nearestBranchGroup(node, category);
+            if (group == null) group = category.nodes.first();
             group.entries.add(entry);
             entry.group = group;
         });
@@ -351,12 +311,19 @@ public class NHResearchDialog extends ResearchDialog {
             if (group.minDepth == Integer.MAX_VALUE) group.minDepth = 0;
         });
         entries.each((content, entry) -> {
-            if (entry.group == null || entry.node.parent == null || entry.node.parent.content == null) return;
-            Entry parentEntry = entries.get(entry.node.parent.content);
-            if (parentEntry == null || parentEntry.group == null || parentEntry.group == entry.group) return;
-            NodeGroup parent = parentEntry.group;
-            if (parent.category != entry.group.category) return;
-            if (!entry.group.parentOptions.contains(parent)) entry.group.parentOptions.add(parent);
+            if (entry.group == null) return;
+            TechNode ancestor = entry.node.parent;
+            while (ancestor != null && ancestor.content != null) {
+                Entry parentEntry = entries.get(ancestor.content);
+                if (parentEntry != null && parentEntry.group != null && parentEntry.group != entry.group) {
+                    NodeGroup parent = parentEntry.group;
+                    if (parent.category == entry.group.category && !entry.group.parentOptions.contains(parent)) {
+                        entry.group.parentOptions.add(parent);
+                    }
+                    break;
+                }
+                ancestor = ancestor.parent;
+            }
         });
         nodeGroups.each((asset, group) -> {
             group.parentOptions.sort((a, b) -> b.minDepth - a.minDepth);
@@ -377,42 +344,42 @@ public class NHResearchDialog extends ResearchDialog {
         modelReady = true;
     }
 
-    private void addNode(ObjectMap<String, Category> byName, String categoryName, String asset, String title) {
-        addNode(byName, categoryName, asset, title, asset);
+    private Drawable categoryIcon(String category) {
+        return switch (category) {
+            case NHResearchTreeModel.FLUIDS -> Icon.liquid;
+            case NHResearchTreeModel.MINING -> Icon.production;
+            case NHResearchTreeModel.LOGISTICS -> Icon.distribution;
+            case NHResearchTreeModel.POWER -> Icon.power;
+            case NHResearchTreeModel.COMBAT -> Icon.turret;
+            case NHResearchTreeModel.SYSTEMS -> Icon.logic;
+            default -> Icon.box;
+        };
     }
-
-    private void addNode(ObjectMap<String, Category> byName, String categoryName, String asset, String title, String iconAsset) {
+    private void addVanillaNode(ObjectMap<String, Category> byName, String categoryName, String asset, String title, Drawable icon) {
         Category category = byName.get(categoryName);
         if (category == null || nodeGroups.containsKey(asset)) return;
-        NodeGroup group = new NodeGroup(asset, title, category, nodeIcon(iconAsset, null));
+        NodeGroup group = new NodeGroup(asset, title, category, icon);
         nodeGroups.put(asset, group);
         category.nodes.add(group);
     }
-    private void addCategory(ObjectMap<String, Category> byName, String title, String icon, Color color) {
-        Category category = new Category(title, nodeIcon(icon, null), color);
+
+    private void addCategory(ObjectMap<String, Category> byName, String title, Drawable icon, Color color) {
+        Category category = new Category(title, icon, color);
         categories.add(category);
         byName.put(title, category);
     }
 
-    private String categoryName(UnlockableContent content) {
-        if (content instanceof Item) return "MATERIALS";
-        if (content instanceof mindustry.type.Liquid) return "FLUID SYSTEMS";
-        if (content instanceof mindustry.type.UnitType) return "COMBAT";
-        if (content instanceof GenericCrafter) return "FABRICATION";
-        if (content instanceof Block block) {
-            return switch (block.category) {
-                case turret, defense, units -> "COMBAT";
-                case distribution -> "LOGISTICS";
-                case liquid -> "FLUID SYSTEMS";
-                case power -> "POWER";
-                case production -> "MINING";
-                case crafting -> "FABRICATION";
-                default -> "ANCIENT SYSTEMS";
-            };
+    private NodeGroup nearestBranchGroup(TechNode node, Category category) {
+        TechNode current = node == null ? null : node.parent;
+        while (current != null) {
+            Entry parentEntry = current.content == null ? null : entries.get(current.content);
+            if (parentEntry != null && parentEntry.group != null && parentEntry.group.category == category) {
+                return parentEntry.group;
+            }
+            current = current.parent;
         }
-        return "ANCIENT SYSTEMS";
+        return null;
     }
-
     private void selectCategory(Category category) {
         selectedCategory = category;
         selectedNode = null;
@@ -511,7 +478,7 @@ public class NHResearchDialog extends ResearchDialog {
         Label title = detailTable.add(entry.content.localizedName).width(286f).wrap().left().get();
         title.setFontScale(1.1f);
         detailTable.row();
-        detailTable.add(entry.category.title).color(entry.category.color).left().row();
+        detailTable.add(entry.category.title + "  /  THREAT " + entry.threat).color(entry.category.color).left().row();
         detailTable.image(Tex.whiteui, entry.category.color).height(2f).growX().padTop(6f).padBottom(7f).row();
         detailTable.add(entry.content.displayDescription()).color(Color.lightGray).wrap().width(286f).left().row();
 
@@ -679,58 +646,6 @@ public class NHResearchDialog extends ResearchDialog {
         return region == Core.atlas.find("error") ? new TextureRegionDrawable(fallback.uiIcon) : new TextureRegionDrawable(region);
     }
 
-    private static String nodeAssetFor(UnlockableContent content, Category category, int depth) {
-        String name = content.name.toLowerCase();
-        if (category.title.equals("FABRICATION")) return "fabrication-process-node";
-        if (category.title.equals("FLUID SYSTEMS")) {
-            if (name.contains("irdryon")) return "process-irdryon-fluid-node";
-            int tier = Math.max(1, Math.min(3, depth - 1));
-            return "liquid-logistics-" + tier;
-        }
-        if (category.title.equals("MINING")) {
-            if (name.contains("quantum")) return "mine-quantum-liquid-node";
-            if (name.contains("xen")) return "mine-xen-fluid-node";
-            if (name.contains("zeta")) return "mine-zeta-node";
-            if (name.contains("silicon")) return "mine-silicon-node";
-            if (name.contains("titanium")) return "mine-titanium-node";
-            return "mine-tungsten-node";
-        }
-        if (category.title.equals("LOGISTICS")) {
-            int tier = Math.max(1, Math.min(3, depth - 1));
-            return "logistics-" + tier;
-        }
-        if (category.title.equals("POWER")) return "power-production-node";
-        if (category.title.equals("ANCIENT SYSTEMS")) return "quality-legendary";
-        if (category.title.equals("COMBAT")) {
-            int tier = Math.max(1, Math.min(4, depth - 1));
-            return switch (tier) {
-                case 1 -> "quality-basic";
-                case 2 -> "quality-uncommon";
-                case 3 -> "quality-rare";
-                default -> "quality-epic";
-            };
-        }
-        if (name.contains("processor-junior")) return "process-processor-junior-node";
-        if (name.contains("processor-senior")) return "process-processor-senior-node";
-        if (name.contains("processor-hyper")) return "process-processor-hyper-node";
-        if (name.contains("presstanium")) return "process-presstanium-node";
-        if (name.contains("multiple-steel")) return "process-multiple-steel-node";
-        if (name.contains("seton-alloy")) return "process-seton-alloy-node";
-        if (name.contains("nodex-plate")) return "process-nodex-plate-node";
-        if (name.contains("hadronicomp")) return "process-hadronicomp-node";
-        if (name.contains("dark-energy")) return "process-dark-energy-node";
-        if (name.contains("irayrond")) return "process-irayrond-panel-node";
-        if (name.contains("ancimembrane")) return "process-ancimembrane-node";
-        if (name.contains("metal-oxhydrigen")) return "process-metal-oxhydrigen-node";
-        if (name.contains("phase-fabric")) return "process-phase-fabric-node";
-        if (name.contains("surge-alloy")) return "process-surge-alloy-node";
-        if (name.contains("thermo-core-positive")) return "process-thermo-core-positive-node";
-        if (name.contains("thermo-core-negative")) return "process-thermo-core-negative-node";
-        if (name.contains("fusion-energy") || name.contains("fusion-core")) return "process-fusion-core-energy-node";
-        if (name.contains("zeta")) return "process-zeta-node";
-        return "basic-materials-node";
-    }
-
     private static Drawable contentIcon(UnlockableContent content) {
         return new TextureRegionDrawable(content.uiIcon);
     }
@@ -862,7 +777,7 @@ public class NHResearchDialog extends ResearchDialog {
             name.setAlignment(Align.left);
             name.setFontScale(0.9f);
             card.row();
-            card.label(() -> entry.content.unlockedHost() ? "[green]ONLINE" : canResearch(entry) ? "[accent]RESEARCH" : "[gray]LOCKED")
+            card.label(() -> entry.content.unlockedHost() ? "[green]ONLINE  [gray]THREAT " + entry.threat : canResearch(entry) ? "[accent]RESEARCH  [gray]THREAT " + entry.threat : "[gray]LOCKED  THREAT " + entry.threat)
                     .colspan(2).width(CARD_WIDTH - 16f).height(24f).left();
             card.clicked(() -> {
                 selectedEntry = entry;
@@ -1004,17 +919,18 @@ public class NHResearchDialog extends ResearchDialog {
         final TechNode node;
         final Category category;
         final Drawable icon;
+        final int threat;
         final Seq<Entry> children = new Seq<>();
         final Seq<UnlockableContent> prerequisites = new Seq<>();
         Entry parent;
         NodeGroup group;
 
-        Entry(UnlockableContent content, TechNode node, Category category) {
+        Entry(UnlockableContent content, TechNode node, Category category, int threat) {
             this.content = content;
             this.node = node;
             this.category = category;
+            this.threat = threat;
             this.icon = contentIcon(content);
         }
     }
 }
-
