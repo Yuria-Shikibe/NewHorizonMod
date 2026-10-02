@@ -20,14 +20,6 @@ public final class SpecialEventState {
             enabled = fromSetting;
         }
 
-        if (!Vars.net.active()) {
-            if (!fromSetting) {
-                enabled = false;
-            } else if (!enabled) {
-                enabled = true;
-            }
-        }
-
         writeTag();
     }
 

@@ -30,12 +30,15 @@ import newhorizon.expand.logic.cutscene.letterbox.LetterboxText;
 import newhorizon.expand.logic.wproc.CaptureSector;
 import newhorizon.expand.logic.wproc.CustomProgressBar;
 import newhorizon.expand.logic.wproc.EventBanner;
+import newhorizon.expand.logic.wproc.DefaultWeatherEvent;
 import newhorizon.expand.logic.wproc.HUDsetting;
 import newhorizon.expand.logic.wip.NearestSpawn;
 import newhorizon.expand.logic.wip.RandomTarget;
 import newhorizon.expand.game.DefaultIntervention;
 import newhorizon.expand.game.DefaultRaid;
 import newhorizon.expand.game.DefaultSpecialEvent;
+import newhorizon.expand.game.WeatherEventState;
+import newhorizon.expand.logic.wproc.WeatherEvent;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -62,6 +65,7 @@ public class NHLogic {
         DefaultRaid.load();
         DefaultIntervention.load();
         DefaultSpecialEvent.load();
+        WeatherEventState.load();
     }
 
     public static void loadLCategory() {
@@ -92,6 +96,8 @@ public class NHLogic {
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultRaid.class, "defaultraid");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultIntervention.class, "defaultintervention");
         registerPrivilegedStatement(newhorizon.expand.logic.wproc.DefaultSpecialEvent.class, "defaultspecialevent");
+        registerPrivilegedStatement(DefaultWeatherEvent.class, "defeatweatherevent");
+        registerPrivilegedStatement(WeatherEvent.class, "weatherevent");
         registerPrivilegedStatement(RandomTarget.class, "randtarget");
         registerPrivilegedStatement(NearestSpawn.class, "nearspawn");
         registerPrivilegedStatement(CaptureSector.class, "capturesector");

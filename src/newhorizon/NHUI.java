@@ -37,6 +37,7 @@ import newhorizon.content.NHDatabaseEntries;
 import newhorizon.content.NHLogic;
 import newhorizon.expand.game.DefaultRaidStrength;
 import newhorizon.expand.game.RaidState;
+import newhorizon.expand.game.WeatherEventState;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.CustomProgressBarEntry;
@@ -49,7 +50,8 @@ import static mindustry.gen.Tex.underline;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class NHUI {
-    public static final float maxWidth = 65f * 5f + 4f;
+    private static final float vanillaWidthFallback = 65f * 5f + 4f;
+    private static float contentWidth = vanillaWidthFallback;
     public static Table HUD_overlay, HUD_waves, HUD_statustable, HUD_status;
     public static Table itemInv;
     public static WidgetGroup HUD_waves_editor;
@@ -115,11 +117,16 @@ public class NHUI {
 
     public static void preProcess() {
         infoTable = HUD_waves.find("infotable");
+        if (infoTable instanceof Table table) {
+            table.validate();
+            float preferredWidth = table.getPrefWidth();
+            if (preferredWidth > 0f) contentWidth = preferredWidth;
+        }
         infoTable.remove();
     }
 
     public static void postProcess() {
-        HUD_waves.add(infoTable).width(maxWidth).left();
+        HUD_waves.add(infoTable).width(contentWidth).left();
     }
 
     public static void buildListTable() {
@@ -167,20 +174,23 @@ public class NHUI {
 
             t.table(bl -> {
                 bl.table(table -> {
-                    table.label(NHUI::getDisplayObjectiveCount).labelAlign(Align.left).maxWidth(maxWidth - 40).pad(2, 16, 4, 0).row();
-                    table.label(NHUI::getDisplayEventCount).labelAlign(Align.left).maxWidth(maxWidth - 40).pad(4, 16, 2, 0).row();
+                    table.label(NHUI::getDisplayObjectiveCount).labelAlign(Align.left).growX().pad(2, 16, 4, 0).row();
+                    table.label(NHUI::getDisplayEventCount).labelAlign(Align.left).growX().pad(4, 16, 2, 0).row();
                 }).growX().height(50).marginLeft(10f);
                 bl.add(b).size(50).padLeft(10f);
             }).growX().fillY().margin(4f).padBottom(4f);
 
             t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
-        })).left().margin(10f).growX().row();
+        })).left().width(contentWidth).row();
     }
 
     public static void rebuildEventList() {
         if (eventList == null) return;
         eventList.clear();
         eventList.align(Align.topLeft).defaults().growX().fillY().row();
+        if (WeatherEventState.active()) {
+            eventList.add(WeatherEventState.getForecastTable()).growX().left().row();
+        }
         // Keep custom bars directly below the raid-strength bar in their creation order.
         for (CustomProgressBarEntry progressBar : customProgressBars) {
             DelayCollapser col = new DelayCollapser(progressBar.getDisplayStack(), progressBar.completed());
@@ -230,7 +240,7 @@ public class NHUI {
         for (var marker : cutsceneUI.markers) {
             if (marker.visibleInEventUI) visibleMarkerCount++;
         }
-        int eventCount = visibleMarkerCount + customProgressBars.size;
+        int eventCount = visibleMarkerCount + customProgressBars.size + (WeatherEventState.active() ? 1 : 0);
         return eventCount == 0 ? Core.bundle.get("mod.ui.no-event") : Core.bundle.format("mod.ui.event-count", eventCount);
     }
 
