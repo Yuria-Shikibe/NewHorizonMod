@@ -83,6 +83,7 @@ public class HudMarker extends Table {
     public Kind kind = Kind.OTHER;
     public int syncSeed;
     public Color markColor = Pal.accent;
+    public boolean visibleInEventUI = true;
     public Vec2 markPoint = new Vec2();
     public TextureRegion icon = NHContent.icon2;
     public MarkStyle style = MarkStyle.defaultStyle;
@@ -91,7 +92,8 @@ public class HudMarker extends Table {
     public float radius = 24f;
     public float angle = 0f;
     protected float lifeTimer = 0;
-    protected float displayAlpha = 30f;
+    /** Persistent marker opacity multiplier; lifetime must not fade the marker. */
+    protected float displayAlpha = 1f;
     protected Prov<Float> lifeTimerProv;
     protected Boolp removeCheck = () -> false;
     protected boolean removing;
@@ -143,6 +145,11 @@ public class HudMarker extends Table {
         return this;
     }
 
+    public HudMarker setEventVisibility(boolean visible) {
+        this.visibleInEventUI = visible;
+        return this;
+    }
+
     public HudMarker setKind(Kind kind) {
         this.kind = kind == null ? Kind.OTHER : kind;
         return this;
@@ -176,7 +183,6 @@ public class HudMarker extends Table {
     @Override
     public void act(float delta) {
         super.act(delta);
-        displayAlpha = Mathf.lerpDelta(displayAlpha, 0.1f, 5 * delta);
         if (completed()) removeMarker();
     }
 
@@ -240,7 +246,6 @@ public class HudMarker extends Table {
     }
 
     protected void focusCamera() {
-        displayAlpha = 30f;
         float cx = markPoint.x;
         float cy = markPoint.y;
         ActionBus bus = new ActionBus();
@@ -355,7 +360,7 @@ public class HudMarker extends Table {
         if (style != null) {
             Color drawColor = Tmp.c1.set(markColor)
                     .lerp(Color.white, Mathf.absin(elapsed(), 5f, 0.4f))
-                    .a(color.a * Mathf.clamp(displayAlpha, 0.1f, 1f));
+                    .a(color.a);
             Draw.color(drawColor);
             style.drawer.draw(markerId, elapsed(), radius,
                     screenVec, originVec, drawColor,
@@ -379,7 +384,7 @@ public class HudMarker extends Table {
 
     public void drawLineStroke(boolean outer, boolean center) {
         Lines.stroke((outer ? strokeOuter : strokeInner) * getScale(), (outer ? Pal.gray : markColor));
-        Draw.alpha(color.a * Mathf.clamp(displayAlpha, center ? 0.5f : 0.1f, 1f));
+            Draw.alpha(color.a);
     }
 
     public float getScale() {

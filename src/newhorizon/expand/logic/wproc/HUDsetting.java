@@ -2,6 +2,7 @@ package newhorizon.expand.logic.wproc;
 
 import arc.graphics.Color;
 import arc.scene.ui.layout.Table;
+import arc.util.Time;
 import mindustry.core.World;
 import mindustry.game.Team;
 import mindustry.logic.LAssembler;
@@ -9,16 +10,19 @@ import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
 import mindustry.logic.LVar;
+import newhorizon.NHUI;
 import newhorizon.content.NHLogic;
 import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.components.ui.MarkStyle;
+
+import java.util.Locale;
 
 import static mindustry.Vars.headless;
 
 /**
  * World-processor HUD marker node.
  *
- * Syntax: hudsetting x y radius lifetime color style enabled
+ * Syntax: hudsetting x y radius lifetime(seconds) color style visable
  *
  * Style values are: 0 rotating box + crosshair, 1 rotating box only,
  * 2 fixed box + crosshair, 3 shaking signal box, 4 raid/icon ring.
@@ -30,7 +34,7 @@ public class HUDsetting extends LStatement {
     public String lifetime = "60";
     public String color = "@accent";
     public String style = "0";
-    public String enabled = "1";
+    public String visable = "1";
 
     public HUDsetting(String[] tokens) {
         if (tokens.length > 1) x = tokens[1];
@@ -39,7 +43,7 @@ public class HUDsetting extends LStatement {
         if (tokens.length > 4) lifetime = tokens[4];
         if (tokens.length > 5) color = tokens[5];
         if (tokens.length > 6) style = tokens[6];
-        if (tokens.length > 7) enabled = tokens[7];
+        if (tokens.length > 7) visable = tokens[7];
     }
 
     public HUDsetting() {
@@ -56,7 +60,7 @@ public class HUDsetting extends LStatement {
         table.table(row -> {
             row.add(" Radius: ");
             fields(row, radius, value -> radius = value).width(90f);
-            row.add(" Lifetime: ");
+            row.add(" Lifetime(s): ");
             fields(row, lifetime, value -> lifetime = value).width(90f);
         }).left().row();
         table.table(row -> {
@@ -66,8 +70,8 @@ public class HUDsetting extends LStatement {
             fields(row, style, value -> style = value).width(60f);
         }).left().row();
         table.table(row -> {
-            row.add(" Enabled: ");
-            fields(row, enabled, value -> enabled = value).width(90f);
+            row.add(" Visable: ");
+            fields(row, visable, value -> visable = value).width(90f);
         }).left();
     }
 
@@ -90,42 +94,44 @@ public class HUDsetting extends LStatement {
                 .append(lifetime).append(' ')
                 .append(color).append(' ')
                 .append(style).append(' ')
-                .append(enabled);
+                .append(visable);
     }
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
         return new HUDsettingInstruction(
                 builder.var(x), builder.var(y), builder.var(radius), builder.var(lifetime),
-                builder.var(color), builder.var(style), builder.var(enabled), color);
+                builder.var(color), builder.var(style), builder.var(visable), color);
     }
 
     public static class HUDsettingInstruction implements LExecutor.LInstruction {
-        public final LVar x, y, radius, lifetime, color, style, enabled;
+        public final LVar x, y, radius, lifetime, color, style, visable;
         private final String colorToken;
         private HudMarker marker;
         private final Color decodedColor = new Color();
+        private boolean lastVisable = true;
 
         public HUDsettingInstruction(LVar x, LVar y, LVar radius, LVar lifetime,
-                                     LVar color, LVar style, LVar enabled, String colorToken) {
+                                     LVar color, LVar style, LVar visable, String colorToken) {
             this.x = x;
             this.y = y;
             this.radius = radius;
             this.lifetime = lifetime;
             this.color = color;
             this.style = style;
-            this.enabled = enabled;
+            this.visable = visable;
             this.colorToken = colorToken;
         }
 
         @Override
         public void run(LExecutor exec) {
-            if (headless || enabled.numf() <= 0f) {
+            if (headless) {
                 removeMarker();
                 return;
             }
 
-            float life = Math.max(lifetime.numf(), 1f);
+            float life = Math.max(lifetime.numf(), 0.01f) * Time.toSeconds;
+            boolean eventVisible = visable.numf() > 0f;
             if (marker == null || marker.isRemoving() || marker.completed()) {
                 removeMarker();
                 marker = new HudMarker()
@@ -133,8 +139,11 @@ public class HUDsetting extends LStatement {
                         .setRadius(Math.max(radius.numf(), 0f))
                         .setDuration(life)
                         .setStyle(resolveStyle(style.numf()))
-                        .setMarkColor(resolveColor(color).cpy());
+                        .setMarkColor(resolveColor(color).cpy())
+                        .setEventVisibility(eventVisible);
                 marker.addMarker();
+                lastVisable = eventVisible;
+                NHUI.rebuildEventList();
                 return;
             }
 
@@ -144,6 +153,11 @@ public class HUDsetting extends LStatement {
             marker.radius = Math.max(radius.numf(), 0f);
             marker.markColor.set(resolveColor(color));
             marker.style = resolveStyle(style.numf());
+            if (eventVisible != lastVisable) {
+                lastVisable = eventVisible;
+                marker.setEventVisibility(eventVisible);
+                NHUI.rebuildEventList();
+            }
         }
 
         private void removeMarker() {
@@ -195,7 +209,7 @@ public class HUDsetting extends LStatement {
                 }
             }
 
-            Color named = arc.graphics.Colors.get(name);
+            Color named = arc.graphics.Colors.get(name.toUpperCase(Locale.ROOT));
             if (named != null) return named;
 
             return switch (name.toLowerCase()) {

@@ -188,6 +188,7 @@ public class NHUI {
             eventList.add(col).row();
         }
         for (var eventHudMarker : cutsceneUI.markers) {
+            if (!eventHudMarker.visibleInEventUI) continue;
             Boolp shown = eventHudMarker::completed;
             DelayCollapser col = new DelayCollapser(eventHudMarker.getDisplayStack(), shown.get());
             col.setCollapsed(true, shown);
@@ -225,7 +226,11 @@ public class NHUI {
     }
 
     public static String getDisplayEventCount() {
-        int eventCount = cutsceneUI.markers.size + customProgressBars.size;
+        int visibleMarkerCount = 0;
+        for (var marker : cutsceneUI.markers) {
+            if (marker.visibleInEventUI) visibleMarkerCount++;
+        }
+        int eventCount = visibleMarkerCount + customProgressBars.size;
         return eventCount == 0 ? Core.bundle.get("mod.ui.no-event") : Core.bundle.format("mod.ui.event-count", eventCount);
     }
 
