@@ -16,6 +16,10 @@ import newhorizon.expand.logic.components.ui.HudMarker;
 import newhorizon.expand.logic.components.ui.MarkStyle;
 
 import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import static mindustry.Vars.headless;
 
@@ -110,6 +114,7 @@ public class HUDsetting extends LStatement {
         private HudMarker marker;
         private final Color decodedColor = new Color();
         private boolean lastVisable = true;
+        private static final Map<String, Color> palColors = loadPalColors();
 
         public HUDsettingInstruction(LVar x, LVar y, LVar radius, LVar lifetime,
                                      LVar color, LVar style, LVar visable, String colorToken) {
@@ -212,6 +217,9 @@ public class HUDsetting extends LStatement {
             Color named = arc.graphics.Colors.get(name.toUpperCase(Locale.ROOT));
             if (named != null) return named;
 
+            Color palColor = palColors.get(name.toLowerCase(Locale.ROOT));
+            if (palColor != null) return palColor;
+
             return switch (name.toLowerCase()) {
                 case "white" -> Color.white;
                 case "black" -> Color.black;
@@ -228,6 +236,19 @@ public class HUDsetting extends LStatement {
                 case "accentback" -> mindustry.graphics.Pal.accentBack;
                 default -> null;
             };
+        }
+
+        private static Map<String, Color> loadPalColors() {
+            Map<String, Color> colors = new HashMap<>();
+            for (Field field : mindustry.graphics.Pal.class.getFields()) {
+                if (!Modifier.isStatic(field.getModifiers()) || field.getType() != Color.class) continue;
+                try {
+                    Color color = (Color) field.get(null);
+                    if (color != null) colors.put(field.getName().toLowerCase(Locale.ROOT), color);
+                } catch (IllegalAccessException ignored) {
+                }
+            }
+            return colors;
         }
 
         private Color resolveNumericColor(double number) {

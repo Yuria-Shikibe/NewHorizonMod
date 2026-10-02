@@ -90,9 +90,15 @@ public final class NHResearchTreeModel {
                 group = block.category == mindustry.type.Category.turret ? "combat-turrets"
                         : block.category == mindustry.type.Category.units ? "combat-unit-production" : "combat-defense";
             }
-            case distribution -> { category = LOGISTICS; group = "logistics"; }
+            case distribution -> {
+                category = LOGISTICS;
+                group = logisticsGroup(block);
+            }
             case power -> { category = POWER; group = "power"; }
-            case liquid -> { category = FLUIDS; group = "liquid-logistics"; }
+            case liquid -> {
+                category = FLUIDS;
+                group = liquidLogisticsGroup(block);
+            }
             case crafting, production -> {
                 if (isMiningBlock(block)) {
                     category = MINING;
@@ -123,20 +129,26 @@ public final class NHResearchTreeModel {
         if (key.equals("materials")) title = "MATERIALS";
         else if (key.equals("liquids")) title = "LIQUIDS";
         else if (key.equals("mining")) { title = "MINING"; asset = "mine-tungsten-node"; }
-        else if (key.equals("logistics")) { title = "LOGISTICS"; asset = "logistics-2"; }
+        else if (key.startsWith("logistics-")) {
+            title = logisticsTitle(key);
+            asset = key;
+        }
         else if (key.equals("power")) { title = "POWER NETWORK"; asset = "power-production-node"; }
         else if (key.equals("fabrication")) title = "FABRICATION";
         else if (key.equals("combat-turrets")) { title = "TURRETS"; }
         else if (key.equals("combat-defense")) { title = "DEFENSE"; }
         else if (key.equals("combat-unit-production")) { title = "UNIT PRODUCTION"; }
         else if (key.equals("systems")) { title = "ANCIENT SYSTEMS"; }
-        else if (key.equals("liquid-logistics")) { title = "LIQUID LOGISTICS"; asset = "liquid-logistics-2"; }
+        else if (key.startsWith("liquid-logistics-")) {
+            title = liquidLogisticsTitle(key);
+            asset = key;
+        }
         else if (key.startsWith("unit-gate-")) {
             title = key.substring("unit-gate-".length()).replace('-', ' ').toUpperCase() + " GATE";
             asset = "unit-branch";
         } else if (key.startsWith("fluid-factory-")) {
             title = "LIQUID: " + key.substring("fluid-factory-".length()).replace('-', ' ').toUpperCase();
-            asset = "liquid-logistics-2";
+            asset = content instanceof Block ? "liquid-logistics-" + resourceTier((Block) content) : "liquid-logistics-2";
         } else if (key.startsWith("factory-")) {
             title = "FACTORY: " + key.substring("factory-".length()).replace('-', ' ').toUpperCase();
             asset = processAsset(key.substring("factory-".length()));
@@ -146,6 +158,29 @@ public final class NHResearchTreeModel {
         return new Group(key, assignment.category, title, asset);
     }
 
+    private static String logisticsGroup(Block block) {
+        String prefix = block.name.contains("extend") ? "logistics-extend-" : "logistics-";
+        return prefix + resourceTier(block);
+    }
+
+    private static String liquidLogisticsGroup(Block block) {
+        String prefix = block.name.contains("extend") ? "liquid-logistics-extend-" : "liquid-logistics-";
+        return prefix + resourceTier(block);
+    }
+
+    private static String logisticsTitle(String key) {
+        if (key.startsWith("logistics-extend-")) {
+            return "LOGISTICS EXTENSION " + key.substring("logistics-extend-".length());
+        }
+        return "LOGISTICS " + key.substring("logistics-".length());
+    }
+
+    private static String liquidLogisticsTitle(String key) {
+        if (key.startsWith("liquid-logistics-extend-")) {
+            return "LIQUID LOGISTICS EXTENSION " + key.substring("liquid-logistics-extend-".length());
+        }
+        return "LIQUID LOGISTICS " + key.substring("liquid-logistics-".length());
+    }
     private static String processAsset(String name) {
         return switch (name) {
             case "processor-junior" -> "process-processor-junior-node";
@@ -221,6 +256,53 @@ public final class NHResearchTreeModel {
         return null;
     }
 
+    private static int resourceTier(Block block) {
+        int maxDepth = 0;
+        int maxThreat = 0;
+        if (block.requirements != null) {
+            for (ItemStack stack : block.requirements) {
+                maxDepth = Math.max(maxDepth, itemDepth(stack.item, NHTechTree.itemProductionTree, 0));
+                maxThreat = Math.max(maxThreat, itemThreat(stack.item));
+            }
+        }
+        if (block.consumers != null) {
+            for (Consume consume : block.consumers) {
+                if (consume instanceof ConsumeItems) {
+                    ItemStack[] stacks = ((ConsumeItems) consume).items;
+                    if (stacks != null) for (ItemStack stack : stacks) {
+                        maxDepth = Math.max(maxDepth, itemDepth(stack.item, NHTechTree.itemProductionTree, 0));
+                        maxThreat = Math.max(maxThreat, itemThreat(stack.item));
+                    }
+                } else if (consume instanceof ConsumeLiquid) {
+                    Liquid liquid = ((ConsumeLiquid) consume).liquid;
+                    maxDepth = Math.max(maxDepth, liquidDepth(liquid, NHTechTree.liquidProductionTree, 0));
+                    maxThreat = Math.max(maxThreat, liquidThreat(liquid));
+                } else if (consume instanceof ConsumeLiquids) {
+                    LiquidStack[] stacks = ((ConsumeLiquids) consume).liquids;
+                    if (stacks != null) for (LiquidStack stack : stacks) {
+                        maxDepth = Math.max(maxDepth, liquidDepth(stack.liquid, NHTechTree.liquidProductionTree, 0));
+                        maxThreat = Math.max(maxThreat, liquidThreat(stack.liquid));
+                    }
+                }
+            }
+        }
+        if (block instanceof RecipeGenericCrafter) {
+            RecipeGenericCrafter crafter = (RecipeGenericCrafter) block;
+            for (newhorizon.expand.type.Recipe recipe : crafter.recipes) {
+                for (ItemStack stack : recipe.inputItem) {
+                    maxDepth = Math.max(maxDepth, itemDepth(stack.item, NHTechTree.itemProductionTree, 0));
+                    maxThreat = Math.max(maxThreat, itemThreat(stack.item));
+                }
+                for (LiquidStack stack : recipe.inputLiquid) {
+                    maxDepth = Math.max(maxDepth, liquidDepth(stack.liquid, NHTechTree.liquidProductionTree, 0));
+                    maxThreat = Math.max(maxThreat, liquidThreat(stack.liquid));
+                }
+            }
+        }
+        if (maxDepth >= 4 || maxThreat >= 9) return 3;
+        if (maxDepth >= 2 || maxThreat >= 4) return 2;
+        return 1;
+    }
     private static int blockThreat(Block block) {
         int result = 0;
         if (block.requirements != null) {
