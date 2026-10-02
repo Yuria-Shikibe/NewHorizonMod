@@ -15,6 +15,7 @@ public class EventSpecial extends ActionLStatement {
     public String alertTime = "20", spawnRange = "180";
     public boolean overrideDefaultCoordinate = false;
     public String targetX = "0", targetY = "0";
+    public String uiVisible = "1", worldVisible = "1";
 
     public EventSpecial(String[] token) {
         ParseUtil.getFirstToken(token);
@@ -27,6 +28,8 @@ public class EventSpecial extends ActionLStatement {
             targetX = ParseUtil.getNextToken(token);
             targetY = ParseUtil.getNextToken(token);
         }
+        if (ParseUtil.tokenIndex + 1 < token.length) uiVisible = ParseUtil.getNextToken(token);
+        if (ParseUtil.tokenIndex + 1 < token.length) worldVisible = ParseUtil.getNextToken(token);
     }
 
     public EventSpecial() {
@@ -62,6 +65,13 @@ public class EventSpecial extends ActionLStatement {
             fields(t, spawnRange, str -> spawnRange = str);
         });
 
+        buildRowTable(table, t -> {
+            t.add(" UI Visible: ");
+            fields(t, uiVisible, str -> uiVisible = str).width(90f);
+            t.add(" World Visible: ");
+            fields(t, worldVisible, str -> worldVisible = str).width(90f);
+        });
+
         buildRowTable(table, t -> t.button(b -> {
             b.label(() -> " Override Target Position ");
             b.clicked(() -> {
@@ -89,6 +99,7 @@ public class EventSpecial extends ActionLStatement {
         writeTokens(builder, team, alertTime, spawnRange);
         writeTokens(builder, String.valueOf(overrideDefaultCoordinate));
         if (overrideDefaultCoordinate) writeTokens(builder, targetX, targetY);
+        writeTokens(builder, uiVisible, worldVisible);
     }
 
     @Override
@@ -99,17 +110,20 @@ public class EventSpecial extends ActionLStatement {
                 builder.var(spawnRange),
                 overrideDefaultCoordinate,
                 builder.var(targetX),
-                builder.var(targetY)
+                builder.var(targetY),
+                builder.var(uiVisible),
+                builder.var(worldVisible)
         );
     }
 
     public class EventSpecialI extends ActionInstruction {
         public boolean overrideDefaultCoordinate;
-        public LVar team, alertTime, spawnRange, targetX, targetY;
+        public LVar team, alertTime, spawnRange, targetX, targetY, uiVisible, worldVisible;
 
         public EventSpecialI(
                 LVar team, LVar alertTime, LVar spawnRange,
-                boolean overrideDefaultCoordinate, LVar targetX, LVar targetY
+                boolean overrideDefaultCoordinate, LVar targetX, LVar targetY,
+                LVar uiVisible, LVar worldVisible
         ) {
             this.team = team;
             this.alertTime = alertTime;
@@ -117,6 +131,8 @@ public class EventSpecial extends ActionLStatement {
             this.overrideDefaultCoordinate = overrideDefaultCoordinate;
             this.targetX = targetX;
             this.targetY = targetY;
+            this.uiVisible = uiVisible;
+            this.worldVisible = worldVisible;
         }
 
         @Override
@@ -126,6 +142,7 @@ public class EventSpecial extends ActionLStatement {
             appendExec(exec, alertTime, spawnRange);
             appendExec(exec, String.valueOf(overrideDefaultCoordinate));
             if (overrideDefaultCoordinate) appendExec(exec, targetX, targetY);
+            appendExec(exec, uiVisible, worldVisible);
             endExec(exec);
         }
     }

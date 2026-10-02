@@ -83,7 +83,9 @@ public class HudMarker extends Table {
     public Kind kind = Kind.OTHER;
     public int syncSeed;
     public Color markColor = Pal.accent;
+    public boolean colorFlash = true;
     public boolean visibleInEventUI = true;
+    public boolean visibleOnWorld = true;
     public Vec2 markPoint = new Vec2();
     public TextureRegion icon = NHContent.icon2;
     public MarkStyle style = MarkStyle.defaultStyle;
@@ -145,8 +147,18 @@ public class HudMarker extends Table {
         return this;
     }
 
+    public HudMarker setColorFlash(boolean colorFlash) {
+        this.colorFlash = colorFlash;
+        return this;
+    }
+
     public HudMarker setEventVisibility(boolean visible) {
         this.visibleInEventUI = visible;
+        return this;
+    }
+
+    public HudMarker setWorldVisibility(boolean visible) {
+        this.visibleOnWorld = visible;
         return this;
     }
 
@@ -336,6 +348,7 @@ public class HudMarker extends Table {
 
     @Override
     public void draw() {
+        if (!visibleOnWorld) return;
         super.draw();
 
         if (Vars.headless) return;
@@ -358,9 +371,9 @@ public class HudMarker extends Table {
 
     public void drawOnWorld() {
         if (style != null) {
-            Color drawColor = Tmp.c1.set(markColor)
-                    .lerp(Color.white, Mathf.absin(elapsed(), 5f, 0.4f))
-                    .a(color.a);
+            Color drawColor = Tmp.c1.set(markColor);
+            if (colorFlash) drawColor.lerp(Color.white, Mathf.absin(elapsed(), 5f, 0.4f));
+            drawColor.a = color.a;
             Draw.color(drawColor);
             style.drawer.draw(markerId, elapsed(), radius,
                     screenVec, originVec, drawColor,

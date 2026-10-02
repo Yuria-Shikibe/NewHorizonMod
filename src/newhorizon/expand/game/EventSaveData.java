@@ -29,7 +29,7 @@ import static newhorizon.NHVars.cutscene;
 
 /** Persists active local event actions across save/load. */
 public class EventSaveData implements SaveFileReader.CustomChunk {
-    private static final short VERSION = 3;
+    private static final short VERSION = 4;
     private static final byte RAID = 1;
     private static final byte INTERVENTION = 2;
     /** Retained only to read saves written before processor interventions became switches. */
@@ -120,11 +120,11 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
     public void readSnapshot(DataInput stream) throws IOException {
         pending.clear();
         short version = stream.readShort();
-        if (version != 1 && version != 2 && version != VERSION) return;
+        if (version < 1 || version > VERSION) return;
 
         int count = stream.readInt();
         if (count < 0 || count > 256) throw new IOException("Invalid New Horizon event count: " + count);
-        for (int i = 0; i < count; i++) pending.add(SavedEvent.read(stream));
+        for (int i = 0; i < count; i++) pending.add(SavedEvent.read(stream, version));
         Log.info("[New Horizon] Loaded @ saved local event(s).", count);
     }
 
@@ -245,6 +245,7 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
 
         private int specialTeam;
         private boolean specialOverrideDefaultCoordinate, specialSpawned;
+        private boolean specialUiVisible = true, specialWorldVisible = true;
         private int specialSyncSeed;
         private float specialAlertTime, specialSpawnRange, specialTargetX, specialTargetY;
         private float specialLifeTimer, specialDuration;
@@ -320,6 +321,8 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
             saved.specialTargetX = action.targetX;
             saved.specialTargetY = action.targetY;
             saved.specialOverrideDefaultCoordinate = action.overrideDefaultCoordinate;
+            saved.specialUiVisible = action.uiVisible;
+            saved.specialWorldVisible = action.worldVisible;
             saved.specialSyncSeed = action.syncSeed;
             saved.specialLifeTimer = action.lifeTimer;
             saved.specialDuration = action.duration;
@@ -381,6 +384,8 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
                 out.writeBoolean(specialSpawned);
                 out.writeInt(specialUnits.size);
                 for (SavedSpecialUnit unit : specialUnits) unit.write(out);
+                out.writeBoolean(specialUiVisible);
+                out.writeBoolean(specialWorldVisible);
             } else {
                 out.writeInt(interventionEventId);
                 out.writeInt(interventionTeam);
@@ -409,7 +414,7 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
             }
         }
 
-        private static SavedEvent read(DataInput in) throws IOException {
+        private static SavedEvent read(DataInput in, short version) throws IOException {
             SavedEvent saved = new SavedEvent();
             saved.type = in.readByte();
             saved.managedDefault = in.readBoolean();
@@ -487,6 +492,10 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
                 int count = in.readInt();
                 if (count < 0 || count > 1024) throw new IOException("Invalid New Horizon special unit count: " + count);
                 for (int i = 0; i < count; i++) saved.specialUnits.add(SavedSpecialUnit.read(in));
+                if (version >= 4) {
+                    saved.specialUiVisible = in.readBoolean();
+                    saved.specialWorldVisible = in.readBoolean();
+                }
             } else {
                 throw new IOException("Unknown New Horizon event type: " + saved.type);
             }
@@ -554,6 +563,8 @@ public class EventSaveData implements SaveFileReader.CustomChunk {
                 action.targetX = specialTargetX;
                 action.targetY = specialTargetY;
                 action.overrideDefaultCoordinate = specialOverrideDefaultCoordinate;
+                action.uiVisible = specialUiVisible;
+                action.worldVisible = specialWorldVisible;
                 action.syncSeed = specialSyncSeed;
                 action.duration = specialDuration;
                 for (SavedSpecialUnit unit : specialUnits) {

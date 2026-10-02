@@ -26,7 +26,7 @@ import static mindustry.Vars.headless;
 /**
  * World-processor HUD marker node.
  *
- * Syntax: hudsetting x y radius lifetime(seconds) color style visable
+ * Syntax: hudsetting x y radius lifetime(seconds) color style visable flash
  *
  * Style values are: 0 rotating box + crosshair, 1 rotating box only,
  * 2 fixed box + crosshair, 3 shaking signal box, 4 raid/icon ring.
@@ -39,6 +39,7 @@ public class HUDsetting extends LStatement {
     public String color = "@accent";
     public String style = "0";
     public String visable = "1";
+    public String flash = "1";
 
     public HUDsetting(String[] tokens) {
         if (tokens.length > 1) x = tokens[1];
@@ -48,6 +49,7 @@ public class HUDsetting extends LStatement {
         if (tokens.length > 5) color = tokens[5];
         if (tokens.length > 6) style = tokens[6];
         if (tokens.length > 7) visable = tokens[7];
+        if (tokens.length > 8) flash = tokens[8];
     }
 
     public HUDsetting() {
@@ -76,6 +78,8 @@ public class HUDsetting extends LStatement {
         table.table(row -> {
             row.add(" Visable: ");
             fields(row, visable, value -> visable = value).width(90f);
+            row.add(" Flash: ");
+            fields(row, flash, value -> flash = value).width(90f);
         }).left();
     }
 
@@ -98,18 +102,19 @@ public class HUDsetting extends LStatement {
                 .append(lifetime).append(' ')
                 .append(color).append(' ')
                 .append(style).append(' ')
-                .append(visable);
+                .append(visable).append(' ')
+                .append(flash);
     }
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
         return new HUDsettingInstruction(
                 builder.var(x), builder.var(y), builder.var(radius), builder.var(lifetime),
-                builder.var(color), builder.var(style), builder.var(visable), color);
+                builder.var(color), builder.var(style), builder.var(visable), builder.var(flash), color);
     }
 
     public static class HUDsettingInstruction implements LExecutor.LInstruction {
-        public final LVar x, y, radius, lifetime, color, style, visable;
+        public final LVar x, y, radius, lifetime, color, style, visable, flash;
         private final String colorToken;
         private HudMarker marker;
         private final Color decodedColor = new Color();
@@ -117,7 +122,7 @@ public class HUDsetting extends LStatement {
         private static final Map<String, Color> palColors = loadPalColors();
 
         public HUDsettingInstruction(LVar x, LVar y, LVar radius, LVar lifetime,
-                                     LVar color, LVar style, LVar visable, String colorToken) {
+                                     LVar color, LVar style, LVar visable, LVar flash, String colorToken) {
             this.x = x;
             this.y = y;
             this.radius = radius;
@@ -125,6 +130,7 @@ public class HUDsetting extends LStatement {
             this.color = color;
             this.style = style;
             this.visable = visable;
+            this.flash = flash;
             this.colorToken = colorToken;
         }
 
@@ -145,6 +151,7 @@ public class HUDsetting extends LStatement {
                         .setDuration(life)
                         .setStyle(resolveStyle(style.numf()))
                         .setMarkColor(resolveColor(color).cpy())
+                        .setColorFlash(flash.numf() > 0f)
                         .setEventVisibility(eventVisible);
                 marker.addMarker();
                 lastVisable = eventVisible;
@@ -158,6 +165,7 @@ public class HUDsetting extends LStatement {
             marker.radius = Math.max(radius.numf(), 0f);
             marker.markColor.set(resolveColor(color));
             marker.style = resolveStyle(style.numf());
+            marker.colorFlash = flash.numf() > 0f;
             if (eventVisible != lastVisable) {
                 lastVisable = eventVisible;
                 marker.setEventVisibility(eventVisible);
