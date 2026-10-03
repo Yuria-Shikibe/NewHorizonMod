@@ -1,6 +1,7 @@
 package newhorizon.expand.game;
 
 import mindustry.Vars;
+import mindustry.game.Gamemode;
 
 /** Per-world switch for automatic default special events. */
 public final class SpecialEventState {
@@ -29,6 +30,13 @@ public final class SpecialEventState {
 
     public static boolean enabled() {
         return enabled;
+    }
+
+    public static boolean defaultEventsExempt() {
+        if (Vars.state == null || Vars.state.rules == null) return false;
+        return Vars.state.rules.editor
+                || Vars.state.rules.mode() == Gamemode.sandbox
+                || Vars.state.rules.mode() == Gamemode.pvp;
     }
 
     public static void setEnabled(boolean value) {

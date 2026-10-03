@@ -129,18 +129,18 @@ public class NHResearchDialog extends ResearchDialog {
         title.top();
         title.button(button -> {
             button.image(Icon.tree).size(32f).padRight(8f);
-            button.add("TECH TREE").growX();
+            button.add(Core.bundle.get("nh.research.tech-tree")).growX();
         }, this::openRootSelector).width(260f).height(52f).pad(3f);
     }
 
     private void openRootSelector() {
-        new BaseDialog("TECH TREE SELECTOR") {{
+        new BaseDialog(Core.bundle.get("nh.research.tech-tree-selector")) {{
             cont.pane(list -> {
                 list.left();
                 list.defaults().growX().height(62f).pad(3f);
                 for (TechNode root : TechTree.roots) {
                     if (root.requiresUnlock && !root.content.unlockedHost() && root != NHTechTree.root) continue;
-                    String label = root == NHTechTree.root ? "NEW HORIZON" : root.localizedName();
+                    String label = root == NHTechTree.root ? Core.bundle.get("nh.research.new-horizon") : root.localizedName();
                     list.button(button -> {
                         button.left().margin(5f);
                         button.image(root.icon()).size(44f).padRight(10f);
@@ -181,15 +181,15 @@ public class NHResearchDialog extends ResearchDialog {
             header.image(new TextureRegionDrawable(NHContent.icon2)).size(42f);
             header.table(title -> {
                 title.left();
-                title.add("[accent]NEW HORIZON // RESEARCH NETWORK[]").left().row();
-                title.add("[lightgray]Midantha technology architecture").left();
+                title.add("[accent]" + Core.bundle.get("nh.research.network-title") + "[]").left().row();
+                title.add("[lightgray]" + Core.bundle.get("nh.research.architecture") + "[]").left();
             }).growX();
             header.table(status -> {
                 status.right();
-                status.label(() -> "[accent]" + unlockedCount() + "[] / " + entries.size + " ONLINE").right().row();
-                status.label(() -> researchItems == null ? "[gray]RESOURCE LINK OFFLINE" : "[lightgray]RESOURCE LINK ACTIVE").right();
+                status.label(() -> Core.bundle.format("nh.research.online-count", unlockedCount(), entries.size)).right().row();
+                status.label(() -> researchItems == null ? "[gray]" + Core.bundle.get("nh.research.resource-link-offline") : "[lightgray]" + Core.bundle.get("nh.research.resource-link-active")).right();
             }).right();
-            header.button("TECH TREE", Styles.cleart, this::openRootSelector).size(150f, 46f);
+            header.button(Core.bundle.get("nh.research.tech-tree"), Styles.cleart, this::openRootSelector).size(150f, 46f);
             header.button("@back", Icon.left, Styles.cleart, this::hide).size(120f, 46f);
         }).growX().row();
 
@@ -206,7 +206,7 @@ public class NHResearchDialog extends ResearchDialog {
             button.table(labels -> {
                 labels.left();
                 labels.add(category.title).width(162f).wrap().left().row();
-                labels.add("[gray]" + category.entries.size + " technologies").left();
+                labels.add("[gray]" + Core.bundle.format("nh.research.technology-count", category.entries.size)).left();
             }).growX();
             button.clicked(() -> selectCategory(category));
             categoryTable.add(button);
@@ -234,7 +234,7 @@ public class NHResearchDialog extends ResearchDialog {
 
         cont.table(footer -> {
             footer.left().defaults().pad(3f);
-            footer.add("[gray]Drag: pan / Click node: expand / Select content: research").wrap().growX();
+            footer.add("[gray]" + Core.bundle.get("nh.research.controls") + "[]").wrap().growX();
             footer.add().growX();
             footer.button("+", Styles.cleart, () -> canvas.setZoom(canvas.zoom + 0.1f)).size(42f, 38f);
             footer.button("100%", Styles.cleart, () -> canvas.setZoom(1f)).size(60f, 38f);
@@ -363,10 +363,10 @@ public class NHResearchDialog extends ResearchDialog {
         category.nodes.add(group);
     }
 
-    private void addCategory(ObjectMap<String, Category> byName, String title, Drawable icon, Color color) {
-        Category category = new Category(title, icon, color);
+    private void addCategory(ObjectMap<String, Category> byName, String key, Drawable icon, Color color) {
+        Category category = new Category(key, Core.bundle.get("nh.research.category." + key), icon, color);
         categories.add(category);
-        byName.put(title, category);
+        byName.put(key, category);
     }
 
     private NodeGroup nearestBranchGroup(TechNode node, Category category) {
@@ -402,8 +402,8 @@ public class NHResearchDialog extends ResearchDialog {
             return;
         }
         if (selectedNode == null) {
-            detailTable.add("[accent]SELECT A TECHNOLOGY NODE[]").width(286f).wrap().left().row();
-            detailTable.add("Each node uses a dedicated New Horizon node graphic. Select it to inspect its description and the contents attached behind it.")
+            detailTable.add("[accent]" + Core.bundle.get("nh.research.select-node") + "[]").width(286f).wrap().left().row();
+            detailTable.add(Core.bundle.get("nh.research.select-node-description"))
                     .color(Color.lightGray).wrap().width(286f).left().padTop(8f);
             return;
         }
@@ -419,9 +419,9 @@ public class NHResearchDialog extends ResearchDialog {
 
         detailTable.table(req -> {
             req.left().defaults().padTop(8f);
-            req.add("RELATED RESEARCH BRANCHES").color(Pal.accent).left().row();
+            req.add(Core.bundle.get("nh.research.related-branches")).color(Pal.accent).left().row();
             if (node.parentOptions.size == 0) {
-                req.add("ROOT ACCESS").color(Pal.heal).left().row();
+                req.add(Core.bundle.get("nh.research.root-access")).color(Pal.heal).left().row();
             } else {
                 for (int i = 0; i < node.parentOptions.size; i++) {
                     NodeGroup prerequisite = node.parentOptions.get(i);
@@ -435,7 +435,7 @@ public class NHResearchDialog extends ResearchDialog {
             }
         }).growX().left().row();
 
-        detailTable.add("[accent]" + node.entries.size + "[] associated technologies").left().padTop(10f).row();
+        detailTable.add("[accent]" + Core.bundle.format("nh.research.associated-technology-count", node.entries.size) + "[]").left().padTop(10f).row();
         Table contentList = new Table();
         contentList.left();
         contentList.defaults().growX().height(58f).pad(3f);
@@ -470,7 +470,7 @@ public class NHResearchDialog extends ResearchDialog {
     }
 
     private void buildContentDetail(Entry entry) {
-        detailTable.button("BACK TO NODE", Styles.cleart, () -> {
+        detailTable.button(Core.bundle.get("nh.research.back-to-node"), Styles.cleart, () -> {
             selectedEntry = null;
             rebuildDetail();
         }).growX().height(38f).left().row();
@@ -478,15 +478,15 @@ public class NHResearchDialog extends ResearchDialog {
         Label title = detailTable.add(entry.content.localizedName).width(286f).wrap().left().get();
         title.setFontScale(1.1f);
         detailTable.row();
-        detailTable.add(entry.category.title + "  /  THREAT " + entry.threat).color(entry.category.color).left().row();
+        detailTable.add(Core.bundle.format("nh.research.category-threat", entry.category.title, entry.threat)).color(entry.category.color).left().row();
         detailTable.image(Tex.whiteui, entry.category.color).height(2f).growX().padTop(6f).padBottom(7f).row();
         detailTable.add(entry.content.displayDescription()).color(Color.lightGray).wrap().width(286f).left().row();
 
         detailTable.table(req -> {
             req.left().defaults().padTop(8f);
-            req.add("RESEARCH ROUTE").color(Pal.accent).left().row();
+            req.add(Core.bundle.get("nh.research.research-route")).color(Pal.accent).left().row();
             if (entry.prerequisites.size == 0) {
-                req.add("NODE ACCESS").color(Pal.heal).left().row();
+                req.add(Core.bundle.get("nh.research.node-access")).color(Pal.heal).left().row();
             } else {
                 for (int i = 0; i < entry.prerequisites.size; i++) {
                     UnlockableContent prerequisite = entry.prerequisites.get(i);
@@ -497,7 +497,7 @@ public class NHResearchDialog extends ResearchDialog {
                     } else {
                         req.add(prerequisite.localizedName).width(286f).wrap().left().row();
                     }
-                    if (i + 1 < entry.prerequisites.size) req.add("OR").color(Pal.accent).left().padLeft(22f).row();
+                    if (i + 1 < entry.prerequisites.size) req.add(Core.bundle.get("nh.research.or")).color(Pal.accent).left().padLeft(22f).row();
                 }
             }
         }).growX().left().row();
@@ -505,7 +505,7 @@ public class NHResearchDialog extends ResearchDialog {
         if (entry.node.requirements.length > 0) {
             detailTable.table(req -> {
                 req.left().defaults().padTop(4f);
-                req.add("RESOURCE INVESTMENT").color(Pal.accent).left().row();
+                req.add(Core.bundle.get("nh.research.resource-investment")).color(Pal.accent).left().row();
                 for (int i = 0; i < entry.node.requirements.length; i++) {
                     ItemStack stack = entry.node.requirements[i];
                     int current = entry.node.finishedRequirements[i].amount;
@@ -515,17 +515,18 @@ public class NHResearchDialog extends ResearchDialog {
                 }
             }).growX().left().row();
         } else {
-            detailTable.add("AUTO-SYNCHRONIZED CONTENT").color(Pal.heal).left().padTop(10f).row();
+            detailTable.add(Core.bundle.get("nh.research.auto-synchronized-content")).color(Pal.heal).left().padTop(10f).row();
         }
 
         if (entry.content.unlockedHost()) {
-            detailTable.add("ONLINE").color(Pal.heal).left().padTop(12f).row();
+            detailTable.add(Core.bundle.get("nh.research.online")).color(Pal.heal).left().padTop(12f).row();
         } else {
-            TextButton research = new TextButton("RESEARCH", Styles.togglet);
+            TextButton research = new TextButton(Core.bundle.get("nh.research.research"), Styles.togglet);
             research.clicked(() -> research(entry));
             research.update(() -> research.setDisabled(!canResearch(entry)));
             detailTable.add(research).growX().height(48f).padTop(12f).row();
-            Label access = detailTable.label(() -> canResearch(entry) ? "ACCESS GRANTED" : "WAITING FOR PREREQUISITES / RESOURCES").left().get();
+            Label access = detailTable.label(() -> Core.bundle.get(canResearch(entry) ? "nh.research.access-granted" : "nh.research.waiting-for-prerequisites"))
+                    .left().get();
             access.update(() -> access.setColor(canResearch(entry) ? Pal.heal : Pal.remove));
             detailTable.row();
         }
@@ -747,14 +748,20 @@ public class NHResearchDialog extends ResearchDialog {
         }
 
         private Table createNodeCard(NodeGroup node) {
-            Table card = new Table(Tex.button);
+            Table card = new Table(Tex.button) {
+                @Override
+                public void draw() {
+                    super.draw();
+                    if (nodeUnlocked(node)) drawOnlineOutline(this);
+                }
+            };
             card.margin(8f);
             card.image(node.icon).size(48f).scaling(Scaling.fit).padRight(8f);
             Label name = card.add(node.title).width(152f).height(54f).wrap().left().get();
             name.setAlignment(Align.left);
             name.setFontScale(0.9f);
             card.row();
-            card.add((node.expanded ? "- " : "+ ") + node.entries.size + " technologies")
+            card.add((node.expanded ? "- " : "+ ") + Core.bundle.format("nh.research.technology-count", node.entries.size))
                     .colspan(2).width(CARD_WIDTH - 16f).height(24f).color(node.category.color).left();
             card.clicked(() -> {
                 selectedNode = node;
@@ -770,14 +777,23 @@ public class NHResearchDialog extends ResearchDialog {
         }
 
         private Table createContentCard(Entry entry) {
-            Table card = new Table(Tex.button);
+            Table card = new Table(Tex.button) {
+                @Override
+                public void draw() {
+                    super.draw();
+                    if (entry.content.unlockedHost()) drawOnlineOutline(this);
+                }
+            };
             card.margin(8f);
             card.image(entry.icon).size(42f).scaling(Scaling.fit).padRight(8f);
             Label name = card.add(entry.content.localizedName).width(158f).height(54f).wrap().left().get();
             name.setAlignment(Align.left);
             name.setFontScale(0.9f);
             card.row();
-            card.label(() -> entry.content.unlockedHost() ? "[green]ONLINE  [gray]THREAT " + entry.threat : canResearch(entry) ? "[accent]RESEARCH  [gray]THREAT " + entry.threat : "[gray]LOCKED  THREAT " + entry.threat)
+            card.label(() -> Core.bundle.format("nh.research.card-status",
+                    entry.content.unlockedHost() ? "[green]" + Core.bundle.get("nh.research.online")
+                            : canResearch(entry) ? "[accent]" + Core.bundle.get("nh.research.research")
+                            : "[gray]" + Core.bundle.get("nh.research.locked"), entry.threat))
                     .colspan(2).width(CARD_WIDTH - 16f).height(24f).left();
             card.clicked(() -> {
                 selectedEntry = entry;
@@ -786,6 +802,25 @@ public class NHResearchDialog extends ResearchDialog {
             });
             card.update(() -> card.setColor(entry == selectedEntry ? entry.category.color : Color.white));
             return card;
+        }
+
+        private void drawOnlineOutline(Table card) {
+            float x = card.x;
+            float y = card.y;
+            float width = card.getWidth();
+            float height = card.getHeight();
+            float corner = Scl.scl(9f);
+            Draw.color(Pal.accent);
+            Lines.stroke(Scl.scl(3f));
+            Lines.line(x + corner, y, x + width - corner, y);
+            Lines.line(x + width - corner, y, x + width, y + corner);
+            Lines.line(x + width, y + corner, x + width, y + height - corner);
+            Lines.line(x + width, y + height - corner, x + width - corner, y + height);
+            Lines.line(x + width - corner, y + height, x + corner, y + height);
+            Lines.line(x + corner, y + height, x, y + height - corner);
+            Lines.line(x, y + height - corner, x, y + corner);
+            Lines.line(x, y + corner, x + corner, y);
+            Draw.reset();
         }
 
         void focusGroup(NodeGroup group) {
@@ -848,7 +883,7 @@ public class NHResearchDialog extends ResearchDialog {
                 Lines.stroke(Scl.scl(5f));
                 branch(startX, startY, elbowX, endX, endY);
                 Draw.color(color);
-                Lines.stroke(Scl.scl(2f));
+                Lines.stroke(Scl.scl(3f));
                 branch(startX, startY, elbowX, endX, endY);
             }
             Draw.reset();
@@ -879,6 +914,7 @@ public class NHResearchDialog extends ResearchDialog {
     }
 
     private static final class Category {
+        final String key;
         final String title;
         final Drawable icon;
         final Color color;
@@ -886,7 +922,8 @@ public class NHResearchDialog extends ResearchDialog {
         final Seq<Entry> roots = new Seq<>();
         final Seq<NodeGroup> nodes = new Seq<>();
 
-        Category(String title, Drawable icon, Color color) {
+        Category(String key, String title, Drawable icon, Color color) {
+            this.key = key;
             this.title = title;
             this.icon = icon;
             this.color = color;
@@ -908,7 +945,7 @@ public class NHResearchDialog extends ResearchDialog {
         NodeGroup(String asset, String title, Category category, Drawable icon) {
             this.asset = asset;
             this.title = title;
-            this.description = "Research branch: " + title.toLowerCase() + ". Expand to view its technologies. Connections follow the native research tree; select a technology to inspect its prerequisites and resource cost.";
+            this.description = Core.bundle.format("nh.research.branch-description", title);
             this.category = category;
             this.icon = icon;
         }

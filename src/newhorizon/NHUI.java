@@ -247,6 +247,7 @@ public class NHUI {
     public static boolean showRaidStrengthHud() {
         return RaidState.enabled()
                 && state.isGame()
+                && !state.rules.editor
                 && state.rules.mode() != Gamemode.sandbox
                 && state.rules.mode() != Gamemode.pvp
                 && !NHLogic.hasCustomRaidLogic();

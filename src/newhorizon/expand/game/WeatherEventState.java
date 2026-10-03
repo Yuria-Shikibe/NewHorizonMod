@@ -39,7 +39,7 @@ import static mindustry.Vars.net;
 import static mindustry.Vars.state;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-/** Automatic five-minute storm scheduling driven by the weather-event world processor. */
+/** Automatic five-minute storm scheduling with an optional world-processor override. */
 public final class WeatherEventState {
     public static final float INTERVAL = 5f * Time.toMinutes;
     public static final float SCHEDULE_HORIZON = 60f * Time.toMinutes;
@@ -52,6 +52,7 @@ public final class WeatherEventState {
     private static final long UNSET_SEED = Long.MIN_VALUE;
     private static final Rand random = new Rand();
     private static final Seq<Forecast> forecast = new Seq<>();
+    private static boolean systemEnabled;
     private static boolean processorEnabled;
     private static boolean clientEnabled;
     private static boolean restored;
@@ -65,10 +66,12 @@ public final class WeatherEventState {
 
     public static void load() {
         Events.on(EventType.WorldLoadBeginEvent.class, event -> reset());
+        Events.run(EventType.Trigger.update, WeatherEventState::tick);
         Events.on(EventType.WorldLoadEvent.class, event -> {
             if (RaidLogic.isRemoteClient() && net.active()) {
                 net.send(new WeatherEventSyncRequestPacket(), true);
             }
+            if (RaidLogic.isLogicSide()) tick();
             if (!headless) NHUI.rebuildEventList();
         });
         Events.on(EventType.PlayerConnect.class, event -> {
@@ -79,6 +82,7 @@ public final class WeatherEventState {
     }
 
     public static void reset() {
+        systemEnabled = true;
         processorEnabled = false;
         clientEnabled = false;
         restored = false;
@@ -89,12 +93,17 @@ public final class WeatherEventState {
         generatedThroughSlot = FIRST_STORM_SLOT - 1;
     }
 
-    /** Called by the weather-event world processor every tick. */
+    /** Applies the world-processor override and immediately updates the scheduler. */
     public static void update(boolean enabled) {
+        systemEnabled = enabled;
+        tick();
+    }
+
+    /** Advances automatic weather scheduling once per game tick. */
+    private static void tick() {
         if (!RaidLogic.isLogicSide() || !state.isGame()) return;
 
-        boolean allowed = enabled && SpecialEventState.enabled();
-        if (!allowed) {
+        if (!SpecialEventState.enabled()) {
             if (processorEnabled || !forecast.isEmpty() || active != null) {
                 processorEnabled = false;
                 forecast.clear();
@@ -116,6 +125,28 @@ public final class WeatherEventState {
             } else if (!weather(active.storm).isActive()) {
                 startStorm(active.storm, remaining, false);
             }
+        }
+
+        if (SpecialEventState.defaultEventsExempt()) {
+            if (processorEnabled || !forecast.isEmpty()) {
+                processorEnabled = false;
+                forecast.clear();
+                restored = false;
+                syncState();
+                refreshUi();
+            }
+            return;
+        }
+
+        if (!systemEnabled) {
+            if (processorEnabled || !forecast.isEmpty()) {
+                processorEnabled = false;
+                forecast.clear();
+                restored = false;
+                syncState();
+                refreshUi();
+            }
+            return;
         }
 
         if (!processorEnabled) {
@@ -140,7 +171,9 @@ public final class WeatherEventState {
     }
 
     public static boolean active() {
-        return RaidLogic.isRemoteClient() ? clientEnabled : processorEnabled && SpecialEventState.enabled();
+        return RaidLogic.isRemoteClient()
+                ? clientEnabled
+                : SpecialEventState.enabled() && !SpecialEventState.defaultEventsExempt() && (processorEnabled || active != null);
     }
 
     public static Seq<Forecast> forecast() {
@@ -217,7 +250,11 @@ public final class WeatherEventState {
         if (storm < 0) storm = random.random(0, 1);
         storm = Math.max(0, Math.min(1, storm));
         float duration = Math.max(1f, durationSeconds) * Time.toSeconds;
-        if (startStorm(storm, duration, true)) active = new Forecast((float) state.tick, storm, duration);
+        if (startStorm(storm, duration, true)) {
+            active = new Forecast((float) state.tick, storm, duration);
+            syncState();
+            refreshUi();
+        }
     }
 
     private static boolean startStorm(int storm, float duration, boolean announce) {
@@ -314,7 +351,7 @@ public final class WeatherEventState {
 
     public static void writeState(DataOutput out) throws IOException {
         out.writeByte(STATE_VERSION);
-        out.writeBoolean(processorEnabled);
+        out.writeBoolean(systemEnabled);
         int count = processorEnabled ? Math.min(forecast.size, FORECAST_SIZE) : 0;
         out.writeByte(count);
         for (int i = 0; i < count; i++) {
@@ -358,12 +395,14 @@ public final class WeatherEventState {
                 active = new Forecast(startTick, storm, duration);
             }
         }
+        systemEnabled = savedEnabled;
         restored = savedEnabled && forecast.any();
         processorEnabled = false;
     }
 
     public static void writeSync(arc.util.io.Writes write) {
-        write.bool(processorEnabled);
+        write.bool(SpecialEventState.enabled() && !SpecialEventState.defaultEventsExempt()
+                && (processorEnabled || active != null));
         int count = Math.min(forecast.size, FORECAST_SIZE);
         write.b((byte) count);
         for (int i = 0; i < count; i++) {

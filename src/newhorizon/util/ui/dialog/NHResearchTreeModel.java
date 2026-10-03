@@ -1,5 +1,6 @@
 package newhorizon.util.ui.dialog;
 
+import arc.Core;
 import arc.struct.IntMap;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
@@ -24,14 +25,14 @@ import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.logic.ThreatLevel;
 
 public final class NHResearchTreeModel {
-    public static final String MATERIALS = "MATERIALS";
-    public static final String FLUIDS = "FLUID SYSTEMS";
-    public static final String MINING = "MINING";
-    public static final String LOGISTICS = "LOGISTICS";
-    public static final String POWER = "POWER";
-    public static final String FABRICATION = "FABRICATION";
-    public static final String COMBAT = "COMBAT";
-    public static final String SYSTEMS = "ANCIENT SYSTEMS";
+    public static final String MATERIALS = "materials";
+    public static final String FLUIDS = "fluids";
+    public static final String MINING = "mining";
+    public static final String LOGISTICS = "logistics";
+    public static final String POWER = "power";
+    public static final String FABRICATION = "fabrication";
+    public static final String COMBAT = "combat";
+    public static final String SYSTEMS = "systems";
 
     private NHResearchTreeModel() {
     }
@@ -39,10 +40,10 @@ public final class NHResearchTreeModel {
     public static Model build(TechNode root) {
         Model model = new Model();
         for (NHTechTree.ProductionNode node : NHTechTree.itemProductionTree) {
-            visitProduction(model, node, MATERIALS, "materials", "MATERIALS", 0);
+            visitProduction(model, node, MATERIALS, "materials", 0);
         }
         for (NHTechTree.ProductionNode node : NHTechTree.liquidProductionTree) {
-            visitProduction(model, node, FLUIDS, "liquids", "LIQUID SYSTEMS", 0);
+            visitProduction(model, node, FLUIDS, "liquids", 0);
         }
         for (NHTechTree.ProductionNode node : NHTechTree.blockTechTree) visitBlock(model, node, null);
         if (root != null) {
@@ -56,14 +57,14 @@ public final class NHResearchTreeModel {
     }
 
     private static void visitProduction(Model model, NHTechTree.ProductionNode node, String category,
-                                        String groupKey, String groupTitle, int depth) {
+                                        String groupKey, int depth) {
         if (node == null || node.content == null) return;
         int threat = node.content instanceof Item ? itemThreat((Item) node.content)
                 : node.content instanceof Liquid ? liquidThreat((Liquid) node.content) : 0;
-        model.addGroup(new Group(groupKey, category, groupTitle, null));
+        model.addGroup(new Group(groupKey, category, groupTitle(groupKey, node.content), null));
         model.assign(node.content, new Assignment(category, groupKey, threat));
         for (NHTechTree.ProductionNode child : node.children) {
-            visitProduction(model, child, category, groupKey, groupTitle, depth + 1);
+            visitProduction(model, child, category, groupKey, depth + 1);
         }
     }
 
@@ -124,38 +125,23 @@ public final class NHResearchTreeModel {
 
     private static Group groupFor(UnlockableContent content, Block parent, Assignment assignment) {
         String key = assignment.groupKey;
-        String title;
         String asset = null;
-        if (key.equals("materials")) title = "MATERIALS";
-        else if (key.equals("liquids")) title = "LIQUIDS";
-        else if (key.equals("mining")) { title = "MINING"; asset = "mine-tungsten-node"; }
+        if (key.equals("mining")) asset = "mine-tungsten-node";
         else if (key.startsWith("logistics-")) {
-            title = logisticsTitle(key);
             asset = key;
         }
-        else if (key.equals("power")) { title = "POWER NETWORK"; asset = "power-production-node"; }
-        else if (key.equals("fabrication")) title = "FABRICATION";
-        else if (key.equals("combat-turrets")) { title = "TURRETS"; }
-        else if (key.equals("combat-defense")) { title = "DEFENSE"; }
-        else if (key.equals("combat-unit-production")) { title = "UNIT PRODUCTION"; }
-        else if (key.equals("systems")) { title = "ANCIENT SYSTEMS"; }
+        else if (key.equals("power")) asset = "power-production-node";
         else if (key.startsWith("liquid-logistics-")) {
-            title = liquidLogisticsTitle(key);
             asset = key;
         }
         else if (key.startsWith("unit-gate-")) {
-            title = key.substring("unit-gate-".length()).replace('-', ' ').toUpperCase() + " GATE";
             asset = "unit-branch";
         } else if (key.startsWith("fluid-factory-")) {
-            title = "LIQUID: " + key.substring("fluid-factory-".length()).replace('-', ' ').toUpperCase();
             asset = content instanceof Block ? "liquid-logistics-" + resourceTier((Block) content) : "liquid-logistics-2";
         } else if (key.startsWith("factory-")) {
-            title = "FACTORY: " + key.substring("factory-".length()).replace('-', ' ').toUpperCase();
             asset = processAsset(key.substring("factory-".length()));
-        } else {
-            title = content == null ? key.toUpperCase() : content.name.replace('-', ' ').toUpperCase();
         }
-        return new Group(key, assignment.category, title, asset);
+        return new Group(key, assignment.category, groupTitle(key, content), asset);
     }
 
     private static String logisticsGroup(Block block) {
@@ -168,18 +154,43 @@ public final class NHResearchTreeModel {
         return prefix + resourceTier(block);
     }
 
-    private static String logisticsTitle(String key) {
+    private static String groupTitle(String key, UnlockableContent content) {
+        if (key.equals("materials")) return Core.bundle.get("nh.research.group.materials");
+        if (key.equals("liquids")) return Core.bundle.get("nh.research.group.liquids");
+        if (key.equals("mining")) return Core.bundle.get("nh.research.group.mining");
+        if (key.equals("power")) return Core.bundle.get("nh.research.group.power");
+        if (key.equals("fabrication")) return Core.bundle.get("nh.research.group.fabrication");
+        if (key.equals("combat-turrets")) return Core.bundle.get("nh.research.group.combat-turrets");
+        if (key.equals("combat-defense")) return Core.bundle.get("nh.research.group.combat-defense");
+        if (key.equals("combat-unit-production")) return Core.bundle.get("nh.research.group.combat-unit-production");
+        if (key.equals("systems")) return Core.bundle.get("nh.research.group.systems");
         if (key.startsWith("logistics-extend-")) {
-            return "LOGISTICS EXTENSION " + key.substring("logistics-extend-".length());
+            return Core.bundle.format("nh.research.group.logistics-extension", key.substring("logistics-extend-".length()));
         }
-        return "LOGISTICS " + key.substring("logistics-".length());
-    }
-
-    private static String liquidLogisticsTitle(String key) {
+        if (key.startsWith("logistics-")) {
+            return Core.bundle.format("nh.research.group.logistics", key.substring("logistics-".length()));
+        }
         if (key.startsWith("liquid-logistics-extend-")) {
-            return "LIQUID LOGISTICS EXTENSION " + key.substring("liquid-logistics-extend-".length());
+            return Core.bundle.format("nh.research.group.liquid-logistics-extension", key.substring("liquid-logistics-extend-".length()));
         }
-        return "LIQUID LOGISTICS " + key.substring("liquid-logistics-".length());
+        if (key.startsWith("liquid-logistics-")) {
+            return Core.bundle.format("nh.research.group.liquid-logistics", key.substring("liquid-logistics-".length()));
+        }
+        if (key.startsWith("unit-gate-")) {
+            String tier = key.substring("unit-gate-".length());
+            return Core.bundle.get("nh.research.group.unit-gate." + tier, Core.bundle.format("nh.research.group.unit-gate", tier));
+        }
+        if (key.startsWith("fluid-factory-")) {
+            UnlockableContent output = content instanceof Block ? firstOutput((Block) content) : null;
+            String name = output == null ? key.substring("fluid-factory-".length()) : output.localizedName;
+            return Core.bundle.format("nh.research.group.liquid-factory", name);
+        }
+        if (key.startsWith("factory-")) {
+            UnlockableContent output = content instanceof Block ? firstOutput((Block) content) : null;
+            String name = output == null ? key.substring("factory-".length()) : output.localizedName;
+            return Core.bundle.format("nh.research.group.factory", name);
+        }
+        return content == null ? key : content.localizedName;
     }
     private static String processAsset(String name) {
         return switch (name) {
