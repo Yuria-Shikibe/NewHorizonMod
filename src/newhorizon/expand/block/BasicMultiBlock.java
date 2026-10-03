@@ -2,6 +2,7 @@ package newhorizon.expand.block;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.struct.IntSeq;
@@ -30,6 +31,7 @@ import static mindustry.Vars.*;
 public abstract class BasicMultiBlock extends Block implements MultiBlock {
     public final int checkTimer = timers++;
     public IntSeq links = new IntSeq();
+    public int[] liquidOutputDirections = {-1};
     public boolean canMirror = true;
     public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
     public LinkBlock link;
@@ -256,13 +258,19 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
                 Building[] pair = linkProximityMap.get(idx);
                 Building target = pair[0];
                 Building source = pair[1];
-                if (outputDir != -1 && (outputDir + rotation) % 4 != relativeTo(target)) continue;
+                if (outputDir != -1 && Mathf.mod(relativeTo(target) - rotation, 4) != outputDir) continue;
                 target = target.getLiquidDestination(source, liquid);
                 if (target != null && target.block.hasLiquids && canDumpLiquid(target, liquid) && target.liquids != null) {
                     float ofract = target.liquids.get(liquid) / target.block.liquidCapacity;
                     float fract = liquids.get(liquid) / block.liquidCapacity;
-                    if (ofract < fract)
-                        transferLiquid(target, (fract - ofract) * block.liquidCapacity / scaling, liquid);
+                    if (ofract < fract) {
+                        float amount = (fract - ofract) * block.liquidCapacity / scaling;
+                        float flow = Math.min(target.block.liquidCapacity - target.liquids.get(liquid), amount);
+                        if (target.acceptLiquid(source, liquid)) {
+                            target.handleLiquid(source, liquid, flow);
+                            liquids.remove(liquid, flow);
+                        }
+                    }
                 }
             }
         }
@@ -277,7 +285,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
                 Building target = pair[0];
                 Building source = pair[1];
                 if (todump != null && getPayloads().get(todump.content()) > 0 && target.acceptPayload(source, todump)) {
-                    target.handlePayload(this, todump);
+                    target.handlePayload(source, todump);
                     getPayloads().remove(todump.content(), 1);
                     if (target instanceof PayloadConveyor.PayloadConveyorBuild) {
                         Fx.payloadDeposit.at(x, y, this.angleTo(target), new UnitAssembler.YeetData(new Vec2(target.x, target.y), todump.content()));

@@ -132,7 +132,9 @@ public class MultiBlockConsumeGenerator extends MultiBlockGenerator {
             if (outputLiquid != null) {
                 float added = Math.min(productionEfficiency * delta() * outputLiquid.amount, liquidCapacity - liquids.get(outputLiquid.liquid));
                 liquids.add(outputLiquid.liquid, added);
-                dumpLiquid(outputLiquid.liquid);
+                int direction = liquidOutputDirections != null && liquidOutputDirections.length > 0
+                        ? liquidOutputDirections[0] : -1;
+                dumpLiquid(outputLiquid.liquid, 2f, direction);
             }
 
             //generation time always goes down, but only at the end so consumeTriggerValid doesn't assume fake items
