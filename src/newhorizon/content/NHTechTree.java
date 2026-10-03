@@ -370,7 +370,10 @@ public class NHTechTree {
                                         ),
                                         ProductionNode.node(ProductionBlock.airRadiator)
                                 ),
-                                ProductionNode.node(CraftingBlock.recrystallizer),
+                                ProductionNode.node(CraftingBlock.recrystallizer,
+                                        ProductionNode.node(CraftingBlock.eutecticPurifierGraphite),
+                                        ProductionNode.node(CraftingBlock.eutecticPurifierSilicon)
+                                ),
                                 ProductionNode.node(ProductionBlock.oilRefiner)
                         ),
                         ProductionNode.node(CraftingBlock.silicarCrusher, ItemStack.with(NHItems.silicar, 30),
