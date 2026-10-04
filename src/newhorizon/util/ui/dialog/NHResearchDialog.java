@@ -153,8 +153,8 @@ public class NHResearchDialog extends ResearchDialog {
                             NHResearchDialog.this.show();
                         } else {
                             NHResearchDialog.this.hide();
-                            vanilla.switchTree(root);
                             vanilla.show();
+                            vanilla.rebuildTree(root);
                         }
                     }).height(62f).row();
                 }

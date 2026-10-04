@@ -29,6 +29,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Shaders;
 import mindustry.type.Weather;
+import newhorizon.NHGroups;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHShaders;
@@ -165,6 +166,8 @@ public class MatterStorm extends Weather {
             if (!Vars.headless) Vars.renderer.shake(force / 3f, force);
             for (Unit unit : Groups.unit) {
                 if (!unit.checkTarget(statusAir, statusGround)) continue;
+                unit.hitbox(Tmp.r2);
+                if (NHGroups.gravityFields.any(Tmp.r2.x, Tmp.r2.y, Tmp.r2.width, Tmp.r2.height)) continue;
                 if (status != null && status != StatusEffects.none) unit.apply(status, statusDuration);
                 unit.impulse(Tmp.v1.set(state.windVector)
                         .scl(speed * (unit.isFlying() ? 1f : 0.4f)));

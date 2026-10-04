@@ -5,9 +5,12 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Rand;
+import arc.math.geom.Point2;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
+import mindustry.input.Placement;
 import mindustry.world.Block;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHContent;
@@ -42,6 +45,20 @@ public class GravityWell extends Block {
         Lines.square(x, y, range);
 
         Draw.reset();
+    }
+
+    @Override
+    public void changePlacementPath(Seq<Point2> points, int rotation) {
+        float range = gravityRange / tilesize;
+        Placement.calculateNodes(points, this, rotation, (point, other) ->
+                Math.abs(point.x - other.x) <= range && Math.abs(point.y - other.y) <= range);
+
+        if (points.size > 1) {
+            Point2 last = points.peek(), previous = points.get(points.size - 2);
+            if (Math.max(Math.abs(last.x - previous.x), Math.abs(last.y - previous.y)) < range) {
+                points.pop();
+            }
+        }
     }
 
     @Override

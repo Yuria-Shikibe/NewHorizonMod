@@ -621,19 +621,19 @@ public class PowerBlock {
         }};
 
         gravityTrapSmall = new GravityWell("gravity-trap-small") {{
-            requirements(Category.power, BuildVisibility.shown, with(NHItems.titanium, 10, NHItems.tungsten, 8));
+            requirements(Category.power, BuildVisibility.shown, with(NHItems.graphite, 10, NHItems.silicon, 8));
 
             size = 2;
             health = 640;
-            gravityRange = 8 * tilesize;
+            gravityRange = 10 * tilesize;
         }};
 
         gravityTrap = new GravityWell("gravity-trap") {{
             requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
 
             size = 3;
-            health = 1250;
-            gravityRange = 15 * tilesize;
+            health = 2500;
+            gravityRange = 30 * tilesize;
         }};
 
         armorBattery = new Battery("armor-battery") {{
