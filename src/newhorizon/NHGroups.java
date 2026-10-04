@@ -7,7 +7,9 @@ import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Groups;
 import newhorizon.expand.block.commandable.CommandableBlock;
+import newhorizon.expand.block.power.GravityWell;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.SharedShieldFields;
@@ -32,6 +34,18 @@ public class NHGroups {
 
     public static void worldInit() {
         gravityFields = new QuadTree<>(world.getQuadBounds(new Rect()));
+        gravityFieldSeq.clear();
+        for (Building building : Groups.build) {
+            if (building instanceof GravityWell.GravityWellBuild well) {
+                float range = ((GravityWell) well.block).gravityRange;
+                if (well.field == null) {
+                    well.field = new GravityTrapField(well, range);
+                } else {
+                    well.field.update(well, 1f, range);
+                    well.field.add();
+                }
+            }
+        }
     }
 
     public static void clear() {
@@ -40,6 +54,7 @@ public class NHGroups {
         beaconBoostLinks.clear();
         commandableBuilds.clear();
         gravityFields.clear();
+        gravityFieldSeq.clear();
         SharedShieldFields.clearWorld();
         SignalEvent.clear();
     }
