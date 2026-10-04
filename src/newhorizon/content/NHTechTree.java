@@ -8,6 +8,7 @@ import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
+import mindustry.content.SectorPresets;
 import mindustry.content.TechTree.TechNode;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
@@ -75,6 +76,7 @@ public class NHTechTree {
     }
 
     private static void addSerpuloTechTree() {
+        addTechNode(SectorPresets.nuclearComplex, NHSectorPresents.frozenPeaks);
         addTechNode(Blocks.combustionGenerator, PowerBlock.photothermalGenerator);
         addTechNode(Blocks.thermalGenerator, PowerBlock.geologicalPhotothermalGenerator);
         addTechNode(Blocks.separator, ProductionBlock.tungstenReconstructor);
@@ -323,8 +325,17 @@ public class NHTechTree {
                         ProductionNode.node(NHSectorPresents.landingPoint, Seq.with(new SectorComplete(NHSectorPresents.primaryBase)),
                                 ProductionNode.node(NHSectorPresents.relicAccess,
                                         ProductionNode.node(NHSectorPresents.edgeZone,
-                                                Seq.with(new SectorComplete(NHSectorPresents.relicAccess))
-                                        )
+                                                Seq.with(new SectorComplete(NHSectorPresents.relicAccess)),
+                                                ProductionNode.node(NHSectorPresents.crossBranch,
+                                                        Seq.with(new SectorComplete(NHSectorPresents.edgeZone)),
+                                                        ProductionNode.node(NHSectorPresents.interferedArray,
+                                                                Seq.with(new SectorComplete(NHSectorPresents.crossBranch))),
+                                                        ProductionNode.node(NHSectorPresents.hollow,
+                                                                Seq.with(new SectorComplete(NHSectorPresents.crossBranch)))
+                                                )
+                                        ),
+                                        ProductionNode.node(NHSectorPresents.streamStation,
+                                                Seq.with(new SectorComplete(NHSectorPresents.relicAccess)))
                                 )
                         ),
                         ProductionNode.node(SpecialBlock.coreArray,

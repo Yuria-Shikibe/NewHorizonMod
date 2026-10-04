@@ -11,6 +11,7 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
+import mindustry.type.SectorPreset;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -33,6 +34,7 @@ public final class NHResearchTreeModel {
     public static final String FABRICATION = "fabrication";
     public static final String COMBAT = "combat";
     public static final String SYSTEMS = "systems";
+    public static final String MAPS = "maps";
 
     private NHResearchTreeModel() {
     }
@@ -135,7 +137,7 @@ public final class NHResearchTreeModel {
             asset = key;
         }
         else if (key.startsWith("unit-gate-")) {
-            asset = "unit-branch";
+            asset = key.substring("unit-gate-".length()) + "-jump-gate";
         } else if (key.startsWith("fluid-factory-")) {
             asset = content instanceof Block ? "liquid-logistics-" + resourceTier((Block) content) : "liquid-logistics-2";
         } else if (key.startsWith("factory-")) {
@@ -164,6 +166,7 @@ public final class NHResearchTreeModel {
         if (key.equals("combat-defense")) return Core.bundle.get("nh.research.group.combat-defense");
         if (key.equals("combat-unit-production")) return Core.bundle.get("nh.research.group.combat-unit-production");
         if (key.equals("systems")) return Core.bundle.get("nh.research.group.systems");
+        if (key.equals("maps")) return Core.bundle.get("nh.research.group.maps");
         if (key.startsWith("logistics-extend-")) {
             return Core.bundle.format("nh.research.group.logistics-extension", key.substring("logistics-extend-".length()));
         }
@@ -217,6 +220,7 @@ public final class NHResearchTreeModel {
     }
 
     private static Assignment fallback(UnlockableContent content) {
+        if (content instanceof SectorPreset) return new Assignment(MAPS, "maps", 0);
         if (content instanceof Item) return new Assignment(MATERIALS, "materials", itemThreat((Item) content));
         if (content instanceof Liquid) return new Assignment(FLUIDS, "liquids", liquidThreat((Liquid) content));
         if (content instanceof UnitType) return new Assignment(COMBAT, "combat-unit-production", 0);

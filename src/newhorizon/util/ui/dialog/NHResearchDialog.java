@@ -268,6 +268,7 @@ public class NHResearchDialog extends ResearchDialog {
         addCategory(byName, NHResearchTreeModel.FABRICATION, Icon.production, Color.valueOf("e7a2ff"));
         addCategory(byName, NHResearchTreeModel.COMBAT, Icon.turret, Color.valueOf("ff8d8d"));
         addCategory(byName, NHResearchTreeModel.SYSTEMS, Icon.logic, Color.valueOf("ffcf7a"));
+        addCategory(byName, NHResearchTreeModel.MAPS, Icon.tree, Color.valueOf("98b7ff"));
 
         NHResearchTreeModel.Model researchModel = NHResearchTreeModel.build(NHTechTree.root);
         for (NHResearchTreeModel.Group definition : researchModel.groups) {
@@ -352,6 +353,7 @@ public class NHResearchDialog extends ResearchDialog {
             case NHResearchTreeModel.POWER -> Icon.power;
             case NHResearchTreeModel.COMBAT -> Icon.turret;
             case NHResearchTreeModel.SYSTEMS -> Icon.logic;
+            case NHResearchTreeModel.MAPS -> Icon.tree;
             default -> Icon.box;
         };
     }
@@ -793,7 +795,7 @@ public class NHResearchDialog extends ResearchDialog {
             card.label(() -> Core.bundle.format("nh.research.card-status",
                     entry.content.unlockedHost() ? "[green]" + Core.bundle.get("nh.research.online")
                             : canResearch(entry) ? "[accent]" + Core.bundle.get("nh.research.research")
-                            : "[gray]" + Core.bundle.get("nh.research.locked"), entry.threat))
+                            : "[gray]" + Core.bundle.get("nh.research.locked")))
                     .colspan(2).width(CARD_WIDTH - 16f).height(24f).left();
             card.clicked(() -> {
                 selectedEntry = entry;

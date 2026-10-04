@@ -119,7 +119,15 @@ public class EventBanner extends LStatement {
         }
 
         private static String resolveText(LVar value) {
-            String message = value.obj() == null ? String.valueOf(value.num()) : String.valueOf(value.obj());
+            String message;
+            if (value.obj() != null) {
+                message = String.valueOf(value.obj());
+            } else if (value.name.startsWith("@")) {
+                message = value.name;
+            } else {
+                message = String.valueOf(value.num());
+            }
+
             if (message.startsWith("@")) {
                 message = Core.bundle.get(message.substring(1), message);
             }
