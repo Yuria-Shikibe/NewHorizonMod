@@ -385,6 +385,7 @@ public class PowerBlock {
                     @Override
                     public void updateTile() {
                         super.updateTile();
+                        if (enabled) productionEfficiency = Math.max(productionEfficiency, 0.6f);
                         if (core() != null && timer(produceTimer, produceTime / productionEfficiency)) {
                             if (!justCreated) {
                                 core().handleItem(this, NHItems.hardLight);
