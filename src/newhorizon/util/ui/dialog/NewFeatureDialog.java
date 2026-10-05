@@ -15,9 +15,10 @@ import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSectorPresents;
-import newhorizon.content.blocks.CraftingBlock;
+import newhorizon.content.blocks.DefenseBlock;
 import newhorizon.content.blocks.PowerBlock;
 import newhorizon.content.blocks.ProductionBlock;
+import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -37,14 +38,15 @@ public class NewFeatureDialog extends BaseDialog {
 
     private FeatureLog[] getUpdateContent() {
         return new FeatureLog[]{
-                new FeatureLog("v222-campaign", "v222-campaign-desc", FeatureLog.featureType.FEATURE, NHSectorPresents.primaryBase),
-                new FeatureLog("v222-expansion", "v222-expansion-desc", FeatureLog.featureType.CONTENT, NHSectorPresents.edgeZone),
-                new FeatureLog("v222-events", "v222-events-desc", FeatureLog.featureType.FIX, NHContent.fleet),
-                new FeatureLog("v222-command-ui", "v222-command-ui-desc", FeatureLog.featureType.IMPROVE, NHBlocks.airRaider),
-                new FeatureLog("v222-production", "v222-production-desc", FeatureLog.featureType.CONTENT, CraftingBlock.recrystallizer),
-                new FeatureLog("v222-mining", "v222-mining-desc", FeatureLog.featureType.IMPROVE, ProductionBlock.resonanceMiningFacility),
-                new FeatureLog("v222-power", "v222-power-desc", FeatureLog.featureType.CONTENT, PowerBlock.differentialReactor),
-                new FeatureLog("v222-balance", "v222-balance-desc", FeatureLog.featureType.BALANCE, ProductionBlock.scanCollector),
+                new FeatureLog("v230-campaign", "v230-campaign-desc", FeatureLog.featureType.FEATURE, NHSectorPresents.primaryBase),
+                new FeatureLog("v230-maps", "v230-maps-desc", FeatureLog.featureType.CONTENT, NHSectorPresents.streamStation),
+                new FeatureLog("v230-research", "v230-research-desc", FeatureLog.featureType.IMPROVE, ProductionBlock.scanCollector),
+                new FeatureLog("v230-weather", "v230-weather-desc", FeatureLog.featureType.FEATURE, NHContent.fleet),
+                new FeatureLog("v230-production", "v230-production-desc", FeatureLog.featureType.CONTENT, ProductionBlock.compoundHydrator),
+                new FeatureLog("v230-storage", "v230-storage-desc", FeatureLog.featureType.CONTENT, SpecialBlock.accumulatingStorage),
+                new FeatureLog("v230-defense", "v230-defense-desc", FeatureLog.featureType.CONTENT, DefenseBlock.plasmaMembrane),
+                new FeatureLog("v230-compatibility", "v230-compatibility-desc", FeatureLog.featureType.IMPROVE, PowerBlock.differentialReactor),
+                new FeatureLog("v230-fixes", "v230-fixes-desc", FeatureLog.featureType.FIX, NHBlocks.airRaider),
         };
     }
 
