@@ -498,6 +498,13 @@ public class NHTechTree {
                                         ProductionNode.node(DistributionBlock.liquidBridgeExtend)
                                 ),
                                 ProductionNode.node(DistributionBlock.liquidUnloader),
+                                ProductionNode.node(LiquidBlock.streamExtractor,
+                                        ProductionNode.node(LiquidBlock.streamReceiver),
+                                        ProductionNode.node(LiquidBlock.streamRepeater,
+                                                ProductionNode.node(LiquidBlock.streamRedirector),
+                                                ProductionNode.node(LiquidBlock.streamSplitter)
+                                        )
+                                ),
                                 ProductionNode.node(LiquidBlock.turboPumpSmall,
                                         ProductionNode.node(LiquidBlock.turboPump)
                                 ),

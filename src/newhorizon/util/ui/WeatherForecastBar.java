@@ -25,7 +25,7 @@ public class WeatherForecastBar extends Element {
         super.draw();
 
         float now = (float) state.tick;
-        float horizon = WeatherEventState.INTERVAL * 3f;
+        float horizon = 15f * Time.toMinutes;
         float barHeight = Math.max(1f, height - 10f);
         float barY = y + (height - barHeight) / 2f;
         float trackY = barY + 3f;
