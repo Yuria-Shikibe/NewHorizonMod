@@ -6,6 +6,10 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
+import arc.input.KeyCode;
+import arc.math.geom.Vec2;
+import arc.scene.event.InputEvent;
+import arc.scene.event.InputListener;
 import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.ScrollPane;
@@ -67,6 +71,7 @@ public class NHResearchDialog extends ResearchDialog {
     private NodeGroup selectedNode;
     private ItemSeq researchItems;
     private ObjectMap<Sector, ItemSeq> researchCache = new ObjectMap<>();
+    private float zoom = 1f;
     private boolean modelReady;
     private boolean forceNewHorizon;
 
@@ -223,6 +228,19 @@ public class NHResearchDialog extends ResearchDialog {
             treePane.setScrollingDisabled(false, false);
             treePane.setFadeScrollBars(false);
             treePane.setOverscroll(false, false);
+            treePane.update(() -> {
+                if (treePane.hasMouse()) treePane.requestScroll();
+            });
+            treePane.addCaptureListener(new InputListener() {
+                @Override
+                public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
+                    float amount = Math.abs(amountY) > 0.0001f ? amountY : amountX;
+                    if (Math.abs(amount) <= 0.0001f) return false;
+                    canvas.setZoom(zoom - amount * 0.1f);
+                    event.stop();
+                    return true;
+                }
+            });
             body.add(treePane).minSize(0f).grow();
 
             detailTable = new Table(Tex.button);
@@ -236,9 +254,9 @@ public class NHResearchDialog extends ResearchDialog {
             footer.left().defaults().pad(3f);
             footer.add("[gray]" + Core.bundle.get("nh.research.controls") + "[]").wrap().growX();
             footer.add().growX();
-            footer.button("+", Styles.cleart, () -> canvas.setZoom(canvas.zoom + 0.1f)).size(42f, 38f);
+            footer.button("+", Styles.cleart, () -> canvas.setZoom(zoom + 0.1f)).size(42f, 38f);
             footer.button("100%", Styles.cleart, () -> canvas.setZoom(1f)).size(60f, 38f);
-            footer.button("-", Styles.cleart, () -> canvas.setZoom(canvas.zoom - 0.1f)).size(42f, 38f);
+            footer.button("-", Styles.cleart, () -> canvas.setZoom(zoom - 0.1f)).size(42f, 38f);
         }).growX().row();
 
         rebuildCanvas();
@@ -673,12 +691,63 @@ public class NHResearchDialog extends ResearchDialog {
         };
         private float layoutWidth;
         private float layoutHeight;
-        private float zoom = 1f;
+        private final Vec2[] touchPositions = {new Vec2(), new Vec2()};
+        private final Vec2 screenPosition = new Vec2();
+        private float pinchDistance;
+        private float pinchZoom;
+        private boolean pinching;
 
         TechCanvas() {
             graph.setTransform(true);
             graph.cullable = false;
             addChild(graph);
+            addCaptureListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button) {
+                    if (pointer > 1) return false;
+                    touchPositions[pointer].set(x, y);
+                    if (pointer == 1) {
+                        pinchDistance = touchPositions[0].dst(touchPositions[1]);
+                        pinchZoom = zoom;
+                        pinching = pinchDistance > 0f;
+                        return pinching;
+                    }
+                    return false;
+                }
+
+                @Override
+                public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                    if (pointer > 1 || !pinching) return;
+                    touchPositions[pointer].set(x, y);
+                    float distance = touchPositions[0].dst(touchPositions[1]);
+                    if (pinchDistance > 0f && distance > 0f) {
+                        setZoom(pinchZoom * distance / pinchDistance);
+                    }
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button) {
+                    if (pointer > 1) return;
+                    touchPositions[pointer].set(x, y);
+                    pinching = false;
+                }
+
+            });
+        }
+
+        @Override
+        public void act(float delta) {
+            super.act(delta);
+            if (!pinching || !Core.input.isTouched(0) || !Core.input.isTouched(1)) return;
+            for (int pointer = 0; pointer < 2; pointer++) {
+                screenPosition.set(Core.input.mouseX(pointer), Core.input.mouseY(pointer));
+                screenToLocalCoordinates(screenPosition);
+                touchPositions[pointer].set(screenPosition);
+            }
+            float distance = touchPositions[0].dst(touchPositions[1]);
+            if (pinchDistance > 0f && distance > 0f) {
+                setZoom(pinchZoom * distance / pinchDistance);
+            }
         }
 
         void setNodes(Category category) {
@@ -729,6 +798,7 @@ public class NHResearchDialog extends ResearchDialog {
                 graph.addChild(vertex.card);
             }
             graph.setSize(layoutWidth, layoutHeight);
+            graph.setScale(zoom);
             setSize(getPrefWidth(), getPrefHeight());
             invalidateHierarchy();
         }
@@ -852,6 +922,11 @@ public class NHResearchDialog extends ResearchDialog {
         }
 
         void setZoom(float value) {
+            if (treePane == null) {
+                zoom = Math.max(0.3f, Math.min(2f, value));
+                graph.setScale(zoom);
+                return;
+            }
             float percentX = treePane.getScrollPercentX();
             float percentY = treePane.getScrollPercentY();
             zoom = Math.max(0.3f, Math.min(2f, value));
