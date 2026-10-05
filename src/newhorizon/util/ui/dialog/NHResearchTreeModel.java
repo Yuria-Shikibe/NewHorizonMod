@@ -20,6 +20,8 @@ import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumeLiquids;
 import newhorizon.content.NHTechTree;
+import newhorizon.content.NHItems;
+import newhorizon.content.blocks.CraftingBlock;
 import newhorizon.expand.block.production.factory.MultiBlockCrafter;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.block.special.JumpGate;
@@ -85,6 +87,12 @@ public final class NHResearchTreeModel {
         }
         if (!(content instanceof Block)) return fallback(content);
         Block block = (Block) content;
+        if (block == CraftingBlock.eutecticPurifierGraphite || block == CraftingBlock.eutecticPurifierSilicon) {
+            return new Assignment(FABRICATION, "factory-" + NHItems.silicar.name, blockThreat(block));
+        }
+        if (block == CraftingBlock.processorCompactor) {
+            return new Assignment(FABRICATION, new String(new char[]{'f', 'a', 'c', 't', 'o', 'r', 'y', '-'}) + NHItems.seniorProcessor.name, blockThreat(block));
+        }
         String category;
         String group;
         switch (block.category) {
@@ -147,13 +155,23 @@ public final class NHResearchTreeModel {
     }
 
     private static String logisticsGroup(Block block) {
+        if (hasMultipleSteel(block)) return "logistics-3";
         String prefix = block.name.contains("extend") ? "logistics-extend-" : "logistics-";
         return prefix + resourceTier(block);
     }
 
     private static String liquidLogisticsGroup(Block block) {
+        if (hasMultipleSteel(block)) return "liquid-logistics-3";
         String prefix = block.name.contains("extend") ? "liquid-logistics-extend-" : "liquid-logistics-";
         return prefix + resourceTier(block);
+    }
+
+    private static boolean hasMultipleSteel(Block block) {
+        if (block.requirements == null) return false;
+        for (ItemStack stack : block.requirements) {
+            if (stack.item == NHItems.multipleSteel) return true;
+        }
+        return false;
     }
 
     private static String groupTitle(String key, UnlockableContent content) {
