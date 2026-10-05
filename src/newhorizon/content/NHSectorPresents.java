@@ -25,7 +25,7 @@ public class NHSectorPresents {
     private static boolean landingPointTransitionPending;
 
     public static void load() {
-        primaryBase = new SectorPreset("primary-base", NHPlanets.midantha, 1) {{
+        primaryBase = new SectorPreset("primary-base", NHPlanets.midantha, 16) {{
             alwaysUnlocked = true;
             showHidden = true;
             addStartingItems = true;
