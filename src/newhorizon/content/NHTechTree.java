@@ -692,13 +692,14 @@ public class NHTechTree {
                                 ProductionNode.node(Items.carbide),
                                 ProductionNode.node(Items.thorium,
                                         ProductionNode.node(Items.fissileMatter,
-                                                ProductionNode.node(NHItems.zeta,
-                                                        ProductionNode.node(NHItems.thermoCorePositive),
-                                                        ProductionNode.node(NHItems.thermoCoreNegative)
-                                                ),
-                                                ProductionNode.node(Items.phaseFabric)
+                                                ProductionNode.node(NHItems.thermoCoreNegative)
                                         ),
-                                        ProductionNode.node(NHItems.fusionEnergy)
+                                        ProductionNode.node(NHItems.fusionEnergy,
+                                                ProductionNode.node(NHItems.thermoCorePositive)
+                                        ),
+                                        ProductionNode.node(Items.phaseFabric,
+                                                ProductionNode.node(NHItems.zeta)
+                                        )
                                 )
                         )
                 )

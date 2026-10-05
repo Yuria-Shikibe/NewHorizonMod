@@ -476,7 +476,11 @@ public class NHResearchDialog extends ResearchDialog {
             selectedEntry = null;
             rebuildDetail();
         }).growX().height(38f).left().row();
-        detailTable.image(entry.icon).size(74f).left().row();
+        detailTable.table(iconRow -> {
+            iconRow.image(entry.icon).size(74f);
+            iconRow.add().growX();
+            iconRow.button(Icon.info, Styles.clearNonei, () -> ui.content.show(entry.content)).size(48f);
+        }).width(286f).left().row();
         Label title = detailTable.add(entry.content.localizedName).width(286f).wrap().left().get();
         title.setFontScale(1.1f);
         detailTable.row();

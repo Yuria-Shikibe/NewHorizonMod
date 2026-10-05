@@ -55,7 +55,7 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
     public void setStats() {
         super.setStats();
         stats.remove(Stat.speed);
-        stats.add(Stat.speed, speed * Time.toSeconds, StatUnit.itemsSecond);
+        stats.add(Stat.speed, Time.toSeconds / speed, StatUnit.itemsSecond);
     }
 
     public class AdaptDirectionalUnloaderBuild extends DirectionalUnloaderBuild {
