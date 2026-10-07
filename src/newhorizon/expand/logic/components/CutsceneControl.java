@@ -105,9 +105,8 @@ public class CutsceneControl {
             if (tokens.isEmpty()) return new NullAction();
             tokens.remove(0);
 
-            // new header is at most team/alert/range/override/[x/y] (4 or 6 tokens);
-            // larger payloads are legacy single-line event-special with inline units
-            if (tokens.size <= 6) {
+            int headerSize = tokens.size > 3 && tokens.get(3).equals("true") ? 6 : 4;
+            if (tokens.size == headerSize || tokens.size == headerSize + 2) {
                 tokens.add(String.valueOf(unitLines.size));
                 for (String unitLine : unitLines) {
                     Seq<String> unitTokens = parseToken(unitLine);

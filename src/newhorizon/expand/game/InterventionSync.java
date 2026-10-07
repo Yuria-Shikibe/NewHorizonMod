@@ -55,6 +55,8 @@ public final class InterventionSync {
             write.i(entry.type == null ? -1 : entry.type.id);
             write.i(entry.count);
         }
+        write.bool(action.uiVisible);
+        write.bool(action.worldVisible);
     }
 
     public static EventInterventionAction readAction(Reads read) {
@@ -94,6 +96,8 @@ public final class InterventionSync {
             UnitType type = typeId >= 0 ? Vars.content.unit(typeId) : null;
             if (type != null && count > 0) action.units.add(new EventInterventionAction.UnitEntry(type, count));
         }
+        action.uiVisible = read.bool();
+        action.worldVisible = read.bool();
         return action;
     }
 

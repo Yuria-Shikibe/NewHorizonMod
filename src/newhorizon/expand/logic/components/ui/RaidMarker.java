@@ -86,7 +86,7 @@ public class RaidMarker extends HudMarker {
     @Override
     public void addMarker() {
         super.addMarker();
-        if (headless || state == null || state.markers == null
+        if (!visibleOnWorld || headless || state == null || state.markers == null
                 || (kind != Kind.RAID && kind != Kind.INTERVENTION && kind != Kind.SPECIAL)) return;
 
         if (syncSeed != 0) {

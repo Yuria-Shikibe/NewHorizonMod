@@ -17,6 +17,9 @@ import newhorizon.expand.net.packet.RaidClearPacket;
 import newhorizon.expand.net.packet.RaidScalePacket;
 import newhorizon.expand.net.packet.RaidScaleRequestPacket;
 import newhorizon.expand.net.packet.RaidSyncRequestPacket;
+import newhorizon.expand.net.packet.WeatherEventAlertPacket;
+import newhorizon.expand.net.packet.WeatherEventSyncPacket;
+import newhorizon.expand.net.packet.WeatherEventSyncRequestPacket;
 
 public class NHRegister {
     static {
@@ -33,6 +36,9 @@ public class NHRegister {
         Net.registerPacket(InterventionAlertPacket::new);
         Net.registerPacket(InterventionSyncRequestPacket::new);
         Net.registerPacket(InterventionClearPacket::new);
+        Net.registerPacket(WeatherEventAlertPacket::new);
+        Net.registerPacket(WeatherEventSyncPacket::new);
+        Net.registerPacket(WeatherEventSyncRequestPacket::new);
     }
 
     public static void load() {

@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.Events;
+import mindustry.content.Planets;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.game.EventType;
@@ -14,12 +15,17 @@ public class NHSectorPresents {
     public static SectorPreset primaryBase;
     public static SectorPreset landingPoint;
     public static SectorPreset relicAccess;
+    public static SectorPreset streamStation;
     public static SectorPreset edgeZone;
+    public static SectorPreset crossBranch;
+    public static SectorPreset interferedArray;
+    public static SectorPreset hollow;
+    public static SectorPreset frozenPeaks;
     private static boolean campaignEventsRegistered;
     private static boolean landingPointTransitionPending;
 
     public static void load() {
-        primaryBase = new SectorPreset("primary-base", NHPlanets.midantha, 1) {{
+        primaryBase = new SectorPreset("primary-base", NHPlanets.midantha, 16) {{
             alwaysUnlocked = true;
             showHidden = true;
             addStartingItems = true;
@@ -27,22 +33,52 @@ public class NHSectorPresents {
             difficulty = 1;
         }};
 
-        landingPoint = new SectorPreset("landing-point", "new-horizon-LandingPoint", NHPlanets.midantha, 2) {{
+        landingPoint = new SectorPreset("landing-point", "new-horizon-LandingPoint", NHPlanets.midantha, 37) {{
             showHidden = true;
             captureWave = 20;
             difficulty = 1;
         }};
 
-        relicAccess = new SectorPreset("relic-access", "new-horizon-RelicAccess", NHPlanets.midantha, 42) {{
+        relicAccess = new SectorPreset("relic-access", "new-horizon-RelicAccess", NHPlanets.midantha, 38) {{
             showHidden = true;
             captureWave = 25;
             difficulty = 2;
         }};
 
-        edgeZone = new SectorPreset("edge-zone", "new-horizon-EdgeZone", NHPlanets.midantha, 27) {{
+        streamStation = new SectorPreset("stream-station", "new-horizon-StreamStation", NHPlanets.midantha, 56) {{
+            showHidden = true;
+            captureWave = 25;
+            difficulty = 2;
+        }};
+
+        edgeZone = new SectorPreset("edge-zone", "new-horizon-EdgeZone", NHPlanets.midantha, 39) {{
             showHidden = true;
             captureWave = 0;
             difficulty = 2;
+        }};
+
+        crossBranch = new SectorPreset("cross-branch", "new-horizon-CrossBranch", NHPlanets.midantha, 40) {{
+            showHidden = true;
+            captureWave = 25;
+            difficulty = 3;
+        }};
+
+        interferedArray = new SectorPreset("interfered-array", "new-horizon-InterferedArray", NHPlanets.midantha, 23) {{
+            showHidden = true;
+            captureWave = 30;
+            difficulty = 3;
+        }};
+
+        hollow = new SectorPreset("hollow", "new-horizon-Hollow", NHPlanets.midantha, 22) {{
+            showHidden = true;
+            captureWave = 30;
+            difficulty = 3;
+        }};
+
+        frozenPeaks = new SectorPreset("frozen-peaks", "new-horizon-FrozenPeaks", Planets.serpulo, 131) {{
+            showHidden = true;
+            captureWave = 40;
+            difficulty = 4;
         }};
 
         unlockPrimaryBase();
@@ -61,7 +97,11 @@ public class NHSectorPresents {
     public static void applyCampaignMapRules(Rules rules) {
         applyMapRules(landingPoint, rules);
         applyMapRules(relicAccess, rules);
+        applyMapRules(streamStation, rules);
         applyMapRules(edgeZone, rules);
+        applyMapRules(crossBranch, rules);
+        applyMapRules(interferedArray, rules);
+        applyMapRules(hollow, rules);
     }
 
     private static void applyMapRules(SectorPreset preset, Rules rules) {
@@ -69,7 +109,7 @@ public class NHSectorPresents {
 
         preset.generator.map.rules(rules);
         rules.sector = preset.sector;
-        rules.planet = NHPlanets.midantha;
+        rules.planet = preset.planet;
     }
 
     private static void registerCampaignEvents() {

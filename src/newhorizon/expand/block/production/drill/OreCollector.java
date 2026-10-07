@@ -109,6 +109,11 @@ public class OreCollector extends BasicMultiBlock {
     }
 
     @Override
+    public boolean rotatedOutput(int x, int y) {
+        return false;
+    }
+
+    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
 

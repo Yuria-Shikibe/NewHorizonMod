@@ -5,7 +5,6 @@ import arc.Events;
 import arc.func.Prov;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Geometry;
 import arc.struct.IntMap;
 import arc.struct.Seq;
 import arc.util.Interval;
@@ -19,6 +18,7 @@ import mindustry.gen.Building;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.meta.BlockFlag;
+import newhorizon.NHGroups;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHLogic;
 import newhorizon.content.NHStatusEffects;
@@ -314,10 +314,16 @@ public class DefaultIntervention {
         if (core == null) return out;
 
         Rand r = new Rand(seed);
-        float ang = r.random(360f);
-        float dst = r.random(4f, 12f);
-        out[0] = core.tileX() + Mathf.cosDeg(ang) * dst;
-        out[1] = core.tileY() + Mathf.sinDeg(ang) * dst;
+        for (int attempt = 0; attempt < 16; attempt++) {
+            float ang = r.random(360f);
+            float dst = r.random(4f, 12f);
+            float x = core.tileX() + Mathf.cosDeg(ang) * dst;
+            float y = core.tileY() + Mathf.sinDeg(ang) * dst;
+            if (inGravityWell(x * tilesize, y * tilesize)) continue;
+            out[0] = x;
+            out[1] = y;
+            break;
+        }
         return out;
     }
 
@@ -356,7 +362,9 @@ public class DefaultIntervention {
         float wy = r.random(0f, world.unitHeight());
 
         Building b = findClosestBuilding(wave, player, BlockFlag.core, wx, wy);
-        if (b == null) b = player.core();
+        if (b == null && player.core() != null && !inGravityWell(player.core().tileX() * tilesize, player.core().tileY() * tilesize)) {
+            b = player.core();
+        }
         if (b == null) return out;
 
         out[0] = b.tileX();
@@ -365,8 +373,29 @@ public class DefaultIntervention {
     }
 
     private static Building findClosestBuilding(Team wave, Team player, BlockFlag flag, float wx, float wy) {
-        Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(wave, flag));
-        if (b == null) b = Geometry.findClosest(wx, wy, indexer.getFlagged(player, flag));
+        Building b = findClosestOutsideGravity(wx, wy, indexer.getEnemy(wave, flag));
+        if (b == null) b = findClosestOutsideGravity(wx, wy, indexer.getFlagged(player, flag));
         return b;
+    }
+
+    private static Building findClosestOutsideGravity(float wx, float wy, Iterable<Building> buildings) {
+        Building closest = null;
+        float closestDistance = Float.MAX_VALUE;
+        for (Building building : buildings) {
+            if (inGravityWell(building.tileX() * tilesize, building.tileY() * tilesize)) continue;
+            float distance = Mathf.dst2(wx, wy, building.x, building.y);
+            if (distance < closestDistance) {
+                closest = building;
+                closestDistance = distance;
+            }
+        }
+        return closest;
+    }
+
+    private static boolean inGravityWell(float x, float y) {
+        for (var field : NHGroups.gravityFieldSeq) {
+            if (field.rect.contains(x, y)) return true;
+        }
+        return false;
     }
 }

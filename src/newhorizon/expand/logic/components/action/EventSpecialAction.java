@@ -39,6 +39,7 @@ public class EventSpecialAction extends Action {
     public float spawnRange = 180f;
     public float targetX, targetY;
     public boolean overrideDefaultCoordinate;
+    public boolean uiVisible = true, worldVisible = true;
     public int syncSeed;
     public final Seq<SpecialEvent.UnitSpec> units = new Seq<>();
 
@@ -65,6 +66,17 @@ public class EventSpecialAction extends Action {
         if (overrideDefaultCoordinate) {
             targetX = ParseUtil.getNextFloat(tokens) * tilesize;
             targetY = ParseUtil.getNextFloat(tokens) * tilesize;
+        }
+
+        uiVisible = worldVisible = true;
+        int unitStart = ParseUtil.tokenIndex + 1;
+        int legacyCount = unitStart < tokens.length ? ParseUtil.parseIntToken(tokens[unitStart], -1) : -1;
+        int visibleCount = unitStart + 2 < tokens.length ? ParseUtil.parseIntToken(tokens[unitStart + 2], -1) : -1;
+        boolean legacyShape = legacyCount >= 0 && tokens.length == unitStart + 1 + legacyCount * 8;
+        boolean visibleShape = visibleCount >= 0 && tokens.length == unitStart + 3 + visibleCount * 8;
+        if (visibleShape && !legacyShape) {
+            uiVisible = ParseUtil.getNextFloat(tokens) > 0f;
+            worldVisible = ParseUtil.getNextFloat(tokens) > 0f;
         }
 
         units.clear();
@@ -147,7 +159,7 @@ public class EventSpecialAction extends Action {
     }
 
     private void updateAlertSound() {
-        if (headless) return;
+        if (headless || !uiVisible) return;
         if (lifeTimer > alertTime && !alertSoundPlayed) {
             alertSoundPlayed = true;
             NHSounds.uiAlert1.play();
@@ -185,6 +197,8 @@ public class EventSpecialAction extends Action {
         proxy.spawnRange = spawnRange;
         proxy.targetX = targetX;
         proxy.targetY = targetY;
+        proxy.uiVisible = uiVisible;
+        proxy.worldVisible = worldVisible;
         proxy.overrideStats = true;
         proxy.overrideDefaultCoordinate = true;
         proxy.duration = duration;
@@ -204,18 +218,22 @@ public class EventSpecialAction extends Action {
     }
 
     private void showPresentation() {
-        NHSounds.uiAlert1.play();
-        NHUIFunc.showLabel(2.5f, t -> {
-            t.background(Styles.black5);
-            t.table(t2 -> {
-                t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(team.color);
-                t2.image(NHContent.fleet).fill().color(team.color);
-                t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(team.color);
-            }).growX().pad(OFFSET / 2).fillY().row();
-            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("nh.cutscene.event.fleet-alert") + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
-        });
+        if (uiVisible) {
+            NHSounds.uiAlert1.play();
+            NHUIFunc.showLabel(2.5f, t -> {
+                t.background(Styles.black5);
+                t.table(t2 -> {
+                    t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(team.color);
+                    t2.image(NHContent.fleet).fill().color(team.color);
+                    t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(team.color);
+                }).growX().pad(OFFSET / 2).fillY().row();
+                t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("nh.cutscene.event.fleet-alert") + " >>")).color(team.color).padBottom(4).row()).growX().fillY();
+            });
+        }
 
         RaidMarker marker = new RaidMarker();
+        marker.setEventVisibility(uiVisible);
+        marker.setWorldVisibility(worldVisible);
         marker.setKind(HudMarker.Kind.SPECIAL);
         marker.setMarkerTeam(team);
         marker.setSyncSeed(syncSeed);

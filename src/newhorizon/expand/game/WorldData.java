@@ -29,6 +29,7 @@ public class WorldData implements SaveFileReader.CustomChunk {
         stream.writeBoolean(applyEventTriggers);
         if (eventSaveData != null) eventSaveData.writeSnapshot(stream);
         DefaultSpecialEvent.writeState(stream);
+        WeatherEventState.writeState(stream);
     }
 
     @Override
@@ -49,6 +50,10 @@ public class WorldData implements SaveFileReader.CustomChunk {
         if (version > 2) {
             // Version 3 stored one-shot event IDs; version 4 also stores loop schedules.
             DefaultSpecialEvent.readState(stream, version > 3);
+        }
+
+        if (version > 4) {
+            WeatherEventState.readState(stream);
         }
 
         version = CURRENT_VER;

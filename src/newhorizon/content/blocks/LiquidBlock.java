@@ -23,29 +23,44 @@ public class LiquidBlock {
         }};
 
         streamExtractor = new StreamExtractor("stream-extractor") {{
-            requirements(Category.liquid, BuildVisibility.shown, with());
+            requirements(Category.liquid, BuildVisibility.shown, with(
+                    NHItems.silicar, 10,
+                    Items.titanium, 5
+            ));
 
             rotateDraw = true;
         }};
 
         streamReceiver = new StreamReceiver("stream-receiver") {{
-            requirements(Category.liquid, BuildVisibility.shown, with());
+            requirements(Category.liquid, BuildVisibility.shown, with(
+                    NHItems.silicar, 10,
+                    Items.titanium, 5
+            ));
         }};
 
         streamRepeater = new StreamRepeater("stream-repeater") {{
-            requirements(Category.liquid, BuildVisibility.shown, with());
+            requirements(Category.liquid, BuildVisibility.shown, with(
+                    NHItems.silicar, 10,
+                    Items.titanium, 5
+            ));
 
             rotateDraw = true;
         }};
 
         streamRedirector = new StreamRedirector("stream-redirector") {{
-            requirements(Category.liquid, BuildVisibility.shown, with());
+            requirements(Category.liquid, BuildVisibility.shown, with(
+                    NHItems.silicar, 10,
+                    Items.titanium, 5
+            ));
 
             rotateDraw = true;
         }};
 
         streamSplitter = new StreamSplitter("stream-splitter") {{
-            requirements(Category.liquid, BuildVisibility.shown, with());
+            requirements(Category.liquid, BuildVisibility.shown, with(
+                    NHItems.silicar, 10,
+                    Items.titanium, 5
+            ));
 
             rotateDraw = true;
         }};

@@ -22,6 +22,8 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
+import mindustry.world.Tile;
+import mindustry.world.blocks.liquid.Conduit.ConduitBuild;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
@@ -124,6 +126,21 @@ public class MultiBlockCrafter extends BasicMultiBlock {
     @Override
     public boolean rotatedOutput(int x, int y) {
         return false;
+    }
+
+    @Override
+    public boolean rotatedOutput(int fromX, int fromY, Tile destination) {
+        if (!(destination.build instanceof ConduitBuild)) return false;
+
+        Building crafter = world.build(fromX, fromY);
+        if (crafter == null) return false;
+        if (liquidOutputDirections == null) return false;
+        int relative = Mathf.mod(crafter.relativeTo(destination) - crafter.rotation, 4);
+        for (int direction : liquidOutputDirections) {
+            if (direction == -1 || direction == relative) return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -277,8 +294,11 @@ public class MultiBlockCrafter extends BasicMultiBlock {
             }
 
             if (outputLiquids != null) {
-                for (LiquidStack liquid : outputLiquids) {
-                    dumpLiquid(liquid.liquid, 2f);
+                for (int i = 0; i < outputLiquids.length; i++) {
+                    LiquidStack liquid = outputLiquids[i];
+                    int direction = liquidOutputDirections != null && liquidOutputDirections.length > i
+                            ? liquidOutputDirections[i] : -1;
+                    dumpLiquid(liquid.liquid, 2f, direction);
                 }
             }
         }

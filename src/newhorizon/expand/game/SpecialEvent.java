@@ -22,6 +22,7 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
+import mindustry.type.Weather;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
@@ -396,6 +397,32 @@ public class SpecialEvent {
                 tile.setOverlayNet(overlay);
             });
             return this;
+        }
+
+        /** Starts a weather effect when this event's world changes are applied. */
+        public Builder weather(Weather weather, float intensity, float duration) {
+            event.worldChanges.add(ignored -> {
+                if (weather != null && !net.client()) weather.create(intensity, duration);
+            });
+            return this;
+        }
+
+        /** Starts a weather effect with the weather's own default duration. */
+        public Builder weather(Weather weather) {
+            event.worldChanges.add(ignored -> {
+                if (weather != null && !net.client()) weather.create();
+            });
+            return this;
+        }
+
+        /** Convenience equivalent of the old reload-event timer. */
+        public Builder afterSeconds(float seconds) {
+            return trigger(Triggers.afterSeconds(seconds));
+        }
+
+        /** Convenience equivalent of the old reach-wave objective. */
+        public Builder reachWave(int wave) {
+            return trigger(Triggers.waveAtLeast(wave));
         }
 
         public Builder clearBlock(int tileX, int tileY) {

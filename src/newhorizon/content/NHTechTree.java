@@ -8,6 +8,7 @@ import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
+import mindustry.content.SectorPresets;
 import mindustry.content.TechTree.TechNode;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
@@ -75,6 +76,7 @@ public class NHTechTree {
     }
 
     private static void addSerpuloTechTree() {
+        addTechNode(SectorPresets.nuclearComplex, NHSectorPresents.frozenPeaks);
         addTechNode(Blocks.combustionGenerator, PowerBlock.photothermalGenerator);
         addTechNode(Blocks.thermalGenerator, PowerBlock.geologicalPhotothermalGenerator);
         addTechNode(Blocks.separator, ProductionBlock.tungstenReconstructor);
@@ -323,8 +325,17 @@ public class NHTechTree {
                         ProductionNode.node(NHSectorPresents.landingPoint, Seq.with(new SectorComplete(NHSectorPresents.primaryBase)),
                                 ProductionNode.node(NHSectorPresents.relicAccess,
                                         ProductionNode.node(NHSectorPresents.edgeZone,
-                                                Seq.with(new SectorComplete(NHSectorPresents.relicAccess))
-                                        )
+                                                Seq.with(new SectorComplete(NHSectorPresents.relicAccess)),
+                                                ProductionNode.node(NHSectorPresents.crossBranch,
+                                                        Seq.with(new SectorComplete(NHSectorPresents.edgeZone)),
+                                                        ProductionNode.node(NHSectorPresents.interferedArray,
+                                                                Seq.with(new SectorComplete(NHSectorPresents.crossBranch))),
+                                                        ProductionNode.node(NHSectorPresents.hollow,
+                                                                Seq.with(new SectorComplete(NHSectorPresents.crossBranch)))
+                                                )
+                                        ),
+                                        ProductionNode.node(NHSectorPresents.streamStation,
+                                                Seq.with(new SectorComplete(NHSectorPresents.relicAccess)))
                                 )
                         ),
                         ProductionNode.node(SpecialBlock.coreArray,
@@ -374,6 +385,8 @@ public class NHTechTree {
                                 ProductionNode.node(ProductionBlock.oilRefiner)
                         ),
                         ProductionNode.node(CraftingBlock.silicarCrusher, ItemStack.with(NHItems.silicar, 30),
+                                ProductionNode.node(CraftingBlock.eutecticPurifierGraphite),
+                                ProductionNode.node(CraftingBlock.eutecticPurifierSilicon),
                                 ProductionNode.node(CraftingBlock.stampingFacility,
                                         ProductionNode.node(CraftingBlock.heavyStampingFacility),
                                         ProductionNode.node(CraftingBlock.multipleRollingMill,
@@ -381,6 +394,7 @@ public class NHTechTree {
                                                         ProductionNode.node(CraftingBlock.heavyRollingMill)
                                                 ),
                                                 ProductionNode.node(CraftingBlock.denseFactory,
+                                                        ProductionNode.node(CraftingBlock.tandemFactory),
                                                         ProductionNode.node(CraftingBlock.nodexFactory,
                                                                 ProductionNode.node(CraftingBlock.hadronCompositeBuilder),
                                                                 ProductionNode.node(CraftingBlock.darkEnergyTrap)
@@ -484,6 +498,13 @@ public class NHTechTree {
                                         ProductionNode.node(DistributionBlock.liquidBridgeExtend)
                                 ),
                                 ProductionNode.node(DistributionBlock.liquidUnloader),
+                                ProductionNode.node(LiquidBlock.streamExtractor,
+                                        ProductionNode.node(LiquidBlock.streamReceiver),
+                                        ProductionNode.node(LiquidBlock.streamRepeater,
+                                                ProductionNode.node(LiquidBlock.streamRedirector),
+                                                ProductionNode.node(LiquidBlock.streamSplitter)
+                                        )
+                                ),
                                 ProductionNode.node(LiquidBlock.turboPumpSmall,
                                         ProductionNode.node(LiquidBlock.turboPump)
                                 ),
@@ -501,7 +522,9 @@ public class NHTechTree {
                                                 )
                                         )
                                 ),
-                                ProductionNode.node(NHBlocks.fireExtinguisher),
+                                ProductionNode.node(NHBlocks.fireExtinguisher,
+                                        ProductionNode.node(NHBlocks.blaster)
+                                ),
                                 ProductionNode.node(DefenseBlock.standardRegenProjector,
                                         ProductionNode.node(DefenseBlock.heavyRegenProjector)
                                 ),
@@ -513,54 +536,54 @@ public class NHTechTree {
                                 )
                         ),
                         ProductionNode.node(TurretBlock.thermo,
-                                ProductionNode.node(TurretBlock.pulse,
-                                        ProductionNode.node(TurretBlock.beam,
-                                                ProductionNode.node(TurretBlock.electro)
-                                        )
-                                ),
-                                ProductionNode.node(TurretBlock.synchro,
+                                ProductionNode.node(TurretBlock.beam,
                                         ProductionNode.node(TurretBlock.argmot,
-                                                ProductionNode.node(TurretBlock.bombard)
+                                                ProductionNode.node(NHBlocks.gravity,
+                                                        ProductionNode.node(NHBlocks.antiBulletTurret,
+                                                                ProductionNode.node(NHBlocks.webber)
+                                                        )
+                                                ),
+                                                ProductionNode.node(TurretBlock.concentration,
+                                                        ProductionNode.node(NHBlocks.atomSeparator),
+                                                        ProductionNode.node(NHBlocks.prism)
+                                                ),
+                                                ProductionNode.node(NHBlocks.railGun,
+                                                        ProductionNode.node(TurretBlock.electro)
+                                                )
                                         )
                                 ),
-                                ProductionNode.node(TurretBlock.vortex,
-                                        ProductionNode.node(TurretBlock.concentration)
-                                ),
-                                ProductionNode.node(NHBlocks.multipleLauncher,
-                                        ProductionNode.node(NHBlocks.hive),
-                                        ProductionNode.node(NHBlocks.bombLauncher,
-                                                ProductionNode.node(NHBlocks.airRaider)
-                                        )
-                                ),
-                                ProductionNode.node(NHBlocks.gravity,
-                                        ProductionNode.node(NHBlocks.antiBulletTurret,
-                                                ProductionNode.node(NHBlocks.webber)
-                                        )
-                                ),
-                                ProductionNode.node(NHBlocks.laserWall),
-                                ProductionNode.node(NHBlocks.blaster),
-                                ProductionNode.node(NHBlocks.antibody,
-                                        ProductionNode.node(NHBlocks.interferon,
-                                                ProductionNode.node(NHBlocks.prism),
-                                                ProductionNode.node(NHBlocks.executor,
-                                                        ProductionNode.node(NHBlocks.dendrite),
-                                                        ProductionNode.node(NHBlocks.endOfEra,
-                                                                ProductionNode.node(NHBlocks.eternity)
+                                ProductionNode.node(TurretBlock.pulse,
+                                        ProductionNode.node(TurretBlock.slavio,
+                                                ProductionNode.node(TurretBlock.vortex)
+                                        ),
+                                        ProductionNode.node(NHBlocks.multipleLauncher,
+                                                ProductionNode.node(TurretBlock.bombard),
+                                                ProductionNode.node(NHBlocks.hive),
+                                                ProductionNode.node(NHBlocks.bombLauncher,
+                                                        ProductionNode.node(NHBlocks.airRaider)
+                                                )
+                                        ),
+                                        ProductionNode.node(TurretBlock.synchro,
+                                                ProductionNode.node(NHBlocks.bloodStar,
+                                                        ProductionNode.node(NHBlocks.executor,
+                                                                ProductionNode.node(NHBlocks.endOfEra,
+                                                                        ProductionNode.node(NHBlocks.eternity)
+                                                                )
                                                         )
                                                 )
                                         )
                                 ),
-                                ProductionNode.node(NHBlocks.atomSeparator,
-                                        ProductionNode.node(NHBlocks.railGun)
-                                ),
-                                ProductionNode.node(TurretBlock.slavio,
-                                        //ProductionNode.node(TurretBlock.ancientArtillery),
-                                        ProductionNode.node(NHBlocks.bloodStar)
-                                )
+                                ProductionNode.node(NHBlocks.laserWall)
+                        ),
+                        ProductionNode.node(NHBlocks.interferon,
+                                ProductionNode.node(NHBlocks.antibody),
+                                ProductionNode.node(NHBlocks.dendrite)
                         ),
                         ProductionNode.node(SpecialBlock.standardStorage,
                                 ProductionNode.node(SpecialBlock.heavyStorage,
-                                        ProductionNode.node(SpecialBlock.remoteStorage)
+                                        ProductionNode.node(SpecialBlock.remoteStorage,
+                                                ProductionNode.node(SpecialBlock.accumulatingStorage)
+                                        )
                                 ),
                                 ProductionNode.node(SpecialBlock.juniorModuleBeacon,
                                         ProductionNode.node(SpecialBlock.seniorModuleBeacon)
@@ -573,50 +596,69 @@ public class NHTechTree {
                                 )
                         ),
                         ProductionNode.node(UnitBlock.jumpGateBasic,
-                                ProductionNode.node(GroundUnitTypes.origin),
-                                ProductionNode.node(GroundUnitTypes.thynomo),
-                                ProductionNode.node(NHUnitTypes.sharp),
-                                ProductionNode.node(NHUnitTypes.branch),
-                                ProductionNode.node(NHUnitTypes.relay),
-                                ProductionNode.node(NHUnitTypes.histone),
-
                                 ProductionNode.node(UnitBlock.jumpGatePrimary,
-                                        ProductionNode.node(NHUnitTypes.assaulter),
-                                        ProductionNode.node(AirUnitTypes.apparition),
-                                        ProductionNode.node(NHUnitTypes.ghost),
-                                        ProductionNode.node(NHUnitTypes.warper),
-                                        ProductionNode.node(NHUnitTypes.aliotiat),
-                                        ProductionNode.node(NHUnitTypes.rhino),
-                                        ProductionNode.node(NHUnitTypes.gather),
-                                        ProductionNode.node(NHUnitTypes.restrictionEnzyme),
-
                                         ProductionNode.node(UnitBlock.jumpGateStandard,
-                                                ProductionNode.node(NHUnitTypes.naxos),
-                                                ProductionNode.node(NHUnitTypes.striker),
-                                                ProductionNode.node(NHUnitTypes.tarlidor),
-                                                ProductionNode.node(NHUnitTypes.zarkov),
-                                                ProductionNode.node(NHUnitTypes.macrophage),
-                                                ProductionNode.node(NHUnitTypes.lymph),
-
-                                                ProductionNode.node(UnitBlock.jumpGateHyper,
-                                                        ProductionNode.node(NHUnitTypes.destruction),
-                                                        ProductionNode.node(NHUnitTypes.longinus),
-                                                        ProductionNode.node(GroundUnitTypes.annihilation),
-                                                        ProductionNode.node(NHUnitTypes.saviour),
-                                                        ProductionNode.node(NHUnitTypes.declining),
-                                                        ProductionNode.node(NHUnitTypes.hurricane),
-                                                        ProductionNode.node(NHUnitTypes.anvil),
-                                                        ProductionNode.node(NHUnitTypes.sin),
-                                                        ProductionNode.node(NHUnitTypes.collapser),
-                                                        ProductionNode.node(NHUnitTypes.laugra),
-                                                        ProductionNode.node(NHUnitTypes.guardian),
-                                                        ProductionNode.node(NHUnitTypes.pester)
-                                                        //ProductionNode.node(NHUnitTypes.nucleoid)
+                                                ProductionNode.node(UnitBlock.jumpGateHyper)
+                                        )
+                                )
+                        ),
+                        ProductionNode.node(GroundUnitTypes.origin,
+                                ProductionNode.node(GroundUnitTypes.thynomo,
+                                        ProductionNode.node(NHUnitTypes.aliotiat,
+                                                ProductionNode.node(NHUnitTypes.tarlidor,
+                                                        ProductionNode.node(GroundUnitTypes.annihilation,
+                                                                ProductionNode.node(NHUnitTypes.sin)
+                                                        )
                                                 )
                                         )
-                                ),
-                                ProductionNode.node(NHBlocks.hyperspaceWarper)
-                        )
+                                )
+                        ),
+                        ProductionNode.node(NHUnitTypes.sharp,
+                                ProductionNode.node(NHUnitTypes.branch,
+                                        ProductionNode.node(NHUnitTypes.warper,
+                                                ProductionNode.node(NHUnitTypes.striker,
+                                                        ProductionNode.node(NHUnitTypes.longinus,
+                                                                ProductionNode.node(NHUnitTypes.hurricane)
+                                                        )
+                                                ),
+                                                ProductionNode.node(NHUnitTypes.naxos,
+                                                        ProductionNode.node(NHUnitTypes.destruction)
+                                                )
+                                        )
+                                )
+                        ),
+                        ProductionNode.node(NHUnitTypes.relay,
+                                ProductionNode.node(NHUnitTypes.ghost,
+                                        ProductionNode.node(NHUnitTypes.zarkov,
+                                                ProductionNode.node(NHUnitTypes.declining)
+                                        )
+                                )
+                        ),
+                        ProductionNode.node(NHUnitTypes.histone,
+                                ProductionNode.node(NHUnitTypes.restrictionEnzyme,
+                                        ProductionNode.node(NHUnitTypes.lymph,
+                                                ProductionNode.node(NHUnitTypes.laugra)
+                                        ),
+                                        ProductionNode.node(NHUnitTypes.macrophage,
+                                                ProductionNode.node(NHUnitTypes.guardian),
+                                                ProductionNode.node(NHUnitTypes.pester)
+                                        )
+                                )
+                        ),
+                        ProductionNode.node(NHUnitTypes.assaulter,
+                                ProductionNode.node(AirUnitTypes.apparition,
+                                        ProductionNode.node(NHUnitTypes.anvil,
+                                                ProductionNode.node(NHUnitTypes.collapser)
+                                        )
+                                )
+                        ),
+                        ProductionNode.node(NHUnitTypes.rhino,
+                                ProductionNode.node(NHUnitTypes.gather,
+                                        ProductionNode.node(NHUnitTypes.saviour)
+                                )
+                        ),
+
+                        ProductionNode.node(NHBlocks.hyperspaceWarper)
                 )
         );
     }
@@ -657,13 +699,14 @@ public class NHTechTree {
                                 ProductionNode.node(Items.carbide),
                                 ProductionNode.node(Items.thorium,
                                         ProductionNode.node(Items.fissileMatter,
-                                                ProductionNode.node(NHItems.zeta,
-                                                        ProductionNode.node(NHItems.thermoCorePositive),
-                                                        ProductionNode.node(NHItems.thermoCoreNegative)
-                                                ),
-                                                ProductionNode.node(Items.phaseFabric)
+                                                ProductionNode.node(NHItems.thermoCoreNegative)
                                         ),
-                                        ProductionNode.node(NHItems.fusionEnergy)
+                                        ProductionNode.node(NHItems.fusionEnergy,
+                                                ProductionNode.node(NHItems.thermoCorePositive)
+                                        ),
+                                        ProductionNode.node(Items.phaseFabric,
+                                                ProductionNode.node(NHItems.zeta)
+                                        )
                                 )
                         )
                 )

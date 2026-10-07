@@ -1,6 +1,7 @@
 package newhorizon.expand.logic.components.ui;
 
 import arc.Core;
+import arc.func.Boolp;
 import arc.func.Prov;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -77,18 +78,26 @@ public class HudMarker extends Table {
     protected static final float padding = 0.05f;
     protected static final float strokeInner = 3f, strokeOuter = 9f;
     protected static final float iconSize = 80f;
+    private static int nextMarkerId;
+    public final int markerId = nextMarkerId++;
     public Kind kind = Kind.OTHER;
     public int syncSeed;
     public Color markColor = Pal.accent;
+    public boolean colorFlash = true;
+    public boolean visibleInEventUI = true;
+    public boolean visibleOnWorld = true;
     public Vec2 markPoint = new Vec2();
     public TextureRegion icon = NHContent.icon2;
+    public MarkStyle style = MarkStyle.defaultStyle;
     public float delay = 3;
     public float duration = 5;
     public float radius = 24f;
     public float angle = 0f;
     protected float lifeTimer = 0;
-    protected float displayAlpha = 30f;
+    /** Persistent marker opacity multiplier; lifetime must not fade the marker. */
+    protected float displayAlpha = 1f;
     protected Prov<Float> lifeTimerProv;
+    protected Boolp removeCheck = () -> false;
     protected boolean removing;
     public final Seq<UnitPreview> unitPreviews = new Seq<>();
 
@@ -138,6 +147,21 @@ public class HudMarker extends Table {
         return this;
     }
 
+    public HudMarker setColorFlash(boolean colorFlash) {
+        this.colorFlash = colorFlash;
+        return this;
+    }
+
+    public HudMarker setEventVisibility(boolean visible) {
+        this.visibleInEventUI = visible;
+        return this;
+    }
+
+    public HudMarker setWorldVisibility(boolean visible) {
+        this.visibleOnWorld = visible;
+        return this;
+    }
+
     public HudMarker setKind(Kind kind) {
         this.kind = kind == null ? Kind.OTHER : kind;
         return this;
@@ -171,7 +195,6 @@ public class HudMarker extends Table {
     @Override
     public void act(float delta) {
         super.act(delta);
-        displayAlpha = Mathf.lerpDelta(displayAlpha, 0.1f, 5 * delta);
         if (completed()) removeMarker();
     }
 
@@ -196,6 +219,10 @@ public class HudMarker extends Table {
         remove();
     }
 
+    public boolean isRemoving() {
+        return removing;
+    }
+
     @Override
     public boolean remove() {
         cutsceneUI.removeMarker(this);
@@ -203,7 +230,7 @@ public class HudMarker extends Table {
     }
 
     public boolean completed() {
-        return elapsed() > duration;
+        return removeCheck.get() || (duration > 0f && elapsed() > duration);
     }
 
     public Prov<String> displayText() {
@@ -231,7 +258,6 @@ public class HudMarker extends Table {
     }
 
     protected void focusCamera() {
-        displayAlpha = 30f;
         float cx = markPoint.x;
         float cy = markPoint.y;
         ActionBus bus = new ActionBus();
@@ -310,8 +336,19 @@ public class HudMarker extends Table {
         dialog.show();
     }
 
+    public HudMarker setStyle(MarkStyle style) {
+        this.style = style == null ? MarkStyle.defaultStyle : style;
+        return this;
+    }
+
+    public HudMarker setRemoveCheck(Boolp removeCheck) {
+        this.removeCheck = removeCheck == null ? () -> false : removeCheck;
+        return this;
+    }
+
     @Override
     public void draw() {
+        if (!visibleOnWorld) return;
         super.draw();
 
         if (Vars.headless) return;
@@ -333,12 +370,26 @@ public class HudMarker extends Table {
     }
 
     public void drawOnWorld() {
-        drawCrossHair();
-        drawProcessBar();
-        drawArrow();
+        if (style != null) {
+            Color drawColor = Tmp.c1.set(markColor);
+            if (colorFlash) drawColor.lerp(Color.white, Mathf.absin(elapsed(), 5f, 0.4f));
+            drawColor.a = color.a;
+            Draw.color(drawColor);
+            style.drawer.draw(markerId, elapsed(), radius,
+                    screenVec, originVec, drawColor,
+                    originVec.x < width * padding || originVec.y < height * padding
+                            || originVec.x > width * (1f - padding) || originVec.y > height * (1f - padding));
+            Draw.reset();
+            Lines.stroke(1f);
+        } else {
+            drawCrossHair();
+            drawProcessBar();
+            drawArrow();
+        }
     }
 
     public void drawOnHud() {
+        if (style != null) return;
         float angle = Angles.angle(width / 2, height / 2, originVec.x, originVec.y) - 90;
         drawLineStroke(false, true);
         Draw.rect(NHContent.pointerRegion, screenVec.x, screenVec.y, iconSize, iconSize, angle);
@@ -346,7 +397,7 @@ public class HudMarker extends Table {
 
     public void drawLineStroke(boolean outer, boolean center) {
         Lines.stroke((outer ? strokeOuter : strokeInner) * getScale(), (outer ? Pal.gray : markColor));
-        Draw.alpha(color.a * Mathf.clamp(displayAlpha, center ? 0.5f : 0.1f, 1f));
+            Draw.alpha(color.a);
     }
 
     public float getScale() {
