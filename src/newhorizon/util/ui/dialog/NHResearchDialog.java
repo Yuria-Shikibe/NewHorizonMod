@@ -27,6 +27,8 @@ import arc.util.Scaling;
 import mindustry.content.TechTree;
 import mindustry.content.TechTree.TechNode;
 import mindustry.game.EventType.ResearchEvent;
+import mindustry.game.Objectives.Objective;
+import mindustry.game.Objectives.SectorComplete;
 import mindustry.gen.Icon;
 import mindustry.gen.Sounds;
 import mindustry.gen.Tex;
@@ -526,6 +528,8 @@ public class NHResearchDialog extends ResearchDialog {
             }
         }).growX().left().row();
 
+        addMapObjectives(detailTable, entry.node);
+
         if (entry.node.requirements.length > 0) {
             detailTable.table(req -> {
                 req.left().defaults().padTop(4f);
@@ -555,6 +559,22 @@ public class NHResearchDialog extends ResearchDialog {
             detailTable.row();
         }
     }
+
+    private void addMapObjectives(Table table, TechNode node) {
+        if (!node.objectives.contains(objective -> objective instanceof SectorComplete)) return;
+
+        table.table(requirements -> {
+            requirements.left().defaults().padTop(8f);
+            requirements.add(Core.bundle.get("nh.research.map-requirement")).color(Pal.accent).left().row();
+            for (Objective objective : node.objectives) {
+                if (!(objective instanceof SectorComplete sectorComplete) || sectorComplete.preset == null) continue;
+                String color = objective.complete() ? "[green]" : "[red]";
+                requirements.add(color + Core.bundle.format("nh.research.map-objective", sectorComplete.preset.localizedName) + "[]")
+                        .width(286f).wrap().left().row();
+            }
+        }).growX().left().row();
+    }
+
     private void refreshSelected() {
         if (!isShown()) return;
         researchItems = buildResearchItems();
