@@ -5,7 +5,10 @@ import arc.struct.Seq;
 import mindustry.content.Items;
 import mindustry.game.Team;
 import mindustry.type.Item;
+import mindustry.type.ItemStack;
+import mindustry.type.UnitType;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHTechTree;
 
 public class ThreatLevel {
     //a threat map for automatic threat.
@@ -36,5 +39,37 @@ public class ThreatLevel {
             }
         }
         return threat;
+    }
+
+    public static int getItemThreat(Item item) {
+        if (item == null) return 0;
+
+        int threat = 0;
+        for (IntMap.Entry<Seq<Item>> entry : threatMap) {
+            if (entry.value.contains(item)) threat = Math.max(threat, entry.key);
+        }
+        return threat;
+    }
+
+    public static float getItemWeight(Item item) {
+        int threat = getItemThreat(item);
+        if (threat > 0) return threat;
+        return item == null ? 0f : (float) Math.sqrt(Math.max(item.cost, 1f)) * 0.15f;
+    }
+
+    public static float getUnitThreat(UnitType type) {
+        if (type == null) return 1f;
+
+        ItemStack[] requirements = NHTechTree.unitBuildCost.get(type);
+        if (requirements == null || requirements.length == 0) requirements = type.getTotalRequirements();
+
+        float threat = 0f;
+        for (ItemStack stack : requirements) {
+            if (stack != null && stack.item != null && stack.amount > 0) {
+                threat += stack.amount * getItemWeight(stack.item);
+            }
+        }
+
+        return Math.max(threat, 1f);
     }
 }

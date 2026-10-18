@@ -5,6 +5,7 @@ import mindustry.Vars;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.logic.components.CutsceneControl;
 import newhorizon.expand.logic.components.CutsceneUI;
+import newhorizon.expand.units.probe.ProbeColonyManager;
 import newhorizon.util.game.UpdateProxy;
 import newhorizon.util.graphic.ScreenShaderDrawer;
 import newhorizon.util.graphic.VortexHitRenderer;
@@ -23,6 +24,7 @@ public class NHVars {
         if (core != null) return;
 
         worldData = new NHWorldData();
+        ProbeColonyManager.init();
 
         UpdateProxy.init();
 
