@@ -5,10 +5,8 @@ import arc.struct.Seq;
 import mindustry.content.Items;
 import mindustry.game.Team;
 import mindustry.type.Item;
-import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import newhorizon.content.NHItems;
-import newhorizon.content.NHTechTree;
 
 public class ThreatLevel {
     //a threat map for automatic threat.
@@ -58,18 +56,6 @@ public class ThreatLevel {
     }
 
     public static float getUnitThreat(UnitType type) {
-        if (type == null) return 1f;
-
-        ItemStack[] requirements = NHTechTree.unitBuildCost.get(type);
-        if (requirements == null || requirements.length == 0) requirements = type.getTotalRequirements();
-
-        float threat = 0f;
-        for (ItemStack stack : requirements) {
-            if (stack != null && stack.item != null && stack.amount > 0) {
-                threat += stack.amount * getItemWeight(stack.item);
-            }
-        }
-
-        return Math.max(threat, 1f);
+        return UnitProductionRecipe.get(type).contribution;
     }
 }

@@ -1,5 +1,6 @@
 package newhorizon.expand.units.ai;
 
+import arc.util.Tmp;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
 import mindustry.gen.Teamc;
@@ -7,6 +8,7 @@ import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.expand.units.probe.ProbeColonyManager;
+import newhorizon.expand.units.probe.ProbeFactoryLayout;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
 
 public class ProbeAI extends CommandAI {
@@ -45,6 +47,16 @@ public class ProbeAI extends CommandAI {
         }
 
         if (probe.factory) {
+            Tile destination = probe.miningTarget();
+            if (destination != null) {
+                moveTo(Tmp.v1.set(destination.worldx(), destination.worldy()), ProbeColonyManager.FACTORY_ARRIVAL_RANGE / 2f, 20f);
+                unit.lookAt(destination.worldx(), destination.worldy());
+                return;
+            }
+            if (!ProbeFactoryLayout.moving(probe) && (targetPos != null || attackTarget != null || commandQueue.any())) {
+                super.defaultBehavior();
+                return;
+            }
             unit.vel.setZero();
             return;
         }
@@ -52,8 +64,8 @@ public class ProbeAI extends CommandAI {
         if (probe.factoryCandidate) {
             Tile tile = probe.miningTarget();
             if (tile != null) {
-                moveTo(tile, 20f);
-                unit.lookAt(tile);
+                moveTo(Tmp.v1.set(tile.worldx(), tile.worldy()), ProbeColonyManager.FACTORY_ARRIVAL_RANGE / 2f, 20f);
+                unit.lookAt(tile.worldx(), tile.worldy());
             } else {
                 unit.vel.setZero();
             }
@@ -67,20 +79,22 @@ public class ProbeAI extends CommandAI {
         }
 
         if (ProbeColonyManager.shouldDeliver(probe, probe.miningTargetTile)) {
-            if (factory != null) moveTo(factory, 32f);
-            else unit.vel.setZero();
+            if (factory != null && !unit.within(factory, ProbeColonyManager.deliveryRange(unit, factory))) {
+                moveTo(factory, ProbeColonyManager.deliveryRange(unit, factory) / 2f, 20f);
+            } else {
+                unit.vel.setZero();
+            }
             return;
         }
 
         Tile tile = probe.miningTarget();
-        if (tile != null) {
-            moveTo(tile, 20f);
-            unit.lookAt(tile);
+        if (ProbeColonyManager.canHarvest(unit, tile)) {
+            ProbeColonyManager.approachMine(this, unit, tile);
             return;
         }
 
         if (factory != null) {
-            moveTo(factory, 64f);
+            moveTo(factory, ProbeColonyManager.deliveryRange(unit, factory) * 2f, 20f, false, null);
             return;
         }
 

@@ -1,5 +1,6 @@
 package newhorizon.expand.units.unitEntity;
 
+import arc.math.geom.Vec2;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -18,6 +19,9 @@ import mindustry.world.Tile;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.units.ai.ProbeAI;
 import newhorizon.expand.units.probe.ProbeColonyManager;
+import newhorizon.expand.units.probe.ProbeFactoryRenderer;
+import newhorizon.expand.units.probe.ProbeFactoryExitAI;
+import newhorizon.expand.units.probe.ProbeFactoryParts;
 
 public class ProbeEntity extends UnitEntity {
     public Team targetTeam;
@@ -39,6 +43,8 @@ public class ProbeEntity extends UnitEntity {
     public float productionProgress;
     public float scannerCooldownUntil;
     public UnitType selectedProduction;
+    public transient ProbeFactoryRenderer.Labels factoryLabels;
+    public transient ProbeFactoryParts factoryParts;
 
     @Override
     public int classId() {
@@ -70,7 +76,7 @@ public class ProbeEntity extends UnitEntity {
 
     @Override
     public float clipSize() {
-        return factory ? Math.max(super.clipSize(), factoryRadius * 3f) : super.clipSize();
+        return factory || !ProbeFactoryParts.retracted(this) ? Math.max(super.clipSize(), factoryRadius * 4f + 96f) : super.clipSize();
     }
 
     public Tile miningTarget() {
@@ -85,11 +91,32 @@ public class ProbeEntity extends UnitEntity {
     @Override
     public void update() {
         restoreColonyController();
+        ProbeFactoryParts.update(this);
+        if (!ProbeFactoryParts.retracted(this) && (!Vars.net.client() || isLocal())) vel.setZero();
         super.update();
     }
 
+    @Override
+    public void moveAt(Vec2 movement, float acceleration) {
+        if (!ProbeFactoryParts.allowMovement(this, movement)) {
+            vel.setZero();
+            return;
+        }
+        super.moveAt(movement, acceleration);
+    }
+
+    @Override
+    public void approach(Vec2 movement) {
+        if (!ProbeFactoryParts.allowMovement(this, movement)) {
+            vel.setZero();
+            return;
+        }
+        super.approach(movement);
+    }
+
     private void restoreColonyController() {
-        if (Vars.net.client() || !(controller instanceof CommandAI command) || command instanceof ProbeAI) return;
+        if (Vars.net.client() || controller instanceof ProbeFactoryExitAI
+                || !(controller instanceof CommandAI command) || command instanceof ProbeAI) return;
         ProbeAI colony = new ProbeAI();
         colony.command = command.command;
         colony.targetPos = command.targetPos;

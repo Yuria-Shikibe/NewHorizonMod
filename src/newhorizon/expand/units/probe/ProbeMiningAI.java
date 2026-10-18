@@ -26,14 +26,17 @@ public class ProbeMiningAI extends FlyingAI {
         Tile tile = miner.targetTile();
         ProbeEntity owner = miner.owner();
         if (ProbeColonyManager.shouldDeliver(miner, miner.targetTile)) {
-            if (owner != null) moveTo(owner, 40f);
+            if (owner != null && !unit.within(owner, ProbeColonyManager.deliveryRange(unit, owner))) {
+                moveTo(owner, ProbeColonyManager.deliveryRange(unit, owner) / 2f, 20f);
+            } else {
+                unit.vel.setZero();
+            }
             return;
         }
-        if (tile != null) {
-            moveTo(tile, 12f);
-            unit.lookAt(tile);
+        if (ProbeColonyManager.canHarvest(unit, tile)) {
+            ProbeColonyManager.approachMine(this, unit, tile);
         } else if (owner != null) {
-            moveTo(owner, 48f);
+            moveTo(owner, ProbeColonyManager.deliveryRange(unit, owner) * 2f, 20f, false, null);
         }
     }
 }

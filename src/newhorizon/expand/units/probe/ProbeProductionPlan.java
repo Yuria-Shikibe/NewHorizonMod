@@ -11,6 +11,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.expand.logic.ThreatLevel;
+import newhorizon.expand.logic.UnitProductionRecipe;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
 import newhorizon.expand.units.unitType.AncientUnitType;
 
@@ -98,11 +99,15 @@ public final class ProbeProductionPlan {
 
         Team friendly = Vars.state == null ? null : Vars.state.rules.defaultTeam;
         if (friendly != null && team != friendly && !(type instanceof AncientUnitType)) return false;
-        return type.constructor != null;
+        return type.constructor != null && cost(type) > 0f && buildTime(type) > 0f;
     }
 
     public static float cost(UnitType type) {
         return ThreatLevel.getUnitThreat(type);
+    }
+
+    public static float buildTime(UnitType type) {
+        return UnitProductionRecipe.get(type).buildTime;
     }
 
     public static float factoryRadius(UnitType type) {
