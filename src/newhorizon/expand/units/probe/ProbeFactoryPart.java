@@ -1,11 +1,14 @@
 package newhorizon.expand.units.probe;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.entities.part.RegionPart;
 import mindustry.graphics.Layer;
+import newhorizon.NewHorizon;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
 import newhorizon.expand.units.unitType.ProbeUnitType;
 
@@ -13,11 +16,18 @@ public class ProbeFactoryPart extends RegionPart {
     private final ProbeUnitType owner;
     private final int orbitIndex;
     private final PartParams orbitParams = new PartParams();
+    private TextureRegion orbitRegion;
 
     public ProbeFactoryPart(ProbeUnitType owner, String suffix, int orbitIndex) {
         super(suffix);
         this.owner = owner;
         this.orbitIndex = orbitIndex;
+    }
+
+    @Override
+    public void load(String name) {
+        super.load(name);
+        orbitRegion = Core.atlas.find(NewHorizon.name("ancient-probe-factory-part"));
     }
 
     public int orbitIndex() {
@@ -53,9 +63,20 @@ public class ProbeFactoryPart extends RegionPart {
         ProbeFactoryRenderer.drawPartLink(factory, partX, partY, deployment);
         float previousLayer = Draw.z();
         Draw.z(Layer.effect + 0.04f - layerOffset);
+        boolean useOrbitRegion = orbitRegion != null && orbitRegion.found() && regions.length > 0;
+        TextureRegion previousRegion = useOrbitRegion ? regions[0] : null;
+        boolean previousOutline = outline;
+        if (useOrbitRegion) {
+            regions[0] = orbitRegion;
+            outline = false;
+        }
         try {
             super.draw(orbitParams);
         } finally {
+            if (useOrbitRegion) {
+                regions[0] = previousRegion;
+                outline = previousOutline;
+            }
             Draw.z(previousLayer);
         }
     }

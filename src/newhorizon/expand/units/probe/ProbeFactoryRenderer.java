@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Strings;
@@ -38,48 +39,62 @@ public final class ProbeFactoryRenderer {
         return result.trns(angle, radius).add(factory.x + factory.factoryRadius, factory.y + factory.factoryRadius);
     }
 
-    public static void drawPartLink(ProbeEntity factory, float sourceX, float sourceY, float deployment) {
+    private static TextureRegion unitOutlineRegion(ProbeEntity factory) {
+        UnitType production = factory.selectedProduction;
+        if (production == null) return null;
+        TextureRegion outline = production.outlineRegion != null && production.outlineRegion.found()
+                ? production.outlineRegion : production.region;
+        return outline != null && outline.found() ? outline : null;
+    }
+
+    private static Vec2 outlineIntersection(ProbeEntity factory, TextureRegion outline, float sourceX, float sourceY,
+                                            Vec2 result) {
         float centerX = factory.x + factory.factoryRadius;
         float centerY = factory.y + factory.factoryRadius;
-        float radius = constructionRadius(factory);
+        float halfWidth = outline.width * outline.scl() * 0.5f;
+        float halfHeight = outline.height * outline.scl() * 0.5f;
+        float rotation = factory.rotation - 90f;
+        float cos = Mathf.cosDeg(rotation);
+        float sin = Mathf.sinDeg(rotation);
+        float dx = sourceX - centerX;
+        float dy = sourceY - centerY;
+        float localX = dx * cos + dy * sin;
+        float localY = -dx * sin + dy * cos;
+        float scaleX = Math.abs(localX) < 0.001f ? Float.POSITIVE_INFINITY : halfWidth / Math.abs(localX);
+        float scaleY = Math.abs(localY) < 0.001f ? Float.POSITIVE_INFINITY : halfHeight / Math.abs(localY);
+        float scale = Math.min(1f, Math.min(scaleX, scaleY));
+        float edgeX = localX * scale;
+        float edgeY = localY * scale;
+        return result.set(centerX + edgeX * cos - edgeY * sin, centerY + edgeX * sin + edgeY * cos);
+    }
+
+    public static void drawPartLink(ProbeEntity factory, float sourceX, float sourceY, float deployment) {
+        TextureRegion outline = unitOutlineRegion(factory);
+        if (deployment <= 0f || outline == null) return;
+        float centerX = factory.x + factory.factoryRadius;
+        float centerY = factory.y + factory.factoryRadius;
         float distance = Mathf.dst(sourceX, sourceY, centerX, centerY);
-        if (deployment <= 0f || distance <= radius + 4f) return;
+        if (distance <= 0.001f) return;
         float directionX = (sourceX - centerX) / distance;
         float directionY = (sourceY - centerY) / distance;
         float normalX = -directionY;
         float normalY = directionX;
-        float endWidth = Mathf.clamp(radius * 0.33f, 4.5f, 16f);
-        float endDistance = Mathf.sqrt(radius * radius - endWidth * endWidth);
-        float startX = sourceX - directionX * 2.5f;
-        float startY = sourceY - directionY * 2.5f;
-        float endX = centerX + directionX * endDistance;
-        float endY = centerY + directionY * endDistance;
-        float firstX = startX + normalX * 1.1f;
-        float firstY = startY + normalY * 1.1f;
-        float secondX = startX - normalX * 1.1f;
-        float secondY = startY - normalY * 1.1f;
-        float thirdX = endX - normalX * endWidth;
-        float thirdY = endY - normalY * endWidth;
-        float fourthX = endX + normalX * endWidth;
-        float fourthY = endY + normalY * endWidth;
+        float halfWidth = Mathf.clamp(factory.factoryRadius * 0.018f, 1.2f, 2.5f);
+        float firstX = sourceX + normalX * halfWidth;
+        float firstY = sourceY + normalY * halfWidth;
+        float secondX = sourceX - normalX * halfWidth;
+        float secondY = sourceY - normalY * halfWidth;
+        Vec2 firstEnd = outlineIntersection(factory, outline, firstX, firstY, Tmp.v1);
+        Vec2 secondEnd = outlineIntersection(factory, outline, secondX, secondY, Tmp.v2);
         float previousLayer = Draw.z();
         float previousColor = Draw.getColorPacked();
         float previousMix = Draw.getMixColorPacked();
-        float previousStroke = Lines.getStroke();
         Draw.z(Layer.effect - 0.02f);
         Draw.mixcol();
         float startColor = Tmp.c1.set(NHColor.ancientLightMid).a(0.1f * deployment).toFloatBits();
         float endColor = Tmp.c1.a(0.22f * deployment).toFloatBits();
         Fill.quad(firstX, firstY, startColor, secondX, secondY, startColor,
-                thirdX, thirdY, endColor, fourthX, fourthY, endColor);
-        Draw.color(factory.team.color, 0.4f * deployment);
-        Lines.stroke(2.4f);
-        Lines.quad(firstX, firstY, secondX, secondY, thirdX, thirdY, fourthX, fourthY);
-        Draw.color(factory.team.color, Color.white, 0.55f);
-        Draw.alpha(0.7f * deployment);
-        Lines.stroke(0.75f);
-        Lines.quad(firstX, firstY, secondX, secondY, thirdX, thirdY, fourthX, fourthY);
-        Lines.stroke(previousStroke);
+                secondEnd.x, secondEnd.y, endColor, firstEnd.x, firstEnd.y, endColor);
         Draw.color(previousColor);
         Draw.mixcol(previousMix);
         Draw.z(previousLayer);
@@ -135,12 +150,6 @@ public final class ProbeFactoryRenderer {
             Draw.mixcol(factory.team.color, 1f);
             Draw.rect(production.region, centerX, centerY, factory.rotation - 90f);
             Draw.mixcol();
-            float sweep = Mathf.mod(Time.time / 180f + factory.id() * 0.07f, 1f);
-            float scanY = centerY + (sweep - 0.5f) * ringRadius * 2f;
-            Draw.color(factory.team.color, Color.white, 0.35f);
-            Draw.alpha(0.55f);
-            Lines.stroke(0.9f);
-            Lines.line(centerX - ringRadius * 0.8f, scanY, centerX + ringRadius * 0.8f, scanY);
             Draw.draw(Layer.effect + 0.01f, () -> {
                 Drawf.construct(centerX, centerY, production.region, factory.team.color,
                         factory.rotation - 90f, progress, 0.8f, Time.time);

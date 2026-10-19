@@ -639,8 +639,26 @@ public class NHTechTree {
                                 ProductionNode.node(LiquidBlock.turboPumpSmall,
                                         ProductionNode.node(LiquidBlock.turboPump)
                                 ),
-                                ProductionNode.node(LiquidBlock.standardLiquidStorage,
+                        ProductionNode.node(LiquidBlock.standardLiquidStorage,
                                         ProductionNode.node(LiquidBlock.heavyLiquidStorage)
+                                )
+                        ),
+                        ProductionNode.node(DefenseBlock.insulatedWall,
+                                ProductionNode.node(DefenseBlock.heavyDefenceWall,
+                                        ProductionNode.node(DefenseBlock.heavyDefenceWallLarge),
+                                        ProductionNode.node(DefenseBlock.heavyDefenceDoor,
+                                                ProductionNode.node(DefenseBlock.heavyDefenceDoorLarge)
+                                        ),
+                                        ProductionNode.node(DefenseBlock.setonWall,
+                                                ProductionNode.node(DefenseBlock.setonWallLarge,
+                                                        ProductionNode.node(DefenseBlock.chargeWall,
+                                                                ProductionNode.node(DefenseBlock.chargeWallLarge)
+                                                        )
+                                                )
+                                        )
+                                ),
+                                ProductionNode.node(NHBlocks.fireExtinguisher,
+                                        ProductionNode.node(NHBlocks.blaster)
                                 )
                         ),
                         ProductionNode.node(DefenseBlock.titaniumWall,
@@ -652,9 +670,6 @@ public class NHTechTree {
                                                         )
                                                 )
                                         )
-                                ),
-                                ProductionNode.node(NHBlocks.fireExtinguisher,
-                                        ProductionNode.node(NHBlocks.blaster)
                                 ),
                                 ProductionNode.node(DefenseBlock.standardRegenProjector,
                                         ProductionNode.node(DefenseBlock.heavyRegenProjector)

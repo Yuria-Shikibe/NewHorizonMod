@@ -33,8 +33,8 @@ import static mindustry.Vars.tilesize;
 
 public class ChargeWall extends Block {
     public TextureRegion heatRegion, lightRegion;
-    public float maxEnergy = size * size * 3000;
-    public float maxHeat = size * size * 400;
+    public float maxEnergy = size * size * 5000;
+    public float maxHeat = size * size * 800;
     public float heatPerRise = 50f;
     public float healLightStMin = 0.35f;
 
@@ -44,7 +44,7 @@ public class ChargeWall extends Block {
 
     public float shootReloadTime = 20f,
             shootPerEnr = 80f,
-            shootDamage = 50f;
+            shootDamage = 100f;
 
     public float coolingReloadTime = 30f;
 
