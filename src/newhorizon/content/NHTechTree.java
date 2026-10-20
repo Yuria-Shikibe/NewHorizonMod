@@ -504,6 +504,7 @@ public class NHTechTree {
                                 ProductionNode.node(NHBlocks.largeWaterExtractor),
                                 ProductionNode.node(ProductionBlock.decoherenceReverser),
                                 ProductionNode.node(ProductionBlock.scanCollector,
+                                        ProductionNode.node(ProductionBlock.advancedScanCollector),
                                         ProductionNode.node(ProductionBlock.resonanceMiningFacility,
                                                 ProductionNode.node(ProductionBlock.beamMiningFacility,
                                                     ProductionNode.node(ProductionBlock.implosionMiningFacility),

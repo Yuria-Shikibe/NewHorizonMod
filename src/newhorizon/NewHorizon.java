@@ -27,6 +27,7 @@ import newhorizon.content.register.UnitRecipeRegister;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.map.NHMapFilters;
 import newhorizon.expand.net.NHCall;
+import newhorizon.expand.units.probe.ProbeFactoryRenderer;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NHCampaignRulesDialog;
@@ -52,6 +53,7 @@ public class NewHorizon extends Mod {
     public NewHorizon() {
         DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 
+        Events.on(EventType.AtlasPackEvent.class, event -> ProbeFactoryRenderer.cacheBeamShapes(event.multiPacker));
         Events.run(EventType.Trigger.universeDrawBegin, NHPlanets::updateRingWorldCamera);
         Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
         Events.on(EventType.PlayerConnect.class, e -> Call.clientPacketReliable("override_check", NHSetting.overrideStatus()));

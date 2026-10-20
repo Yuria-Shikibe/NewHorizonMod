@@ -27,6 +27,7 @@ import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
+import mindustry.world.draw.DrawBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.StatUnit;
@@ -44,6 +45,7 @@ public class OreCollector extends BasicMultiBlock {
 
     public TextureRegion[] innerRegions, outerRegions;
     public TextureRegion baseRegion;
+    public @Nullable DrawBlock liquidDrawer;
 
     public int tier = 5;
     public float mineTime = 120f;
@@ -83,6 +85,7 @@ public class OreCollector extends BasicMultiBlock {
     public void load() {
         super.load();
         innerRegions = new TextureRegion[4];
+        if (liquidDrawer != null) liquidDrawer.load(this);
         outerRegions = new TextureRegion[4];
 
         baseRegion = Core.atlas.find(name + "-base");
@@ -122,7 +125,7 @@ public class OreCollector extends BasicMultiBlock {
         boolean haveMineable = false;
 
         for (Tile t : tmpClusters) {
-            if (t.block() != null && t.block().itemDrop.hardness <= tier) {
+            if (canMineTile(t)) {
                 haveMineable = true;
                 break;
             }
@@ -163,6 +166,25 @@ public class OreCollector extends BasicMultiBlock {
         return (drillTime + hardnessDrillMultiplier * item.hardness) / drillMultipliers.get(item, 1f);
     }
 
+    public @Nullable Item getOreDrop(Tile tile) {
+        if (tile == null || tile.block() == null) return null;
+        return tile.wallDrop();
+    }
+
+    public float getOreDensity(Tile tile) {
+        if (tile == null) return 0f;
+
+        float density = tile.block() == null ? 0f : tile.block().attributes.get(NHContent.density);
+        if (density > 0f) return density;
+
+        if (tile.overlay() != null) {
+            density = tile.overlay().attributes.get(NHContent.density);
+            if (density > 0f) return density;
+        }
+
+        return 1f;
+    }
+
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
         //overlapping construction areas not allowed; grow by a tiny amount so edges can't overlap either.
@@ -182,7 +204,7 @@ public class OreCollector extends BasicMultiBlock {
     }
 
     public boolean canMineTile(Tile tile) {
-        Item drops = tile.block().itemDrop;
+        Item drops = getOreDrop(tile);
         return drops != null && drops.hardness <= tier;
     }
 
@@ -211,7 +233,7 @@ public class OreCollector extends BasicMultiBlock {
         for (int tx = cx - offset; tx <= cx + offset; tx++) {
             for (int ty = cy - offset; ty <= cy + offset; ty++) {
                 Tile tile = Vars.world.tile(tx, ty);
-                if (tile != null && tile.block() != null && tile.block().itemDrop != null) out.add(tile);
+                if (getOreDrop(tile) != null) out.add(tile);
             }
         }
     }
@@ -220,20 +242,23 @@ public class OreCollector extends BasicMultiBlock {
         getOreClusters(out, x, y, rotation);
         returnCount.clear();
         out.each(tile -> {
-            if (tile.block().itemDrop == null) return;
-            Item drops = tile.block().itemDrop;
+            Item drops = getOreDrop(tile);
             if (drops != null && drops.hardness <= tier && (blockedItems == null || !blockedItems.contains(drops))) {
-                returnCount.increment(drops, 0, 60 / getDrillTime(drops) * tile.block().attributes.get(NHContent.density));
+                returnCount.increment(drops, 0, 60 / getDrillTime(drops) * getOreDensity(tile));
             }
         });
     }
 
     public void drawBlockBase(float x, float y, int rotation) {
-        Draw.rect(innerRegions[rotation], x, y);
+        if (innerRegions[rotation].found()) Draw.rect(innerRegions[rotation], x, y);
         Tmp.v1.set(4, 20).rotate(rotation * 90);
         Tmp.v2.set(4, -20).rotate(rotation * 90);
-        Draw.rect(outerRegions[(rotation + 3) % 4], x + Tmp.v1.x, y + Tmp.v1.y);
-        Draw.rect(outerRegions[(rotation + 1) % 4], x + Tmp.v2.x, y + Tmp.v2.y);
+        if (outerRegions[(rotation + 3) % 4].found()) {
+            Draw.rect(outerRegions[(rotation + 3) % 4], x + Tmp.v1.x, y + Tmp.v1.y);
+        }
+        if (outerRegions[(rotation + 1) % 4].found()) {
+            Draw.rect(outerRegions[(rotation + 1) % 4], x + Tmp.v2.x, y + Tmp.v2.y);
+        }
     }
 
     public class OreCollectorBuilding extends BasicMultiBuilding {
@@ -245,6 +270,7 @@ public class OreCollector extends BasicMultiBlock {
 
         @Override
         public void draw() {
+            if (liquidDrawer != null) liquidDrawer.draw(this);
             drawBlockBase(x, y, rotation);
             if (warmup > 0.01f) drawScanner();
         }
@@ -357,8 +383,9 @@ public class OreCollector extends BasicMultiBlock {
             Lines.stroke(0.5f);
 
             oreClusters.each(tile -> {
+                Item drops = getOreDrop(tile);
                 if (canMineTile(tile)) {
-                    Draw.color(tile.block().itemDrop.color);
+                    Draw.color(drops.color);
                     Draw.z(Layer.buildBeam);
                     Fill.rect(tile.worldx(), tile.worldy(), tilesize * scl, tilesize * scl, ang);
                     Draw.z(Layer.effect);
@@ -434,8 +461,9 @@ public class OreCollector extends BasicMultiBlock {
                 getOreOutput(oreClusters, tileX(), tileY(), rotation);
                 oreClusters.each(tile -> {
                     if (canMineTile(tile)) {
-                        Fx.mineHuge.at(tile.worldx(), tile.worldy(), tile.block().itemDrop.color);
-                        Fx.itemTransfer.at(tile.worldx(), tile.worldy(), 0, tile.block().itemDrop.color, this);
+                        Item drops = getOreDrop(tile);
+                        Fx.mineHuge.at(tile.worldx(), tile.worldy(), drops.color);
+                        Fx.itemTransfer.at(tile.worldx(), tile.worldy(), 0, drops.color, this);
                     }
                 });
 
