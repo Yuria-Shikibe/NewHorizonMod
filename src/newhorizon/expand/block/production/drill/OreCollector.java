@@ -24,13 +24,17 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
+import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 import newhorizon.content.NHContent;
 import newhorizon.expand.block.BasicMultiBlock;
 import newhorizon.util.func.MathUtil;
@@ -40,6 +44,8 @@ import static mindustry.Vars.indexer;
 import static mindustry.Vars.tilesize;
 
 public class OreCollector extends BasicMultiBlock {
+    private static final StatUnit perSecondPerTile = new StatUnit("nh-per-second-per-tile", false);
+
     public static Seq<Tile> tmpClusters = new Seq<>();
     public static ObjectFloatMap<Item> returnCount = new ObjectFloatMap<>();
 
@@ -104,6 +110,40 @@ public class OreCollector extends BasicMultiBlock {
     @Override
     public void setBars() {
         super.setBars();
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+
+        float drillScale = Time.toSeconds / mineTime;
+
+        stats.add(Stat.drillTier, table -> {
+            table.row();
+            table.table(list -> {
+                int count = 0;
+                for (Block block : Vars.content.blocks()) {
+                    Item drop = block.itemDrop;
+                    if (drop == null || drop.hardness > tier
+                            || blockedItems != null && blockedItems.contains(drop)
+                            || !(block.solid || block instanceof Floor floor && floor.wallOre)) continue;
+
+                    list.table(Styles.grayPanel, entry -> {
+                        entry.image(block.uiIcon).size(40f).pad(10f).left().scaling(Scaling.fit);
+                        entry.table(info -> {
+                            info.left();
+                            info.add(block.localizedName).left().row();
+                            info.add(drop.emoji()).with(label -> StatValues.withTooltip(label, drop)).left();
+                        }).grow();
+                        entry.add(Strings.autoFixed(Time.toSeconds / getDrillTime(drop) * drillScale, 2)
+                                        + perSecondPerTile.localized())
+                                .right().pad(10f).padRight(15f).color(Color.lightGray);
+                    }).growX().pad(5f);
+                    if (++count % 2 == 0) list.row();
+                }
+            }).growX().colspan(table.getColumns());
+        });
+        stats.add(Stat.drillSpeed, Time.toSeconds / drillTime * drillScale, perSecondPerTile);
     }
 
     @Override

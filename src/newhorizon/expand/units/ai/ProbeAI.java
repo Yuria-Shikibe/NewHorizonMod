@@ -1,5 +1,7 @@
 package newhorizon.expand.units.ai;
 
+import arc.math.geom.Vec2;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
@@ -13,6 +15,9 @@ import newhorizon.expand.units.unitEntity.ProbeEntity;
 
 public class ProbeAI extends CommandAI {
     protected ProbeEntity probe;
+    private final Vec2 orbitPosition = new Vec2();
+    private final Vec2 orbitVelocity = new Vec2();
+    private final Vec2 orbitMovement = new Vec2();
 
     @Override
     public void unit(Unit unit) {
@@ -58,6 +63,9 @@ public class ProbeAI extends CommandAI {
                 return;
             }
             unit.vel.setZero();
+            if (!ProbeFactoryLayout.moving(probe)) {
+                unit.lookAt(probe.x + probe.factoryRadius, probe.y + probe.factoryRadius);
+            }
             return;
         }
 
@@ -73,6 +81,13 @@ public class ProbeAI extends CommandAI {
         }
 
         ProbeEntity factory = probe.factoryOwner();
+        if (factory != null && ProbeColonyManager.isProductionAssistant(probe)) {
+            ProbeFactoryLayout.assistantOrbitPosition(probe, factory, Time.time, orbitPosition, orbitVelocity);
+            orbitMovement.set(orbitPosition).sub(unit).scl(0.12f).add(orbitVelocity).limit(unit.speed());
+            unit.moveAt(orbitMovement);
+            unit.lookAt(factory.x + factory.factoryRadius, factory.y + factory.factoryRadius);
+            return;
+        }
         if (factory == null && (targetPos != null || attackTarget != null || commandQueue.any())) {
             super.defaultBehavior();
             return;

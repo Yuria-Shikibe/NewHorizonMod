@@ -61,7 +61,6 @@ public class ProbeFactoryPart extends RegionPart {
         orbitParams.life = params.life;
 
         boolean useOrbitRegion = orbitRegion != null && orbitRegion.found() && regions.length > 0;
-        ProbeFactoryRenderer.drawPartLink(factory, partX, partY, deployment);
         float previousLayer = Draw.z();
         Draw.z(Layer.buildBeam + 1.3f - layerOffset);
         TextureRegion previousRegion = useOrbitRegion ? regions[0] : null;

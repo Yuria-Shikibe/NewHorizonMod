@@ -52,6 +52,7 @@ public final class ProbeColonyManager {
     private static final Interval economyTimer = new Interval();
     private static final Interval candidateTimer = new Interval();
     private static final IntMap<Seq<ProbeEntity>> teams = new IntMap<>();
+    private static final IntMap<Seq<ProbeEntity>> factoryWorkers = new IntMap<>();
     private static final Seq<ProbeEntity> probes = new Seq<>();
     private static final Seq<ProbeMiningEntity> miners = new Seq<>();
     private static final Seq<ProbeScannerEntity> scanners = new Seq<>();
@@ -98,6 +99,7 @@ public final class ProbeColonyManager {
     private static void refreshRoles() {
         probes.clear();
         teams.clear();
+        factoryWorkers.clear();
         miners.clear();
         scanners.clear();
         Groups.unit.each(unit -> {
@@ -118,7 +120,18 @@ public final class ProbeColonyManager {
             group.add(probe);
         });
 
-        for (IntMap.Entry<Seq<ProbeEntity>> entry : teams) assignRoles(entry.value);
+        for (IntMap.Entry<Seq<ProbeEntity>> entry : teams) {
+            assignRoles(entry.value);
+            for (ProbeEntity probe : entry.value) {
+                if (probe.factory || probe.factoryCandidate || probe.factoryId < 0) continue;
+                Seq<ProbeEntity> workers = factoryWorkers.get(probe.factoryId);
+                if (workers == null) {
+                    workers = new Seq<>();
+                    factoryWorkers.put(probe.factoryId, workers);
+                }
+                workers.add(probe);
+            }
+        }
         for (ProbeEntity probe : probes) {
             probe.miningChildren = 0;
             probe.scannerChildren = 0;
@@ -137,6 +150,7 @@ public final class ProbeColonyManager {
             if (probe.factory) updateFactory(probe);
             else if (probe.factoryCandidate) prepareProduction(probe);
         }
+        updateProductionAssistants();
     }
 
     private static void assignRoles(Seq<ProbeEntity> group) {
@@ -170,30 +184,75 @@ public final class ProbeColonyManager {
         }
 
         for (ProbeEntity probe : group) {
-            probe.factory = factories.contains(probe);
             if (probe.factory) {
                 probe.factoryId = probe.id();
-            } else {
-                ProbeEntity nearest = nearestFactory(probe, factories);
-                probe.factoryId = probe.factoryCandidate || nearest == null ? -1 : nearest.id();
-                if (!probe.factoryCandidate && nearest == null) {
-                    probe.miningTargetTile = -1;
+            } else if (probe.factoryCandidate) {
+                probe.factoryId = -1;
+            }
+            if (probe.factory || probe.factoryCandidate) prepareProduction(probe);
+        }
+
+        Seq<ProbeEntity> workers = group.select(probe -> !probe.factory && !probe.factoryCandidate);
+        int[] quotas = new int[factories.size];
+        float[] remainders = new float[factories.size];
+        double totalThreat = 0d;
+        for (ProbeEntity factory : factories) {
+            totalThreat += ProbeProductionPlan.cost(factory.selectedProduction);
+        }
+        int remaining = workers.size;
+        if (totalThreat > 0d) {
+            for (int index = 0; index < factories.size; index++) {
+                double share = workers.size * (double) ProbeProductionPlan.cost(factories.get(index).selectedProduction) / totalThreat;
+                quotas[index] = (int) share;
+                remainders[index] = (float) (share - quotas[index]);
+                remaining -= quotas[index];
+            }
+            while (remaining-- > 0) {
+                int best = 0;
+                for (int index = 1; index < factories.size; index++) {
+                    if (remainders[index] > remainders[best]) best = index;
+                }
+                quotas[best]++;
+                remainders[best] = -1f;
+            }
+        }
+
+        Seq<ProbeEntity> unassigned = new Seq<>();
+        for (ProbeEntity worker : workers) {
+            int ownerIndex = -1;
+            for (int index = 0; index < factories.size; index++) {
+                if (factories.get(index).id() == worker.factoryId && quotas[index] > 0) {
+                    ownerIndex = index;
+                    break;
                 }
             }
+            if (ownerIndex >= 0) {
+                quotas[ownerIndex]--;
+            } else {
+                unassigned.add(worker);
+            }
+        }
+        for (ProbeEntity worker : unassigned) {
+            int nearest = -1;
+            float distance = Float.MAX_VALUE;
+            for (int index = 0; index < factories.size; index++) {
+                if (quotas[index] <= 0) continue;
+                float candidateDistance = worker.dst2(factories.get(index));
+                if (candidateDistance < distance) {
+                    distance = candidateDistance;
+                    nearest = index;
+                }
+            }
+            worker.factoryId = nearest < 0 ? -1 : factories.get(nearest).id();
+            if (nearest >= 0) quotas[nearest]--;
+            worker.miningTargetTile = -1;
+            worker.miningWorkProgress = 0f;
+            worker.miningTargetRetry = 0f;
         }
     }
 
-    private static ProbeEntity nearestFactory(ProbeEntity probe, Seq<ProbeEntity> factories) {
-        ProbeEntity nearest = null;
-        float distance = Float.MAX_VALUE;
-        for (ProbeEntity factory : factories) {
-            float dst = probe.dst2(factory);
-            if (dst < distance) {
-                distance = dst;
-                nearest = factory;
-            }
-        }
-        return nearest;
+    static boolean canKeepFactoryPosition(ProbeEntity factory, UnitType type) {
+        return ProbeFactoryLayout.canPlace(factory, factory.x, factory.y, ProbeProductionPlan.factoryRadius(type), probes);
     }
 
     private static ProbeEntity findFactory(ProbeEntity probe) {
@@ -219,6 +278,7 @@ public final class ProbeColonyManager {
         consumeFactoryItems(probe);
         Fx.teleportActivate.at(probe.x, probe.y, probe.rotation, probe.team.color);
         updateFactory(probe);
+        invalidateRoles();
     }
 
     private static Tile deploymentTarget(ProbeEntity factory) {
@@ -276,10 +336,9 @@ public final class ProbeColonyManager {
     private static void prepareProduction(ProbeEntity factory) {
         int threat = ProbeProductionPlan.level(ThreatLevel.getTeamThreat(factory.team));
         if (factory.selectedProduction == null
-                || (!factory.manualFactory && factory.productionThreatLevel != threat)
-                || !ProbeProductionPlan.canProduce(factory.selectedProduction, factory.team, threat)
+                || (factory.productionProgress <= 0f && (!ProbeProductionPlan.canProduce(factory.selectedProduction, factory.team, threat)
                 || (!factory.manualFactory && !factory.selectedProduction.flying
-                && !ProbeProductionPlan.hasGroundPath(factory))) {
+                && !ProbeProductionPlan.hasGroundPath(factory))))) {
             UnitType selected = ProbeProductionPlan.choose(factory, threat, null);
             if (selected != factory.selectedProduction) factory.productionProgress = 0f;
             factory.selectedProduction = selected;
@@ -292,7 +351,7 @@ public final class ProbeColonyManager {
         }
 
         factory.factoryRadius = ProbeProductionPlan.factoryRadius(factory.selectedProduction);
-        factory.productionRequirement = ProbeProductionPlan.cost(factory.selectedProduction) * 10f;
+        factory.productionRequirement = ProbeProductionPlan.cost(factory.selectedProduction) * 1f;
         updateProgress(factory);
     }
 
@@ -304,16 +363,19 @@ public final class ProbeColonyManager {
         }
         float buildTime = ProbeProductionPlan.buildTime(factory.selectedProduction);
         if (buildTime <= 0f) return;
-        factory.productionProgress += elapsed / buildTime;
+        factory.productionProgress += elapsed * factory.productionSpeed / buildTime;
         updateProgress(factory);
         if (factory.productionProgress < 1f) return;
         if (!spawnProduced(factory, factory.selectedProduction)) return;
 
         factory.productionContribution = Math.max(0f, factory.productionContribution - factory.productionRequirement);
         factory.productionProgress = 0f;
-        updateProgress(factory);
         Fx.spawn.at(factory.x + factory.factoryRadius, factory.y + factory.factoryRadius,
                 factory.selectedProduction.hitSize, factory.team.color);
+        factory.productionSpeed = 1f;
+        factory.selectedProduction = null;
+        prepareProduction(factory);
+        invalidateRoles();
     }
 
     public static boolean selectProduction(ProbeEntity factory, UnitType type) {
@@ -437,6 +499,10 @@ public final class ProbeColonyManager {
         if (candidateTimer.get(0, 600f)
                 || candidateWorldWidth != world.width() || candidateWorldHeight != world.height()) rebuildCandidates();
         targetSearchBudget = TARGETS_PER_UPDATE;
+        for (ProbeEntity probe : probes) {
+            if (probe.isValid() && probe.factory) consumeFactoryItems(probe);
+        }
+        updateProductionAssistants();
         rebuildReservations();
 
         for (ProbeEntity probe : probes) {
@@ -446,7 +512,6 @@ public final class ProbeColonyManager {
                 continue;
             }
             if (probe.factory) {
-                consumeFactoryItems(probe);
                 if (updateFactoryPlacement(probe)) updateProduction(probe, elapsed);
                 continue;
             }
@@ -463,6 +528,10 @@ public final class ProbeColonyManager {
 
     private static void updateMiningProbe(ProbeEntity miner, ProbeEntity factory, float elapsed) {
         if (factory == null) return;
+        if (isProductionAssistant(miner)) {
+            if (ProbeFactoryLayout.inAssistantOrbit(miner, factory)) deliverItems(miner, factory);
+            return;
+        }
         if (shouldDeliver(miner, miner.miningTargetTile)) {
             if (miner.within(factory, deliveryRange(miner, factory))) {
                 deliverItems(miner, factory);
@@ -481,6 +550,43 @@ public final class ProbeColonyManager {
             int amount = (int) miner.miningWorkProgress;
             miner.miningWorkProgress -= amount;
             collect(miner, tile, factory, amount);
+        }
+    }
+
+    private static boolean readyToProduce(ProbeEntity factory) {
+        return factory != null && factory.isValid() && factory.factory && factory.selectedProduction != null
+                && factory.productionRequirement > 0f && factory.productionContribution >= factory.productionRequirement
+                && !ProbeFactoryLayout.moving(factory) && ProbeFactoryParts.stationary(factory);
+    }
+
+    public static boolean isProductionAssistant(ProbeEntity probe) {
+        return !probe.factory && !probe.factoryCandidate && probe.productionAssistIndex >= 0
+                && readyToProduce(probe.factoryOwner());
+    }
+
+    private static void updateProductionAssistants() {
+        for (ProbeEntity probe : probes) {
+            probe.productionSpeed = 1f;
+            probe.productionAssistIndex = -1;
+            probe.productionAssistCount = 0;
+        }
+        for (ProbeEntity factory : probes) {
+            if (!readyToProduce(factory)) continue;
+            Seq<ProbeEntity> workers = factoryWorkers.get(factory.id());
+            if (workers == null) continue;
+            int helpers = workers.count(worker -> worker.isValid() && !worker.factory && !worker.factoryCandidate
+                    && worker.team == factory.team && worker.factoryId == factory.id()) / 2;
+            int index = 0;
+            for (ProbeEntity worker : workers) {
+                if (index >= helpers) break;
+                if (!worker.isValid() || worker.factory || worker.factoryCandidate
+                        || worker.team != factory.team || worker.factoryId != factory.id()) continue;
+                worker.productionAssistIndex = index++;
+                worker.productionAssistCount = helpers;
+                worker.miningTargetTile = -1;
+                worker.miningWorkProgress = 0f;
+                if (ProbeFactoryLayout.inAssistantOrbit(worker, factory)) factory.productionSpeed += 1f;
+            }
         }
     }
 
@@ -822,6 +928,7 @@ public final class ProbeColonyManager {
     private static void clear() {
         probes.clear();
         teams.clear();
+        factoryWorkers.clear();
         miners.clear();
         scanners.clear();
         reservedTargets.clear();

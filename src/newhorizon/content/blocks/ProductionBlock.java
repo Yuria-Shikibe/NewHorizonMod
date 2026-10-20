@@ -63,14 +63,15 @@ public class ProductionBlock {
 
         advancedScanCollector = new OreCollector("advanced-scan-collector") {{
             requirements(Category.production, ItemStack.with(
-                    NHItems.presstanium, 80,
-                    NHItems.juniorProcessor, 40,
+                    NHItems.thorium, 80,
+                    NHItems.fissileMatter,20,
+                    NHItems.juniorProcessor, 120,
                     NHItems.multipleSteel, 60
             ));
             size = 4;
             collectOffset = 7;
             collectSize = 10;
-            itemCapacity = 60;
+            itemCapacity = 300;
             liquidCapacity = 120f;
             tier = Integer.MAX_VALUE;
             clipSize = 384;
@@ -85,9 +86,9 @@ public class ProductionBlock {
                     p(0, -4), p(1, -4), p(2, -4)
             );
 
-            consumePower(5f);
-            consumeLiquid(NHLiquids.xenFluid, 6f / 60f);
-            consumeLiquid(NHLiquids.hydrazine, 3f / 60f).boost();
+            consumePower(12f);
+            consumeLiquid(NHLiquids.xenFluid, 24f / 60f);
+            consumeLiquid(NHLiquids.hydrazine, 12f / 60f).boost();
         }};
 
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{

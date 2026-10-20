@@ -1,7 +1,6 @@
 package newhorizon.expand.units.probe;
 
 import arc.math.Mathf;
-import arc.math.Rand;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.ai.Pathfinder;
@@ -9,6 +8,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.UnitProductionRecipe;
@@ -21,13 +21,13 @@ public final class ProbeProductionPlan {
     // Each row is appended to the previous row. Keep this table cumulative-by-construction
     // so changing the roster remains readable and deterministic.
     private static final String[][] LEVEL_ADDITIONS = {
-            {"dagger", "flare", "crawler", "nova", "mono", "histone", "sharp"},
-            {"mace", "horizon", "atrax", "poly", "branch", "restriction-enzyme"},
-            {"fortress", "zenith", "quad", "mega", "warper", "macrophage"},
-            {"scepter", "antumbra", "eclipse", "risso", "assaulter", "lymph"},
-            {"reign", "oct", "vela", "aegires", "sin", "laugra"},
-            {"toxopid", "corvus", "navanax", "pester", "guardian"},
-            {"eradicator", "conquer", "destruction", "longinus", "nucleoid"},
+            {"origin", "histone", "sharp"},
+            {"thynomo", "aliotiat", "branch", "restriction-enzyme"},
+            {"apparition", "rhino", "gather", "warper", "macrophage"},
+            {"striker", "naxos", "tarlidor", "assaulter", "lymph"},
+            {"annihilation", "saviour", "laugra", "anvil"},
+            {"hurricane", "sin", "destruction", "longinus", "guardian"},
+            {"collapser","pester"},
             {"ancient-probe"}
     };
 
@@ -70,11 +70,7 @@ public final class ProbeProductionPlan {
             return preferred;
         }
 
-        Seq<UnitType> pool = pools[level - 1];
-        UnitType selected = weightedPick(pool, factory.team, threat, groundPath, factory.id() + (int) mindustry.Vars.state.tick);
-        if (selected != null) return selected;
-
-        return weightedPick(allUnits(), factory.team, threat, groundPath, factory.id() + level * 31);
+        return weightedPick(pools[level - 1], factory, threat, groundPath);
     }
 
     public static Seq<UnitType> options(ProbeEntity factory) {
@@ -95,6 +91,9 @@ public final class ProbeProductionPlan {
 
     public static boolean canProduce(UnitType type, Team team, int threat) {
         if (type == null || team == null || type.internal || type.hidden) return false;
+        ensureInitialized();
+        Seq<UnitType> pool = pools[level(threat) - 1];
+        if (pool == null || !pool.contains(type)) return false;
         if (type == NHUnitTypes.ancientProbe && threat < MAX_LEVEL) return false;
 
         Team friendly = Vars.state == null ? null : Vars.state.rules.defaultTeam;
@@ -130,23 +129,25 @@ public final class ProbeProductionPlan {
         return next != null && (next != source || source.within(enemyCore, 24f));
     }
 
-    private static UnitType weightedPick(Seq<UnitType> source, Team team, int threat, boolean groundPath, int seed) {
+    private static UnitType weightedPick(Seq<UnitType> source, ProbeEntity factory, int threat, boolean groundPath) {
         if (source == null || source.isEmpty()) return null;
 
         Seq<UnitType> candidates = new Seq<>();
+        Seq<UnitType> stationary = new Seq<>();
         for (UnitType type : source) {
-            if (!canProduce(type, team, threat)) continue;
+            if (!canProduce(type, factory.team, threat)) continue;
             if (!type.flying && !groundPath) continue;
             candidates.add(type);
+            if (factory.factory && ProbeColonyManager.canKeepFactoryPosition(factory, type)) stationary.add(type);
         }
+        if (stationary.any()) candidates = stationary;
         if (candidates.isEmpty()) return null;
 
         float total = 0f;
         for (UnitType type : candidates) total += weight(type);
         if (total <= 0f) return candidates.first();
 
-        Rand random = new Rand(seed);
-        float value = random.random(total);
+        float value = Mathf.random(total);
         for (UnitType type : candidates) {
             value -= weight(type);
             if (value <= 0f) return type;
@@ -160,13 +161,9 @@ public final class ProbeProductionPlan {
         return 1f / (1f + healthWeight + costWeight);
     }
 
-    private static Seq<UnitType> allUnits() {
-        ensureInitialized();
-        return Vars.content == null ? new Seq<>() : Vars.content.units();
-    }
-
     private static UnitType find(String name) {
         if (Vars.content == null) return null;
-        return Vars.content.units().find(unit -> unit.name.equals(name) || unit.name.endsWith("-" + name));
+        UnitType type = Vars.content.unit(name);
+        return type == null ? Vars.content.unit(NewHorizon.name(name)) : type;
     }
 }

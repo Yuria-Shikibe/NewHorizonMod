@@ -9,6 +9,7 @@ import mindustry.ctype.ContentType;
 import mindustry.entities.units.UnitController;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
+import mindustry.gen.Hitboxc;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.gen.UnitEntity;
@@ -19,6 +20,7 @@ import mindustry.world.Tile;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.units.ai.ProbeAI;
 import newhorizon.expand.units.probe.ProbeColonyManager;
+import newhorizon.expand.units.probe.ProbeFactoryCube;
 import newhorizon.expand.units.probe.ProbeFactoryRenderer;
 import newhorizon.expand.units.probe.ProbeFactoryExitAI;
 import newhorizon.expand.units.probe.ProbeFactoryParts;
@@ -41,9 +43,13 @@ public class ProbeEntity extends UnitEntity {
     public float productionRequirement;
     public float productionContribution;
     public float productionProgress;
+    public transient float productionSpeed = 1f;
+    public transient int productionAssistIndex = -1;
+    public transient int productionAssistCount;
     public float scannerCooldownUntil;
     public UnitType selectedProduction;
     public transient ProbeFactoryRenderer.Labels factoryLabels;
+    public transient ProbeFactoryCube factoryCube;
     public transient ProbeFactoryParts factoryParts;
 
     @Override
@@ -77,6 +83,16 @@ public class ProbeEntity extends UnitEntity {
     @Override
     public float clipSize() {
         return factory || !ProbeFactoryParts.retracted(this) ? Math.max(super.clipSize(), factoryRadius * 4f + 96f) : super.clipSize();
+    }
+
+    @Override
+    public int collisionLayer() {
+        return factory && !ProbeFactoryParts.retracted(this) ? -1 : super.collisionLayer();
+    }
+
+    @Override
+    public boolean collides(Hitboxc other) {
+        return !(factory && !ProbeFactoryParts.retracted(this) && other instanceof Unit) && super.collides(other);
     }
 
     public Tile miningTarget() {
@@ -135,6 +151,7 @@ public class ProbeEntity extends UnitEntity {
     @Override
     public void draw() {
         super.draw();
+        ProbeFactoryRenderer.drawAssistant(this);
         ProbeColonyManager.drawFactory(this);
         if (!factory && !factoryCandidate) ProbeColonyManager.drawMining(this, miningTargetTile, miningWorkProgress);
     }
@@ -155,12 +172,18 @@ public class ProbeEntity extends UnitEntity {
     public void readSync(Reads read) {
         readProbeState(read);
         super.readSync(read);
+        productionSpeed = read.f();
+        productionAssistIndex = read.i();
+        productionAssistCount = read.i();
     }
 
     @Override
     public void writeSync(Writes write) {
         writeProbeState(write);
         super.writeSync(write);
+        write.f(productionSpeed);
+        write.i(productionAssistIndex);
+        write.i(productionAssistCount);
     }
 
     @Override
