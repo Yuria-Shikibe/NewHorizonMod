@@ -41,8 +41,9 @@ public class StreamSplitter extends StreamRepeater {
         }
 
         @Override
-        public void handleStream(StreamBeam stream) {
-            lastDirection = (stream.getRotation() - rotation);
+        public void handleStream(StreamBeam stream, float amount) {
+            super.handleStream(stream, amount);
+            lastDirection = (stream.getRotation() - rotation + 4) % 4;
         }
 
         @Override

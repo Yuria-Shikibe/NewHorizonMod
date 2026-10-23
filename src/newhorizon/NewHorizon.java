@@ -300,6 +300,7 @@ public class NewHorizon extends Mod {
         NHStatusEffects.load();
         NHItems.load();
         NHLiquids.load();
+        NHParticleStreams.load();
         NHBullets.load();
         NHUnitTypes.load();
         NHBlocks.load();

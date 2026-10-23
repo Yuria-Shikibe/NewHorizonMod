@@ -37,6 +37,7 @@ public class NHTechTree {
 
     public static Seq<ProductionNode> itemProductionTree = new Seq<>();
     public static Seq<ProductionNode> liquidProductionTree = new Seq<>();
+    public static Seq<ProductionNode> particleStreamProductionTree = new Seq<>();
     public static Seq<ProductionNode> blockTechTree = new Seq<>();
     public static TechNode root;
     private static final ObjectMap<UnlockableContent, Boolean> temporaryAlwaysUnlocked = new ObjectMap<>();
@@ -52,6 +53,7 @@ public class NHTechTree {
 
         itemProductionTree = buildItemProductionTree();
         liquidProductionTree = buildLiquidProductionTree();
+        particleStreamProductionTree = buildParticleStreamProductionTree();
         blockTechTree = buildBlockTechTree();
         addedProductionContents.clear();
 
@@ -63,6 +65,10 @@ public class NHTechTree {
             }
 
             for (ProductionNode node : liquidProductionTree) {
+                addProductionNode(node);
+            }
+
+            for (ProductionNode node : particleStreamProductionTree) {
                 addProductionNode(node);
             }
 
@@ -873,10 +879,16 @@ public class NHTechTree {
                         ProductionNode.node(NHLiquids.quantumLiquid,
                                 ProductionNode.node(NHLiquids.antiMatter)
                         ),
-                        ProductionNode.node(NHLiquids.cryofluid),
-                        ProductionNode.node(NHLiquids.particle),
-                        ProductionNode.node(NHLiquids.zetaPositive,
-                                ProductionNode.node(NHLiquids.zetaNegative)
+                        ProductionNode.node(NHLiquids.cryofluid)
+                )
+        );
+    }
+
+    private static Seq<ProductionNode> buildParticleStreamProductionTree() {
+        return Seq.with(
+                ProductionNode.node(NHParticleStreams.particle,
+                        ProductionNode.node(NHParticleStreams.zetaPositive,
+                                ProductionNode.node(NHParticleStreams.zetaNegative)
                         )
                 )
         );
