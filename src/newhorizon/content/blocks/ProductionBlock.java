@@ -36,7 +36,7 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
-            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, /*resourceConvertor,*/ oilRefiner, scanCollector,
+            sandCracker, decoherenceReverser, tungstenReconstructor, titaniumReconstructor, /*resourceConvertor,*/ oilRefiner, scanCollector, advancedScanCollector,
             resonanceMiningFacility, interlockingDrill, beamMiningFacility, implosionMiningFacility,
             airRadiator, liquidRadiator, compoundHydrator;
 
@@ -48,6 +48,7 @@ public class ProductionBlock {
                     NHItems.graphite, 40
             ));
             size = 3;
+            tier = NHItems.thorium.hardness - 1;
             // Formerly two size-2 links; the current API requires one link per occupied tile.
             addLink(
                     p(0, 2), p(1, 2), p(0, 3), p(1, 3),
@@ -58,6 +59,36 @@ public class ProductionBlock {
 
             consumePower(2.5f);
             consumeLiquid(NHLiquids.ammonia, 5f / 60f).boost();
+        }};
+
+        advancedScanCollector = new OreCollector("advanced-scan-collector") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.thorium, 80,
+                    NHItems.fissileMatter,20,
+                    NHItems.juniorProcessor, 120,
+                    NHItems.multipleSteel, 60
+            ));
+            size = 4;
+            collectOffset = 7;
+            collectSize = 10;
+            itemCapacity = 300;
+            liquidCapacity = 120f;
+            tier = Integer.MAX_VALUE;
+            clipSize = 384;
+            liquidDrawer = new DrawLiquidTile(NHLiquids.xenFluid);
+
+            addLink(
+                    p(0, 3), p(1, 3), p(2, 3),
+                    p(0, 4), p(1, 4), p(2, 4),
+                    p(0, 5), p(1, 5), p(2, 5),
+                    p(0, -2), p(1, -2), p(2, -2),
+                    p(0, -3), p(1, -3), p(2, -3),
+                    p(0, -4), p(1, -4), p(2, -4)
+            );
+
+            consumePower(12f);
+            consumeLiquid(NHLiquids.xenFluid, 24f / 60f);
+            consumeLiquid(NHLiquids.hydrazine, 12f / 60f).boost();
         }};
 
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{
@@ -331,7 +362,7 @@ public class ProductionBlock {
 
             size = 4;
             tier = 5;
-            blockedItem = NHItems.thorium;
+            //blockedItem = NHItems.thorium;
 
             drawRim = false;
             hasPower = true;

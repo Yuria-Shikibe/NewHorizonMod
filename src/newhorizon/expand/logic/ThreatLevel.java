@@ -5,6 +5,7 @@ import arc.struct.Seq;
 import mindustry.content.Items;
 import mindustry.game.Team;
 import mindustry.type.Item;
+import mindustry.type.UnitType;
 import newhorizon.content.NHItems;
 
 public class ThreatLevel {
@@ -36,5 +37,25 @@ public class ThreatLevel {
             }
         }
         return threat;
+    }
+
+    public static int getItemThreat(Item item) {
+        if (item == null) return 0;
+
+        int threat = 0;
+        for (IntMap.Entry<Seq<Item>> entry : threatMap) {
+            if (entry.value.contains(item)) threat = Math.max(threat, entry.key);
+        }
+        return threat;
+    }
+
+    public static float getItemWeight(Item item) {
+        int threat = getItemThreat(item);
+        if (threat > 0) return threat;
+        return item == null ? 0f : (float) Math.sqrt(Math.max(item.cost, 1f)) * 0.15f;
+    }
+
+    public static float getUnitThreat(UnitType type) {
+        return UnitProductionRecipe.get(type).contribution;
     }
 }

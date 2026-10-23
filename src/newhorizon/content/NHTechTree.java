@@ -14,6 +14,7 @@ import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.game.Objectives.Objective;
+import mindustry.game.Objectives.Research;
 import mindustry.game.Objectives.SectorComplete;
 import mindustry.type.ItemStack;
 import mindustry.type.SectorPreset;
@@ -36,6 +37,7 @@ public class NHTechTree {
 
     public static Seq<ProductionNode> itemProductionTree = new Seq<>();
     public static Seq<ProductionNode> liquidProductionTree = new Seq<>();
+    public static Seq<ProductionNode> particleStreamProductionTree = new Seq<>();
     public static Seq<ProductionNode> blockTechTree = new Seq<>();
     public static TechNode root;
     private static final ObjectMap<UnlockableContent, Boolean> temporaryAlwaysUnlocked = new ObjectMap<>();
@@ -51,6 +53,7 @@ public class NHTechTree {
 
         itemProductionTree = buildItemProductionTree();
         liquidProductionTree = buildLiquidProductionTree();
+        particleStreamProductionTree = buildParticleStreamProductionTree();
         blockTechTree = buildBlockTechTree();
         addedProductionContents.clear();
 
@@ -65,10 +68,16 @@ public class NHTechTree {
                 addProductionNode(node);
             }
 
+            for (ProductionNode node : particleStreamProductionTree) {
+                addProductionNode(node);
+            }
+
             for (ProductionNode node : blockTechTree) {
                 addBlockTechNode(node);
             }
         });
+
+        applyMapResearchRequirements();
 
         addSerpuloTechTree();
         addErekirTechTree();
@@ -97,6 +106,134 @@ public class NHTechTree {
         if (parent == null || parent.children.contains(node -> node.content == childContent)) return;
 
         new TechNode(parent, childContent, childContent.researchRequirements());
+    }
+
+    private static void applyMapResearchRequirements() {
+        bindMap(NHSectorPresents.landingPoint,
+                CraftingBlock.stampingFacility,
+                CraftingBlock.processorManuFactory,
+                CraftingBlock.recrystallizer,
+                TurretBlock.thermo,
+                TurretBlock.beam,
+                CraftingBlock.particleActivator,
+                PowerBlock.neutralizationGenerator,
+                SpecialBlock.standardStorage,
+                DefenseBlock.standardRegenProjector,
+                PowerBlock.armorBattery,
+                DistributionBlock.omniUnloader,
+                DefenseBlock.presstaniumWall,
+                LogicBlock.characterDisplaySmall,
+                LogicBlock.characterDisplay,
+                LogicBlock.iconDisplaySmall,
+                LogicBlock.iconDisplay,
+                LiquidBlock.standardLiquidStorage
+        );
+        addResearch(LogicBlock.characterDisplay, LogicBlock.characterDisplaySmall);
+        addResearch(LogicBlock.iconDisplay, LogicBlock.iconDisplaySmall);
+
+        bindMap(NHSectorPresents.relicAccess,
+                ProductionBlock.resonanceMiningFacility,
+                ProductionBlock.airRadiator,
+                CraftingBlock.crystallizer,
+                CraftingBlock.rectificatior,
+                CraftingBlock.subCooler,
+                TurretBlock.synchro,
+                TurretBlock.argmot,
+                NHBlocks.gravity,
+                GroundUnitTypes.thynomo,
+                PowerBlock.fluxNodeLargeMK1,
+                LiquidBlock.turboPump,
+                PowerBlock.gravityTrapSmall,
+                NHBlocks.fireExtinguisher,
+                LiquidBlock.streamExtractor,
+                LiquidBlock.streamReceiver,
+                LiquidBlock.streamRepeater,
+                LiquidBlock.streamRedirector,
+                LiquidBlock.streamSplitter
+        );
+        addResearch(CraftingBlock.crystallizer, NHLiquids.ammonia);
+
+        bindMap(NHSectorPresents.streamStation,
+                NHUnitTypes.relay,
+                ProductionBlock.decoherenceReverser
+        );
+        addResearch(NHUnitTypes.relay, UnitBlock.jumpGateBasic);
+
+        bindMap(NHSectorPresents.edgeZone,
+                CraftingBlock.plasticator,
+                CraftingBlock.photocatalystFactory,
+                PowerBlock.hydrazineGenerator,
+                PowerBlock.xenExtractor,
+                CraftingBlock.xenSeparator,
+                NHBlocks.multipleLauncher,
+                DistributionBlock.lightStackLoader,
+                DistributionBlock.stackRail,
+                UnitBlock.jumpGatePrimary,
+                NHUnitTypes.aliotiat
+        );
+        addResearch(PowerBlock.hydrazineGenerator, NHLiquids.hydrazine);
+        addResearch(PowerBlock.hydrazineGenerator, CraftingBlock.photocatalystFactory);
+        addResearch(NHUnitTypes.aliotiat, UnitBlock.jumpGatePrimary);
+
+        bindMap(NHSectorPresents.crossBranch,
+                CraftingBlock.crucibleFoundry,
+                CraftingBlock.multipleRollingMill,
+                SpecialBlock.heavyStorage,
+                LiquidBlock.heavyLiquidStorage,
+                NHBlocks.largeWaterExtractor,
+                NHUnitTypes.warper
+        );
+        addResearch(NHUnitTypes.warper, NHUnitTypes.branch);
+        addResearch(NHUnitTypes.warper, UnitBlock.jumpGatePrimary);
+
+        bindMap(NHSectorPresents.interferedArray,
+                NHBlocks.interferon,
+                NHUnitTypes.histone
+        );
+        addResearch(NHUnitTypes.histone, UnitBlock.jumpGateBasic);
+
+        bindMap(NHSectorPresents.hollow,
+                CraftingBlock.heavyStampingFacility,
+                CraftingBlock.processorPrinter,
+                CraftingBlock.hyperCooler,
+                ProductionBlock.liquidRadiator,
+                DefenseBlock.standardForceProjector,
+                DefenseBlock.refactoringMultiWall,
+                SpecialBlock.coreArray,
+                CraftingBlock.eutecticPurifierGraphite,
+                CraftingBlock.eutecticPurifierSilicon
+        );
+        addResearch(CraftingBlock.heavyStampingFacility, NHLiquids.neutron);
+        addResearch(CraftingBlock.processorPrinter, NHLiquids.quantumLiquid);
+        addResearch(CraftingBlock.hyperCooler, NHLiquids.hydrazine);
+        addResearch(CraftingBlock.hyperCooler, NHLiquids.xenFluid);
+    }
+
+    private static void bindMap(SectorPreset sector, UnlockableContent... contents) {
+        if (sector == null) return;
+        for (UnlockableContent content : contents) addObjective(content, new SectorComplete(sector));
+    }
+
+    private static void addResearch(UnlockableContent content, UnlockableContent prerequisite) {
+        if (content == null || prerequisite == null) return;
+        addObjective(content, new Research(prerequisite));
+    }
+
+    private static void addObjective(UnlockableContent content, Objective objective) {
+        if (content == null || objective == null) return;
+        TechNode node = all.find(candidate -> candidate.content == content && candidate.rootNode == root);
+        if (node == null || node.objectives.contains(existing -> sameObjective(existing, objective))) return;
+        node.objectives.add(objective);
+    }
+
+    private static boolean sameObjective(Objective first, Objective second) {
+        if (first instanceof SectorComplete left && second instanceof SectorComplete right) {
+            return left.preset == right.preset;
+        }
+        if (first instanceof Research left && second instanceof Research right) {
+            return left.content == right.content;
+        }
+        return false;
     }
 
     private static void registerProgressionEvents() {
@@ -373,6 +510,7 @@ public class NHTechTree {
                                 ProductionNode.node(NHBlocks.largeWaterExtractor),
                                 ProductionNode.node(ProductionBlock.decoherenceReverser),
                                 ProductionNode.node(ProductionBlock.scanCollector,
+                                        ProductionNode.node(ProductionBlock.advancedScanCollector),
                                         ProductionNode.node(ProductionBlock.resonanceMiningFacility,
                                                 ProductionNode.node(ProductionBlock.beamMiningFacility,
                                                     ProductionNode.node(ProductionBlock.implosionMiningFacility),
@@ -508,8 +646,26 @@ public class NHTechTree {
                                 ProductionNode.node(LiquidBlock.turboPumpSmall,
                                         ProductionNode.node(LiquidBlock.turboPump)
                                 ),
-                                ProductionNode.node(LiquidBlock.standardLiquidStorage,
+                        ProductionNode.node(LiquidBlock.standardLiquidStorage,
                                         ProductionNode.node(LiquidBlock.heavyLiquidStorage)
+                                )
+                        ),
+                        ProductionNode.node(DefenseBlock.insulatedWall,
+                                ProductionNode.node(DefenseBlock.heavyDefenceWall,
+                                        ProductionNode.node(DefenseBlock.heavyDefenceWallLarge),
+                                        ProductionNode.node(DefenseBlock.heavyDefenceDoor,
+                                                ProductionNode.node(DefenseBlock.heavyDefenceDoorLarge)
+                                        ),
+                                        ProductionNode.node(DefenseBlock.setonWall,
+                                                ProductionNode.node(DefenseBlock.setonWallLarge,
+                                                        ProductionNode.node(DefenseBlock.chargeWall,
+                                                                ProductionNode.node(DefenseBlock.chargeWallLarge)
+                                                        )
+                                                )
+                                        )
+                                ),
+                                ProductionNode.node(NHBlocks.fireExtinguisher,
+                                        ProductionNode.node(NHBlocks.blaster)
                                 )
                         ),
                         ProductionNode.node(DefenseBlock.titaniumWall,
@@ -521,9 +677,6 @@ public class NHTechTree {
                                                         )
                                                 )
                                         )
-                                ),
-                                ProductionNode.node(NHBlocks.fireExtinguisher,
-                                        ProductionNode.node(NHBlocks.blaster)
                                 ),
                                 ProductionNode.node(DefenseBlock.standardRegenProjector,
                                         ProductionNode.node(DefenseBlock.heavyRegenProjector)
@@ -726,10 +879,16 @@ public class NHTechTree {
                         ProductionNode.node(NHLiquids.quantumLiquid,
                                 ProductionNode.node(NHLiquids.antiMatter)
                         ),
-                        ProductionNode.node(NHLiquids.cryofluid),
-                        ProductionNode.node(NHLiquids.particle),
-                        ProductionNode.node(NHLiquids.zetaPositive,
-                                ProductionNode.node(NHLiquids.zetaNegative)
+                        ProductionNode.node(NHLiquids.cryofluid)
+                )
+        );
+    }
+
+    private static Seq<ProductionNode> buildParticleStreamProductionTree() {
+        return Seq.with(
+                ProductionNode.node(NHParticleStreams.particle,
+                        ProductionNode.node(NHParticleStreams.zetaPositive,
+                                ProductionNode.node(NHParticleStreams.zetaNegative)
                         )
                 )
         );

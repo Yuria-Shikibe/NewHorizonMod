@@ -140,6 +140,28 @@ public class DefaultRaid {
         return raids.get(id);
     }
 
+    public static EventRaidAction launchProbeRaid(Team attacker, Team threatTeam, float sourceX, float sourceY, Building target, int seed) {
+        if (!RaidLogic.isLogicSide() || attacker == null || threatTeam == null
+                || target == null || !target.isValid() || target.team == attacker) return null;
+
+        if (tierPools == null || tierPools.length == 0) registerRaids();
+        int tier = getRaidTier(threatTeam);
+        RaidEvent raid = pickRaid(tier, seed);
+        if (raid == null) return null;
+
+        EventRaidAction action = createAction(raid, attacker,
+                sourceX / tilesize, sourceY / tilesize,
+                target.x / tilesize, target.y / tilesize, seed);
+        action.gatedByRaidState = false;
+        action.raidScale = raid.raidScale;
+        action.postInit();
+
+        ActionBus bus = new ActionBus();
+        bus.add(action);
+        cutscene.addSubActionBus(bus);
+        return action;
+    }
+
     public static IntMap<RaidEvent> all() {
         return raids;
     }
@@ -260,6 +282,10 @@ public class DefaultRaid {
     }
 
     private static EventRaidAction createAction(RaidEvent raid, Team wave, float sourceX, float sourceY, float targetX, float targetY) {
+        return createAction(raid, wave, sourceX, sourceY, targetX, targetY, raidSeed());
+    }
+
+    private static EventRaidAction createAction(RaidEvent raid, Team wave, float sourceX, float sourceY, float targetX, float targetY, int seed) {
         EventRaidAction action = new EventRaidAction();
         action.raidType = RaidPreset.CUSTOM_RAID;
         action.customBullet = raid.bullet;
@@ -270,7 +296,7 @@ public class DefaultRaid {
         action.raidScale = raid.raidScale;
         action.inaccuracy = raid.inaccuracy;
         action.overrideDefaultCoordinate = true;
-        action.syncSeed = raidSeed();
+        action.syncSeed = seed;
         action.sourceX = sourceX * tilesize;
         action.sourceY = sourceY * tilesize;
         action.targetX = targetX * tilesize;

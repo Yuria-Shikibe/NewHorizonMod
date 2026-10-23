@@ -76,8 +76,16 @@ import newhorizon.expand.units.ai.SurroundAI;
 import newhorizon.expand.units.unitEntity.NucleoidEntity;
 import newhorizon.expand.units.unitEntity.PesterEntity;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
+import newhorizon.expand.units.probe.ProbeMiningAI;
+import newhorizon.expand.units.probe.ProbeMiningEntity;
+import newhorizon.expand.units.probe.ProbeFactoryPart;
+import newhorizon.expand.units.probe.ProbeProductionCommandAI;
+import newhorizon.expand.units.probe.ProbeScannerAI;
+import newhorizon.expand.units.probe.ProbeScannerEntity;
 import newhorizon.expand.units.unitType.AncientUnitType;
 import newhorizon.expand.units.unitType.NHUnitType;
+import newhorizon.expand.units.unitType.ProbePhantomUnitType;
+import newhorizon.expand.units.unitType.ProbeUnitType;
 import newhorizon.expand.units.unitType.content.Destruction;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
@@ -117,6 +125,8 @@ public class NHUnitTypes {
             aliotiat, tarlidor, sin, //Ground-1
             sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
             relay, ghost, zarkov, declining; //Navy
+    public static ProbePhantomUnitType probeMiningPhantom, probeScannerPhantom;
+    public static UnitCommand probeProductionCommand = new UnitCommand(\u0022new-horizon-probe-production\u0022, \u0022production\u0022, unit -> new ProbeProductionCommandAI());
     public static Seq<StatusEffect> statuses;
 
     static {
@@ -1597,10 +1607,20 @@ public class NHUnitTypes {
             }
         };
 
-        ancientProbe = new AncientUnitType("ancient-probe") {
+        ancientProbe = new ProbeUnitType("ancient-probe") {
             {
                 aiController = ProbeAI::new;
                 controller = u -> new ProbeAI();
+                playerControllable = true;
+                allowChangeCommands = true;
+                commands.add(UnitCommand.moveCommand);
+                commands.add(probeProductionCommand);
+                defaultCommand = UnitCommand.moveCommand;
+
+                abilities.add(new AdaptedHealAbility(500, 600, hitSize * 1.5f, healColor).modify(a -> {
+                            a.selfHealReloadTime = 240;
+                            a.selfHealAmount /= 16;
+                        }));
 
                 bounded = false;
                 drawMinimap = false;
@@ -1610,9 +1630,14 @@ public class NHUnitTypes {
                 lightOpacity = 0.1f;
 
                 flying = true;
-                health = 1500;
-                armor = 10;
+                health = 7500;
+                armor = 30;
                 hitSize = 16f;
+                itemCapacity = 100;
+                mineRange = 30f;
+                mineTier = 20;
+                mineSpeed = 10;
+                mineWalls = true;
                 drag /= 3f;
 
                 buildSpeed = 10F;
@@ -1624,13 +1649,13 @@ public class NHUnitTypes {
                 targetPriority = -3f;
 
                 rotateSpeed = 1.7f;
-                speed = 1.55F;
+                speed = 2.55F;
                 accel = 0.34F;
 
                 engineOffset = 14f;
                 engineSize = -1;
 
-                parts.add(new RegionPart("-antenna") {{
+                parts.add(new ProbeFactoryPart(this, "-antenna", 0) {{
                     layerOffset = -0.05f;
                     outline = true;
                     moveRot = -45;
@@ -1641,7 +1666,7 @@ public class NHUnitTypes {
                     progress = PartProgress.warmup.compress(0.35f, 0.65f);
                 }});
 
-                parts.add(new RegionPart("-antenna") {{
+                parts.add(new ProbeFactoryPart(this, "-antenna", 1) {{
                     layerOffset = -0.05f;
                     outline = true;
                     x = 4.5f;
@@ -1651,7 +1676,7 @@ public class NHUnitTypes {
                     progress = PartProgress.warmup.compress(0.35f, 0.65f);
                 }});
 
-                parts.add(new RegionPart("-antenna") {{
+                parts.add(new ProbeFactoryPart(this, "-antenna", 2) {{
                     layerOffset = -0.05f;
                     outline = true;
                     moveRot = 45;
@@ -1664,7 +1689,7 @@ public class NHUnitTypes {
                     progress = PartProgress.warmup.compress(0.35f, 0.65f);
                 }});
 
-                parts.add(new RegionPart("-antenna") {{
+                parts.add(new ProbeFactoryPart(this, "-antenna", 3) {{
                     layerOffset = -0.05f;
                     outline = true;
                     x = -5f;
@@ -1685,34 +1710,6 @@ public class NHUnitTypes {
                 engines.add(new AncientEngine(-3.25f, -5f, 7f, -90).a(0.3f));
                 engines.add(new AncientEngine(2.5f, -5f, 7f, -90).a(0.3f));
 
-                weapons.add(new Weapon() {
-                    {
-                        reload = 100000000;
-//				bullet = new EffectBulletType(0){{instantDisappear = true; rangeOverride = 360;}};
-                        bullet = new BulletType() {{
-                            rangeOverride = 400f;
-                        }};
-
-                        autoTarget = true;
-                        controllable = false;
-
-                        shootCone = 360f;
-                        shootWarmupSpeed /= 3;
-                        targetAir = false;
-                        targetGround = true;
-                        rotate = false;
-                    }
-
-                    @Override
-                    public void addStats(UnitType u, Table t) {
-                        t.add(Core.bundle.get("scanner"));
-                    }
-
-                    @Override
-                    protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation) {
-                    }
-                });
-
                 weapons.add(new PointDefenseWeapon(NewHorizon.name("pester-secondary-laser")) {{
                     color = NHColor.ancientLightMid;
                     mirror = false;
@@ -1732,7 +1729,7 @@ public class NHUnitTypes {
                             hitEffect = NHFx.lightningHitSmall;
                             hitColor = color;
                             maxRange = 360.0F;
-                            damage = 150f;
+                            damage = 450f;
                         }
                     };
                 }});
@@ -1744,6 +1741,62 @@ public class NHUnitTypes {
                 NHPixmap.createIcons(packer, this);
             }
         };
+
+        probeMiningPhantom = new ProbePhantomUnitType("ancient-probe-miner", ancientProbe) {{
+            constructor = ProbeMiningEntity::new;
+            aiController = ProbeMiningAI::new;
+            controller = unit -> new ProbeMiningAI();
+
+            lifetime = Float.MAX_VALUE;
+            health = ancientProbe.health * 0.1f;
+            armor = ancientProbe.armor;
+            hitSize = ancientProbe.hitSize * 0.8f;
+            itemCapacity = ancientProbe.itemCapacity;
+            mineTier = ancientProbe.mineTier;
+            mineSpeed = ancientProbe.mineSpeed;
+            mineRange = ancientProbe.mineRange;
+            mineFloor = ancientProbe.mineFloor;
+            mineWalls = ancientProbe.mineWalls;
+            mineHardnessScaling = ancientProbe.mineHardnessScaling;
+            speed = ancientProbe.speed;
+            accel = ancientProbe.accel;
+            drag = ancientProbe.drag;
+            flying = true;
+            bounded = false;
+            targetable = true;
+            playerControllable = false;
+            logicControllable = false;
+            useUnitCap = false;
+            drawMinimap = false;
+            hidden = true;
+            createWreck = false;
+            createScorch = false;
+        }};
+
+        probeScannerPhantom = new ProbePhantomUnitType("ancient-probe-scanner", ancientProbe) {{
+            constructor = ProbeScannerEntity::new;
+            aiController = ProbeScannerAI::new;
+            controller = unit -> new ProbeScannerAI();
+
+            lifetime = Float.MAX_VALUE;
+            health = ancientProbe.health;
+            armor = ancientProbe.armor;
+            hitSize = ancientProbe.hitSize;
+            speed = ancientProbe.speed * 1.35f;
+            accel = ancientProbe.accel;
+            drag = ancientProbe.drag;
+            flying = true;
+            bounded = false;
+            targetable = true;
+            playerControllable = false;
+            logicControllable = false;
+            useUnitCap = false;
+            drawMinimap = false;
+            hidden = true;
+            createWreck = false;
+            createScorch = false;
+            weapons.addAll(ancientProbe.weapons);
+        }};
 
         nucleoid = new AncientUnitType("nucleoid") {
             {

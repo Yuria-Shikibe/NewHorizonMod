@@ -6,19 +6,27 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
+import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.AutoDoor;
 import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.blocks.defense.ShieldWall;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.content.NHColor;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.defence.AdaptRegenProjector;
 import newhorizon.expand.block.defence.AdaptWall;
+import newhorizon.expand.block.defence.ChargeWall;
 import newhorizon.expand.block.defence.QuantumVortexProjector;
 import newhorizon.expand.block.defence.ShieldGenerator;
 
@@ -31,6 +39,8 @@ public class DefenseBlock {
     public static Block
             titaniumWall,
             presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall,
+            insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge,
+            heavyDefenceDoor, heavyDefenceDoorLarge, chargeWall, chargeWallLarge,
             standardRegenProjector, heavyRegenProjector, standardForceProjector, largeShieldGenerator, riftShield,
             plasmaMembrane;
 
@@ -77,6 +87,151 @@ public class DefenseBlock {
             crushDamageMultiplier = 0.5f;
 
             requirements(Category.defense, with(NHItems.nodexPlate, 8, NHItems.ancimembrane, 8));
+        }};
+
+        final int healthMult2 = 4;
+
+        insulatedWall = new Wall("insulated-wall") {{
+            size = 1;
+            health = 300;
+            requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
+            insulated = true;
+            absorbLasers = true;
+        }};
+
+        setonWall = new Wall("seton-wall") {{
+            armor = 15f;
+            insulated = true;
+            crushDamageMultiplier = 0.15f;
+            size = 1;
+            health = 1250;
+            chanceDeflect = 15f;
+            flashHit = true;
+            requirements(Category.defense, with(NHItems.irayrondPanel, 10, Items.silicon, 15, NHItems.presstanium, 15));
+        }};
+
+        setonWallLarge = new Wall("seton-wall-large") {{
+            armor = 15f;
+            insulated = true;
+            crushDamageMultiplier = 0.15f;
+            size = 2;
+            health = 1250 * healthMult2;
+            chanceDeflect = 15f;
+            flashHit = true;
+            requirements(Category.defense, with(
+                    NHItems.irayrondPanel, 10 * healthMult2,
+                    Items.silicon, 15 * healthMult2,
+                    NHItems.presstanium, 15 * healthMult2
+            ));
+        }};
+
+        heavyDefenceWall = new ShieldWall("heavy-defence-wall") {{
+            shieldHealth = 1000f;
+            breakCooldown = 30f * 10f;
+            regenSpeed = 5f;
+            glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
+            consumePower(8f / 60f);
+            crushDamageMultiplier = 0.05f;
+
+            outputsPower = false;
+            hasPower = true;
+            consumesPower = true;
+            conductivePower = true;
+
+            armor = 30f;
+            size = 1;
+            health = 1750;
+            absorbLasers = true;
+            requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.multipleSteel, 20));
+
+            buildType = () -> new ShieldWallBuild() {
+                @Override
+                public void draw() {
+                    Draw.rect(block.region, x, y);
+
+                    if (shieldRadius > 0) {
+                        float radius = shieldRadius * mindustry.Vars.tilesize / 2f;
+
+                        Draw.z(Layer.shields);
+                        Draw.color(team.color, Color.white, Mathf.clamp(hit));
+
+                        if (renderer.animateShields) {
+                            Fill.square(x, y, radius);
+                        } else {
+                            Lines.stroke(1.5f);
+                            Draw.alpha(0.09f + Mathf.clamp(0.08f * hit));
+                            Fill.square(x, y, radius);
+                            Draw.alpha(1f);
+                            Lines.poly(x, y, 4, radius, 45f);
+                            Draw.reset();
+                        }
+
+                        Draw.reset();
+                        Drawf.additive(glowRegion, glowColor, (1f - glowMag + Mathf.absin(glowScl, glowMag)) * shieldRadius, x, y, 0f, Layer.blockAdditive);
+                    }
+                }
+            };
+        }};
+
+        heavyDefenceWallLarge = new ShieldWall("heavy-defence-wall-large") {{
+            shieldHealth = 1200f * healthMult2;
+            breakCooldown = 30f * 10f;
+            regenSpeed = 5f * healthMult2;
+            glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
+            consumePower(8f / 60f * healthMult2);
+
+            armor = 30f;
+            crushDamageMultiplier = 0.05f;
+            outputsPower = false;
+            hasPower = true;
+            consumesPower = true;
+            conductivePower = true;
+            size = 2;
+            health = 1750 * healthMult2;
+            absorbLasers = true;
+            requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.multipleSteel, 20 * healthMult2));
+        }};
+
+        heavyDefenceDoor = new AutoDoor("heavy-defence-door") {{
+            size = 1;
+            health = 1750;
+            armor = 30f;
+            crushDamageMultiplier = 0.05f;
+            requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20, NHItems.juniorProcessor, 5));
+        }};
+
+        heavyDefenceDoorLarge = new AutoDoor("heavy-defence-door-large") {{
+            size = 2;
+            health = 1750 * healthMult2;
+            armor = 30f;
+            openfx = Fx.dooropenlarge;
+            closefx = Fx.doorcloselarge;
+            crushDamageMultiplier = 0.05f;
+            requirements(Category.defense, with(
+                    NHItems.setonAlloy, 10 * healthMult2,
+                    NHItems.presstanium, 20 * healthMult2,
+                    NHItems.juniorProcessor, 5 * healthMult2
+            ));
+        }};
+
+        chargeWall = new ChargeWall("charge-wall") {{
+            requirements(Category.defense, with(NHItems.hadronicomp, 5, NHItems.hyperProcessor, 5));
+            size = 1;
+            absorbLasers = true;
+            range = 120f;
+            health = 2500;
+            effectColor = NHColor.lightSkyBack;
+            armor = 60f;
+        }};
+
+        chargeWallLarge = new ChargeWall("charge-wall-large") {{
+            requirements(Category.defense, ItemStack.mult(chargeWall.requirements, healthMult2));
+            size = 2;
+            absorbLasers = true;
+            range = 200f;
+            health = 2500 * healthMult2;
+            effectColor = NHColor.lightSkyBack;
+            armor = 80f;
         }};
 
         standardRegenProjector = new AdaptRegenProjector("standard-regen-projector") {{

@@ -14,6 +14,8 @@ import newhorizon.expand.units.EnergyUnitII;
 import newhorizon.expand.units.unitEntity.NucleoidEntity;
 import newhorizon.expand.units.unitEntity.PesterEntity;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
+import newhorizon.expand.units.probe.ProbeMiningEntity;
+import newhorizon.expand.units.probe.ProbeScannerEntity;
 
 public class EntityRegister {
 
@@ -35,6 +37,8 @@ public class EntityRegister {
         put(AdaptedTimedKillUnit.class, AdaptedTimedKillUnit::new);
         put(NucleoidEntity.class, NucleoidEntity::new);
         put(ProbeEntity.class, ProbeEntity::new);
+        put(ProbeMiningEntity.class, ProbeMiningEntity::new);
+        put(ProbeScannerEntity.class, ProbeScannerEntity::new);
 
         //put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 
