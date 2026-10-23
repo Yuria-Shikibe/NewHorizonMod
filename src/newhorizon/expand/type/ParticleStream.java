@@ -16,6 +16,7 @@ public class ParticleStream extends UnlockableContent {
 
     public ParticleStream(String name, Color color) {
         super(name);
+        databaseCategory = "particle-stream";
         this.color = color;
         localizedName = Core.bundle.get("particle-stream." + this.name + ".name");
         description = Core.bundle.getOrNull("particle-stream." + this.name + ".description");

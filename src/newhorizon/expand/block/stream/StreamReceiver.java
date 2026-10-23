@@ -27,7 +27,7 @@ public class StreamReceiver extends StreamBlock {
     public StreamReceiver(String name) {
         super(name);
 
-        streamLength = new int[]{13, -1, -1, -1};
+        streamLength = new int[]{-1, -1, -1, -1};
         streamCap = new float[]{-1, -1, -1, -1};
         saveConfig = true;
         config(Integer.class, (StreamReceiverBuild build, Integer mode) -> build.setHeatOutput(mode));
@@ -51,7 +51,6 @@ public class StreamReceiver extends StreamBlock {
 
     public class StreamReceiverBuild extends StreamBuild implements HeatBlock {
         public boolean heatMode;
-        public int heatOutputDirection = -1;
         public int streamDirection;
         public float heat;
         public float receivedAmount;
@@ -90,9 +89,9 @@ public class StreamReceiver extends StreamBlock {
 
         @Override
         public boolean acceptStream(StreamBeam stream) {
-            if (!heatMode) return (stream.getRotation() + 2) % 4 != streamDirection;
-            return enabled && stream.getRotation() == streamDirection
-                    && stream.currentStream == NHParticleStreams.particle;
+            boolean entersFromNonOutputSide = (stream.getRotation() + 2) % 4 != streamDirection;
+            if (!heatMode) return entersFromNonOutputSide;
+            return enabled && entersFromNonOutputSide && stream.currentStream == NHParticleStreams.particle;
         }
 
         @Override
@@ -122,7 +121,7 @@ public class StreamReceiver extends StreamBlock {
             super.tapped();
             Fx.placeBlock.at(this, size);
             Sounds.click.at(this);
-            configure(nextClickConfig());
+            configure(heatMode ? streamMode : streamDirection);
         }
 
         @Override
@@ -149,36 +148,17 @@ public class StreamReceiver extends StreamBlock {
         @Override
         public void buildConfiguration(Table table) {
             table.button("@nh.stream.toggle-heat", Icon.refresh, () -> configure(heatMode ? streamMode : streamDirection))
-                    .size(220f, 48f).row();
-            table.button("@nh.stream.next-heat-output", Icon.right, () -> configure(nextHeatDirection()))
                     .size(220f, 48f);
         }
 
         @Override
         public Object config() {
-            return heatMode ? heatOutputDirection : streamMode;
+            return heatMode ? streamDirection : streamMode;
         }
 
-        private int nextHeatDirection() {
-            int inputSide = (streamDirection + 2) % 4;
-            int direction = heatMode ? (heatOutputDirection + 1) % 4 : streamDirection;
-            for (int i = 0; i < 4; i++) {
-                if (direction != inputSide) return direction;
-                direction = (direction + 1) % 4;
-            }
-            return streamMode;
-        }
-
-        private int nextClickConfig() {
-            if (!heatMode) return streamDirection;
-            if (heatOutputDirection == (streamDirection + 3) % 4) return streamMode;
-            return nextHeatDirection();
-        }
-
-        private void setHeatOutput(int direction) {
-            if (direction < 0 || direction >= 4 || direction == (streamDirection + 2) % 4) {
+        private void setHeatOutput(int mode) {
+            if (mode == streamMode || mode < 0 || mode >= 4) {
                 heatMode = false;
-                heatOutputDirection = -1;
                 heat = 0f;
                 receivedAmount = 0f;
                 currentStream = null;
@@ -189,12 +169,11 @@ public class StreamReceiver extends StreamBlock {
             }
 
             heatMode = true;
-            heatOutputDirection = direction;
             heat = 0f;
             receivedAmount = 0f;
             currentStream = null;
             streamAmount = 0f;
-            rotation = direction;
+            rotation = streamDirection;
             onProximityUpdate();
         }
 
@@ -203,7 +182,7 @@ public class StreamReceiver extends StreamBlock {
             super.write(write);
             write.bool(heatMode);
             write.i(streamDirection);
-            write.i(heatOutputDirection);
+            write.i(-1);
         }
 
         @Override
@@ -212,11 +191,10 @@ public class StreamReceiver extends StreamBlock {
             if (revision >= 1) {
                 heatMode = read.bool();
                 streamDirection = read.i();
-                heatOutputDirection = read.i();
-                rotation = heatMode ? heatOutputDirection : streamDirection;
+                read.i();
+                rotation = streamDirection;
             } else {
                 streamDirection = rotation;
-                heatOutputDirection = -1;
             }
         }
     }
