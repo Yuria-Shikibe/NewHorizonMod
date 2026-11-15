@@ -8,6 +8,7 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Point2;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
@@ -30,17 +31,21 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHStats;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class CargoDeliveryPlatform extends Block {
     protected static final Rand rand = new Rand();
 
     public float range = 160f;
+    public int maxLinks = 4;
     public float reload = 90f;
     public int itemsPerDelivery = 20;
     public float liquidPerDelivery = 40f;
+    public int packagesPerDispatch = 1;
 
     public float bulletSpeed = 5.5f;
     public float launchAccelTime = 30f;
@@ -64,7 +69,8 @@ public class CargoDeliveryPlatform extends Block {
         armor = 4f;
         update = true;
         solid = true;
-        configurable = false;
+        configurable = true;
+        ignoreResizeConfig = true;
         hasItems = true;
         hasLiquids = true;
         hasPower = true;
@@ -75,6 +81,9 @@ public class CargoDeliveryPlatform extends Block {
         envEnabled |= Env.space;
 
         consumePower(2f);
+
+        config(Integer.class, (CargoDeliveryPlatformBuild build, Integer value) -> build.toggleLink(world.build(value)));
+        config(Point2[].class, (CargoDeliveryPlatformBuild build, Point2[] value) -> build.applyLinkPoints(value));
     }
 
     @Override
@@ -86,7 +95,10 @@ public class CargoDeliveryPlatform extends Block {
     public void setStats() {
         super.setStats();
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
-        stats.add(Stat.reload, 60f / reload, StatUnit.perSecond);
+        stats.add(NHStats.deliveryPackages, packagesPerDispatch, StatUnit.none);
+        stats.add(NHStats.deliveryItemCapacity, itemsPerDelivery, StatUnit.items);
+        stats.add(NHStats.deliveryLiquidCapacity, liquidPerDelivery, StatUnit.liquidUnits);
+        stats.add(NHStats.deliveryRate, packagesPerDispatch * 60f / reload, StatUnit.perSecond);
     }
 
     @Override
@@ -100,25 +112,14 @@ public class CargoDeliveryPlatform extends Block {
         return new TextureRegion[]{region};
     }
 
-    public class CargoDeliveryPlatformBuild extends Building {
+    public class CargoDeliveryPlatformBuild extends CargoDeliveryBuild {
         public float reloadCounter;
         public float searchTimer;
-        public float hoverTime;
 
         protected final ObjectMap<UnlockableContent, Seq<OrbitTrail>> orbitTrails = new ObjectMap<>();
         protected final ObjectSet<UnlockableContent> activeOrbitContents = new ObjectSet<>();
-
-        @Override
-        public void created() {
-            super.created();
-            CargoDeliveryGraph.markDirty();
-        }
-
-        @Override
-        public void onRemoved() {
-            super.onRemoved();
-            CargoDeliveryGraph.markDirty();
-        }
+        protected final Seq<Building> pathBuffer = new Seq<>();
+        protected final ObjectSet<Building> usedDeposits = new ObjectSet<>();
 
         @Override
         public void updateTile() {
@@ -149,108 +150,128 @@ public class CargoDeliveryPlatform extends Block {
             CargoDeliveryGraph graph = CargoDeliveryGraph.get(team);
             CargoDeliveryGraph.PathResult result = graph.distances(this);
 
-            CargoDeliveryDeposit.CargoDeliveryDepositBuild bestDeposit = null;
-            Item bestItem = null;
-            Liquid bestLiquid = null;
-            int bestItemAmount = 0;
-            float bestLiquidAmount = 0f;
-            float bestDist = Float.MAX_VALUE;
+            usedDeposits.clear();
+            int sent = 0;
 
-            for (CargoDeliveryDeposit.CargoDeliveryDepositBuild deposit : graph.deposits) {
-                if (deposit == null || deposit.dead()) continue;
+            while (sent < packagesPerDispatch) {
+                CargoDeliveryDeposit.CargoDeliveryDepositBuild bestDeposit = null;
+                Item bestItem = null;
+                Liquid bestLiquid = null;
+                int bestItemAmount = 0;
+                float bestLiquidAmount = 0f;
+                float bestDist = Float.MAX_VALUE;
 
-                Float dist = result.dist.get(deposit);
-                if (dist == null) continue;
-
-                UnlockableContent filter = deposit.filter;
-                if (filter == null) continue;
-
-                if (filter instanceof Item item) {
-                    int stock = items.get(item);
-                    if (stock <= 0) continue;
-
-                    int free = deposit.block.itemCapacity - deposit.items.total() - deposit.incomingItems;
-                    if (free <= 0) continue;
-
-                    int amount = Math.min(itemsPerDelivery, Math.min(stock, free));
-                    if (amount <= 0) continue;
-
-                    if (isBetter(dist, deposit, bestDist, bestDeposit)) {
-                        bestDist = dist;
-                        bestDeposit = deposit;
-                        bestItem = item;
-                        bestItemAmount = amount;
-                        bestLiquid = null;
-                        bestLiquidAmount = 0f;
+                for (int i = 0; i < graph.deposits.size; i++) {
+                    CargoDeliveryDeposit.CargoDeliveryDepositBuild deposit = graph.deposits.get(i);
+                    if (deposit == null || deposit.dead() || usedDeposits.contains(deposit) || !deposit.canRequest()) {
+                        continue;
                     }
-                } else if (filter instanceof Liquid liquid) {
-                    if (liquids.current() != liquid) continue;
 
-                    float stock = liquids.get(liquid);
-                    if (stock <= 0.001f) continue;
+                    float dist = result.dist.get(deposit, Float.MAX_VALUE);
+                    if (dist == Float.MAX_VALUE) continue;
 
-                    float free = deposit.block.liquidCapacity - deposit.totalLiquids() - deposit.incomingLiquids;
-                    if (free <= 0.001f) continue;
+                    UnlockableContent filter = deposit.filter;
+                    if (filter == null) continue;
 
-                    float amount = Math.min(liquidPerDelivery, Math.min(stock, free));
-                    if (amount <= 0.001f) continue;
+                    if (filter instanceof Item item) {
+                        int stock = items.get(item);
+                        if (stock <= 0) continue;
 
-                    if (isBetter(dist, deposit, bestDist, bestDeposit)) {
-                        bestDist = dist;
-                        bestDeposit = deposit;
-                        bestLiquid = liquid;
-                        bestLiquidAmount = amount;
-                        bestItem = null;
-                        bestItemAmount = 0;
+                        int free = deposit.block.itemCapacity - deposit.items.total() - deposit.incomingItems;
+                        if (free <= 0) continue;
+
+                        int amount = Math.min(itemsPerDelivery, Math.min(stock, free));
+                        if (amount <= 0) continue;
+
+                        if (isBetter(dist, deposit, bestDist, bestDeposit)) {
+                            bestDist = dist;
+                            bestDeposit = deposit;
+                            bestItem = item;
+                            bestItemAmount = amount;
+                            bestLiquid = null;
+                            bestLiquidAmount = 0f;
+                        }
+                    } else if (filter instanceof Liquid liquid) {
+                        if (liquids.current() != liquid) continue;
+
+                        float stock = liquids.get(liquid);
+                        if (stock <= 0.001f) continue;
+
+                        float free = deposit.block.liquidCapacity - deposit.totalLiquids() - deposit.incomingLiquids;
+                        if (free <= 0.001f) continue;
+
+                        float amount = Math.min(liquidPerDelivery, Math.min(stock, free));
+                        if (amount <= 0.001f) continue;
+
+                        if (isBetter(dist, deposit, bestDist, bestDeposit)) {
+                            bestDist = dist;
+                            bestDeposit = deposit;
+                            bestLiquid = liquid;
+                            bestLiquidAmount = amount;
+                            bestItem = null;
+                            bestItemAmount = 0;
+                        }
                     }
                 }
+
+                if (bestDeposit == null) break;
+
+                usedDeposits.add(bestDeposit);
+
+                if (!graph.pathTo(result, this, bestDeposit, pathBuffer) || pathBuffer.isEmpty()) {
+                    continue;
+                }
+
+                CargoDeliveryData data = Pools.obtain(CargoDeliveryData.class, CargoDeliveryData::new);
+                data.from = this;
+                data.to = bestDeposit;
+                data.item = bestItem;
+                data.itemAmount = bestItemAmount;
+                data.liquid = bestLiquid;
+                data.liquidAmount = bestLiquidAmount;
+                data.accelTime = launchAccelTime;
+                data.reserved = true;
+
+                for (int i = 0; i < pathBuffer.size - 1; i++) {
+                    data.path.add(pathBuffer.get(i).pos());
+                }
+
+                if (bestItem != null) {
+                    bestDeposit.reserveItem(bestItemAmount);
+                    items.remove(bestItem, bestItemAmount);
+                } else {
+                    bestDeposit.reserveLiquid(bestLiquidAmount);
+                    liquids.remove(bestLiquid, bestLiquidAmount);
+                }
+
+                bestDeposit.requested();
+
+                float length = 0f;
+                Building prev = this;
+                for (int i = 0; i < pathBuffer.size; i++) {
+                    Building step = pathBuffer.get(i);
+                    length += prev.dst(step);
+                    prev = step;
+                }
+
+                float life = Math.max(60f, length / Math.max(bulletSpeed, 0.01f) * 3f + launchAccelTime * 2f + 60f);
+                float angle = angleTo(pathBuffer.first());
+
+                bullet.create(this, team, x, y, angle, 0f, bulletSpeed, life, data);
+
+                Color color = bestItem != null ? bestItem.color : bestLiquid != null ? bestLiquid.color : Color.white;
+                launchEffect.at(x, y, angle, color);
+
+                sent++;
             }
 
-            if (bestDeposit == null) return false;
-
-            Seq<Building> path = graph.pathTo(result, this, bestDeposit);
-            if (path == null || path.isEmpty()) return false;
-
-            CargoDeliveryData data = Pools.obtain(CargoDeliveryData.class, CargoDeliveryData::new);
-            data.from = this;
-            data.to = bestDeposit;
-            data.item = bestItem;
-            data.itemAmount = bestItemAmount;
-            data.liquid = bestLiquid;
-            data.liquidAmount = bestLiquidAmount;
-            data.accelTime = launchAccelTime;
-            data.reserved = true;
-
-            for (int i = 0; i < path.size - 1; i++) {
-                data.path.add(path.get(i).pos());
+            if (sent > 0) {
+                Effect.shake(shake, shake, this);
+                shootSound.at(x, y, 1f + Mathf.range(0.2f), shootSoundVolume);
+                return true;
             }
 
-            if (bestItem != null) {
-                bestDeposit.reserveItem(bestItemAmount);
-                items.remove(bestItem, bestItemAmount);
-            } else {
-                bestDeposit.reserveLiquid(bestLiquidAmount);
-                liquids.remove(bestLiquid, bestLiquidAmount);
-            }
-
-            float length = 0f;
-            Building prev = this;
-            for (Building step : path) {
-                length += prev.dst(step);
-                prev = step;
-            }
-
-            float life = Math.max(60f, length / Math.max(bulletSpeed, 0.01f) * 3f + launchAccelTime * 2f + 60f);
-            float angle = angleTo(path.first());
-
-            bullet.create(this, team, x, y, angle, 0f, bulletSpeed, life, data);
-
-            Color color = bestItem != null ? bestItem.color : bestLiquid != null ? bestLiquid.color : Color.white;
-            launchEffect.at(x, y, angle, color);
-
-            Effect.shake(shake, shake, this);
-            shootSound.at(x, y, 1f + Mathf.range(0.2f), shootSoundVolume);
-            return true;
+            return false;
         }
 
         protected boolean isBetter(float dist, Building deposit, float bestDist, Building bestDeposit) {
@@ -280,12 +301,9 @@ public class CargoDeliveryPlatform extends Block {
 
         @Override
         public void draw() {
-            if (!CargoDeliveryDraw.hovered(this)) {
-                hoverTime = Math.max(0f, hoverTime - Time.delta * 2f);
-            }
-
             Draw.rect(region, x, y);
             drawTeamTop();
+            CargoDeliveryDraw.drawNodeLinks(this);
 
             Draw.z(Layer.effect);
             drawOrb();
@@ -295,9 +313,12 @@ public class CargoDeliveryPlatform extends Block {
 
         @Override
         public void drawSelect() {
-            hoverTime = Math.min(CargoDeliveryDraw.fullHoverTime, hoverTime + Time.delta);
             super.drawSelect();
-            CargoDeliveryDraw.drawNetwork(this, hoverTime);
+
+            Draw.color(Pal.accent);
+            Lines.stroke(1f);
+            Drawf.circles(x, y, range);
+            Draw.reset();
         }
 
         protected void drawOrb() {
@@ -429,10 +450,6 @@ public class CargoDeliveryPlatform extends Block {
             }
         }
 
-        @Override
-        public void drawConfigure() {
-            CargoDeliveryDraw.drawNetwork(this, CargoDeliveryDraw.fullHoverTime);
-        }
     }
 }
 

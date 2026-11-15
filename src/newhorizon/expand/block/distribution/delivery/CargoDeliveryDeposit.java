@@ -3,11 +3,12 @@ package newhorizon.expand.block.distribution.delivery;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Nullable;
-import arc.util.Time;
+import arc.util.Strings;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.ctype.ContentType;
@@ -26,12 +27,15 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHStats;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class CargoDeliveryDeposit extends Block {
     public float range = 80f;
+    public float requestInterval = 12f;
     public Effect receiveEffect = NHFx.receive;
     public Sound receiveSound = Sounds.massdriverReceive;
     public float receiveSoundVolume = 0.5f;
@@ -58,6 +62,7 @@ public class CargoDeliveryDeposit extends Block {
 
         config(Item.class, (CargoDeliveryDepositBuild build, Item item) -> build.filter = item);
         config(Liquid.class, (CargoDeliveryDepositBuild build, Liquid liquid) -> build.filter = liquid);
+        config(Integer.class, (CargoDeliveryDepositBuild build, Integer value) -> build.toggleLink(world.build(value)));
         configClear((CargoDeliveryDepositBuild build) -> build.filter = null);
     }
 
@@ -73,6 +78,7 @@ public class CargoDeliveryDeposit extends Block {
     public void setStats() {
         super.setStats();
         stats.add(Stat.range, range / tilesize, StatUnit.blocks);
+        stats.add(NHStats.requestInterval, table -> table.add(Strings.autoFixed(requestInterval / 60f, 2) + " " + StatUnit.seconds.localized()));
     }
 
     @Override
@@ -81,26 +87,33 @@ public class CargoDeliveryDeposit extends Block {
         Drawf.dashCircle(x * tilesize, y * tilesize, range, Pal.accent);
     }
 
-    public class CargoDeliveryDepositBuild extends Building {
+    public class CargoDeliveryDepositBuild extends CargoDeliveryBuild {
         public @Nullable UnlockableContent filter;
         public int incomingItems;
         public float incomingLiquids;
-        public float hoverTime;
+        public float requestTimer;
 
         @Override
-        public void created() {
-            super.created();
-            CargoDeliveryGraph.markDirty();
-        }
-
-        @Override
-        public void onRemoved() {
-            super.onRemoved();
-            CargoDeliveryGraph.markDirty();
+        public void configure(Object value) {
+            if (value instanceof Integer) {
+                Object previous = block.lastConfig;
+                super.configure(value);
+                block.lastConfig = previous;
+            } else {
+                super.configure(value);
+            }
         }
 
         public float totalLiquids() {
             return liquids.sum((liquid, amount) -> amount);
+        }
+
+        public boolean canRequest() {
+            return requestTimer <= 0.0001f;
+        }
+
+        public void requested() {
+            requestTimer = requestInterval;
         }
 
         public void reserveItem(int amount) {
@@ -146,9 +159,15 @@ public class CargoDeliveryDeposit extends Block {
 
         @Override
         public void updateTile() {
+            if (requestTimer > 0f) {
+                requestTimer = Math.max(0f, requestTimer - edelta());
+            }
+
             dumpAccumulate();
 
-            for (Liquid liquid : content.liquids()) {
+            Seq<Liquid> liquidsContent = content.liquids();
+            for (int i = 0; i < liquidsContent.size; i++) {
+                Liquid liquid = liquidsContent.get(i);
                 if (liquids.get(liquid) > 0.001f) {
                     dumpLiquid(liquid, 2f);
                 }
@@ -177,25 +196,20 @@ public class CargoDeliveryDeposit extends Block {
 
         @Override
         public void draw() {
-            if (!CargoDeliveryDraw.hovered(this)) {
-                hoverTime = Math.max(0f, hoverTime - Time.delta * 2f);
-            }
-
             Draw.rect(region, x, y);
             drawTeamTop();
         }
 
         @Override
         public void drawSelect() {
-            hoverTime = Math.min(CargoDeliveryDraw.fullHoverTime, hoverTime + Time.delta);
             super.drawSelect();
-            CargoDeliveryDraw.drawNetwork(this, hoverTime);
-            drawItemSelection(filter);
-        }
 
-        @Override
-        public void drawConfigure() {
-            CargoDeliveryDraw.drawNetwork(this, CargoDeliveryDraw.fullHoverTime);
+            Draw.color(Pal.accent);
+            Lines.stroke(1f);
+            Drawf.circles(x, y, range);
+            Draw.reset();
+
+            drawItemSelection(filter);
         }
 
         @Override

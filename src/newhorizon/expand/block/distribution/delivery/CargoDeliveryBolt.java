@@ -11,17 +11,19 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.content.Fx;
+import mindustry.entities.Damage;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 
+import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public class CargoDeliveryBolt extends BulletType {
 
     public CargoDeliveryBolt() {
         super(1f, 0f);
-        collides = false;
+        collides = true;
         collidesTiles = false;
         lifetime = 1f;
         drawSize = 32f;
@@ -116,6 +118,34 @@ public class CargoDeliveryBolt extends BulletType {
         Lines.stroke(1.2f);
         Lines.circle(b.x, b.y, 6.5f);
         Draw.reset();
+    }
+
+    @Override
+    public void hit(Bullet b, float x, float y, boolean createFrags) {
+        super.hit(b, x, y, createFrags);
+
+        if (!(b.data() instanceof CargoDeliveryData data)) return;
+
+        float explosiveness = 0f;
+        float flammability = 0f;
+        float power = 0f;
+
+        if (data.item != null && data.itemAmount > 0) {
+            explosiveness += data.item.explosiveness * data.itemAmount;
+            flammability += data.item.flammability * data.itemAmount;
+            power += data.item.charge * Mathf.pow(data.itemAmount, 1.1f) * 25f;
+        }
+
+        if (data.liquid != null && data.liquidAmount > 0.001f) {
+            explosiveness += data.liquid.explosiveness * data.liquidAmount / 2f;
+            flammability += data.liquid.flammability * data.liquidAmount / 2f;
+            power += data.liquid.explosiveness * Mathf.pow(data.liquidAmount, 1.1f) * 25f;
+        }
+
+        data.release();
+        data.drop(x, y, b.rotation());
+
+        Damage.dynamicExplosion(x, y, flammability / 10f, explosiveness / 10f, power, 1f, state.rules.damageExplosions);
     }
 
     @Override

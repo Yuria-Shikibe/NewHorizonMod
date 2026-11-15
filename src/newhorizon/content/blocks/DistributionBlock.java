@@ -396,6 +396,10 @@ public class DistributionBlock {
                     NHItems.hardLight, 40,
                     NHItems.setonAlloy, 20
             ));
+
+            itemsPerDelivery = 50;
+            liquidPerDelivery = 200f;
+            packagesPerDispatch = 2;
         }};
 
         cargoDeliveryNode = new CargoDeliveryNode("cargo-delivery-node") {{
@@ -412,6 +416,7 @@ public class DistributionBlock {
                     NHItems.juniorProcessor, 20,
                     NHItems.hardLight, 20
             ));
+            liquidCapacity = 600f;
         }};
 
         ((Conveyor) conveyor).junctionReplacement = logisticsJunction;

@@ -24,5 +24,10 @@ public class NHStats {
             overrides = new Stat("overrides", StatCat.optional),
             baseRepairAmount = new Stat("base-repair-amount", StatCat.function),
             streamCap = new Stat("stream-cap", StatCat.function),
-            streamLength = new Stat("stream-length", StatCat.function);
+            streamLength = new Stat("stream-length", StatCat.function),
+            deliveryPackages = new Stat("delivery-packages", StatCat.function),
+            deliveryItemCapacity = new Stat("delivery-item-capacity", StatCat.function),
+            deliveryLiquidCapacity = new Stat("delivery-liquid-capacity", StatCat.function),
+            deliveryRate = new Stat("delivery-rate", StatCat.function),
+            requestInterval = new Stat("request-interval", StatCat.function);
 }

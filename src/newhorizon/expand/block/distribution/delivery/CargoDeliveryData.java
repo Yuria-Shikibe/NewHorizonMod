@@ -41,21 +41,30 @@ public class CargoDeliveryData implements Poolable {
         }
 
         int relayCount = path.size;
-        Vec2[] points = new Vec2[relayCount + 4];
-        points[0] = new Vec2(from.x, from.y);
-        points[1] = new Vec2(from.x, from.y);
+        int pointCount = relayCount + 4;
+
+        if (controlPoints == null || controlPoints.length != pointCount) {
+            Vec2[] old = controlPoints;
+            controlPoints = new Vec2[pointCount];
+
+            for (int i = 0; i < pointCount; i++) {
+                controlPoints[i] = old != null && i < old.length ? old[i] : new Vec2();
+            }
+        }
+
+        controlPoints[0].set(from.x, from.y);
+        controlPoints[1].set(from.x, from.y);
 
         for (int i = 0; i < relayCount; i++) {
             Building relay = world.build(path.get(i));
             if (relay == null) relay = from;
-            points[i + 2] = new Vec2(relay.x, relay.y);
+            controlPoints[i + 2].set(relay.x, relay.y);
         }
 
-        points[relayCount + 2] = new Vec2(to.x, to.y);
-        points[relayCount + 3] = new Vec2(to.x, to.y);
+        controlPoints[relayCount + 2].set(to.x, to.y);
+        controlPoints[relayCount + 3].set(to.x, to.y);
 
-        controlPoints = points;
-        spline.set(points, false);
+        spline.set(controlPoints, false);
         length = Math.max(1f, spline.approxLength(Math.max(16, (relayCount + 1) * 8)));
         progress = 0f;
         travelTime = 0f;
@@ -97,8 +106,6 @@ public class CargoDeliveryData implements Poolable {
         accelTime = 30f;
         pathIndex = 0;
         reserved = false;
-        controlPoints = null;
-        spline.controlPoints = null;
     }
 }
 

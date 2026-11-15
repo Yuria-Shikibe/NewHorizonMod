@@ -3,8 +3,7 @@ package newhorizon.expand.block.distribution.delivery;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import arc.util.Time;
-import mindustry.gen.Building;
+import arc.math.geom.Point2;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -14,9 +13,11 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
 import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class CargoDeliveryNode extends Block {
     public float range = 256f;
+    public int maxLinks = 4;
 
     public CargoDeliveryNode(String name) {
         super(name);
@@ -25,10 +26,14 @@ public class CargoDeliveryNode extends Block {
         armor = 3f;
         update = true;
         solid = true;
-        configurable = false;
+        configurable = true;
+        ignoreResizeConfig = true;
         hasItems = false;
         hasLiquids = false;
         envEnabled |= Env.space;
+
+        config(Integer.class, (CargoDeliveryNodeBuild build, Integer value) -> build.toggleLink(world.build(value)));
+        config(Point2[].class, (CargoDeliveryNodeBuild build, Point2[] value) -> build.applyLinkPoints(value));
     }
 
     @Override
@@ -43,21 +48,8 @@ public class CargoDeliveryNode extends Block {
         Drawf.dashCircle(x * tilesize, y * tilesize, range, Pal.accent);
     }
 
-    public class CargoDeliveryNodeBuild extends Building {
+    public class CargoDeliveryNodeBuild extends CargoDeliveryBuild {
         public float pulse;
-        public float hoverTime;
-
-        @Override
-        public void created() {
-            super.created();
-            CargoDeliveryGraph.markDirty();
-        }
-
-        @Override
-        public void onRemoved() {
-            super.onRemoved();
-            CargoDeliveryGraph.markDirty();
-        }
 
         @Override
         public void updateTile() {
@@ -70,12 +62,9 @@ public class CargoDeliveryNode extends Block {
 
         @Override
         public void draw() {
-            if (!CargoDeliveryDraw.hovered(this)) {
-                hoverTime = Math.max(0f, hoverTime - Time.delta * 2f);
-            }
-
             Draw.rect(region, x, y);
             drawTeamTop();
+            CargoDeliveryDraw.drawNodeLinks(this);
 
             if (pulse > 0.01f) {
                 Draw.z(Layer.effect);
@@ -89,14 +78,12 @@ public class CargoDeliveryNode extends Block {
 
         @Override
         public void drawSelect() {
-            hoverTime = Math.min(CargoDeliveryDraw.fullHoverTime, hoverTime + Time.delta);
             super.drawSelect();
-            CargoDeliveryDraw.drawNetwork(this, hoverTime);
-        }
 
-        @Override
-        public void drawConfigure() {
-            CargoDeliveryDraw.drawNetwork(this, CargoDeliveryDraw.fullHoverTime);
+            Draw.color(Pal.accent);
+            Lines.stroke(1f);
+            Drawf.circles(x, y, range);
+            Draw.reset();
         }
     }
 }
