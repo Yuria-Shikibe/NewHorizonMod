@@ -20,6 +20,7 @@ import newhorizon.expand.net.packet.RaidSyncRequestPacket;
 import newhorizon.expand.net.packet.WeatherEventAlertPacket;
 import newhorizon.expand.net.packet.WeatherEventSyncPacket;
 import newhorizon.expand.net.packet.WeatherEventSyncRequestPacket;
+import newhorizon.expand.block.distribution.delivery.CargoDeliveryGraph;
 
 public class NHRegister {
     static {
@@ -44,6 +45,9 @@ public class NHRegister {
     public static void load() {
         Events.on(EventType.ResetEvent.class, e -> NHGroups.clear());
         Events.on(EventType.WorldLoadBeginEvent.class, e -> NHGroups.worldReset());
+        Events.on(EventType.BlockBuildEndEvent.class, e -> CargoDeliveryGraph.markDirty());
+        Events.on(EventType.BlockDestroyEvent.class, e -> CargoDeliveryGraph.markDirty());
+        Events.on(EventType.BuildTeamChangeEvent.class, e -> CargoDeliveryGraph.markDirty());
 
         Events.run(EventType.Trigger.draw, () -> {
             NHVars.renderer.draw();

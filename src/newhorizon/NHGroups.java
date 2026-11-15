@@ -9,6 +9,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import newhorizon.expand.block.commandable.CommandableBlock;
+import newhorizon.expand.block.distribution.delivery.CargoDeliveryGraph;
 import newhorizon.expand.block.power.GravityWell;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.entities.GravityTrapField;
@@ -46,10 +47,13 @@ public class NHGroups {
                 }
             }
         }
+
+        CargoDeliveryGraph.worldInit();
     }
 
     public static void clear() {
         RemoteCoreStorage.clear();
+        CargoDeliveryGraph.clear();
 
         beaconBoostLinks.clear();
         commandableBuilds.clear();
@@ -65,6 +69,7 @@ public class NHGroups {
 
     public static void update() {
         SharedShieldFields.update();
+        CargoDeliveryGraph.update();
     }
 
     public static void draw() {
