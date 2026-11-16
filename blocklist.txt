@@ -1,4 +1,5 @@
 new-horizon-Basic-jump-gate 1 1 2 0
+new-horizon-accumulating-storage 1 1 1 0
 new-horizon-air-radiator 1 1 2 0
 new-horizon-air-raider 1 1 3 0
 new-horizon-alloy-smelter 1 1 3 0
@@ -52,6 +53,9 @@ new-horizon-block3 1 1 1 0
 new-horizon-blood-star 1 1 5 0
 new-horizon-bomb-launcher 1 1 3 0
 new-horizon-bombard 1 1 4 0
+new-horizon-cargo-delivery-deposit 1 1 3 0
+new-horizon-cargo-delivery-node 1 1 3 0
+new-horizon-cargo-delivery-platform 1 1 3 0
 new-horizon-casting-foundry 1 1 3 0
 new-horizon-casting-foundry-link-entity 1 1 1 0
 new-horizon-cathode-fusion-reactor 1 1 4 0
@@ -61,6 +65,7 @@ new-horizon-character-display-small 1 0 1 0
 new-horizon-charge-compensator 1 1 1 0
 new-horizon-charge-wall 1 1 1 0
 new-horizon-charge-wall-large 1 1 2 0
+new-horizon-chemical-dissociation-chamber 1 1 2 0
 new-horizon-chip-assembly 1 1 2 0
 new-horizon-component-basic 1 1 2 0
 new-horizon-component-epic 1 1 4 0
@@ -144,6 +149,10 @@ new-horizon-erode-rock-dense 0 0 1 3489625
 new-horizon-erode-rock-greater 0 0 1 3489625
 new-horizon-erode-rock-lesser 0 0 1 1975608
 new-horizon-eternity 1 1 16 0
+new-horizon-eutectic-purifier-graphite 1 1 3 0
+new-horizon-eutectic-purifier-graphite-link-entity 1 1 1 0
+new-horizon-eutectic-purifier-silicon 1 1 3 0
+new-horizon-eutectic-purifier-silicon-link-entity 1 1 1 0
 new-horizon-executor 1 1 6 0
 new-horizon-fabric-restructuror 1 1 3 0
 new-horizon-fabric-synthesizer 1 1 3 0
@@ -223,6 +232,7 @@ new-horizon-icon-display-small 1 0 1 0
 new-horizon-implosion-mining-facility 1 1 4 0
 new-horizon-insulated-wall 1 1 1 0
 new-horizon-interferon 1 1 3 0
+new-horizon-interlocking-drill 1 1 3 0
 new-horizon-irayrond-factory 1 1 4 0
 new-horizon-irayrond-panel-factory 1 1 4 0
 new-horizon-irdryon-fluid-factory 1 1 2 0
@@ -411,6 +421,7 @@ new-horizon-placeholder-entity-6 1 1 6 0
 new-horizon-placeholder-entity-7 1 1 7 0
 new-horizon-placeholder-entity-8 1 1 8 0
 new-horizon-plasma-activator 1 1 3 0
+new-horizon-plasma-membrane 1 1 2 0
 new-horizon-plastanium-crafter 1 1 3 0
 new-horizon-plasticator 1 1 3 0
 new-horizon-plate-floor 0 0 1 4145225
@@ -476,6 +487,7 @@ new-horizon-quantum-field-luminous 0 0 1 11370475
 new-horizon-rail-gun 1 1 4 0
 new-horizon-rapid-unloader 1 1 1 0
 new-horizon-reconstruct-plastanium-factory 1 1 2 0
+new-horizon-recrystallizer 1 1 2 0
 new-horizon-rectificatior 1 1 2 0
 new-horizon-refactoring-multi-wall 1 1 1 0
 new-horizon-refine-module 1 1 2 0

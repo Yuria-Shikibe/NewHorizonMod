@@ -1213,6 +1213,54 @@ public class NHFx {
             float randN = rand.random(120f);
             Fill.poly(e.x + x, e.y + y, 3, e.fout() * 8f * rand.random(0.8f, 1.2f), e.rotation + randN * e.fin());
         });
+    }),
+
+    launch = new Effect(28f, 20f, e -> {
+        float fin = Interp.pow2In.apply(e.fin());
+
+        rand.setSeed(e.id);
+
+        Draw.color(e.color);
+        Lines.stroke(1.8f * e.fout());
+        Lines.circle(e.x, e.y, 3f + fin * 15f);
+
+        for (int i = 0; i < 10; i++) {
+            float angle = rand.random(360f);
+            float len = fin * (8f + rand.random(14f));
+            float size = 1.2f + rand.random(2.2f);
+
+            Fill.circle(
+                    e.x + Angles.trnsx(angle, len),
+                    e.y + Angles.trnsy(angle, len),
+                    size * e.fout()
+            );
+        }
+
+        Draw.reset();
+    }),
+
+    receive = new Effect(26f, 20f, e -> {
+        float fout = Interp.pow2In.apply(e.fout());
+
+        rand.setSeed(e.id);
+
+        Draw.color(e.color);
+        Lines.stroke(1.6f * e.fout());
+        Lines.circle(e.x, e.y, 16f * (1f - fout) + 2f);
+
+        for (int i = 0; i < 10; i++) {
+            float angle = rand.random(360f);
+            float len = Mathf.lerp(10f + rand.random(12f), 2f, fout);
+            float size = 1.2f + rand.random(2.2f);
+
+            Fill.circle(
+                    e.x + Angles.trnsx(angle, len),
+                    e.y + Angles.trnsy(angle, len),
+                    size * e.fout()
+            );
+        }
+
+        Draw.reset();
     });
 
     public static float fslope(float fin) {

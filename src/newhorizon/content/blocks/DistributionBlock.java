@@ -13,6 +13,9 @@ import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHItems;
+import newhorizon.expand.block.distribution.delivery.CargoDeliveryDeposit;
+import newhorizon.expand.block.distribution.delivery.CargoDeliveryNode;
+import newhorizon.expand.block.distribution.delivery.CargoDeliveryPlatform;
 import newhorizon.expand.block.distribution.item.AdaptConveyor;
 import newhorizon.expand.block.distribution.item.AdaptStackConveyor;
 import newhorizon.expand.block.distribution.item.logistics.*;
@@ -37,7 +40,8 @@ public class DistributionBlock {
             logisticsOmniOverflowGate, logisticsOmniUnderflowGate,
             logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, conveyorUnloaderFast, omniUnloader, rapidUnloader,
-            conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
+            conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader,
+            cargoDeliveryPlatform, cargoDeliveryNode, cargoDeliveryDeposit;
 
     public static void load() {
         multiRouter = new FloatMultiRouter("multi-router") {{
@@ -383,6 +387,36 @@ public class DistributionBlock {
             placeableLiquid = true;
             health = 300;
             liquidCapacity = 250f;
+        }};
+
+        cargoDeliveryPlatform = new CargoDeliveryPlatform("cargo-delivery-platform") {{
+            requirements(Category.distribution, with(
+                    NHItems.multipleSteel, 40,
+                    NHItems.seniorProcessor, 30,
+                    NHItems.hardLight, 40,
+                    NHItems.setonAlloy, 20
+            ));
+
+            itemsPerDelivery = 50;
+            liquidPerDelivery = 200f;
+            packagesPerDispatch = 2;
+        }};
+
+        cargoDeliveryNode = new CargoDeliveryNode("cargo-delivery-node") {{
+            requirements(Category.distribution, with(
+                    NHItems.multipleSteel, 20,
+                    NHItems.juniorProcessor, 20,
+                    NHItems.hardLight, 30
+            ));
+        }};
+
+        cargoDeliveryDeposit = new CargoDeliveryDeposit("cargo-delivery-deposit") {{
+            requirements(Category.distribution, with(
+                    NHItems.multipleSteel, 20,
+                    NHItems.juniorProcessor, 20,
+                    NHItems.hardLight, 20
+            ));
+            liquidCapacity = 600f;
         }};
 
         ((Conveyor) conveyor).junctionReplacement = logisticsJunction;

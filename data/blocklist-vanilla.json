@@ -1539,7 +1539,7 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 4,
-	"color": -1836546049
+	"color": -1819768833
 },
 "conveyor": {
 	"synthetic": true,
@@ -2512,6 +2512,12 @@
 	"solid": true,
 	"size": 1,
 	"color": -1836611329
+},
+"target-dummy": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": -1348559873
 },
 "illuminator": {
 	"synthetic": true,

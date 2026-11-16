@@ -21,6 +21,8 @@ import newhorizon.expand.net.packet.WeatherEventAlertPacket;
 import newhorizon.expand.net.packet.WeatherEventSyncPacket;
 import newhorizon.expand.net.packet.WeatherEventSyncRequestPacket;
 import newhorizon.expand.net.packet.ProbeProductionRequestPacket;
+import newhorizon.expand.block.distribution.delivery.CargoDeliveryBuild;
+import newhorizon.expand.block.distribution.delivery.CargoDeliveryGraph;
 
 public class NHRegister {
     static {
@@ -46,6 +48,25 @@ public class NHRegister {
     public static void load() {
         Events.on(EventType.ResetEvent.class, e -> NHGroups.clear());
         Events.on(EventType.WorldLoadBeginEvent.class, e -> NHGroups.worldReset());
+        Events.on(EventType.BlockBuildEndEvent.class, e -> {
+            if (e.tile != null && e.tile.build != null && CargoDeliveryGraph.isParticipant(e.tile.build)) {
+                CargoDeliveryGraph.markDirty();
+            }
+        });
+        Events.on(EventType.BlockDestroyEvent.class, e -> {
+            if (e.tile != null && e.tile.build != null && CargoDeliveryGraph.isParticipant(e.tile.build)) {
+                CargoDeliveryGraph.unregister(e.tile.build);
+            }
+        });
+        Events.on(EventType.BuildTeamChangeEvent.class, e -> {
+            if (e.build instanceof CargoDeliveryBuild cargo) {
+                cargo.unlinkAll();
+                CargoDeliveryGraph.unregister(cargo);
+                CargoDeliveryGraph.register(cargo);
+            } else if (e.build != null && CargoDeliveryGraph.isParticipant(e.build)) {
+                CargoDeliveryGraph.markDirty();
+            }
+        });
 
         Events.run(EventType.Trigger.draw, () -> {
             NHVars.renderer.draw();
