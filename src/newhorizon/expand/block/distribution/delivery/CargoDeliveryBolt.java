@@ -15,7 +15,9 @@ import mindustry.entities.Damage;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
+import mindustry.graphics.Trail;
 
+import static mindustry.Vars.headless;
 import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
@@ -31,7 +33,8 @@ public class CargoDeliveryBolt extends BulletType {
         despawnEffect = Fx.none;
         shootEffect = Fx.none;
         smokeEffect = Fx.none;
-        trailLength = 8;
+        trailLength = 18;
+        trailWidth = 2.2f;
     }
 
     @Override
@@ -105,6 +108,8 @@ public class CargoDeliveryBolt extends BulletType {
             b.rotation(Tmp.v2.angle());
         }
         b.vel.setZero();
+
+        updateTrail(b);
     }
 
     @Override
@@ -112,12 +117,39 @@ public class CargoDeliveryBolt extends BulletType {
         if (!(b.data() instanceof CargoDeliveryData data)) return;
 
         Color color = data.item != null ? data.item.color : data.liquid != null ? data.liquid.color : Color.white;
+        drawTrail(b, color);
+
         Draw.color(color);
         Fill.circle(b.x, b.y, 3.5f);
         Draw.alpha(0.65f);
         Lines.stroke(1.2f);
         Lines.circle(b.x, b.y, 6.5f);
         Draw.reset();
+    }
+
+    @Override
+    public void updateTrail(Bullet b) {
+        if (headless || trailLength <= 0) return;
+
+        if (b.trail == null) {
+            b.trail = new Trail(trailLength);
+        }
+        b.trail.length = trailLength;
+        b.trail.update(b.x, b.y, trailInterp.apply(b.fin()));
+    }
+
+    protected void drawTrail(Bullet b, Color color) {
+        if (trailLength <= 0 || b.trail == null || b.trail.size() <= 1) return;
+
+        float z = Draw.z();
+        Draw.z(z - 0.0001f);
+
+        Tmp.c1.set(color).a(0.22f);
+        b.trail.draw(Tmp.c1, trailWidth * 2.1f);
+        Tmp.c1.set(color).a(0.72f);
+        b.trail.draw(Tmp.c1, trailWidth * 0.7f);
+
+        Draw.z(z);
     }
 
     @Override
@@ -159,6 +191,11 @@ public class CargoDeliveryBolt extends BulletType {
     @Override
     public void removed(Bullet b) {
         if (b.data() instanceof CargoDeliveryData data) {
+            if (!headless && trailLength > 0 && b.trail != null && b.trail.size() > 1) {
+                Color color = data.item != null ? data.item.color : data.liquid != null ? data.liquid.color : Color.white;
+                Fx.trailFade.at(b.x, b.y, trailWidth, color, b.trail.copy());
+            }
+
             b.data(null);
             Pools.free(data);
         }

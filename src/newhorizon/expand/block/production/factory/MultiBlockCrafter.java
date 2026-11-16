@@ -35,6 +35,7 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import newhorizon.expand.block.BasicMultiBlock;
 import newhorizon.expand.block.inner.LinkBlock;
+import newhorizon.content.NHStats;
 
 import static mindustry.Vars.*;
 
@@ -85,8 +86,8 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         if (outputLiquids != null) stats.add(Stat.output, StatValues.liquids(1f, outputLiquids));
         if (heatBoostEnabled && heatRequirement > 0f) {
             stats.add(Stat.booster, heatRequirement, StatUnit.heatUnits);
-            stats.add(Stat.maxEfficiency, (1f + Math.max(heatEfficiencyIncrease, 0f))
-                    * (1f + Math.max(heatOutputIncrease, 0f)) * 100f, StatUnit.percent);
+            stats.add(Stat.maxEfficiency, (1f + Math.max(heatEfficiencyIncrease, 0f)) * 100f, StatUnit.percent);
+            stats.add(NHStats.maxOutputIncrease, Math.max(heatOutputIncrease, 0f) * 100f, StatUnit.percent);
         }
 
         stats.remove(Stat.size);

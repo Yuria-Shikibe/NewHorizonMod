@@ -4,6 +4,7 @@ import arc.Core;
 import arc.Graphics;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.io.Reads;
@@ -69,9 +70,10 @@ public class StreamReceiver extends StreamBlock {
         @Override
         public void updateTile() {
             if (heatMode) {
-                heat = enabled && Time.delta > 0f
+                float targetHeat = enabled && Time.delta > 0f
                         ? receivedAmount * Time.toSeconds / Time.delta * heatPerStreamPerSecond
                         : 0f;
+                heat = enabled ? Mathf.lerpDelta(heat, targetHeat, 0.08f) : 0f;
                 receivedAmount = 0f;
                 currentStream = null;
                 streamAmount = 0f;

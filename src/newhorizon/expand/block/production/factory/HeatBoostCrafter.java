@@ -10,6 +10,7 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.type.LiquidStack;
+import newhorizon.content.NHStats;
 
 public class HeatBoostCrafter extends GenericCrafter {
     public float heatRequirement = 6f;
@@ -37,8 +38,8 @@ public class HeatBoostCrafter extends GenericCrafter {
         super.setStats();
         if (heatRequirement > 0f) {
             stats.add(Stat.booster, heatRequirement, StatUnit.heatUnits);
-            stats.add(Stat.maxEfficiency, (1f + Math.max(heatEfficiencyIncrease, 0f))
-                    * (1f + Math.max(heatOutputIncrease, 0f)) * 100f, StatUnit.percent);
+            stats.add(Stat.maxEfficiency, (1f + Math.max(heatEfficiencyIncrease, 0f)) * 100f, StatUnit.percent);
+            stats.add(NHStats.maxOutputIncrease, Math.max(heatOutputIncrease, 0f) * 100f, StatUnit.percent);
         }
     }
 
