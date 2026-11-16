@@ -3,5 +3,5 @@ author: "Yuria & Lao"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "THE HORIZON HAS EXPANDED"
-version: "2.3.1"
+version: "2.3.1.1"
 minGameVersion: 160
