@@ -198,6 +198,7 @@ public class CargoDeliveryDeposit extends Block {
         public void draw() {
             Draw.rect(region, x, y);
             drawTeamTop();
+            CargoDeliveryDraw.drawNodeLinks(this);
         }
 
         @Override
