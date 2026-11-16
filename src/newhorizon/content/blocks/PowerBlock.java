@@ -27,8 +27,10 @@ import newhorizon.content.*;
 import newhorizon.expand.block.drawer.DrawBaseRegion;
 import newhorizon.expand.block.drawer.DrawRotation;
 import newhorizon.expand.block.power.GravityWell;
+import newhorizon.expand.block.power.HydrazineGenerator;
 import newhorizon.expand.block.power.MultiBlockConsumeGenerator;
 import newhorizon.expand.block.special.HyperReactor;
+import newhorizon.expand.type.ParticleStreamStack;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.Vars.tilesize;
@@ -500,7 +502,7 @@ public class PowerBlock {
             enableRotate();
         }};
 
-        hydrazineGenerator = new ConsumeGenerator("hydrazine-generator") {{
+        hydrazineGenerator = new HydrazineGenerator("hydrazine-generator") {{
             requirements(Category.power, ItemStack.with(
                     NHItems.presstanium, 50,
                     NHItems.juniorProcessor, 50,
@@ -513,6 +515,7 @@ public class PowerBlock {
 
             consumeLiquids(LiquidStack.with(NHLiquids.hydrazine, 4 / 60f));
             powerProduction = 20f;
+            outputStream = new ParticleStreamStack(NHParticleStreams.particle, 2f / 60f);
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-3x3"),

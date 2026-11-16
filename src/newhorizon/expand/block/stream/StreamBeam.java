@@ -11,8 +11,8 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.Liquid;
 import newhorizon.content.NHContent;
+import newhorizon.expand.type.ParticleStream;
 import newhorizon.util.func.MathUtil;
 
 import static mindustry.Vars.world;
@@ -24,13 +24,13 @@ public class StreamBeam {
     public float amountCap = -1f;
     public int beamLength = 5;
 
-    public Liquid currentLiquid;
+    public ParticleStream currentStream;
     public Building source, target;
     public int distance;
     public boolean clog;
 
     public int rotationOffset;
-    public Liquid filter;
+    public ParticleStream filter;
 
     public StreamBeam(Building source) {
         this.source = source;
@@ -39,6 +39,7 @@ public class StreamBeam {
     public void update() {
         if (source == null) return;
 
+        getCurrentStream();
         clog = false;
         target = null;
         distance = beamLength;
@@ -48,54 +49,57 @@ public class StreamBeam {
                     source.tileX() + Geometry.d4x(getRotation()) * (i + 1),
                     source.tileY() + Geometry.d4y(getRotation()) * (i + 1)
             );
-            if (building instanceof StreamBlock.StreamBuild sbb) {
+            if (building instanceof StreamBlock.StreamBuild streamBuild) {
                 target = building;
                 distance = i;
-                clog = !sbb.acceptStream(this);
+                clog = !streamBuild.acceptStream(this);
                 break;
             }
         }
 
-        getCurrentLiquid();
         lastStrokeScale = Mathf.lerpDelta(lastStrokeScale, beamStrokeScale(), 0.05f);
-        transportLiquid();
+        transportStream();
     }
 
-    public void getCurrentLiquid() {
-        currentLiquid = null;
-        if (source.liquids != null) {
-            if (filter != null) {
-                currentLiquid = filter;
-            } else if (source.liquids.currentAmount() > 0.01f) {
-                currentLiquid = source.liquids.current();
-            }
-        }
-        if (currentLiquid != null) {
-            lastColor.lerp(currentLiquid.color, 0.1f * Time.delta);
-        } else {
+    public void getCurrentStream() {
+        currentStream = null;
+
+        if (!(source instanceof StreamBlock.StreamBuild streamBuild) || streamBuild.streamAmount <= 0.0001f
+                || streamBuild.currentStream == null) {
             lastColor.lerp(Color.white, 0.05f * Time.delta);
+            return;
         }
+
+        currentStream = filter == null ? streamBuild.currentStream : filter;
+        lastColor.lerp(currentStream.color, 0.1f * Time.delta);
     }
 
-    public void transportLiquid() {
-        if (currentLiquid == null) return;
+    public void transportStream() {
+        lastOutput = 0f;
+        if (currentStream == null || !(source instanceof StreamBlock.StreamBuild sourceBuild)) return;
 
-        if (source.liquids != null && source.liquids.get(currentLiquid) > 0.01f) {
-            float cap = amountCap > 0 ? amountCap * source.edelta() : 5;
-            float maxAmount = Math.min(cap, source.liquids.get(currentLiquid));
+        float cap = amountCap >= 0f ? amountCap * source.edelta() : 5f;
+        float requested = Math.min(cap, sourceBuild.streamAmount);
+        if (requested <= 0f) return;
 
-            if (target != null && target.liquids != null && target instanceof StreamBlock.StreamBuild sbb && sbb.acceptStream(this)) {
-                float maxAccept = Math.min(target.block.liquidCapacity - target.liquids.get(currentLiquid), maxAmount);
-                target.handleLiquid(source, currentLiquid, maxAccept);
-                sbb.handleStream(this);
-            }
-            lastOutput = maxAmount;
-            source.liquids.remove(currentLiquid, maxAmount);
+        float transferred = 0f;
+        if (target == null) {
+            transferred = requested;
+        } else if (target instanceof StreamBlock.StreamBuild targetBuild
+                && targetBuild.acceptStream(this) && targetBuild.canAcceptStream(this)) {
+            transferred = Math.min(requested, targetBuild.streamCapacity - targetBuild.streamAmount);
+            if (transferred > 0f) targetBuild.handleStream(this, transferred);
+        } else {
+            clog = true;
         }
+
+        sourceBuild.streamAmount -= transferred;
+        sourceBuild.clearStreamIfEmpty();
+        lastOutput = transferred;
     }
 
     public int getRotation() {
-        return source == null ? 0 : (source.rotation + rotationOffset) % 4;
+        return source == null ? 0 : (source.rotation + rotationOffset + 4) % 4;
     }
 
     public void draw() {
@@ -108,41 +112,7 @@ public class StreamBeam {
             Draw.rect(Icon.warning.getRegion(), source.x, source.y, 4f, 4f);
         }
 
-        /*
-        float alpha = Renderer.bridgeOpacity;
-        float stroke = MathUtil.timeValue(4f, 6f, 2f) * lastStrokeScale;
-        float length = distance * 8f;
-
-        Tmp.c1.set(lastColor).a(alpha);
-
-        Tmp.v1.setZero().add(4f,               -stroke/2f).rotate(getRotation() * 90).add(source);
-        Tmp.v2.setZero().add(4f + 8f,          -stroke/2f).rotate(getRotation() * 90).add(source);
-        Tmp.v3.setZero().add(4f + length - 8f, -stroke/2f).rotate(getRotation() * 90).add(source);
-        Tmp.v4.setZero().add(4f + length,      -stroke/2f).rotate(getRotation() * 90).add(source);
-        Tmp.v5.setZero().add(4f + length + 8f, -stroke/2f).rotate(getRotation() * 90).add(source);
-        Tmp.v6.setZero().add(0, stroke).rotate(getRotation() * 90);
-
-        Lines.stroke(stroke);
-
-        float colorBits = Tmp.c1.toFloatBits();
-        float clearBits = Color.clear.toFloatBits();
-
-        if (distance > 0){
-            Fill.quad(Tmp.v1.x, Tmp.v1.y, colorBits, Tmp.v1.x + Tmp.v6.x, Tmp.v1.y + Tmp.v6.y, colorBits,
-                    Tmp.v2.x + Tmp.v6.x, Tmp.v2.y + Tmp.v6.y, clearBits, Tmp.v2.x, Tmp.v2.y, clearBits);
-            Fill.quad(Tmp.v1.x, Tmp.v1.y, colorBits, Tmp.v1.x + Tmp.v6.x, Tmp.v1.y + Tmp.v6.y, colorBits,
-                    Tmp.v4.x + Tmp.v6.x, Tmp.v4.y + Tmp.v6.y, colorBits, Tmp.v4.x, Tmp.v4.y, colorBits);
-            if (target == null) {
-                Fill.quad(Tmp.v4.x, Tmp.v4.y, colorBits, Tmp.v4.x + Tmp.v6.x, Tmp.v4.y + Tmp.v6.y, colorBits,
-                        Tmp.v5.x + Tmp.v6.x, Tmp.v5.y + Tmp.v6.y, clearBits, Tmp.v5.x, Tmp.v5.y, clearBits);
-            }else if (distance > 0){
-                Fill.quad(Tmp.v4.x, Tmp.v4.y, colorBits, Tmp.v4.x + Tmp.v6.x, Tmp.v4.y + Tmp.v6.y, colorBits,
-                        Tmp.v3.x + Tmp.v6.x, Tmp.v3.y + Tmp.v6.y, clearBits, Tmp.v3.x, Tmp.v3.y, clearBits);
-            }
-        }
-
-         */
-        float length = distance * 8f;
+        float length = Math.max(0f, distance) * 8f;
         float scale = MathUtil.timeValue(0.75f, 1f, 2f) * lastStrokeScale;
 
         Tmp.v1.setZero().add(4f, 0f).rotate(getRotation() * 90).add(source);
@@ -156,8 +126,8 @@ public class StreamBeam {
     }
 
     public float beamStrokeScale() {
-        if (source == null || source.liquids == null || currentLiquid == null) return 0f;
+        if (source == null || currentStream == null || Time.delta <= 0f) return 0f;
         float value = Mathf.clamp(lastOutput / (0.5f * Time.delta));
-        return value < 0.01f ? 0 : Mathf.sqrt(value);
+        return value < 0.01f ? 0f : Mathf.sqrt(value);
     }
 }

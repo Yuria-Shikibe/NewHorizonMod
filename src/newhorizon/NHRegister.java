@@ -20,6 +20,7 @@ import newhorizon.expand.net.packet.RaidSyncRequestPacket;
 import newhorizon.expand.net.packet.WeatherEventAlertPacket;
 import newhorizon.expand.net.packet.WeatherEventSyncPacket;
 import newhorizon.expand.net.packet.WeatherEventSyncRequestPacket;
+import newhorizon.expand.net.packet.ProbeProductionRequestPacket;
 import newhorizon.expand.block.distribution.delivery.CargoDeliveryBuild;
 import newhorizon.expand.block.distribution.delivery.CargoDeliveryGraph;
 
@@ -41,6 +42,7 @@ public class NHRegister {
         Net.registerPacket(WeatherEventAlertPacket::new);
         Net.registerPacket(WeatherEventSyncPacket::new);
         Net.registerPacket(WeatherEventSyncRequestPacket::new);
+        Net.registerPacket(ProbeProductionRequestPacket::new);
     }
 
     public static void load() {

@@ -7,6 +7,7 @@ import mindustry.entities.abilities.Ability;
 import mindustry.gen.Groups;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
+import mindustry.type.UnitType;
 import newhorizon.expand.ability.active.ActiveAbility;
 import newhorizon.expand.game.InterventionState;
 import newhorizon.expand.game.RaidLogic;
@@ -26,8 +27,25 @@ import newhorizon.expand.net.packet.RaidClearPacket;
 import newhorizon.expand.net.packet.RaidScalePacket;
 import newhorizon.expand.net.packet.RaidScaleRequestPacket;
 import newhorizon.expand.net.packet.RaidSyncRequestPacket;
+import newhorizon.expand.net.packet.ProbeProductionRequestPacket;
+import newhorizon.expand.units.probe.ProbeColonyManager;
+import newhorizon.expand.units.unitEntity.ProbeEntity;
 
 public class NHCall {
+    public static boolean selectProbeProduction(ProbeEntity factory, UnitType type) {
+        if (factory == null || type == null) return false;
+
+        if (Vars.net.client() && !Vars.net.server()) {
+            ProbeProductionRequestPacket packet = new ProbeProductionRequestPacket();
+            packet.unitId = factory.id();
+            packet.typeId = type.id;
+            Vars.net.send(packet, true);
+            return true;
+        }
+
+        return ProbeColonyManager.selectProduction(factory, type);
+    }
+
     public static void triggerActiveAbility(Unit unit, int abilityId) {
         if (Vars.net.server() || !Vars.net.active()) {
             if (unit != null && unit.abilities.length > abilityId) {

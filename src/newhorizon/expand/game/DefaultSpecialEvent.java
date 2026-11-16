@@ -188,7 +188,7 @@ public class DefaultSpecialEvent {
             float[] target = special.ally()
                     ? DefaultIntervention.pickAllyTarget(player, InterventionSync.nextSyncSeed() + special.id)
                     : DefaultIntervention.pickHostileTarget(wave, player, InterventionSync.nextSyncSeed() + special.id);
-            if (target[0] == 0f && target[1] == 0f) {
+            if (target == null) {
                 if (special.looping) {
                     nextAt.put(special.id, state.tick + Math.max(special.loopInterval, 1f) * Time.toSeconds);
                 }

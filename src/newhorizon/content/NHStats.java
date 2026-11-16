@@ -29,5 +29,6 @@ public class NHStats {
             deliveryItemCapacity = new Stat("delivery-item-capacity", StatCat.function),
             deliveryLiquidCapacity = new Stat("delivery-liquid-capacity", StatCat.function),
             deliveryRate = new Stat("delivery-rate", StatCat.function),
-            requestInterval = new Stat("request-interval", StatCat.function);
+            requestInterval = new Stat("request-interval", StatCat.function),
+            maxOutputIncrease = new Stat("max-output-increase", StatCat.function);
 }

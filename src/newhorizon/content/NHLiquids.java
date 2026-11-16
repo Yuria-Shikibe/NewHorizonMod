@@ -12,7 +12,7 @@ public class NHLiquids {
     //NH Liquids
     public static Liquid ammonia, hydrazine, quantumLiquid, xenFluid, zetaFluidPositive, zetaFluidNegative, irdryonFluid;
     //streams, special kind of liquid
-    public static Liquid particle, photon, neutron, zetaPositive, zetaNegative, proton, antiMatter;
+    public static Liquid photon, neutron, proton, antiMatter;
     //flood liquids
     public static Liquid ploNaq, choVat, karIon;
     //vanilla contents, used for better reference
@@ -71,10 +71,7 @@ public class NHLiquids {
         }};
 
         photon = new Stream("photon", Color.valueOf("ffb15b"));
-        particle = new Stream("particle-stream", Color.valueOf("ff8787"));
         neutron = new Stream("neutron-stream", Color.valueOf("fff786"));
-        zetaPositive = new Stream("zeta-positive-stream", Color.valueOf("adff93"));
-        zetaNegative = new Stream("zeta-negative-stream", Color.valueOf("abf8ff"));
         proton = new Stream("proton-stream", Color.valueOf("8b96ff"));
         antiMatter = new Stream("anti-matter-stream", Color.valueOf("b479ff"));
 

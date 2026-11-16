@@ -5,6 +5,7 @@ import arc.Events;
 import arc.func.Prov;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Geometry;
 import arc.struct.IntMap;
 import arc.struct.Seq;
 import arc.util.Interval;
@@ -17,6 +18,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
+import mindustry.world.Tile;
 import mindustry.world.meta.BlockFlag;
 import newhorizon.NHGroups;
 import newhorizon.content.NHBullets;
@@ -258,7 +260,7 @@ public class DefaultIntervention {
         if (fleet == null || fleet.special) return;
 
         float[] target = pickHostileTarget(wave, player, interventionSeed());
-        if (target[0] == 0f && target[1] == 0f) return;
+        if (target == null) return;
 
         currentBus = new ActionBus();
         currentBus.add(createAction(fleet, wave, target[0], target[1]));
@@ -301,34 +303,35 @@ public class DefaultIntervention {
     }
 
     public static float[] pickHostileTarget(Team wave, Team player, int seed) {
-        float[] out = pickTarget(wave, player, seed);
-        if (out[0] == 0f && out[1] == 0f) {
-            out = pickTargetCore(wave, player, seed + 1);
-        }
-        return out;
+        Building target = pickTarget(wave, player, seed, true);
+        if (target == null) target = pickTargetCore(wave, player, seed + 1, true);
+        if (target != null) return new float[]{target.tileX(), target.tileY()};
+
+        target = pickTarget(wave, player, seed, false);
+        if (target == null) target = pickTargetCore(wave, player, seed + 1, false);
+        float tileX = target == null ? world.width() / 2f : target.tileX();
+        float tileY = target == null ? world.height() / 2f : target.tileY();
+        Tile spawn = findNearestEnemySpawn(wave, tileX, tileY);
+        return spawn == null ? null : new float[]{spawn.x, spawn.y};
     }
 
     public static float[] pickAllyTarget(Team player, int seed) {
-        float[] out = new float[2];
         Building core = player.core();
-        if (core == null) return out;
+        if (core == null) return null;
 
-        Rand r = new Rand(seed);
+        Rand random = new Rand(seed);
         for (int attempt = 0; attempt < 16; attempt++) {
-            float ang = r.random(360f);
-            float dst = r.random(4f, 12f);
-            float x = core.tileX() + Mathf.cosDeg(ang) * dst;
-            float y = core.tileY() + Mathf.sinDeg(ang) * dst;
-            if (inGravityWell(x * tilesize, y * tilesize)) continue;
-            out[0] = x;
-            out[1] = y;
-            break;
+            float angle = random.random(360f);
+            float distance = random.random(4f, 12f);
+            float tileX = core.tileX() + Mathf.cosDeg(angle) * distance;
+            float tileY = core.tileY() + Mathf.sinDeg(angle) * distance;
+            if (isTargetAvailable(tileX, tileY)) return new float[]{tileX, tileY};
         }
-        return out;
+        Tile spawn = findNearestEnemySpawn(state.rules.waveTeam, core.tileX(), core.tileY());
+        return spawn == null ? null : new float[]{spawn.x, spawn.y};
     }
 
-    private static float[] pickTarget(Team wave, Team player, int seed) {
-        float[] out = new float[2];
+    private static Building pickTarget(Team wave, Team player, int seed, boolean avoidGravity) {
         Rand r = new Rand(seed);
         float wx = r.random(0f, world.unitWidth());
         float wy = r.random(0f, world.unitHeight());
@@ -340,62 +343,69 @@ public class DefaultIntervention {
                 new WeightedOption(3f, () -> flag.set(BlockFlag.factory))
         );
 
-        Building b = findClosestBuilding(wave, player, flag.get(), wx, wy);
-        if (b == null) {
+        Building target = findClosestBuilding(wave, player, flag.get(), wx, wy, avoidGravity);
+        if (target == null) {
             for (BlockFlag fallback : new BlockFlag[]{BlockFlag.turret, BlockFlag.generator, BlockFlag.factory}) {
                 if (fallback == flag.get()) continue;
-                b = findClosestBuilding(wave, player, fallback, wx, wy);
-                if (b != null) break;
+                target = findClosestBuilding(wave, player, fallback, wx, wy, avoidGravity);
+                if (target != null) break;
             }
         }
-        if (b == null) return out;
-
-        out[0] = b.tileX();
-        out[1] = b.tileY();
-        return out;
+        return target;
     }
 
-    private static float[] pickTargetCore(Team wave, Team player, int seed) {
-        float[] out = new float[2];
+    private static Building pickTargetCore(Team wave, Team player, int seed, boolean avoidGravity) {
         Rand r = new Rand(seed);
         float wx = r.random(0f, world.unitWidth());
         float wy = r.random(0f, world.unitHeight());
 
-        Building b = findClosestBuilding(wave, player, BlockFlag.core, wx, wy);
-        if (b == null && player.core() != null && !inGravityWell(player.core().tileX() * tilesize, player.core().tileY() * tilesize)) {
-            b = player.core();
+        Building target = findClosestBuilding(wave, player, BlockFlag.core, wx, wy, avoidGravity);
+        Building core = player.core();
+        if (target == null && core != null && (!avoidGravity || isTargetAvailable(core.tileX(), core.tileY()))) {
+            target = core;
         }
-        if (b == null) return out;
-
-        out[0] = b.tileX();
-        out[1] = b.tileY();
-        return out;
+        return target;
     }
 
-    private static Building findClosestBuilding(Team wave, Team player, BlockFlag flag, float wx, float wy) {
-        Building b = findClosestOutsideGravity(wx, wy, indexer.getEnemy(wave, flag));
-        if (b == null) b = findClosestOutsideGravity(wx, wy, indexer.getFlagged(player, flag));
-        return b;
+    public static Building findClosestBuilding(Team wave, Team player, BlockFlag flag, float wx, float wy, boolean avoidGravity) {
+        Building target = Geometry.findClosest(wx, wy, indexer.getEnemy(wave, flag),
+                building -> !avoidGravity || isTargetAvailable(building.tileX(), building.tileY()));
+        if (target == null) {
+            target = Geometry.findClosest(wx, wy, indexer.getFlagged(player, flag),
+                    building -> !avoidGravity || isTargetAvailable(building.tileX(), building.tileY()));
+        }
+        return target;
     }
 
-    private static Building findClosestOutsideGravity(float wx, float wy, Iterable<Building> buildings) {
-        Building closest = null;
+    public static Tile findNearestEnemySpawn(Team wave, float tileX, float tileY) {
+        Tile closest = null;
         float closestDistance = Float.MAX_VALUE;
-        for (Building building : buildings) {
-            if (inGravityWell(building.tileX() * tilesize, building.tileY() * tilesize)) continue;
-            float distance = Mathf.dst2(wx, wy, building.x, building.y);
-            if (distance < closestDistance) {
-                closest = building;
-                closestDistance = distance;
+        if (spawner != null) {
+            for (Tile spawn : spawner.getSpawns()) {
+                if (!inMap(spawn.x, spawn.y)) continue;
+                float distance = Mathf.dst2(tileX, tileY, spawn.x, spawn.y);
+                if (distance < closestDistance) {
+                    closest = spawn;
+                    closestDistance = distance;
+                }
             }
         }
-        return closest;
+        if (closest != null) return closest;
+
+        Building core = wave == null ? null : Geometry.findClosest(tileX * tilesize, tileY * tilesize, wave.cores(),
+                building -> inMap(building.tileX(), building.tileY()));
+        return core == null ? null : core.tile;
     }
 
-    private static boolean inGravityWell(float x, float y) {
+    public static boolean isTargetAvailable(float tileX, float tileY) {
+        if (!inMap(tileX, tileY)) return false;
         for (var field : NHGroups.gravityFieldSeq) {
-            if (field.rect.contains(x, y)) return true;
+            if (field.rect.contains(tileX * tilesize, tileY * tilesize)) return false;
         }
-        return false;
+        return true;
+    }
+
+    private static boolean inMap(float tileX, float tileY) {
+        return tileX >= 0f && tileY >= 0f && tileX <= world.width() - 1f && tileY <= world.height() - 1f;
     }
 }

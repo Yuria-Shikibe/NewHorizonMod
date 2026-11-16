@@ -30,6 +30,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
+import newhorizon.expand.block.production.factory.HeatBoostCrafter;
 import newhorizon.expand.block.production.factory.MultiBlockCrafter;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
@@ -837,7 +838,7 @@ public class CraftingBlock {
             enableRotate();
         }};
 
-        particleActivator = new GenericCrafter("particle-activator") {{
+        particleActivator = new HeatBoostCrafter("particle-activator") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.titanium, 30,
                     NHItems.graphite, 20,
@@ -850,6 +851,8 @@ public class CraftingBlock {
             armor = 2;
             itemCapacity = 20;
             craftTime = 60f;
+            heatRequirement = 6f;
+            heatOutputIncrease = 1f;
 
             consumePower(60 / 60f);
             consumeItems(with(NHItems.graphite, 2));
@@ -870,7 +873,7 @@ public class CraftingBlock {
             );
         }};
 
-        plasmaActivator = new GenericCrafter("plasma-activator") {{
+        plasmaActivator = new HeatBoostCrafter("plasma-activator") {{
             requirements(Category.crafting, with(
                     NHItems.plastanium, 150,
                     NHItems.surgeAlloy, 50,
@@ -884,6 +887,8 @@ public class CraftingBlock {
             itemCapacity = 20;
             liquidCapacity = 20f;
             craftTime = 120f;
+            heatRequirement = 18f;
+            heatOutputIncrease = 1f;
 
             consumePower(240f / 60f);
             consumeItems(with(NHItems.graphite, 2, NHItems.thorium, 1));
@@ -917,6 +922,9 @@ public class CraftingBlock {
             itemCapacity = 20;
             liquidCapacity = 15f;
             craftTime = 60f;
+            heatBoostEnabled = true;
+            heatRequirement = 12f;
+            heatOutputIncrease = 0.5f;
 
             consumePower(300 / 60f);
             consumeItems(with(NHItems.graphite, 3, NHItems.tungsten, 1));
@@ -956,8 +964,13 @@ public class CraftingBlock {
             canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
             scaledHealth = 150f;
-            itemCapacity = 20;
+            itemCapacity = 30;
             craftTime = 60f;
+
+            heatBoostEnabled = true;
+            heatRequirement = 48f;
+            heatOutputIncrease = 1f;
+            heatEfficiencyIncrease = 1;
 
             consumePower(180 / 60f);
             consumeItems(with(NHItems.graphite, 5, NHItems.tungsten, 3));

@@ -1,6 +1,10 @@
 package newhorizon.expand.block.stream;
 
 import newhorizon.content.NHStats;
+import arc.math.Mathf;
+import arc.math.geom.Point2;
+import arc.struct.Seq;
+import mindustry.input.Placement;
 
 public class StreamRepeater extends StreamBlock {
 
@@ -9,6 +13,13 @@ public class StreamRepeater extends StreamBlock {
 
         streamLength = new int[]{7, -1, -1, -1};
         streamCap = new float[]{-1f, -1, -1, -1};
+    }
+
+    @Override
+    public void changePlacementPath(Seq<Point2> points, int rotation) {
+        int range = streamLength[0] + 1;
+        Placement.calculateNodes(points, this, rotation,
+                (point, other) -> Mathf.dst(point.x, point.y, other.x, other.y) <= range);
     }
 
     @Override

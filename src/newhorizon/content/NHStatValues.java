@@ -25,12 +25,27 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
 import mindustry.world.meta.StatValues;
 import newhorizon.expand.bullets.TypeDamageBulletType;
+import newhorizon.expand.type.ParticleStream;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 import static mindustry.world.meta.StatValues.stack;
 
 public class NHStatValues {
+    public static StatValue particleStream(ParticleStream stream, float amount) {
+        return table -> {
+            table.row();
+            table.table(Styles.grayPanel, panel -> {
+                panel.image(stream.uiIcon).size(40f).pad(10f).left().scaling(Scaling.fit);
+                panel.table(info -> {
+                    info.add(stream.localizedName).left().row();
+                    info.add(Strings.autoFixed(amount * 60f, 2) + StatUnit.perSecond.localized())
+                            .left().color(Color.lightGray);
+                });
+            }).growX().pad(5f).row();
+        };
+    }
+
     public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map, int indent, boolean showUnit) {
         return table -> {
 

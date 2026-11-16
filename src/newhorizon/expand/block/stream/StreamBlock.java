@@ -5,14 +5,19 @@ import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import newhorizon.content.NHLiquids;
+import newhorizon.expand.type.ParticleStream;
 
 import static mindustry.Vars.tilesize;
 
 public class StreamBlock extends Block {
+    public static final float heatPerStreamPerSecond = 6f;
+    public static final float streamCapacity = 6f;
+
     public int[] streamLength = {3, -1, -1, -1};
     public float[] streamCap = {0.5f, -1, -1, -1};
 
@@ -23,8 +28,7 @@ public class StreamBlock extends Block {
         solid = true;
         rotate = true;
         drawArrow = false;
-        hasLiquids = true;
-        liquidCapacity = 6f;
+        hasLiquids = false;
         outputsLiquid = false;
         noUpdateDisabled = true;
         group = BlockGroup.liquids;
@@ -53,17 +57,71 @@ public class StreamBlock extends Block {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class StreamBuild extends Building {
         public StreamBeam[] streams;
+        public ParticleStream currentStream;
+        public float streamAmount;
+        public float streamCapacity = StreamBlock.streamCapacity;
+
+        @Override
+        public byte version() {
+            return 1;
+        }
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid) {
-            return liquid instanceof NHLiquids.Stream && source instanceof StreamBuild;
+            return false;
+        }
+
+        @Override
+        public void handleLiquid(Building source, Liquid liquid, float amount) {
         }
 
         public boolean acceptStream(StreamBeam stream) {
             return true;
         }
 
-        public void handleStream(StreamBeam stream) {
+        public boolean canAcceptStream(StreamBeam stream) {
+            return stream != null && stream.currentStream != null
+                    && (currentStream == null || currentStream == stream.currentStream)
+                    && streamAmount < streamCapacity - 0.0001f;
+        }
+
+        public void handleStream(StreamBeam stream, float amount) {
+            if (!canAcceptStream(stream)) return;
+
+            if (currentStream == null) currentStream = stream.currentStream;
+            streamAmount = Math.min(streamCapacity, streamAmount + amount);
+        }
+
+        public void clearStreamIfEmpty() {
+            if (streamAmount <= 0.0001f) {
+                streamAmount = 0f;
+                currentStream = null;
+            }
+        }
+
+        @Override
+        public void write(Writes write) {
+            super.write(write);
+            write.s(currentStream == null ? -1 : currentStream.id);
+            write.f(streamAmount);
+        }
+
+        @Override
+        public void read(Reads read, byte revision) {
+            super.read(read, revision);
+            currentStream = null;
+            streamAmount = 0f;
+            if (revision < 1) return;
+
+            int id = read.s();
+            streamAmount = read.f();
+            for (ParticleStream stream : ParticleStream.all) {
+                if (stream.id == id) {
+                    currentStream = stream;
+                    break;
+                }
+            }
+            clearStreamIfEmpty();
         }
 
         @Override
@@ -83,16 +141,18 @@ public class StreamBlock extends Block {
 
         @Override
         public void updateTile() {
+            clearStreamIfEmpty();
             for (StreamBeam stream : streams) {
-                if (stream != null && streams.length > 0) stream.update();
+                if (stream != null) stream.update();
             }
+            clearStreamIfEmpty();
         }
 
         @Override
         public void draw() {
             super.draw();
             for (StreamBeam stream : streams) {
-                if (stream != null && streams.length > 0) stream.draw();
+                if (stream != null) stream.draw();
             }
         }
     }

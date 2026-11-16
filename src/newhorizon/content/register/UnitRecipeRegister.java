@@ -12,10 +12,12 @@ import newhorizon.content.blocks.UnitBlock;
 import newhorizon.content.units.AirUnitTypes;
 import newhorizon.content.units.GroundUnitTypes;
 import newhorizon.expand.block.special.JumpGate;
+import newhorizon.expand.logic.UnitProductionRecipe;
 import newhorizon.expand.type.Recipe;
 
 public class UnitRecipeRegister {
     public static void load() {
+        UnitProductionRecipe.clear();
         //spawnList = Seq.with(UnitTypes.poly, UnitTypes.cleroi, UnitTypes.quasar, UnitTypes.zenith, UnitTypes.cyerce, NHUnitTypes.ghost, NHUnitTypes.warper, NHUnitTypes.aliotiat, NHUnitTypes.rhino, NHUnitTypes.gather);
         //spawnList = Seq.with(NHUnitTypes.naxos, NHUnitTypes.tarlidor, NHUnitTypes.zarkov, UnitTypes.eclipse, UnitTypes.disrupt, UnitTypes.corvus, UnitTypes.navanax, UnitTypes.collaris);
         //spawnList = Seq.with(NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.annihilation, NHUnitTypes.saviour, NHUnitTypes.declining, NHUnitTypes.hurricane, NHUnitTypes.anvil, NHUnitTypes.sin, NHUnitTypes.collapser);
@@ -81,7 +83,7 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.guardian, 300 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.darkEnergy, 2400));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.pester, 600 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 2800, NHItems.hyperProcessor, 1600, NHItems.thermoCorePositive, 1000, NHItems.thermoCoreNegative, 1000));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.nucleoid, 1200 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 10000, NHItems.hyperProcessor, 10000, NHItems.darkEnergy, 20000));
-//        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.ancientProbe, 90 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 10, NHItems.hyperProcessor, 10));
+        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.ancientProbe, 600 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.hadronicomp, 1000, NHItems.hyperProcessor, 1000));
     }
 
 

@@ -1,90 +1,118 @@
 package newhorizon.expand.units.ai;
 
-import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.util.Time;
-import mindustry.Vars;
-import mindustry.entities.TargetPriority;
-import mindustry.entities.Units;
-import mindustry.gen.Building;
+import arc.util.Tmp;
+import mindustry.ai.UnitCommand;
+import mindustry.ai.types.CommandAI;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
+import mindustry.world.Tile;
+import newhorizon.content.NHUnitTypes;
+import newhorizon.expand.units.probe.ProbeColonyManager;
+import newhorizon.expand.units.probe.ProbeFactoryLayout;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
 
-public class ProbeAI extends SniperAI {
-    public float nullReload = 0;
-    public ProbeEntity probe;
-
-    public boolean checkTarget(Teamc target, float x, float y, float range) {
-        return
-                (!(target instanceof Building)) ||
-                        probe.scanned.contains((Building) target) || probe.targetTeam != target.team() ||
-                        Units.invalidateTarget(target, unit.team, x, y, range);
-    }
+public class ProbeAI extends CommandAI {
+    protected ProbeEntity probe;
+    private final Vec2 orbitPosition = new Vec2();
+    private final Vec2 orbitVelocity = new Vec2();
+    private final Vec2 orbitMovement = new Vec2();
 
     @Override
     public void unit(Unit unit) {
         super.unit(unit);
-
-        if (!(unit instanceof ProbeEntity)) return;
-        probe = (ProbeEntity) unit;
-    }
-
-    @Override
-    public void updateUnit() {
-        if (probe == null) return;
-
-        if (probe.scanTarget != null) {
-            target = probe.scanTarget;
-            if (!probe.scanTarget.isValid()) target = null;
-        }
-
-        super.updateUnit();
-
-        if (target == null) {
-            nullReload += Time.delta;
-            if (nullReload > 90f) {
-                Position target = null;
-                if (unit.team.cores().any()) {
-                    target = unit.team.core();
-                } else if (unit.team == Vars.state.rules.waveTeam && Vars.spawner.getSpawns().any()) {
-                    target = Vars.spawner.getFirstSpawn();
-                } else return;
-                moveTo(target, unit.type.maxRange / 2f);
-            }
-        }
+        probe = unit instanceof ProbeEntity entity ? entity : null;
     }
 
     @Override
     public Teamc findTarget(float x, float y, float range, boolean air, boolean ground) {
-        Teamc result = findMainTarget(x, y, range, air, ground);
-
-        //if the main target is in range, use it, otherwise target whatever is closest
-        return checkTarget(result, x, y, range) ? target(x, y, range, air, ground) : result;
+        return null;
     }
 
     @Override
-    public void updateTargeting() {
-        super.updateTargeting();
+    public boolean hasCommand() {
+        return probe != null && (probe.factory || probe.factoryCandidate || probe.factoryId >= 0) || super.hasCommand();
     }
 
     @Override
-    public boolean retarget() {
-        return super.retarget() && !probe.scanning;
+    public void updateUnit() {
+        if (probe != null && (probe.factory || probe.factoryCandidate)
+                && currentCommand() != NHUnitTypes.probeProductionCommand) {
+            command = UnitCommand.moveCommand;
+        }
+        super.updateUnit();
     }
 
     @Override
-    public Teamc target(float x, float y, float range, boolean air, boolean ground) {
-        Building target = Vars.indexer.findTile(probe.targetTeam, x, y, range, u -> u.block.priority >= TargetPriority.base && !probe.scanned.contains(u));
-
-        if (target != null) {
-            if (probe.scanned.contains(target)) target = null;
+    public void defaultBehavior() {
+        if (probe == null) {
+            super.defaultBehavior();
+            return;
         }
 
-        if (target == null) {
-            if (probe.targetTeam.cores().any()) return probe.targetTeam.core();
-            else return null;
+        if (probe.factory) {
+            Tile destination = probe.miningTarget();
+            if (destination != null) {
+                moveTo(Tmp.v1.set(destination.worldx(), destination.worldy()), ProbeColonyManager.FACTORY_ARRIVAL_RANGE / 2f, 20f);
+                unit.lookAt(destination.worldx(), destination.worldy());
+                return;
+            }
+            if (!ProbeFactoryLayout.moving(probe) && (targetPos != null || attackTarget != null || commandQueue.any())) {
+                super.defaultBehavior();
+                return;
+            }
+            unit.vel.setZero();
+            if (!ProbeFactoryLayout.moving(probe)) {
+                unit.lookAt(probe.x + probe.factoryRadius, probe.y + probe.factoryRadius);
+            }
+            return;
         }
 
-        return target;
+        if (probe.factoryCandidate) {
+            Tile tile = probe.miningTarget();
+            if (tile != null) {
+                moveTo(Tmp.v1.set(tile.worldx(), tile.worldy()), ProbeColonyManager.FACTORY_ARRIVAL_RANGE / 2f, 20f);
+                unit.lookAt(tile.worldx(), tile.worldy());
+            } else {
+                unit.vel.setZero();
+            }
+            return;
+        }
+
+        ProbeEntity factory = probe.factoryOwner();
+        if (factory != null && ProbeColonyManager.isProductionAssistant(probe)) {
+            ProbeFactoryLayout.assistantOrbitPosition(probe, factory, Time.time, orbitPosition, orbitVelocity);
+            orbitMovement.set(orbitPosition).sub(unit).scl(0.12f).add(orbitVelocity).limit(unit.speed());
+            unit.moveAt(orbitMovement);
+            unit.lookAt(factory.x + factory.factoryRadius, factory.y + factory.factoryRadius);
+            return;
+        }
+        if (factory == null && (targetPos != null || attackTarget != null || commandQueue.any())) {
+            super.defaultBehavior();
+            return;
+        }
+
+        if (ProbeColonyManager.shouldDeliver(probe, probe.miningTargetTile)) {
+            if (factory != null && !unit.within(factory, ProbeColonyManager.deliveryRange(unit, factory))) {
+                moveTo(factory, ProbeColonyManager.deliveryRange(unit, factory) / 2f, 20f);
+            } else {
+                unit.vel.setZero();
+            }
+            return;
+        }
+
+        Tile tile = probe.miningTarget();
+        if (ProbeColonyManager.canHarvest(unit, tile)) {
+            ProbeColonyManager.approachMine(this, unit, tile);
+            return;
+        }
+
+        if (factory != null) {
+            moveTo(factory, ProbeColonyManager.deliveryRange(unit, factory) * 2f, 20f, false, null);
+            return;
+        }
+
+        unit.vel.setZero();
     }
 }

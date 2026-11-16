@@ -9,6 +9,7 @@ import newhorizon.content.NHLogic;
 
 public class RandomTarget extends LStatement {
     public String team = "@sharded", seed = "0", x = "tx", y = "ty", turretW = "0", generatorW = "0", factoryW = "0", coreW = "1";
+    public String avoidGravity = "1";
 
     public RandomTarget(String[] tokens) {
         team = tokens[1];
@@ -19,6 +20,10 @@ public class RandomTarget extends LStatement {
         generatorW = tokens[6];
         factoryW = tokens[7];
         coreW = tokens[8];
+        if (tokens.length > 9) {
+            if (tokens[9] != null && !tokens[9].isEmpty()) avoidGravity = tokens[9];
+            tokens[9] = null;
+        }
     }
 
     public RandomTarget() {
@@ -58,6 +63,13 @@ public class RandomTarget extends LStatement {
             t.add(" Core Weight: ");
             fields(t, coreW, str -> coreW = str);
         }).left();
+
+        table.row();
+
+        table.table(settings -> {
+            settings.add(" Avoid Gravity Wells: ");
+            fields(settings, avoidGravity, str -> avoidGravity = str);
+        }).left();
     }
 
     @Override
@@ -67,7 +79,7 @@ public class RandomTarget extends LStatement {
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new RandomTargetI(builder.var(team), builder.var(seed), builder.var(x), builder.var(y), builder.var(turretW), builder.var(generatorW), builder.var(factoryW), builder.var(coreW));
+        return new RandomTargetI(builder.var(team), builder.var(seed), builder.var(x), builder.var(y), builder.var(turretW), builder.var(generatorW), builder.var(factoryW), builder.var(coreW), builder.var(avoidGravity));
     }
 
     @Override
@@ -93,5 +105,7 @@ public class RandomTarget extends LStatement {
         builder.append(factoryW);
         builder.append(" ");
         builder.append(coreW);
+        builder.append(" ");
+        builder.append(avoidGravity);
     }
 }

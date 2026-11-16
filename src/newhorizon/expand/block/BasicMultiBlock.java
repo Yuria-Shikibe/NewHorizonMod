@@ -113,6 +113,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
         public Seq<Building[]> linkProximityMap;
         public Tile teamPos, statusPos;
         public int dumpIndex = 0;
+        public float[] linkHeat = new float[4];
 
         @Override
         public void created() {
@@ -180,6 +181,24 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
                     }
                 }
             }
+        }
+
+        @Override
+        public float calculateHeat(float[] sideHeat) {
+            float total = super.calculateHeat(sideHeat);
+            if (linkEntities == null) return total;
+
+            if (linkHeat.length != sideHeat.length) linkHeat = new float[sideHeat.length];
+            for (Building link : linkEntities) {
+                if (link == null || !link.isValid()) continue;
+
+                float linkTotal = link.calculateHeat(linkHeat);
+                total += linkTotal;
+                for (int i = 0; i < sideHeat.length; i++) {
+                    sideHeat[i] += linkHeat[i];
+                }
+            }
+            return total;
         }
 
         public boolean checkValidPair(Building target, Building source) {
